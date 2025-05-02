@@ -75,6 +75,11 @@ const menuConfig: Menu[] = [
         label: "उमेर अनुसार जनसंख्या",
         roles: ["admin", "superadmin"],
       },
+      {
+        href: "/digital-profile/demographics/ward-wise-demographic-summary",
+        label: "वडा अनुसार जनसांख्यिकीय सारांश",
+        roles: ["admin", "superadmin"],
+      },
     ],
   },
 
