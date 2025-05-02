@@ -20,7 +20,7 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
     try {
       gpsData = processGPSData(r.id.tmp_location);
     } catch (error) {
-      console.error('Error processing GPS data:', error);
+      console.error("Error processing GPS data:", error);
       gpsData = { gps: null, altitude: null, gpsAccuracy: null };
     }
 
@@ -132,12 +132,15 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
 
     // Insert main family data
     try {
-      const mainStatement = jsonToPostgres("staging_lungri_family", mainFamilyTable);
+      const mainStatement = jsonToPostgres(
+        "staging_product_family",
+        mainFamilyTable,
+      );
       if (mainStatement) {
         await ctx.db.execute(sql.raw(mainStatement));
       }
     } catch (error) {
-      console.error('Error inserting main family data:', error);
+      console.error("Error inserting main family data:", error);
       throw new Error(`Failed to insert main family data: ${error}`);
     }
 
@@ -147,19 +150,22 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
         try {
           // Process individual
           const individual = await processIndividual(i, r, ctx);
-          
+
           // Insert individual
           try {
             const individualStatement = jsonToPostgres(
-              "staging_lungri_individual",
+              "staging_product_individual",
               individual,
-              "ON CONFLICT(id) DO UPDATE SET"
+              "ON CONFLICT(id) DO UPDATE SET",
             );
             if (individualStatement) {
               await ctx.db.execute(sql.raw(individualStatement));
             }
           } catch (dbError) {
-            console.error(`Database error inserting individual ${i.name}:`, dbError);
+            console.error(
+              `Database error inserting individual ${i.name}:`,
+              dbError,
+            );
             throw dbError;
           }
         } catch (indError) {
@@ -176,15 +182,15 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
         try {
           const agricultural_land = processAgriculturalLand(land, r);
           const agricultureStatement = jsonToPostgres(
-            "staging_lungri_agricultural_land",
+            "staging_product_agricultural_land",
             agricultural_land,
-            "ON CONFLICT(id) DO UPDATE SET"
+            "ON CONFLICT(id) DO UPDATE SET",
           );
           if (agricultureStatement) {
             await ctx.db.execute(sql.raw(agricultureStatement));
           }
         } catch (error) {
-          console.error('Error processing agricultural land:', error);
+          console.error("Error processing agricultural land:", error);
           continue;
         }
       }
@@ -199,10 +205,7 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
             household_id: r.__id,
             ward_no: r.id.ward_no,
             crop_type: "food",
-            crop_name: decodeSingleChoice(
-              i.fcrop,
-              familyChoices.food_crops,
-            ),
+            crop_name: decodeSingleChoice(i.fcrop, familyChoices.food_crops),
             area:
               (i.fcrop_area_description.fcrop_bigha ?? 0) * 6772.63 +
               (i.fcrop_area_description.fcrop_kattha ?? 0) * 338.63 +
@@ -212,9 +215,9 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
 
           try {
             const cropStatement = jsonToPostgres(
-              "staging_lungri_crop",
+              "staging_product_crop",
               crop,
-              "ON CONFLICT(id) DO UPDATE SET"
+              "ON CONFLICT(id) DO UPDATE SET",
             );
             if (cropStatement) {
               await ctx.db.execute(sql.raw(cropStatement));
@@ -248,9 +251,9 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
 
           try {
             const cropStatement = jsonToPostgres(
-              "staging_lungri_crop",
+              "staging_product_crop",
               crop,
-              "ON CONFLICT(id) DO UPDATE SET"
+              "ON CONFLICT(id) DO UPDATE SET",
             );
             if (cropStatement) {
               await ctx.db.execute(sql.raw(cropStatement));
@@ -284,9 +287,9 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
 
           try {
             const cropStatement = jsonToPostgres(
-              "staging_lungri_crop",
+              "staging_product_crop",
               crop,
-              "ON CONFLICT(id) DO UPDATE SET"
+              "ON CONFLICT(id) DO UPDATE SET",
             );
             if (cropStatement) {
               await ctx.db.execute(sql.raw(cropStatement));
@@ -320,9 +323,9 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
 
           try {
             const cropStatement = jsonToPostgres(
-              "staging_lungri_crop",
+              "staging_product_crop",
               crop,
-              "ON CONFLICT(id) DO UPDATE SET"
+              "ON CONFLICT(id) DO UPDATE SET",
             );
             if (cropStatement) {
               await ctx.db.execute(sql.raw(cropStatement));
@@ -356,9 +359,9 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
 
           try {
             const cropStatement = jsonToPostgres(
-              "staging_lungri_crop",
+              "staging_product_crop",
               crop,
-              "ON CONFLICT(id) DO UPDATE SET"
+              "ON CONFLICT(id) DO UPDATE SET",
             );
             if (cropStatement) {
               await ctx.db.execute(sql.raw(cropStatement));
@@ -392,9 +395,9 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
 
           try {
             const cropStatement = jsonToPostgres(
-              "staging_lungri_crop",
+              "staging_product_crop",
               crop,
-              "ON CONFLICT(id) DO UPDATE SET"
+              "ON CONFLICT(id) DO UPDATE SET",
             );
             if (cropStatement) {
               await ctx.db.execute(sql.raw(cropStatement));
@@ -428,9 +431,9 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
 
           try {
             const cropStatement = jsonToPostgres(
-              "staging_lungri_crop",
+              "staging_product_crop",
               crop,
-              "ON CONFLICT(id) DO UPDATE SET"
+              "ON CONFLICT(id) DO UPDATE SET",
             );
             if (cropStatement) {
               await ctx.db.execute(sql.raw(cropStatement));
@@ -451,15 +454,15 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
         try {
           const animal = processAnimal(animalItem, r);
           const animalStatement = jsonToPostgres(
-            "staging_lungri_animal",
+            "staging_product_animal",
             animal,
-            "ON CONFLICT(id) DO UPDATE SET"
+            "ON CONFLICT(id) DO UPDATE SET",
           );
           if (animalStatement) {
             await ctx.db.execute(sql.raw(animalStatement));
           }
         } catch (error) {
-          console.error('Error processing animal:', error);
+          console.error("Error processing animal:", error);
           continue;
         }
       }
@@ -471,15 +474,15 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
         try {
           const animalProduct = processAnimalProduct(productItem, r);
           const animalProductStatement = jsonToPostgres(
-            "staging_lungri_animal_product",
+            "staging_product_animal_product",
             animalProduct,
-            "ON CONFLICT(id) DO UPDATE SET"
+            "ON CONFLICT(id) DO UPDATE SET",
           );
           if (animalProductStatement) {
             await ctx.db.execute(sql.raw(animalProductStatement));
           }
         } catch (error) {
-          console.error('Error processing animal product:', error);
+          console.error("Error processing animal product:", error);
           continue;
         }
       }
@@ -491,22 +494,21 @@ export async function parseAndInsertInStaging(r: RawFamily, ctx: any) {
         try {
           const death = processDeath(deathItem, r);
           const deathStatement = jsonToPostgres(
-            "staging_lungri_death",
+            "staging_product_death",
             death,
-            "ON CONFLICT(id) DO UPDATE SET"
+            "ON CONFLICT(id) DO UPDATE SET",
           );
           if (deathStatement) {
             await ctx.db.execute(sql.raw(deathStatement));
           }
         } catch (error) {
-          console.error('Error processing death record:', error);
+          console.error("Error processing death record:", error);
           continue;
         }
       }
     }
-
   } catch (error) {
-    console.error('Fatal error in parseAndInsertInStaging:', error);
+    console.error("Fatal error in parseAndInsertInStaging:", error);
     throw new Error(`Fatal error in family data processing: ${error}`);
   }
 }
@@ -552,35 +554,37 @@ function processIndividual(i: any, r: RawFamily, ctx: any) {
           : i.individual_history_info.caste_individual,
         familyChoices.castes,
       ),
-      caste_other: r.id.members.are_a_family == "yes"
-        ? r.family_history_info.caste_oth
-        : i.individual_history_info.caste_oth_individual,
+      caste_other:
+        r.id.members.are_a_family == "yes"
+          ? r.family_history_info.caste_oth
+          : i.individual_history_info.caste_oth_individual,
       ancestor_language: decodeSingleChoice(
         r.id.members.are_a_family == "yes"
           ? r.family_history_info.ancestrial_lang
           : i.individual_history_info.ancestrial_lang_individual,
         familyChoices.languages,
       ),
-      ancestor_language_other: r.id.members.are_a_family == "yes"
-        ? r.family_history_info.ancestrial_lang_oth
-        : i.individual_history_info.ancestrial_lang_oth_individual,
+      ancestor_language_other:
+        r.id.members.are_a_family == "yes"
+          ? r.family_history_info.ancestrial_lang_oth
+          : i.individual_history_info.ancestrial_lang_oth_individual,
       primary_mother_tongue: decodeSingleChoice(
         r.id.members.are_a_family == "yes"
           ? r.family_history_info.mother_tounge_primary
           : i.individual_history_info.mother_tounge_primary_individual,
         familyChoices.languages,
       ),
-      primary_mother_tongue_other: r.id.members.are_a_family == "yes"
-        ? r.family_history_info.mother_tounge_primary_oth
-        : i.individual_history_info.mother_tounge_primary_oth_individual,
+      primary_mother_tongue_other:
+        r.id.members.are_a_family == "yes"
+          ? r.family_history_info.mother_tounge_primary_oth
+          : i.individual_history_info.mother_tounge_primary_oth_individual,
       religion: decodeSingleChoice(
         r.id.members.are_a_family == "yes"
           ? r.family_history_info.religion
           : i.individual_history_info.religion_individual,
         familyChoices.religions,
       ),
-      religion_other:
-        i.individual_history_info.religion_other_individual,
+      religion_other: i.individual_history_info.religion_other_individual,
 
       marital_status: null as string | null,
       married_age: null as number | null,
@@ -608,8 +612,7 @@ function processIndividual(i: any, r: RawFamily, ctx: any) {
     // Add health details if available
     if (r.health?.length > 0) {
       const healthRecord = r.health.find(
-        (j) =>
-          i.name === j.health_name && i.age === parseInt(j.health_age),
+        (j) => i.name === j.health_name && i.age === parseInt(j.health_age),
       );
       if (healthRecord) {
         individual.has_chronic_disease = decodeSingleChoice(
@@ -647,8 +650,7 @@ function processIndividual(i: any, r: RawFamily, ctx: any) {
     if (r.fertility?.length > 0) {
       const fertilityRecord = r.fertility.find(
         (j) =>
-          i.name === j.fertility_name &&
-          i.age === parseInt(j.fertility_age),
+          i.name === j.fertility_name && i.age === parseInt(j.fertility_age),
       );
       if (fertilityRecord?.ftd) {
         individual.gave_live_birth = decodeSingleChoice(
@@ -657,22 +659,18 @@ function processIndividual(i: any, r: RawFamily, ctx: any) {
         );
         if (fertilityRecord.ftd.gave_live_birth === "yes") {
           individual.alive_sons = fertilityRecord.ftd.alive_sons;
-          individual.alive_daughters =
-            fertilityRecord.ftd.alive_daughters;
+          individual.alive_daughters = fertilityRecord.ftd.alive_daughters;
           individual.total_born_children =
             fertilityRecord.ftd.total_born_children;
         }
         // Add deceased children details if available
         if (fertilityRecord.ftd.has_dead_children === "yes") {
           individual.dead_sons = fertilityRecord.ftd.dead_sons;
-          individual.dead_daughters =
-            fertilityRecord.ftd.dead_daughters;
+          individual.dead_daughters = fertilityRecord.ftd.dead_daughters;
         }
 
         // Add recent birth details if available
-        if (
-          fertilityRecord.ftd.frcb?.gave_recent_live_birth === "yes"
-        ) {
+        if (fertilityRecord.ftd.frcb?.gave_recent_live_birth === "yes") {
           individual.recent_alive_sons =
             fertilityRecord.ftd.frcb.recent_alive_sons;
           individual.recent_alive_daughters =
@@ -786,7 +784,6 @@ function processAgriculturalLand(land: any, r: RawFamily) {
     throw new Error(`Error processing agricultural land data: ${error}`);
   }
 }
-
 
 function processAnimal(animalItem: any, r: RawFamily) {
   try {

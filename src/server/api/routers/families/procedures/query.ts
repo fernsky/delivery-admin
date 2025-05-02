@@ -1,17 +1,17 @@
 import { publicProcedure } from "@/server/api/trpc";
 import { familyQuerySchema } from "../families.schema";
 import { family } from "@/server/db/schema/family/family";
-import { lungriAnimal } from "@/server/db/schema/family/animals";
-import { lungriAnimalProduct } from "@/server/db/schema/family/animal-products";
-import { lungriCrop } from "@/server/db/schema/family/crops";
-import { lungriIndividual } from "@/server/db/schema/family/individual";
+import { productAnimal } from "@/server/db/schema/family/animals";
+import { productAnimalProduct } from "@/server/db/schema/family/animal-products";
+import { productCrop } from "@/server/db/schema/family/crops";
+import { productIndividual } from "@/server/db/schema/family/individual";
 import { surveyAttachments } from "@/server/db/schema";
 import { and, eq, ilike, sql } from "drizzle-orm";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { env } from "@/env";
 import { FamilyResult } from "../types";
-import lungriAgriculturalLand from "@/server/db/schema/family/agricultural-lands";
+import productAgriculturalLand from "@/server/db/schema/family/agricultural-lands";
 
 export const getAll = publicProcedure
   .input(familyQuerySchema)
@@ -93,24 +93,24 @@ export const getById = publicProcedure
     ] = await Promise.all([
       ctx.db
         .select()
-        .from(lungriAgriculturalLand)
-        .where(eq(lungriAgriculturalLand.familyId, input.id)),
+        .from(productAgriculturalLand)
+        .where(eq(productAgriculturalLand.familyId, input.id)),
       ctx.db
         .select()
-        .from(lungriAnimal)
-        .where(eq(lungriAnimal.familyId, input.id)),
+        .from(productAnimal)
+        .where(eq(productAnimal.familyId, input.id)),
       ctx.db
         .select()
-        .from(lungriAnimalProduct)
-        .where(eq(lungriAnimalProduct.familyId, input.id)),
+        .from(productAnimalProduct)
+        .where(eq(productAnimalProduct.familyId, input.id)),
       ctx.db
         .select()
-        .from(lungriCrop)
-        .where(eq(lungriCrop.familyId, input.id)),
+        .from(productCrop)
+        .where(eq(productCrop.familyId, input.id)),
       ctx.db
         .select()
-        .from(lungriIndividual)
-        .where(eq(lungriIndividual.familyId, input.id)),
+        .from(productIndividual)
+        .where(eq(productIndividual.familyId, input.id)),
     ]);
 
     const attachments = await ctx.db.query.surveyAttachments.findMany({
@@ -181,22 +181,25 @@ export const getByAreaCode = publicProcedure
         lat: sql<number>`ST_Y(${family.gps}::geometry)`,
         lng: sql<number>`ST_X(${family.gps}::geometry)`,
         gpsAccuracy: family.gpsAccuracy,
-        enumeratorName: family.enumeratorName,  // Add this line
+        enumeratorName: family.enumeratorName, // Add this line
       })
       .from(family)
       .where(eq(family.areaCode, input.areaCode));
 
-    return familyDetails.map(family => ({
+    return familyDetails.map((family) => ({
       id: family.id,
-      type: "family",  // Add this line
+      type: "family", // Add this line
       familyHeadName: family.headName,
       wardNo: family.wardNo,
-      enumeratorName: family.enumeratorName,  // Add this line
-      gpsPoint: family.lat && family.lng ? {
-        lat: family.lat,
-        lng: family.lng,
-        accuracy: family.gpsAccuracy ?? 0
-      } : null
+      enumeratorName: family.enumeratorName, // Add this line
+      gpsPoint:
+        family.lat && family.lng
+          ? {
+              lat: family.lat,
+              lng: family.lng,
+              accuracy: family.gpsAccuracy ?? 0,
+            }
+          : null,
     }));
   });
 
@@ -216,17 +219,20 @@ export const getByEnumeratorName = publicProcedure
       .from(family)
       .where(ilike(family.enumeratorName, `%${input.enumeratorName}%`));
 
-    return familyDetails.map(family => ({
+    return familyDetails.map((family) => ({
       id: family.id,
       type: "family",
       name: family.headName,
       wardNo: family.wardNo,
       enumeratorName: family.enumeratorName,
-      gpsPoint: family.lat && family.lng ? {
-        lat: family.lat,
-        lng: family.lng,
-        accuracy: family.gpsAccuracy ?? 0
-      } : null
+      gpsPoint:
+        family.lat && family.lng
+          ? {
+              lat: family.lat,
+              lng: family.lng,
+              accuracy: family.gpsAccuracy ?? 0,
+            }
+          : null,
     }));
   });
 
@@ -251,7 +257,7 @@ export const getEnumeratorNames = publicProcedure.query(async ({ ctx }) => {
     .where(sql`${family.enumeratorName} IS NOT NULL`)
     .orderBy(family.enumeratorName);
 
-  return results.map(result => result.enumeratorName);
+  return results.map((result) => result.enumeratorName);
 });
 
 export const getAreaCodesByEnumeratorName = publicProcedure
@@ -265,10 +271,10 @@ export const getAreaCodesByEnumeratorName = publicProcedure
       .where(
         and(
           eq(family.enumeratorName, input.enumeratorName),
-          sql`${family.areaCode} IS NOT NULL`
-        )
+          sql`${family.areaCode} IS NOT NULL`,
+        ),
       )
       .orderBy(family.areaCode);
 
-    return results.map(result => result.areaCode);
+    return results.map((result) => result.areaCode);
   });

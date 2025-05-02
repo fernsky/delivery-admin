@@ -2,7 +2,7 @@ import { publicProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { and, eq, ilike, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
-import { lungriDeath } from "@/server/db/schema/family/deaths";
+import { productDeath } from "@/server/db/schema/family/deaths";
 
 const deathQuerySchema = z.object({
   limit: z.number().min(1).max(100).default(10),
@@ -27,16 +27,16 @@ export const getAll = publicProcedure
     if (filters) {
       const filterConditions = [];
       if (filters.wardNo) {
-        filterConditions.push(eq(lungriDeath.wardNo, filters.wardNo));
+        filterConditions.push(eq(productDeath.wardNo, filters.wardNo));
       }
       if (filters.deceasedName) {
         filterConditions.push(
-          ilike(lungriDeath.deceasedName, `%${filters.deceasedName}%`),
+          ilike(productDeath.deceasedName, `%${filters.deceasedName}%`),
         );
       }
       if (filters.deceasedGender) {
         filterConditions.push(
-          eq(lungriDeath.deceasedGender, filters.deceasedGender),
+          eq(productDeath.deceasedGender, filters.deceasedGender),
         );
       }
       if (filterConditions.length > 0) {
@@ -48,14 +48,14 @@ export const getAll = publicProcedure
     const [data, totalCount] = await Promise.all([
       ctx.db
         .select()
-        .from(lungriDeath)
+        .from(productDeath)
         .where(conditions)
         .orderBy(sql`${sql.identifier(sortBy)} ${sql.raw(sortOrder)}`)
         .limit(limit)
         .offset(offset),
       ctx.db
         .select({ count: sql<number>`count(*)` })
-        .from(lungriDeath)
+        .from(productDeath)
         .where(conditions)
         .then((result) => result[0].count),
     ]);
@@ -75,8 +75,8 @@ export const getById = publicProcedure
   .query(async ({ ctx, input }) => {
     const death = await ctx.db
       .select()
-      .from(lungriDeath)
-      .where(eq(lungriDeath.id, input.id))
+      .from(productDeath)
+      .where(eq(productDeath.id, input.id))
       .limit(1);
 
     if (!death[0]) {
@@ -93,9 +93,9 @@ export const getStats = publicProcedure.query(async ({ ctx }) => {
   const stats = await ctx.db
     .select({
       totalDeaths: sql<number>`count(*)`,
-      avgAge: sql<number>`avg(${lungriDeath.deceasedAge})`,
+      avgAge: sql<number>`avg(${productDeath.deceasedAge})`,
     })
-    .from(lungriDeath);
+    .from(productDeath);
 
   return stats[0];
 });

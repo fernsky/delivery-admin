@@ -1,4 +1,4 @@
-import { lungriAnimal } from "@/server/db/schema/family/animals";
+import { productAnimal } from "@/server/db/schema/family/animals";
 import { Card } from "@/components/ui/card";
 import {
   Grape,
@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/accordion";
 
 interface AnimalSectionProps {
-  animals?: lungriAnimal[] | null;
+  animals?: productAnimal[] | null;
 }
 
 const animalIcons: Record<string, any> = {
@@ -27,7 +27,7 @@ const animalIcons: Record<string, any> = {
   other: Dog,
 };
 
-function AnimalCard({ animal }: { animal: lungriAnimal }) {
+function AnimalCard({ animal }: { animal: productAnimal }) {
   const IconComponent =
     animalIcons[animal.animalName?.toLowerCase() ?? ""] || Dog;
 

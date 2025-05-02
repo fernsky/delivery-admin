@@ -1,7 +1,7 @@
 import { pgTable, varchar, integer } from "drizzle-orm/pg-core";
 import { family } from "./family";
 
-export const staginglungriDeath = pgTable("staging_lungri_death", {
+export const stagingproductDeath = pgTable("staging_product_death", {
   id: varchar("id", { length: 48 }).primaryKey().notNull(),
   familyId: varchar("family_id", { length: 48 }).notNull(),
   wardNo: integer("ward_no").notNull(),
@@ -18,7 +18,7 @@ export const staginglungriDeath = pgTable("staging_lungri_death", {
   }),
 });
 
-export const lungriDeath = pgTable("lungri_death", {
+export const productDeath = pgTable("product_death", {
   id: varchar("id", { length: 48 }).primaryKey().notNull(),
   famliyId: varchar("family_id", { length: 48 }).references(() => family.id),
   wardNo: integer("ward_no").notNull(),
@@ -32,6 +32,5 @@ export const lungriDeath = pgTable("lungri_death", {
   ),
 });
 
-export type lungriDeath = typeof lungriDeath.$inferSelect;
-export type StaginglungriDeath =
-  typeof staginglungriDeath.$inferSelect;
+export type productDeath = typeof productDeath.$inferSelect;
+export type StagingproductDeath = typeof stagingproductDeath.$inferSelect;

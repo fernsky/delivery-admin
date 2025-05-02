@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import idCardSvg from "@/lib/assets/lungri-id-card.svg";
+import idCardSvg from "@/lib/assets/product-id-card.svg";
 import { api } from "@/trpc/react";
 import { enumeratorWardWiseSchema } from "@/server/api/routers/enumwise/enumwise.schema";
 

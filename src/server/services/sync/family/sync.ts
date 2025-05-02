@@ -8,29 +8,29 @@
 // } from "../../../db/schema";
 // import { family, stagingFamily } from "@/server/db/schema/family/family";
 // import {
-//   staginglungriIndividual,
-//   lungriIndividual,
+//   stagingproductIndividual,
+//   productIndividual,
 // } from "@/server/db/schema/family/individual";
 // import {
-//   staginglungriDeath,
-//   lungriDeath,
+//   stagingproductDeath,
+//   productDeath,
 // } from "@/server/db/schema/family/deaths";
 // import {
-//   staginglungriCrop,
-//   lungriCrop,
+//   stagingproductCrop,
+//   productCrop,
 // } from "@/server/db/schema/family/crops";
 // import {
-//   staginglungriAnimal,
-//   lungriAnimal,
+//   stagingproductAnimal,
+//   productAnimal,
 // } from "@/server/db/schema/family/animals";
 // import {
-//   staginglungriAnimalProduct,
-//   lungriAnimalProduct,
+//   stagingproductAnimalProduct,
+//   productAnimalProduct,
 // } from "@/server/db/schema/family/animal-products";
 
-// import { StaginglungriDeath } from "@/server/db/schema/family/deaths";
-// import lungriAgriculturalLand, {
-//   staginglungriAgriculturalLand,
+// import { StagingproductDeath } from "@/server/db/schema/family/deaths";
+// import productAgriculturalLand, {
+//   stagingproductAgriculturalLand,
 // } from "@/server/db/schema/family/agricultural-lands";
 
 // export async function syncFamilySurvey(recordId: string, data: any, ctx: any) {
@@ -222,33 +222,33 @@
 //     // Get related data
 //     const individuals = await ctx.db
 //       .select()
-//       .from(staginglungriIndividual)
-//       .where(eq(staginglungriIndividual.familyId, recordId));
+//       .from(stagingproductIndividual)
+//       .where(eq(stagingproductIndividual.familyId, recordId));
 
 //     const agriculturalLands = await ctx.db
 //       .select()
-//       .from(staginglungriAgriculturalLand)
-//       .where(eq(staginglungriAgriculturalLand.familyId, recordId));
+//       .from(stagingproductAgriculturalLand)
+//       .where(eq(stagingproductAgriculturalLand.familyId, recordId));
 
 //     const deaths = await ctx.db
 //       .select()
-//       .from(staginglungriDeath)
-//       .where(eq(staginglungriDeath.familyId, recordId));
+//       .from(stagingproductDeath)
+//       .where(eq(stagingproductDeath.familyId, recordId));
 
 //     const crops = await ctx.db
 //       .select()
-//       .from(staginglungriCrop)
-//       .where(eq(staginglungriCrop.familyId, recordId));
+//       .from(stagingproductCrop)
+//       .where(eq(stagingproductCrop.familyId, recordId));
 
 //     const animals = await ctx.db
 //       .select()
-//       .from(staginglungriAnimal)
-//       .where(eq(staginglungriAnimal.familyId, recordId));
+//       .from(stagingproductAnimal)
+//       .where(eq(stagingproductAnimal.familyId, recordId));
 
 //     const animalProducts = await ctx.db
 //       .select()
-//       .from(staginglungriAnimalProduct)
-//       .where(eq(staginglungriAnimalProduct.familyId, recordId));
+//       .from(stagingproductAnimalProduct)
+//       .where(eq(stagingproductAnimalProduct.familyId, recordId));
 
 //     // Begin transaction
 //     await ctx.db.transaction(async (tx: any) => {
@@ -323,7 +323,7 @@
 //       // Insert individuals
 //       if (individuals.length > 0) {
 //         await tx
-//           .insert(lungriIndividual)
+//           .insert(productIndividual)
 //           .values(individuals)
 //           .onConflictDoNothing();
 //       }
@@ -331,9 +331,9 @@
 //       // Insert deaths data into production table
 //       if (deaths.length > 0) {
 //         await tx
-//           .insert(lungriDeath)
+//           .insert(productDeath)
 //           .values(
-//             deaths.map((death: StaginglungriDeath) => ({
+//             deaths.map((death: StagingproductDeath) => ({
 //               id: death.id,
 //               famliyId: death.familyId,
 //               wardNo: death.wardNo,
@@ -350,13 +350,13 @@
 
 //       // Insert crops
 //       if (crops.length > 0) {
-//         await tx.insert(lungriCrop).values(crops).onConflictDoNothing();
+//         await tx.insert(productCrop).values(crops).onConflictDoNothing();
 //       }
 
 //       // Insert animals
 //       if (animals.length > 0) {
 //         await tx
-//           .insert(lungriAnimal)
+//           .insert(productAnimal)
 //           .values(animals)
 //           .onConflictDoNothing();
 //       }
@@ -364,7 +364,7 @@
 //       // Insert animal products
 //       if (animalProducts.length > 0) {
 //         await tx
-//           .insert(lungriAnimalProduct)
+//           .insert(productAnimalProduct)
 //           .values(animalProducts)
 //           .onConflictDoNothing();
 //       }
@@ -372,7 +372,7 @@
 //       // Insert agricultural lands
 //       if (agriculturalLands.length > 0) {
 //         await tx
-//           .insert(lungriAgriculturalLand)
+//           .insert(productAgriculturalLand)
 //           .values(agriculturalLands)
 //           .onConflictDoNothing();
 //       }
@@ -381,8 +381,8 @@
 //       await tx
 //         .insert(stagingToProduction)
 //         .values({
-//           staging_table: "staging_lungri_family",
-//           production_table: "lungri_family",
+//           staging_table: "staging_product_family",
+//           production_table: "product_family",
 //           recordId: recordId,
 //         })
 //         .onConflictDoNothing();

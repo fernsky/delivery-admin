@@ -14,11 +14,11 @@ INSERT INTO
     )
 VALUES
     (
-        'lungri_building_survey',
-        'lungri Building Survey',
+        'product_building_survey',
+        'product Building Survey',
         '"\"https://survey.digprofile.com\""',
         4,
-        'lungri_Buildings',
+        'product_Buildings',
         '"\"supervisor@likhupike.com\""',
         '"\"supervisor\""',
         '{"{\"path\":\"building_image\",\"type\":\"building_image\"}","{\"path\":\"monitoring_audio\",\"type\":\"audio_monitoring\"}","{\"path\":\"enumerator_selfie\",\"type\":\"building_selfie\"}"}',
@@ -41,8 +41,8 @@ INSERT INTO
     )
 VALUES
     (
-        'lungri_business_survey',
-        'lungri Business Survey',
+        'product_business_survey',
+        'product Business Survey',
         '"\"https://survey.digprofile.com\""',
         4,
         'biz',
@@ -68,8 +68,8 @@ INSERT INTO
     )
 VALUES
     (
-        'lungri_family_survey',
-        'lungri Family Survey',
+        'product_family_survey',
+        'product Family Survey',
         '"\"https://survey.digprofile.com\""',
         2,
         'household',

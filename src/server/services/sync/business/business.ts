@@ -1,4 +1,4 @@
-// import { parseAndInsertInStaging } from "@/lib/parser/lungri/parse-business";
+// import { parseAndInsertInStaging } from "@/lib/parser/product/parse-business";
 // import { stagingToProduction } from "@/server/db/schema";
 // import { eq } from "drizzle-orm";
 // import { syncBusinessSurvey } from "./sync";

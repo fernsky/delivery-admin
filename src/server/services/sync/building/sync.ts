@@ -275,8 +275,8 @@
 //     await ctx.db
 //       .insert(stagingToProduction)
 //       .values({
-//         staging_table: "staging_lungri_buildings",
-//         production_table: "lungri_buildings",
+//         staging_table: "staging_product_buildings",
+//         production_table: "product_buildings",
 //         recordId: recordId,
 //       })
 //       .onConflictDoNothing();

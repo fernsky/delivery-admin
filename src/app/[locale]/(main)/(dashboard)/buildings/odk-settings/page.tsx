@@ -9,29 +9,28 @@ const EditFormPage = ({ params }: { params: { id: string } }) => {
       actions={
         <div className="flex gap-2">
           <Link
-            href={"/families"}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            href={"/buildings"}
+            className="inline-flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4"
-              fill="none"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
+              fill="none"
               stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
+              <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            Back to Families
+            Back to Buildings
           </Link>
         </div>
       }
     >
-      <ODKResourcesForm formId={"lungri_family_survey"} />
+      <ODKResourcesForm formId={"product_building_survey"} />
     </ContentLayout>
   );
 };
