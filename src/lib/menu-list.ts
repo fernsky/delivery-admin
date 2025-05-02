@@ -70,6 +70,11 @@ const menuConfig: Menu[] = [
         label: "वडा घरमूली लिङ्ग",
         roles: ["admin", "superadmin"],
       },
+      {
+        href: "/digital-profile/demographics/ward-age-population",
+        label: "उमेर अनुसार जनसंख्या",
+        roles: ["admin", "superadmin"],
+      },
     ],
   },
 
