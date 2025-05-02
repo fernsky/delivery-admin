@@ -21,7 +21,7 @@ export function ContentLayout({
 }: ContentLayoutProps) {
   return (
     <div className={className}>
-      <Navbar title={title} subtitle={subtitle} icon={icon} actions={actions} />
+      <Navbar title={title} subtitle={subtitle} actions={actions} />
       <div className="container mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
         <div className="min-h-[calc(100vh-10rem)]">{children}</div>
       </div>
