@@ -9,6 +9,8 @@ import {
   wardAgeWisePopulationSchema,
   wardAgeWisePopulationFilterSchema,
   updateWardAgeWisePopulationSchema,
+  AgeGroup,
+  Gender,
 } from "./ward-age-wise-population.schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -92,8 +94,8 @@ export const createWardAgeWisePopulation = protectedProcedure
       .where(
         and(
           eq(wardAgeWisePopulation.wardNumber, input.wardNumber),
-          eq(wardAgeWisePopulation.ageGroup, input.ageGroup),
-          eq(wardAgeWisePopulation.gender, input.gender),
+          eq(wardAgeWisePopulation.ageGroup, input.ageGroup as AgeGroup),
+          eq(wardAgeWisePopulation.gender, input.gender as Gender),
         ),
       )
       .limit(1);
@@ -109,8 +111,8 @@ export const createWardAgeWisePopulation = protectedProcedure
     await ctx.db.insert(wardAgeWisePopulation).values({
       id: input.id || uuidv4(),
       wardNumber: input.wardNumber,
-      ageGroup: input.ageGroup,
-      gender: input.gender,
+      ageGroup: input.ageGroup as AgeGroup,
+      gender: input.gender as Gender,
       population: input.population,
     });
 
@@ -155,8 +157,8 @@ export const updateWardAgeWisePopulation = protectedProcedure
       .update(wardAgeWisePopulation)
       .set({
         wardNumber: input.wardNumber,
-        ageGroup: input.ageGroup,
-        gender: input.gender,
+        ageGroup: input.ageGroup as AgeGroup,
+        gender: input.gender as Gender,
         population: input.population,
       })
       .where(eq(wardAgeWisePopulation.id, input.id));
@@ -221,8 +223,8 @@ export const getWardAgeWisePopulationSummary = publicProcedure.query(
       const wardSummaryData = await ctx.db.execute(wardSummarySql);
 
       return {
-        byAgeAndGender: summaryData.rows,
-        byWardAndGender: wardSummaryData.rows,
+        byAgeAndGender: summaryData,
+        byWardAndGender: wardSummaryData,
       };
     } catch (error) {
       console.error("Error in getWardAgeWisePopulationSummary:", error);

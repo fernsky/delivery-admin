@@ -1,7 +1,10 @@
 import { z } from "zod";
 
-// Define the age group enum values
-export const AgeGroupEnum = z.enum([
+// Define the valid enum values for gender and age groups
+export const genderEnum = z.enum(["MALE", "FEMALE", "OTHER"]);
+export type Gender = z.infer<typeof genderEnum>;
+
+export const ageGroupEnum = z.enum([
   "AGE_0_4",
   "AGE_5_9",
   "AGE_10_14",
@@ -19,24 +22,23 @@ export const AgeGroupEnum = z.enum([
   "AGE_70_74",
   "AGE_75_AND_ABOVE",
 ]);
+export type AgeGroup = z.infer<typeof ageGroupEnum>;
 
-// Using the existing Gender enum from ward-wise-househead-gender schema
-import { GenderEnum } from "./ward-wise-househead-gender.schema";
-
-// Schema for ward age-wise population data
 export const wardAgeWisePopulationSchema = z.object({
   id: z.string().optional(),
-  wardNumber: z.number().int().min(1).max(20),
-  ageGroup: AgeGroupEnum,
-  gender: GenderEnum,
-  population: z.number().int().nonnegative(),
+  wardNumber: z.number().int().min(1, "वडा नम्बर आवश्यक छ"),
+  ageGroup: ageGroupEnum,
+  gender: genderEnum,
+  population: z
+    .number()
+    .int()
+    .nonnegative("जनसंख्या शून्य वा त्यो भन्दा बढी हुनुपर्छ"),
 });
 
-// Schema for filtering ward age-wise population data
 export const wardAgeWisePopulationFilterSchema = z.object({
-  wardNumber: z.number().int().min(1).max(20).optional(),
-  ageGroup: AgeGroupEnum.optional(),
-  gender: GenderEnum.optional(),
+  wardNumber: z.number().int().min(1).optional(),
+  ageGroup: ageGroupEnum.optional(),
+  gender: genderEnum.optional(),
 });
 
 export const updateWardAgeWisePopulationSchema = wardAgeWisePopulationSchema;
@@ -48,4 +50,3 @@ export type UpdateWardAgeWisePopulationData = WardAgeWisePopulationData;
 export type WardAgeWisePopulationFilter = z.infer<
   typeof wardAgeWisePopulationFilterSchema
 >;
-export type AgeGroup = z.infer<typeof AgeGroupEnum>;

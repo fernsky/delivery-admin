@@ -44,8 +44,7 @@ export default function WardAgePopulationPage() {
     return (
       <ContentLayout
         title="उमेर अनुसार जनसंख्या"
-        subtitle="वडा अनुसार उमेर समूहमा जनसंख्या वितरण"
-        icon={<UsersRound className="h-6 w-6 text-primary" />}
+        subtitle="विभिन्न उमेर समूह अनुसार वडा जनसंख्या डाटा"
       >
         <div className="flex h-96 items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-green-600" />
@@ -59,15 +58,13 @@ export default function WardAgePopulationPage() {
     return (
       <ContentLayout
         title="उमेर अनुसार जनसंख्या"
-        subtitle="वडा अनुसार उमेर समूहमा जनसंख्या वितरण"
-        icon={<UsersRound className="h-6 w-6 text-primary" />}
+        subtitle="विभिन्न उमेर समूह अनुसार वडा जनसंख्या डाटा"
       >
         <Alert variant="destructive" className="my-8">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>त्रुटि</AlertTitle>
           <AlertDescription>
-            {error.message ||
-              "उमेर अनुसार वडा जनसांख्यिकीय डाटा प्राप्त गर्न असमर्थ"}
+            {error.message || "उमेर अनुसार जनसंख्या डाटा प्राप्त गर्न असमर्थ"}
           </AlertDescription>
         </Alert>
       </ContentLayout>
@@ -77,8 +74,7 @@ export default function WardAgePopulationPage() {
   return (
     <ContentLayout
       title="उमेर अनुसार जनसंख्या"
-      subtitle="वडा अनुसार उमेर समूहमा जनसंख्या वितरण व्यवस्थापन गर्नुहोस्"
-      icon={<UsersRound className="h-6 w-6 text-primary" />}
+      subtitle="विभिन्न उमेर समूह अनुसार वडा जनसंख्या डाटा व्यवस्थापन गर्नुहोस्"
       actions={
         <Button onClick={handleAddNew} className="flex items-center gap-2">
           <PlusCircle className="h-4 w-4" />
@@ -106,8 +102,8 @@ export default function WardAgePopulationPage() {
           <DialogHeader>
             <DialogTitle>
               {editingId
-                ? "उमेर समूह जनसंख्या डाटा सम्पादन"
-                : "नयाँ उमेर समूह जनसंख्या डाटा थप्नुहोस्"}
+                ? "उमेर अनुसार जनसंख्या डाटा सम्पादन"
+                : "नयाँ उमेर अनुसार जनसंख्या डाटा थप्नुहोस्"}
             </DialogTitle>
             <DialogDescription>
               वडा नम्बर, उमेर समूह, लिङ्ग, र जनसंख्या विवरणहरू प्रविष्ट

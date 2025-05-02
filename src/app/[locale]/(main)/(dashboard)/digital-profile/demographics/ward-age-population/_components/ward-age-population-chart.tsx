@@ -93,47 +93,94 @@ export default function WardAgeWisePopulationChart({
     AGE_75_AND_ABOVE: { label: "७५+ वर्ष", order: 16 },
   };
 
-  // Pyramid chart data (Male vs Female by age group)
+  // Pyramid chart data (Male vs Female by age group) - modified for funnel chart
   const pyramidData = useMemo(() => {
-    // Create aggregated data by age group and gender
-    const aggregatedData: Record<
-      string,
-      { ageGroup: string; male: number; female: number }
-    > = {};
+    const maleData: {
+      id: string;
+      label: string;
+      value: number;
+      color: string;
+    }[] = [];
+
+    const femaleData: {
+      id: string;
+      label: string;
+      value: number;
+      color: string;
+    }[] = [];
+
+    // Group data by age and gender
+    const groupedByAge: Record<string, { male: number; female: number }> = {};
 
     filteredData.forEach((item) => {
-      const ageGroupKey = item.ageGroup;
-      if (!aggregatedData[ageGroupKey]) {
-        aggregatedData[ageGroupKey] = {
-          ageGroup: ageGroupMap[ageGroupKey].label,
-          male: 0,
-          female: 0,
-        };
+      const ageGroup = item.ageGroup;
+      if (!groupedByAge[ageGroup]) {
+        groupedByAge[ageGroup] = { male: 0, female: 0 };
       }
 
       if (item.gender === "MALE") {
-        aggregatedData[ageGroupKey].male += item.population;
+        groupedByAge[ageGroup].male += item.population;
       } else if (item.gender === "FEMALE") {
-        aggregatedData[ageGroupKey].female += item.population;
+        groupedByAge[ageGroup].female += item.population;
       }
     });
 
-    // Convert to array and sort by age group order
-    return Object.values(aggregatedData).sort((a, b) => {
-      const aOrder =
-        ageGroupMap[
-          Object.keys(aggregatedData).find(
-            (key) => aggregatedData[key] === a,
-          ) as AgeGroup
-        ]?.order || 0;
-      const bOrder =
-        ageGroupMap[
-          Object.keys(aggregatedData).find(
-            (key) => aggregatedData[key] === b,
-          ) as AgeGroup
-        ]?.order || 0;
-      return bOrder - aOrder; // Reverse order for pyramid
+    // Convert to array and sort by age group
+    const sortedAgeGroups = Object.entries(groupedByAge).sort(([a], [b]) => {
+      return (
+        ageGroupMap[a as AgeGroup].order - ageGroupMap[b as AgeGroup].order
+      );
     });
+
+    // Create data formatted for funnel chart
+    sortedAgeGroups.forEach(([ageGroup, counts]) => {
+      const label = ageGroupMap[ageGroup as AgeGroup].label;
+
+      maleData.push({
+        id: `${label}-male`,
+        label,
+        value: counts.male,
+        color: "#6ea1ff", // Male color
+      });
+
+      femaleData.push({
+        id: `${label}-female`,
+        label,
+        value: counts.female,
+        color: "#ff74b6", // Female color
+      });
+    });
+
+    // For funnel chart, we need to combine male and female data
+    const combinedData = [
+      {
+        id: "पुरुष",
+        label: "पुरुष",
+        value: Object.values(groupedByAge).reduce(
+          (sum, count) => sum + count.male,
+          0,
+        ),
+        color: "#6ea1ff",
+      },
+      {
+        id: "महिला",
+        label: "महिला",
+        value: Object.values(groupedByAge).reduce(
+          (sum, count) => sum + count.female,
+          0,
+        ),
+        color: "#ff74b6",
+      },
+    ];
+
+    return {
+      pyramidData: sortedAgeGroups.map(([ageGroup, counts]) => ({
+        ageGroup: ageGroupMap[ageGroup as AgeGroup].label,
+        male: -counts.male, // Negative for left side
+        female: counts.female, // Positive for right side
+      })),
+      funnelData: combinedData,
+    };
   }, [filteredData]);
 
   // Bar chart data (Total population by age group)
@@ -441,40 +488,67 @@ export default function WardAgeWisePopulationChart({
         <CardContent>
           <div className="h-[500px] mt-4">
             {selectedChart === "pyramid" && (
-              <ResponsiveFunnel
-                data={pyramidData}
-                margin={{ top: 20, right: 60, bottom: 120, left: 60 }}
-                valueFormat=".2s"
-                innerPadding={3}
-                colors={["#6ea1ff", "#ff74b6"]}
-                direction="horizontal"
-                borderWidth={1}
-                borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+              <ResponsiveBar
+                data={pyramidData.pyramidData}
+                keys={["male", "female"]}
+                indexBy="ageGroup"
+                margin={{ top: 50, right: 130, bottom: 50, left: 130 }}
+                padding={0.3}
+                groupMode="grouped"
+                layout="horizontal"
+                valueScale={{ type: "linear" }}
+                indexScale={{ type: "band", round: true }}
+                colors={({ id, data }) =>
+                  id === "male" ? "#6ea1ff" : "#ff74b6"
+                }
+                borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+                axisTop={null}
+                axisRight={null}
+                axisLeft={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  legend: "उमेर समूह",
+                  legendPosition: "middle",
+                  legendOffset: -40,
+                  truncateTickAt: 0,
+                }}
                 axisBottom={{
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 0,
                   legend: "जनसंख्या",
                   legendPosition: "middle",
-                  legendOffset: 36,
+                  legendOffset: 32,
+                  format: (v) => Math.abs(Number(v)).toString(),
                 }}
-                axisLeft={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  legendPosition: "middle",
-                  legendOffset: -40,
-                }}
-                enableGridX={true}
-                theme={{
-                  axis: {
-                    ticks: {
-                      text: {
-                        fontSize: 12,
+                labelSkipWidth={12}
+                labelSkipHeight={12}
+                labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+                legends={[
+                  {
+                    dataFrom: "keys",
+                    anchor: "bottom-right",
+                    direction: "column",
+                    justify: false,
+                    translateX: 120,
+                    translateY: 0,
+                    itemsSpacing: 2,
+                    itemWidth: 100,
+                    itemHeight: 20,
+                    itemDirection: "left-to-right",
+                    itemOpacity: 0.85,
+                    symbolSize: 20,
+                    effects: [
+                      {
+                        on: "hover",
+                        style: {
+                          itemOpacity: 1,
+                        },
                       },
-                    },
+                    ],
                   },
-                }}
+                ]}
               />
             )}
 

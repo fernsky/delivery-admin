@@ -16,7 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -24,57 +23,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AgeGroupEnum } from "@/server/api/routers/profile/demographics/ward-age-wise-population.schema";
+import { Loader2 } from "lucide-react";
+import {
+  ageGroupEnum,
+  genderEnum,
+} from "@/server/api/routers/profile/demographics/ward-age-wise-population.schema";
 
-// Create a schema for the form
+type AgeGroup = z.infer<typeof ageGroupEnum>;
+type Gender = z.infer<typeof genderEnum>;
+
+// Create form schema
 const formSchema = z.object({
   id: z.string().optional(),
   wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
-  ageGroup: z.enum(
-    [
-      "AGE_0_4",
-      "AGE_5_9",
-      "AGE_10_14",
-      "AGE_15_19",
-      "AGE_20_24",
-      "AGE_25_29",
-      "AGE_30_34",
-      "AGE_35_39",
-      "AGE_40_44",
-      "AGE_45_49",
-      "AGE_50_54",
-      "AGE_55_59",
-      "AGE_60_64",
-      "AGE_65_69",
-      "AGE_70_74",
-      "AGE_75_AND_ABOVE",
-    ],
-    { required_error: "उमेर समूह चयन गर्नुहोस्" },
-  ),
-  gender: z.enum(["MALE", "FEMALE", "OTHER"], {
-    required_error: "लिङ्ग चयन गर्नुहोस्",
-  }),
+  ageGroup: ageGroupEnum,
+  gender: genderEnum,
   population: z.coerce
     .number()
     .int()
-    .nonnegative("जनसंख्या 0 वा सकारात्मक हुनुपर्छ"),
+    .nonnegative("जनसंख्या शून्य वा त्यो भन्दा बढी हुनुपर्छ"),
 });
-
-type Gender = "MALE" | "FEMALE" | "OTHER";
-type AgeGroup = z.infer<typeof AgeGroupEnum>;
-
-interface WardAgeWisePopulationData {
-  id: string;
-  wardNumber: number;
-  ageGroup: AgeGroup;
-  gender: Gender;
-  population: number;
-}
 
 interface WardAgeWisePopulationFormProps {
   editId: string | null;
   onClose: () => void;
-  existingData: WardAgeWisePopulationData[];
+  existingData: any[];
 }
 
 export default function WardAgeWisePopulationForm({
@@ -85,10 +58,14 @@ export default function WardAgeWisePopulationForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const utils = api.useContext();
 
+  // Get the existing record if editing
+  const { data: allData, isLoading: isLoadingEditData } =
+    api.profile.demographics.wardAgeWisePopulation.getAll.useQuery();
+
   const createMutation =
     api.profile.demographics.wardAgeWisePopulation.create.useMutation({
       onSuccess: () => {
-        toast.success("नयाँ उमेर समूह जनसंख्या डाटा सफलतापूर्वक थपियो");
+        toast.success("नयाँ उमेर अनुसार जनसंख्या डाटा सफलतापूर्वक थपियो");
         utils.profile.demographics.wardAgeWisePopulation.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
@@ -102,7 +79,7 @@ export default function WardAgeWisePopulationForm({
   const updateMutation =
     api.profile.demographics.wardAgeWisePopulation.update.useMutation({
       onSuccess: () => {
-        toast.success("उमेर समूह जनसंख्या डाटा सफलतापूर्वक अपडेट गरियो");
+        toast.success("उमेर अनुसार जनसंख्या डाटा सफलतापूर्वक अपडेट गरियो");
         utils.profile.demographics.wardAgeWisePopulation.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
@@ -118,16 +95,16 @@ export default function WardAgeWisePopulationForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       wardNumber: undefined,
-      ageGroup: undefined,
-      gender: undefined,
+      ageGroup: undefined as unknown as AgeGroup,
+      gender: undefined as unknown as Gender,
       population: 0,
     },
   });
 
   // Populate the form when editing
   useEffect(() => {
-    if (editId) {
-      const recordToEdit = existingData.find((record) => record.id === editId);
+    if (editId && allData) {
+      const recordToEdit = allData.find((record) => record.id === editId);
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
@@ -137,20 +114,13 @@ export default function WardAgeWisePopulationForm({
           population: recordToEdit.population,
         });
       }
-    } else {
-      form.reset({
-        wardNumber: undefined,
-        ageGroup: undefined,
-        gender: undefined,
-        population: 0,
-      });
     }
-  }, [editId, existingData, form]);
+  }, [editId, allData, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
 
-    // Check if a record already exists with this ward, age group, and gender (for new records)
+    // Check for duplicates only when creating new record
     if (!editId) {
       const duplicate = existingData.find(
         (item) =>
@@ -158,9 +128,10 @@ export default function WardAgeWisePopulationForm({
           item.ageGroup === values.ageGroup &&
           item.gender === values.gender,
       );
+
       if (duplicate) {
         toast.error(
-          `वडा ${values.wardNumber}, उमेर समूह ${getAgeGroupLabel(values.ageGroup)}, र लिङ्ग ${getGenderLabel(values.gender)} को डाटा पहिले नै अवस्थित छ`,
+          `वडा ${values.wardNumber} को लागि उमेर समूह ${getAgeGroupLabel(values.ageGroup)} र लिङ्ग ${getGenderLabel(values.gender)} को डाटा पहिले नै अवस्थित छ`,
         );
         setIsSubmitting(false);
         return;
@@ -168,26 +139,13 @@ export default function WardAgeWisePopulationForm({
     }
 
     if (editId) {
-      updateMutation.mutate({ ...values, id: editId });
+      updateMutation.mutate(values);
     } else {
       createMutation.mutate(values);
     }
   };
 
-  const getGenderLabel = (gender: Gender) => {
-    switch (gender) {
-      case "MALE":
-        return "पुरुष";
-      case "FEMALE":
-        return "महिला";
-      case "OTHER":
-        return "अन्य";
-      default:
-        return gender;
-    }
-  };
-
-  const getAgeGroupLabel = (ageGroup: AgeGroup) => {
+  const getAgeGroupLabel = (ageGroup: AgeGroup): string => {
     switch (ageGroup) {
       case "AGE_0_4":
         return "०-४ वर्ष";
@@ -221,40 +179,33 @@ export default function WardAgeWisePopulationForm({
         return "७०-७४ वर्ष";
       case "AGE_75_AND_ABOVE":
         return "७५+ वर्ष";
-      default:
-        return ageGroup;
     }
   };
 
-  const ageGroupOptions = [
-    { value: "AGE_0_4", label: "०-४ वर्ष" },
-    { value: "AGE_5_9", label: "५-९ वर्ष" },
-    { value: "AGE_10_14", label: "१०-१४ वर्ष" },
-    { value: "AGE_15_19", label: "१५-१९ वर्ष" },
-    { value: "AGE_20_24", label: "२०-२४ वर्ष" },
-    { value: "AGE_25_29", label: "२५-२९ वर्ष" },
-    { value: "AGE_30_34", label: "३०-३४ वर्ष" },
-    { value: "AGE_35_39", label: "३५-३९ वर्ष" },
-    { value: "AGE_40_44", label: "४०-४४ वर्ष" },
-    { value: "AGE_45_49", label: "४५-४९ वर्ष" },
-    { value: "AGE_50_54", label: "५०-५४ वर्ष" },
-    { value: "AGE_55_59", label: "५५-५९ वर्ष" },
-    { value: "AGE_60_64", label: "६०-६४ वर्ष" },
-    { value: "AGE_65_69", label: "६५-६९ वर्ष" },
-    { value: "AGE_70_74", label: "७०-७४ वर्ष" },
-    { value: "AGE_75_AND_ABOVE", label: "७५+ वर्ष" },
-  ];
+  const getGenderLabel = (gender: Gender): string => {
+    switch (gender) {
+      case "MALE":
+        return "पुरुष";
+      case "FEMALE":
+        return "महिला";
+      case "OTHER":
+        return "अन्य";
+    }
+  };
 
-  const genderOptions = [
-    { value: "MALE", label: "पुरुष" },
-    { value: "FEMALE", label: "महिला" },
-    { value: "OTHER", label: "अन्य" },
-  ];
+  if (editId && isLoadingEditData) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+        <span className="ml-2">डाटा लोड गर्दै...</span>
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="wardNumber"
@@ -271,25 +222,24 @@ export default function WardAgeWisePopulationForm({
 
           <FormField
             control={form.control}
-            name="ageGroup"
+            name="gender"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>उमेर समूह</FormLabel>
+                <FormLabel>लिङ्ग</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="उमेर समूह चयन गर्नुहोस्" />
+                      <SelectValue placeholder="लिङ्ग छान्नुहोस्" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {ageGroupOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="MALE">पुरुष</SelectItem>
+                    <SelectItem value="FEMALE">महिला</SelectItem>
+                    <SelectItem value="OTHER">अन्य</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -299,25 +249,37 @@ export default function WardAgeWisePopulationForm({
 
           <FormField
             control={form.control}
-            name="gender"
+            name="ageGroup"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>लिङ्ग</FormLabel>
+                <FormLabel>उमेर समूह</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="लिङ्ग चयन गर्नुहोस्" />
+                      <SelectValue placeholder="उमेर समूह छान्नुहोस्" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {genderOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="AGE_0_4">०-४ वर्ष</SelectItem>
+                    <SelectItem value="AGE_5_9">५-९ वर्ष</SelectItem>
+                    <SelectItem value="AGE_10_14">१०-१४ वर्ष</SelectItem>
+                    <SelectItem value="AGE_15_19">१५-१९ वर्ष</SelectItem>
+                    <SelectItem value="AGE_20_24">२०-२४ वर्ष</SelectItem>
+                    <SelectItem value="AGE_25_29">२५-२९ वर्ष</SelectItem>
+                    <SelectItem value="AGE_30_34">३०-३४ वर्ष</SelectItem>
+                    <SelectItem value="AGE_35_39">३५-३९ वर्ष</SelectItem>
+                    <SelectItem value="AGE_40_44">४०-४४ वर्ष</SelectItem>
+                    <SelectItem value="AGE_45_49">४५-४९ वर्ष</SelectItem>
+                    <SelectItem value="AGE_50_54">५०-५४ वर्ष</SelectItem>
+                    <SelectItem value="AGE_55_59">५५-५९ वर्ष</SelectItem>
+                    <SelectItem value="AGE_60_64">६०-६४ वर्ष</SelectItem>
+                    <SelectItem value="AGE_65_69">६५-६९ वर्ष</SelectItem>
+                    <SelectItem value="AGE_70_74">७०-७४ वर्ष</SelectItem>
+                    <SelectItem value="AGE_75_AND_ABOVE">७५+ वर्ष</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -340,7 +302,7 @@ export default function WardAgeWisePopulationForm({
           />
         </div>
 
-        <div className="flex justify-end gap-4 pt-4">
+        <div className="flex justify-end gap-4">
           <Button
             type="button"
             variant="outline"
