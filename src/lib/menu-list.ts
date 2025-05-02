@@ -70,6 +70,11 @@ const menuConfig: Menu[] = [
         label: "वडा अनुसार जनसांख्यिकीय सारांश",
         roles: ["admin", "superadmin"],
       },
+       {
+        href: "/digital-profile/demographics/ward-wise-caste-population", 
+        label: "वडा अनुसार जात/जनजाति जनसंख्या",
+        roles: ["admin", "superadmin"],
+      },
     ],
   },
 

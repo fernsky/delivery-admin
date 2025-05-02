@@ -17,69 +17,71 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Create a schema for the form
-const formSchema = z
-  .object({
-    id: z.string().optional(),
-    wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
-    wardName: z.string().optional(),
-    totalPopulation: z.coerce.number().int().nonnegative().optional(),
-    populationMale: z.coerce.number().int().nonnegative().optional(),
-    populationFemale: z.coerce.number().int().nonnegative().optional(),
-    populationOther: z.coerce.number().int().nonnegative().optional(),
-    totalHouseholds: z.coerce.number().int().nonnegative().optional(),
-    averageHouseholdSize: z.coerce.number().nonnegative().optional(),
-    sexRatio: z.coerce.number().nonnegative().optional(),
-  })
-  .refine(
-    (data) => {
-      // If any of the gender populations are provided, make sure they add up to totalPopulation
-      const {
-        populationMale,
-        populationFemale,
-        populationOther,
-        totalPopulation,
-      } = data;
-      if (
-        populationMale ||
-        populationFemale ||
-        populationOther ||
-        totalPopulation
-      ) {
-        const genderSum =
-          (populationMale || 0) +
-          (populationFemale || 0) +
-          (populationOther || 0);
-        if (totalPopulation && genderSum > 0 && genderSum !== totalPopulation) {
-          return false;
-        }
-      }
-      return true;
-    },
-    {
-      message: "लिङ्ग जनसंख्याको कुल कुल जनसंख्या बराबर हुनुपर्छ",
-      path: ["totalPopulation"],
-    },
-  );
+const formSchema = z.object({
+  id: z.string().optional(),
+  wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
+  wardName: z.string().optional(),
+  casteType: z.string().min(1, "जात/जनजाति नाम आवश्यक छ"),
+  population: z.coerce.number().int().nonnegative().optional(),
+  households: z.coerce.number().int().nonnegative().optional(),
+  percentage: z.coerce.number().nonnegative().max(100).optional(),
+});
 
-interface WardDemographicSummaryFormProps {
+interface WardWiseCastePopulationFormProps {
   editId: string | null;
   onClose: () => void;
   existingData: any[];
 }
 
-export default function WardDemographicSummaryForm({
+export default function WardWiseCastePopulationForm({
   editId,
   onClose,
   existingData,
-}: WardDemographicSummaryFormProps) {
+}: WardWiseCastePopulationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const utils = api.useContext();
 
+  // Get unique wards from existing data
+  const uniqueWards = Array.from(
+    new Set(existingData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
+
+  // Common caste names in Nepal for the dropdown
+  const commonCastes = [
+    "ब्राह्मण",
+    "क्षेत्री",
+    "मगर",
+    "थारू",
+    "तामाङ",
+    "नेवार",
+    "कामी",
+    "मुसलमान",
+    "यादव",
+    "राई",
+    "गुरुङ",
+    "दमाई/ढोली",
+    "लिम्बू",
+    "ठकुरी",
+    "सार्की",
+    "तेली",
+    "चमार/हरिजन/राम",
+    "कोइरी/कुशवाहा",
+    "शेर्पा",
+    "अन्य",
+  ];
+
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
-    api.profile.demographics.wardWiseDemographicSummary.getAll.useQuery(
+    api.profile.demographics.wardWiseCastePopulation.getAll.useQuery(
       undefined,
       {
         enabled: !!editId,
@@ -87,10 +89,10 @@ export default function WardDemographicSummaryForm({
     );
 
   const createMutation =
-    api.profile.demographics.wardWiseDemographicSummary.create.useMutation({
+    api.profile.demographics.wardWiseCastePopulation.create.useMutation({
       onSuccess: () => {
-        toast.success("नयाँ वडा जनसांख्यिकी डाटा सफलतापूर्वक थपियो");
-        utils.profile.demographics.wardWiseDemographicSummary.getAll.invalidate();
+        toast.success("नयाँ जात/जनजाति जनसंख्या डाटा सफलतापूर्वक थपियो");
+        utils.profile.demographics.wardWiseCastePopulation.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },
@@ -101,10 +103,10 @@ export default function WardDemographicSummaryForm({
     });
 
   const updateMutation =
-    api.profile.demographics.wardWiseDemographicSummary.update.useMutation({
+    api.profile.demographics.wardWiseCastePopulation.update.useMutation({
       onSuccess: () => {
-        toast.success("वडा जनसांख्यिकी डाटा सफलतापूर्वक अपडेट गरियो");
-        utils.profile.demographics.wardWiseDemographicSummary.getAll.invalidate();
+        toast.success("जात/जनजाति जनसंख्या डाटा सफलतापूर्वक अपडेट गरियो");
+        utils.profile.demographics.wardWiseCastePopulation.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },
@@ -120,6 +122,10 @@ export default function WardDemographicSummaryForm({
     defaultValues: {
       wardNumber: undefined,
       wardName: "",
+      casteType: "",
+      population: undefined,
+      households: undefined,
+      percentage: undefined,
     },
   });
 
@@ -131,18 +137,10 @@ export default function WardDemographicSummaryForm({
         form.reset({
           id: recordToEdit.id,
           wardNumber: recordToEdit.wardNumber,
-          wardName: recordToEdit.wardName || "",
-          totalPopulation: recordToEdit.totalPopulation || undefined,
-          populationMale: recordToEdit.populationMale || undefined,
-          populationFemale: recordToEdit.populationFemale || undefined,
-          populationOther: recordToEdit.populationOther || undefined,
-          totalHouseholds: recordToEdit.totalHouseholds || undefined,
-          averageHouseholdSize: recordToEdit.averageHouseholdSize
-            ? parseFloat(recordToEdit.averageHouseholdSize.toString())
-            : undefined,
-          sexRatio: recordToEdit.sexRatio
-            ? parseFloat(recordToEdit.sexRatio.toString())
-            : undefined,
+          casteType: recordToEdit.casteType,
+          population: recordToEdit.population || undefined,
+          households: undefined,
+          percentage: undefined,
         });
       }
     }
@@ -151,13 +149,17 @@ export default function WardDemographicSummaryForm({
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
 
-    // Check if a record already exists with this ward (for new records)
+    // Check if a record already exists with this ward and caste (for new records)
     if (!editId) {
       const duplicate = existingData.find(
-        (item) => item.wardNumber === values.wardNumber,
+        (item) =>
+          item.wardNumber === values.wardNumber &&
+          item.casteType === values.casteType,
       );
       if (duplicate) {
-        toast.error(`वडा ${values.wardNumber} को लागि डाटा पहिले नै अवस्थित छ`);
+        toast.error(
+          `वडा ${values.wardNumber} को लागि ${values.casteType} जात/जनजातिको डाटा पहिले नै अवस्थित छ`,
+        );
         setIsSubmitting(false);
         return;
       }
@@ -190,7 +192,32 @@ export default function WardDemographicSummaryForm({
               <FormItem>
                 <FormLabel>वडा नम्बर</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="1" {...field} />
+                  <Select
+                    value={field.value?.toString() || ""}
+                    onValueChange={(value) => field.onChange(parseInt(value))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="वडा नम्बर चयन गर्नुहोस्" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {uniqueWards.map((ward) => (
+                        <SelectItem key={ward} value={ward.toString()}>
+                          वडा {ward}
+                        </SelectItem>
+                      ))}
+                      {/* Allow adding new wards */}
+                      {Array.from({ length: 32 }, (_, i) => i + 1)
+                        .filter((ward) => !uniqueWards.includes(ward))
+                        .map((ward) => (
+                          <SelectItem
+                            key={`new-${ward}`}
+                            value={ward.toString()}
+                          >
+                            वडा {ward}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -213,14 +240,39 @@ export default function WardDemographicSummaryForm({
         </div>
 
         <div className="border-t pt-4">
-          <h3 className="text-lg font-medium mb-4">जनसंख्या विवरण</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <h3 className="text-lg font-medium mb-4">जात/जनजाति विवरण</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="totalPopulation"
+              name="casteType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>कुल जनसंख्या</FormLabel>
+                  <FormLabel>जात/जनजाति</FormLabel>
+                  <FormControl>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="जात/जनजाति चयन गर्नुहोस्" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {commonCastes.map((caste) => (
+                          <SelectItem key={caste} value={caste}>
+                            {caste}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="population"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>जनसंख्या</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="0" {...field} />
                   </FormControl>
@@ -231,10 +283,10 @@ export default function WardDemographicSummaryForm({
 
             <FormField
               control={form.control}
-              name="populationMale"
+              name="households"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>पुरुष जनसंख्या</FormLabel>
+                  <FormLabel>घरधुरी</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="0" {...field} />
                   </FormControl>
@@ -245,71 +297,10 @@ export default function WardDemographicSummaryForm({
 
             <FormField
               control={form.control}
-              name="populationFemale"
+              name="percentage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>महिला जनसंख्या</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="populationOther"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>अन्य जनसंख्या</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="totalHouseholds"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>जम्मा घरधुरी</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="averageHouseholdSize"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>औसत घरधुरी आकार</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="sexRatio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>लिङ्ग अनुपात</FormLabel>
+                  <FormLabel>प्रतिशत (%)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
