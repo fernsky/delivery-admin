@@ -11,34 +11,31 @@ import {
   Download,
   ExternalLink,
 } from "lucide-react";
-import { useTranslation } from "@/app/i18n";
 
 interface FooterProps {
   lng: string;
 }
 
 const Footer: React.FC<FooterProps> = async ({ lng }) => {
-  const { t } = await useTranslation(lng, "footer");
-
   const resources = [
-    { label: t("profile"), icon: FileText, href: "/profile" },
-    { label: t("map"), icon: MapPin, href: "/map" },
-    { label: t("downloads"), icon: Download, href: "/downloads" },
+    { label: "प्रोफाइल", icon: FileText, href: "/profile" },
+    { label: "नक्सा", icon: MapPin, href: "/map" },
+    { label: "डाउनलोड", icon: Download, href: "/downloads" },
   ];
 
   const socials = [
     {
       icon: FacebookIcon,
       href: "https://www.facebook.com/",
-      label: "Facebook",
+      label: "फेसबुक",
     },
     {
       icon: InstagramIcon,
       href: "https://www.instagram.com/",
-      label: "Instagram",
+      label: "इन्स्टाग्राम",
     },
-    { icon: TwitterIcon, href: "https://www.twitter.com/", label: "Twitter" },
-    { icon: YoutubeIcon, href: "https://www.youtube.com/", label: "YouTube" },
+    { icon: TwitterIcon, href: "https://www.twitter.com/", label: "ट्विटर" },
+    { icon: YoutubeIcon, href: "https://www.youtube.com/", label: "युट्युब" },
   ];
 
   return (
@@ -51,25 +48,23 @@ const Footer: React.FC<FooterProps> = async ({ lng }) => {
         <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Column */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Likhu Pike</h3>
+            <h3 className="text-lg font-semibold text-gray-900">खजुरा</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              {t("municipality")}
+              खजुरा गाउँपालिका बाँके जिल्लाको प्रगतिशील नगरपालिका हो
             </p>
             <div className="pt-2">
               <Link
-                href="https://digprofile.com/likhupike"
+                href="https://digprofile.com/khajura"
                 className="inline-flex items-center gap-2 text-sm text-green-600 hover:text-green-700 transition-colors"
               >
-                Visit Website <ExternalLink className="w-4 h-4" />
+                वेबसाइट हेर्नुहोस् <ExternalLink className="w-4 h-4" />
               </Link>
             </div>
           </div>
 
           {/* Resources Column */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              {t("resources")}
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900">स्रोतहरू</h3>
             <ul className="space-y-3">
               {resources.map((resource) => (
                 <li key={resource.label}>
@@ -87,21 +82,19 @@ const Footer: React.FC<FooterProps> = async ({ lng }) => {
 
           {/* Contact Column */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              {t("contact")}
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900">सम्पर्क</h3>
             <div className="space-y-3 text-sm text-gray-600">
-              <p>Chaulakharka, Solukhumbu</p>
-              <p>Nepal</p>
-              <p>info@likhupike.gov.np</p>
-              <p>+977-1-234567</p>
+              <p>खजुरा, बाँके</p>
+              <p>नेपाल</p>
+              <p>info@khajura.gov.np</p>
+              <p>+९७७-१-२३४५६७</p>
             </div>
           </div>
 
           {/* Social Column */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">
-              {t("followUs")}
+              हामीलाई फलो गर्नुहोस्
             </h3>
             <div className="flex flex-wrap gap-3">
               {socials.map((social) => (
@@ -123,20 +116,23 @@ const Footer: React.FC<FooterProps> = async ({ lng }) => {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Copyright className="w-4 h-4" />
-              <span>{t(`date-${new Date().getFullYear()}`)}</span>
+              <span>
+                {new Date().getFullYear()} खजुरा गाउँपालिका । सर्वाधिकार
+                सुरक्षित
+              </span>
             </div>
             <div className="flex items-center gap-6">
               <Link
                 href="/privacy"
                 className="hover:text-green-600 transition-colors"
               >
-                {t("privacy")}
+                गोपनीयता नीति
               </Link>
               <Link
                 href="/terms"
                 className="hover:text-green-600 transition-colors"
               >
-                {t("terms")}
+                नियम र शर्तहरू
               </Link>
             </div>
           </div>

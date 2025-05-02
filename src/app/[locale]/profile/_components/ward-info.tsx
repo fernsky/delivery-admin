@@ -57,13 +57,13 @@ const WardInfo = () => {
       avgFamilySize: 4,
       genderRatio: 119.69,
       growthRate: -2.46,
-      description: "Northern region with vast mountainous terrain",
+      description: "उत्तरी क्षेत्रमा विशाल पहाडी भूभाग",
       color: "from-green-500 to-emerald-600",
       indicators: {
-        households: "18% agricultural",
-        education: "75% literacy rate",
-        health: "1 health post",
-        infrastructure: "12km road network",
+        households: "१८% कृषि",
+        education: "७५% साक्षरता दर",
+        health: "१ स्वास्थ्य चौकी",
+        infrastructure: "१२ किमी सडक नेटवर्क",
       },
     },
     {
@@ -75,13 +75,13 @@ const WardInfo = () => {
       avgFamilySize: 4,
       genderRatio: 109.55,
       growthRate: 1.23,
-      description: "Central agricultural hub with fertile lands",
+      description: "केन्द्रीय कृषि क्षेत्र उर्वर भूमि सहित",
       color: "from-emerald-500 to-green-600",
       indicators: {
-        households: "25% agricultural",
-        education: "80% literacy rate",
-        health: "2 health posts",
-        infrastructure: "20km road network",
+        households: "२५% कृषि",
+        education: "८०% साक्षरता दर",
+        health: "२ स्वास्थ्य चौकी",
+        infrastructure: "२० किमी सडक नेटवर्क",
       },
     },
     {
@@ -93,13 +93,13 @@ const WardInfo = () => {
       avgFamilySize: 5,
       genderRatio: 97.69,
       growthRate: 0.56,
-      description: "Dense settlement with mixed development",
+      description: "मिश्रित विकास सहित बाक्लो बस्ती",
       color: "from-green-400 to-emerald-500",
       indicators: {
-        households: "30% agricultural",
-        education: "85% literacy rate",
-        health: "3 health posts",
-        infrastructure: "15km road network",
+        households: "३०% कृषि",
+        education: "८५% साक्षरता दर",
+        health: "३ स्वास्थ्य चौकी",
+        infrastructure: "१५ किमी सडक नेटवर्क",
       },
     },
     {
@@ -111,13 +111,13 @@ const WardInfo = () => {
       avgFamilySize: 5,
       genderRatio: 113.78,
       growthRate: 2.34,
-      description: "Urban core with highest population density",
+      description: "उच्च जनसंख्या घनत्व सहित शहरी केन्द्र",
       color: "from-emerald-400 to-green-500",
       indicators: {
-        households: "35% agricultural",
-        education: "90% literacy rate",
-        health: "4 health posts",
-        infrastructure: "25km road network",
+        households: "३५% कृषि",
+        education: "९०% साक्षरता दर",
+        health: "४ स्वास्थ्य चौकी",
+        infrastructure: "२५ किमी सडक नेटवर्क",
       },
     },
     {
@@ -129,13 +129,13 @@ const WardInfo = () => {
       avgFamilySize: 4,
       genderRatio: 104.21,
       growthRate: -1.12,
-      description: "Southern region with diverse landscape",
+      description: "विविध भू-दृश्य सहित दक्षिणी क्षेत्र",
       color: "from-green-500 to-emerald-500",
       indicators: {
-        households: "40% agricultural",
-        education: "70% literacy rate",
-        health: "5 health posts",
-        infrastructure: "30km road network",
+        households: "४०% कृषि",
+        education: "७०% साक्षरता दर",
+        health: "५ स्वास्थ्य चौकी",
+        infrastructure: "३० किमी सडक नेटवर्क",
       },
     },
   ];
@@ -150,15 +150,15 @@ const WardInfo = () => {
         {/* Enhanced Header */}
         <div className="max-w-3xl mx-auto text-center mb-16">
           <Badge variant="outline" className="mb-4">
-            <MapPin className="w-4 h-4 mr-1" />
-            Administrative Divisions
+            <MapPin className="w-4 ह-4 mr-1" />
+            प्रशासनिक विभाजन
           </Badge>
           <h2 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">
-            Ward Information
+            वडा जानकारी
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Explore detailed demographic and development indicators for each
-            ward
+            प्रत्येक वडाको विस्तृत जनसांख्यिकीय र विकास सूचकहरू अन्वेषण
+            गर्नुहोस्
           </p>
         </div>
 
@@ -193,54 +193,73 @@ const WardInfo = () => {
                             </div>
                             <div>
                               <h3 className="text-xl font-bold text-gray-900">
-                                Ward {ward.number}
+                                वडा {ward.number}
                               </h3>
                               <p className="text-sm text-gray-500">
-                                Area: {ward.area} km²
+                                क्षेत्रफल: {ward.area} वर्ग कि.मि.
                               </p>
                             </div>
                           </div>
                           <Badge variant="outline" className="font-medium">
-                            Zone {ward.number}
+                            क्षेत्र {ward.number}
                           </Badge>
                         </div>
 
                         {/* Stats Grid */}
                         <div className="grid grid-cols-2 gap-4">
                           <StatCard
-                            label="Population"
+                            label="जनसंख्या"
                             value={ward.population}
                             icon={Users}
-                            trend={`${ward.growthRate}% growth`}
+                            trend={`${ward.growthRate}% वृद्धि`}
                           />
                           <StatCard
-                            label="Households"
+                            label="घरपरिवार"
                             value={ward.households}
                             icon={Home}
-                            trend={`${ward.avgFamilySize} avg. size`}
+                            trend={`${ward.avgFamilySize} औसत आकार`}
                           />
                         </div>
 
                         {/* Indicators Grid */}
                         <div className="space-y-4">
                           <h4 className="font-semibold text-gray-900">
-                            Key Indicators
+                            प्रमुख सूचकहरू
                           </h4>
                           <div className="grid grid-cols-2 gap-4">
                             {Object.entries(ward.indicators).map(
-                              ([key, value]) => (
-                                <div
-                                  key={key}
-                                  className="bg-gray-50/50 rounded-lg p-3 hover:bg-gray-50/80 transition-colors"
-                                >
-                                  <p className="text-sm text-gray-500 mb-1">
-                                    {key}
-                                  </p>
-                                  <p className="font-medium text-gray-900">
-                                    {value}
-                                  </p>
-                                </div>
-                              ),
+                              ([key, value]) => {
+                                let nepaliKey = "";
+                                switch (key) {
+                                  case "households":
+                                    nepaliKey = "घरधुरी";
+                                    break;
+                                  case "education":
+                                    nepaliKey = "शिक्षा";
+                                    break;
+                                  case "health":
+                                    nepaliKey = "स्वास्थ्य";
+                                    break;
+                                  case "infrastructure":
+                                    nepaliKey = "पूर्वाधार";
+                                    break;
+                                  default:
+                                    nepaliKey = key;
+                                }
+                                return (
+                                  <div
+                                    key={key}
+                                    className="bg-gray-50/50 rounded-lg p-3 hover:bg-gray-50/80 transition-colors"
+                                  >
+                                    <p className="text-sm text-gray-500 mb-1">
+                                      {nepaliKey}
+                                    </p>
+                                    <p className="font-medium text-gray-900">
+                                      {value}
+                                    </p>
+                                  </div>
+                                );
+                              },
                             )}
                           </div>
                         </div>
@@ -250,11 +269,11 @@ const WardInfo = () => {
                           <div className="flex items-center gap-2">
                             <GridIcon className="w-4 h-4 text-green-600" />
                             <span className="text-sm text-gray-600">
-                              Density: {ward.density}/km²
+                              घनत्व: {ward.density}/वर्ग कि.मि.
                             </span>
                           </div>
                           <button className="text-sm font-medium text-green-600 flex items-center gap-1 group-hover:gap-2 transition-all">
-                            View Details
+                            विवरण हेर्नुहोस्
                             <ArrowUpRight className="w-4 h-4" />
                           </button>
                         </div>
@@ -295,54 +314,73 @@ const WardInfo = () => {
                             </div>
                             <div>
                               <h3 className="text-xl font-bold text-gray-900">
-                                Ward {ward.number}
+                                वडा {ward.number}
                               </h3>
                               <p className="text-sm text-gray-500">
-                                Area: {ward.area} km²
+                                क्षेत्रफल: {ward.area} वर्ग कि.मि.
                               </p>
                             </div>
                           </div>
                           <Badge variant="outline" className="font-medium">
-                            Zone {ward.number}
+                            क्षेत्र {ward.number}
                           </Badge>
                         </div>
 
                         {/* Stats Grid */}
                         <div className="grid grid-cols-2 gap-4">
                           <StatCard
-                            label="Population"
+                            label="जनसंख्या"
                             value={ward.population}
                             icon={Users}
-                            trend={`${ward.growthRate}% growth`}
+                            trend={`${ward.growthRate}% वृद्धि`}
                           />
                           <StatCard
-                            label="Households"
+                            label="घरपरिवार"
                             value={ward.households}
                             icon={Home}
-                            trend={`${ward.avgFamilySize} avg. size`}
+                            trend={`${ward.avgFamilySize} औसत आकार`}
                           />
                         </div>
 
                         {/* Indicators Grid */}
                         <div className="space-y-4">
                           <h4 className="font-semibold text-gray-900">
-                            Key Indicators
+                            प्रमुख सूचकहरू
                           </h4>
                           <div className="grid grid-cols-2 gap-4">
                             {Object.entries(ward.indicators).map(
-                              ([key, value]) => (
-                                <div
-                                  key={key}
-                                  className="bg-gray-50/50 rounded-lg p-3 hover:bg-gray-50/80 transition-colors"
-                                >
-                                  <p className="text-sm text-gray-500 mb-1">
-                                    {key}
-                                  </p>
-                                  <p className="font-medium text-gray-900">
-                                    {value}
-                                  </p>
-                                </div>
-                              ),
+                              ([key, value]) => {
+                                let nepaliKey = "";
+                                switch (key) {
+                                  case "households":
+                                    nepaliKey = "घरधुरी";
+                                    break;
+                                  case "education":
+                                    nepaliKey = "शिक्षा";
+                                    break;
+                                  case "health":
+                                    nepaliKey = "स्वास्थ्य";
+                                    break;
+                                  case "infrastructure":
+                                    nepaliKey = "पूर्वाधार";
+                                    break;
+                                  default:
+                                    nepaliKey = key;
+                                }
+                                return (
+                                  <div
+                                    key={key}
+                                    className="bg-gray-50/50 rounded-lg p-3 hover:bg-gray-50/80 transition-colors"
+                                  >
+                                    <p className="text-sm text-gray-500 mb-1">
+                                      {nepaliKey}
+                                    </p>
+                                    <p className="font-medium text-gray-900">
+                                      {value}
+                                    </p>
+                                  </div>
+                                );
+                              },
                             )}
                           </div>
                         </div>
@@ -350,14 +388,14 @@ const WardInfo = () => {
                         {/* Footer */}
                         <div className="flex items-center justify-between pt-4 mt-2 border-t">
                           <div className="flex items-center gap-2">
-                            <GridIcon className="w-4 h-4 text-green-600" />
+                            <GridIcon className="w-4 ह-4 text-green-600" />
                             <span className="text-sm text-gray-600">
-                              Density: {ward.density}/km²
+                              घनत्व: {ward.density}/वर्ग कि.मि.
                             </span>
                           </div>
                           <button className="text-sm font-medium text-green-600 flex items-center gap-1 group-hover:gap-2 transition-all">
-                            View Details
-                            <ArrowUpRight className="w-4 h-4" />
+                            विवरण हेर्नुहोस्
+                            <ArrowUpRight className="w-4 ह-4" />
                           </button>
                         </div>
                       </div>
@@ -391,58 +429,77 @@ const WardInfo = () => {
                           <div
                             className={`p-3 w-fit rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white group-hover:scale-105 transition-transform`}
                           >
-                            <Home className="w-5 h-5" />
+                            <Home className="w-5 ह-5" />
                           </div>
                           <div>
                             <h3 className="text-xl font-bold text-gray-900">
-                              Ward {wards[4].number}
+                              वडा {wards[4].number}
                             </h3>
                             <p className="text-sm text-gray-500">
-                              Area: {wards[4].area} km²
+                              क्षेत्रफल: {wards[4].area} वर्ग कि.मि.
                             </p>
                           </div>
                         </div>
                         <Badge variant="outline" className="font-medium">
-                          Zone {wards[4].number}
+                          क्षेत्र {wards[4].number}
                         </Badge>
                       </div>
 
                       {/* Stats Grid */}
                       <div className="grid grid-cols-2 gap-4">
                         <StatCard
-                          label="Population"
+                          label="जनसंख्या"
                           value={wards[4].population}
                           icon={Users}
-                          trend={`${wards[4].growthRate}% growth`}
+                          trend={`${wards[4].growthRate}% वृद्धि`}
                         />
                         <StatCard
-                          label="Households"
+                          label="घरपरिवार"
                           value={wards[4].households}
                           icon={Home}
-                          trend={`${wards[4].avgFamilySize} avg. size`}
+                          trend={`${wards[4].avgFamilySize} औसत आकार`}
                         />
                       </div>
 
                       {/* Indicators Grid */}
                       <div className="space-y-4">
                         <h4 className="font-semibold text-gray-900">
-                          Key Indicators
+                          प्रमुख सूचकहरू
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
                           {Object.entries(wards[4].indicators).map(
-                            ([key, value]) => (
-                              <div
-                                key={key}
-                                className="bg-gray-50/50 rounded-lg p-3 hover:bg-gray-50/80 transition-colors"
-                              >
-                                <p className="text-sm text-gray-500 mb-1">
-                                  {key}
-                                </p>
-                                <p className="font-medium text-gray-900">
-                                  {value}
-                                </p>
-                              </div>
-                            ),
+                            ([key, value]) => {
+                              let nepaliKey = "";
+                              switch (key) {
+                                case "households":
+                                  nepaliKey = "घरधुरी";
+                                  break;
+                                case "education":
+                                  nepaliKey = "शिक्षा";
+                                  break;
+                                case "health":
+                                  nepaliKey = "स्वास्थ्य";
+                                  break;
+                                case "infrastructure":
+                                  nepaliKey = "पूर्वाधार";
+                                  break;
+                                default:
+                                  nepaliKey = key;
+                              }
+                              return (
+                                <div
+                                  key={key}
+                                  className="bg-gray-50/50 rounded-lg p-3 hover:bg-gray-50/80 transition-colors"
+                                >
+                                  <p className="text-sm text-gray-500 mb-1">
+                                    {nepaliKey}
+                                  </p>
+                                  <p className="font-medium text-gray-900">
+                                    {value}
+                                  </p>
+                                </div>
+                              );
+                            },
                           )}
                         </div>
                       </div>
@@ -450,14 +507,14 @@ const WardInfo = () => {
                       {/* Footer */}
                       <div className="flex items-center justify-between pt-4 mt-2 border-t">
                         <div className="flex items-center gap-2">
-                          <GridIcon className="w-4 h-4 text-green-600" />
+                          <GridIcon className="w-4 ह-4 text-green-600" />
                           <span className="text-sm text-gray-600">
-                            Density: {wards[4].density}/km²
+                            घनत्व: {wards[4].density}/वर्ग कि.मि.
                           </span>
                         </div>
                         <button className="text-sm font-medium text-green-600 flex items-center gap-1 group-hover:gap-2 transition-all">
-                          View Details
-                          <ArrowUpRight className="w-4 h-4" />
+                          विवरण हेर्नुहोस्
+                          <ArrowUpRight className="w-4 ह-4" />
                         </button>
                       </div>
                     </div>

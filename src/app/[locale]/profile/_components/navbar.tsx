@@ -35,25 +35,11 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
 
   const menuItems = [
     {
-      href: `/${lng}/profile`,
-      label: "प्रोफाइल",
-      icon: User,
-      color: "from-green-500 to-emerald-600",
-      description: "नगरपालिका प्रोफाइल हेर्नुहोस्",
-    },
-    {
       href: `/${lng}/profile/map`,
       label: "नक्सा",
       icon: Map,
       color: "from-emerald-500 to-green-600",
       description: "इन्टर्याक्टिभ नक्सा हेर्नुहोस्",
-    },
-    {
-      href: "#",
-      label: "डाउनलोड",
-      icon: Download,
-      color: "from-green-400 to-emerald-500",
-      description: "कागजात र फाइलहरू डाउनलोड गर्नुहोस्",
     },
   ];
 
@@ -73,14 +59,14 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
               </div>
               <div className="flex flex-col">
                 <span className="text-gray-900 font-bold tracking-tight group-hover:text-green-600 transition-colors">
-                  लुङ्ग्री
+                  खजुरा
                 </span>
                 <Badge
                   variant="outline"
                   className="hidden sm:flex items-center gap-1 mt-1"
                 >
                   <Sparkles className="w-3 h-3" />
-                  <span className="text-[10px]">ग्रामीण नगरपालिका</span>
+                  <span className="text-[10px]">गाउँपालिका</span>
                 </Badge>
               </div>
             </Link>
@@ -102,9 +88,6 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
                     </span>
                   </Link>
                 ))}
-                <div className="pl-4 ml-4 border-l border-green-100">
-                  <ChangeLanguage lng={lng} />
-                </div>
               </div>
             </div>
 
