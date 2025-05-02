@@ -10,9 +10,9 @@ import {
 export const wardTimeSeriesPopulation = pgTable("ward_time_series_population", {
   id: varchar("id", { length: 36 }).primaryKey(),
 
-  // Ward identification
+  // Ward identification - Use text() with proper encoding
   wardNumber: integer("ward_number").notNull(),
-  wardName: text("ward_name"),
+  wardName: text("ward_name"), // This field needs proper UTF-8 handling
 
   // Census year (e.g., 2068, 2078)
   year: integer("year").notNull(),

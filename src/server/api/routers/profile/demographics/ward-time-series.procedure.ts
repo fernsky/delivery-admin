@@ -4,7 +4,7 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import { wardTimeSeriesPopulation } from "@/server/db/schema/profile/demographics/ward-time-series-population";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import {
   wardTimeSeriesPopulationSchema,
   wardTimeSeriesFilterSchema,
@@ -18,32 +18,43 @@ import { v4 as uuidv4 } from "uuid";
 export const getAllWardTimeSeries = publicProcedure
   .input(wardTimeSeriesFilterSchema.optional())
   .query(async ({ ctx, input }) => {
-    // Build query with conditions
-    const baseQuery = ctx.db.select().from(wardTimeSeriesPopulation);
+    try {
+      // Ensure connection is using UTF-8
+      await ctx.db.execute(sql`SET client_encoding TO 'UTF8'`);
 
-    let conditions = [];
+      // Build query with conditions
+      const baseQuery = ctx.db.select().from(wardTimeSeriesPopulation);
 
-    if (input?.wardNumber) {
-      conditions.push(
-        eq(wardTimeSeriesPopulation.wardNumber, input.wardNumber),
+      let conditions = [];
+
+      if (input?.wardNumber) {
+        conditions.push(
+          eq(wardTimeSeriesPopulation.wardNumber, input.wardNumber),
+        );
+      }
+
+      if (input?.year) {
+        conditions.push(eq(wardTimeSeriesPopulation.year, input.year));
+      }
+
+      const queryWithFilters = conditions.length
+        ? baseQuery.where(and(...conditions))
+        : baseQuery;
+
+      // Sort by ward number and year
+      const data = await queryWithFilters.orderBy(
+        wardTimeSeriesPopulation.wardNumber,
+        desc(wardTimeSeriesPopulation.year),
       );
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching ward time series data:", error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to retrieve data",
+      });
     }
-
-    if (input?.year) {
-      conditions.push(eq(wardTimeSeriesPopulation.year, input.year));
-    }
-
-    const queryWithFilters = conditions.length
-      ? baseQuery.where(and(...conditions))
-      : baseQuery;
-
-    // Sort by ward number and year
-    const data = await queryWithFilters.orderBy(
-      wardTimeSeriesPopulation.wardNumber,
-      desc(wardTimeSeriesPopulation.year),
-    );
-
-    return data;
   });
 
 // Get ward time series data for a specific ward

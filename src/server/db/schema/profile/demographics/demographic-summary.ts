@@ -1,5 +1,5 @@
 import { pgTable } from "../../../schema/basic";
-import { integer, decimal, timestamp, varchar } from "drizzle-orm/pg-core";
+import { integer, decimal, timestamp, varchar, text } from "drizzle-orm/pg-core";
 
 export const demographicSummary = pgTable("demographic_summary", {
   // Using "singleton" as the id since there will only be one record
