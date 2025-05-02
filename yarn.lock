@@ -858,6 +858,23 @@
     d3-time-format "^3.0.0"
     lodash "^4.17.21"
 
+"@nivo/funnel@^0.93.0":
+  version "0.93.0"
+  resolved "https://registry.yarnpkg.com/@nivo/funnel/-/funnel-0.93.0.tgz#984ef265327f115c687f03f9ae0a17f65bac3786"
+  integrity sha512-OenPhpaqYkaNvxxYQWYr+RbgP9zGJ3OnunoUlLeRD5fQFyYGDgDfn+AQhtnS9TnSSg9jXSW8JbyHetOcJAC37w==
+  dependencies:
+    "@nivo/annotations" "0.93.0"
+    "@nivo/colors" "0.93.0"
+    "@nivo/core" "0.93.0"
+    "@nivo/text" "0.93.0"
+    "@nivo/theming" "0.93.0"
+    "@nivo/tooltip" "0.93.0"
+    "@react-spring/web" "9.4.5 || ^9.7.2"
+    "@types/d3-scale" "^4.0.8"
+    "@types/d3-shape" "^3.1.6"
+    d3-scale "^4.0.2"
+    d3-shape "^3.2.0"
+
 "@nivo/legends@0.93.0":
   version "0.93.0"
   resolved "https://registry.yarnpkg.com/@nivo/legends/-/legends-0.93.0.tgz#6c70ed0adcae5134c2ba7c5145d956d9f2c9079f"
