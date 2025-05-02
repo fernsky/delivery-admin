@@ -23,7 +23,7 @@ export default async function Home({ params }: LanguageParams) {
           <Statistics />
           <AboutSection />
           <WardInfo />
-          <HistoryTimeline />
+          {/* <HistoryTimeline /> */}
           {/* <InteractiveMap />
           <NewsUpdates />
           <PhotoGallery /> */}

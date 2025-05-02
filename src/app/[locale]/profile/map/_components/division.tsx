@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import SubDivision from "./sub-division";
 import Checkbox from "./checkbox";
 import { Minus, Plus, ChevronRight } from "lucide-react";
-import { useTranslation } from "@/app/i18n/client";
+// Removed useTranslation import
 import useStore from "../../_store/app-store";
 
 interface DivisionProps {
@@ -22,7 +22,7 @@ const Division: React.FC<DivisionProps> = ({
   lng,
   divisionId,
 }) => {
-  const { t } = useTranslation(lng, "mapSidebar", {});
+  // Removed useTranslation hook
   const [expanded, setExpanded] = useState(false);
 
   const toggleExpanded = () => {
@@ -273,7 +273,7 @@ const Division: React.FC<DivisionProps> = ({
               </span>
               {subDivisions && (
                 <span className="text-xs text-gray-500 mt-0.5">
-                  {subDivisions.length} layers available
+                  {subDivisions.length} वटा तहहरू उपलब्ध छन्
                 </span>
               )}
             </div>
@@ -302,7 +302,7 @@ const Division: React.FC<DivisionProps> = ({
               <SubDivision
                 subDivisionId={subDivision.subDivisionId}
                 key={subDivision.subDivisionId}
-                subDivisionName={t(subDivision.subDivisionId)}
+                subDivisionName={getSubDivisionName(subDivision.subDivisionId)}
                 isLast={index === subDivisions.length - 1}
               />
             ))}
@@ -312,5 +312,39 @@ const Division: React.FC<DivisionProps> = ({
     </div>
   );
 };
+
+// Helper function to get direct Nepali text for subdivision names
+function getSubDivisionName(subDivisionId: string): string {
+  // Map of subdivision IDs to their Nepali names
+  const nepaliNames: Record<string, string> = {
+    // Add all necessary mappings here for the subdivisions
+    aspectFlat: "सपाट",
+    aspectNorth: "उत्तर",
+    aspectNorthEast: "उत्तर-पूर्व",
+    aspectEast: "पूर्व",
+    aspectSouthEast: "दक्षिण-पूर्व",
+    aspectSouth: "दक्षिण",
+    aspectSouthWest: "दक्षिण-पश्चिम",
+    aspectWest: "पश्चिम",
+    aspectNorthWest: "उत्तर-पश्चिम",
+    elevation2100: "२१०० मि.",
+    elevation2600: "२६०० मि.",
+    elevation3100: "३१०० मि.",
+    elevation3600: "३६०० मि.",
+    elevation4257: "४२५७ मि.",
+    landUseWaterbodies: "जलाशयहरू",
+    landUseForest: "वन",
+    landUseCultivation: "खेती",
+    landUseBushes: "झाडी",
+    landUseBuiltup: "निर्मित क्षेत्र",
+    slope15: "१५ डिग्री",
+    slope30: "३० डिग्री",
+    slope45: "४५ डिग्री",
+    slope60: "६० डिग्री",
+    slope72: "७२ डिग्री",
+  };
+
+  return nepaliNames[subDivisionId] || subDivisionId;
+}
 
 export default Division;

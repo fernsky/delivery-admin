@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { X, Layers, Search } from "lucide-react";
-import { useTranslation } from "@/app/i18n/client";
+// Removed useTranslation import
 import useStore from "../../_store/app-store";
 import Division from "./division";
 
@@ -133,21 +133,48 @@ const sampleData = [
   { divisionId: "villages" },
 ];
 
+// Map of division IDs to Nepali names
+const divisionNames: Record<string, string> = {
+  municipalityBoundaries: "नगरपालिका सीमा",
+  health: "स्वास्थ्य केन्द्र",
+  municipalityOffices: "नगरपालिका कार्यालय",
+  physicalInfrastructures: "भौतिक पूर्वाधार",
+  touristPlaces: "पर्यटकीय स्थल",
+  wardBoundaries: "वडा सीमाना",
+  wardOffices: "वडा कार्यालय",
+  schools: "विद्यालय",
+  roads: "सडक",
+  aspect: "पक्ष",
+  elevation: "उचाइ",
+  highway: "राजमार्ग",
+  landUse: "भू-उपयोग",
+  slope: "भिरालोपन",
+  springs: "पानीका मुहान",
+  villages: "गाउँ",
+};
+
 interface SidebarProps {
   lng: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ lng }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { t } = useTranslation(lng, "mapSidebar", {});
+  // Removed useTranslation hook
   const setMapSidebarOpen = useStore((state) => state.setMapSidebarOpen);
 
   const filteredData = useMemo(() => {
     if (!searchQuery) return sampleData;
     return sampleData.filter((d) =>
-      t(d.divisionId).toLowerCase().includes(searchQuery.toLowerCase()),
+      getDivisionName(d.divisionId)
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()),
     );
-  }, [searchQuery, t]);
+  }, [searchQuery]);
+
+  // Helper function to get division name in Nepali
+  function getDivisionName(divisionId: string): string {
+    return divisionNames[divisionId] || divisionId;
+  }
 
   return (
     <motion.div
@@ -169,10 +196,10 @@ const Sidebar: React.FC<SidebarProps> = ({ lng }) => {
             </div>
             <div>
               <h2 className="text-base font-bold text-gray-900 tracking-wide leading-none mb-1">
-                {t("layers")}
+                तहहरू
               </h2>
               <p className="text-xs text-gray-500 tracking-wide">
-                {t("toggleLayers")}
+                तहहरू टगल गर्नुहोस्
               </p>
             </div>
           </div>
@@ -180,7 +207,7 @@ const Sidebar: React.FC<SidebarProps> = ({ lng }) => {
             onClick={() => setMapSidebarOpen(false)}
             className="p-2 hover:bg-white/50 rounded-lg transition-colors"
           >
-            <X className="w-4 h-4 text-gray-600" />
+            <X className="w-4 ह-4 text-gray-600" />
           </button>
         </div>
         <div className="relative group mt-4">
@@ -192,7 +219,7 @@ const Sidebar: React.FC<SidebarProps> = ({ lng }) => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t("searchLayers")}
+            placeholder="तहहरू खोज्नुहोस्..."
             className="w-full pl-10 pr-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 
         focus:ring-green-500/20 focus:border-green-500 bg-white/80 backdrop-blur-sm
         transition-all duration-200 text-xs tracking-wide placeholder:text-gray-400 
@@ -205,7 +232,7 @@ const Sidebar: React.FC<SidebarProps> = ({ lng }) => {
           <div className="flex flex-col items-center justify-center h-full py-12 px-6 text-center">
             <Search className="w-12 h-12 text-gray-300 mb-4" />
             <p className="text-gray-500 text-[15px] font-medium">
-              No layers found matching your search
+              खोज अनुरूप कुनै तह फेला परेन
             </p>
           </div>
         ) : (
@@ -213,7 +240,7 @@ const Sidebar: React.FC<SidebarProps> = ({ lng }) => {
             <Division
               lng={lng}
               key={division.divisionId}
-              divisionName={t(division.divisionId)}
+              divisionName={getDivisionName(division.divisionId)}
               divisionId={division.divisionId}
               subDivisions={division?.subDivisions}
               isLast={index === filteredData.length - 1}

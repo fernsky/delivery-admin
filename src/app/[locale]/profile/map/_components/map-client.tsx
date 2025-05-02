@@ -42,11 +42,11 @@ const LoadingScreen = ({ progress }: { progress: number }) => (
         className="mt-8 space-y-2"
       >
         <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-          Loading Geographic Data
+          भूगोल डेटा लोड हुँदैछ
         </h3>
         <p className="text-base text-gray-600 max-w-sm mx-auto leading-relaxed">
-          Preparing detailed maps and spatial information for{" "}
-          <span className="font-medium text-green-600">Likhupike</span>
+          <span className="font-medium text-green-600">लिखुपिके</span> को
+          विस्तृत नक्सा र स्थानिक जानकारी तयार गर्दै
         </p>
       </motion.div>
       <motion.div
@@ -61,7 +61,7 @@ const LoadingScreen = ({ progress }: { progress: number }) => (
         transition={{ delay: 0.6 }}
         className="mt-3 text-sm text-gray-500"
       >
-        {progress}% Complete
+        {progress}% पूरा
       </motion.p>
     </motion.div>
   </motion.div>

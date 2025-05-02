@@ -8,29 +8,28 @@ const AboutSection = () => {
   const features = [
     {
       icon: <Mountain className="w-5 h-5" />,
-      title: "Geographical Location",
+      title: "भौगोलिक स्थान",
       description:
-        "Located in Solukhumbu District, covering 124.38 sq. kilometers",
+        "बाँके जिल्लामा अवस्थित, १४८.३५ वर्ग कि.मि. क्षेत्रफल ओगटेको",
       color: "from-green-400 to-emerald-500",
     },
     {
       icon: <MapPin className="w-5 h-5" />,
-      title: "Administrative Center",
-      description: "Central operations based in Chaulakharka municipality",
+      title: "प्रशासनिक केन्द्र",
+      description: "खजुरा गाउँपालिकामा आधारित केन्द्रीय कार्यालय",
       color: "from-green-400 to-emerald-500",
     },
     {
       icon: <Building2 className="w-5 h-5" />,
-      title: "Formation History",
+      title: "गठनको इतिहास",
       description:
-        "Established through merger of three major VDCs in the region",
+        "क्षेत्रका चार प्रमुख गाउँ विकास समितिहरूको विलय मार्फत स्थापित",
       color: "from-green-400 to-emerald-500",
     },
     {
       icon: <Users className="w-5 h-5" />,
-      title: "Local Governance",
-      description:
-        "Structured with 5 administrative wards for effective management",
+      title: "स्थानीय शासन",
+      description: "प्रभावकारी व्यवस्थापनका लागि ८ प्रशासनिक वडा सहितको संरचना",
       color: "from-green-400 to-emerald-500",
     },
   ];
@@ -41,14 +40,14 @@ const AboutSection = () => {
       <section className="relative min-h-[85vh] py-24 overflow-hidden">
         {/* Background Image and overlays */}
         <div className="absolute inset-0">
-          <Image
+          {/* <Image
             src="/images/likhu-pike-landscape.jpg"
-            alt="Likhu Pike Landscape"
+            alt="खजुरा परिदृश्य"
             fill
             className="object-cover object-center brightness-75 contrast-100 saturate-110"
             priority
             quality={90}
-          />
+          /> */}
           {/* Richer green-black overlays */}
           <div className="absolute inset-0 bg-green-950/20" />
           <div className="absolute inset-0 bg-gradient-to-br from-green-950/20 via-black/10 to-green-950/10" />
@@ -71,15 +70,15 @@ const AboutSection = () => {
               variant="outline"
               className="mb-4 bg-white/10 backdrop-blur-sm border-white/20 text-white/90"
             >
-              <Mountain className="w-4 h-4 mr-1" />
-              About Us
+              <Mountain className="w-4 ह-4 mr-1" />
+              हाम्रो बारेमा
             </Badge>
             <h2 className="text-4xl font-bold tracking-tight text-white/95 mb-4 drop-shadow-sm">
-              About Likhupike
+              खजुरा बारे
             </h2>
             <p className="text-lg text-white/85 leading-relaxed max-w-2xl mx-auto">
-              Discover the beauty and potential of our thriving rural
-              municipality
+              हाम्रो फस्टाउँदो ग्रामीण गाउँपालिकाको सुन्दरता र सम्भावना पत्ता
+              लगाउनुहोस्
             </p>
           </motion.div>
 
@@ -129,14 +128,14 @@ const AboutSection = () => {
           className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6"
         >
           <p className="text-gray-600 leading-relaxed tracking-tight">
-            Likhu Pike (नेपाली: लिखु पिके गाउँपालिका) is a rural municipality
-            established through the merger of former Village Development
-            Committees, covering 124.38 square kilometers of diverse terrain.
+            खजुरा (नेपाली: खजुरा गाउँपालिका) एक ग्रामीण गाउँपालिका हो जुन
+            पूर्वका गाउँ विकास समितिहरूको विलय मार्फत स्थापित भएको थियो, जसले
+            बाँके जिल्लाको १४८.३५ वर्ग किलोमिटर क्षेत्रफल ओगटेको छ।
           </p>
           <p className="text-gray-600 leading-relaxed tracking-tight">
-            With a population of 5,534, our municipality represents a vibrant
-            community focused on sustainable development and preserving our rich
-            cultural heritage.
+            ५२,०४८ को जनसंख्या सहित, हाम्रो गाउँपालिका दीगो विकास र हाम्रो
+            समृद्ध सांस्कृतिक सम्पदा संरक्षणमा केन्द्रित एक जीवन्त समुदाय
+            प्रतिनिधित्व गर्दछ।
           </p>
         </motion.div>
       </section>

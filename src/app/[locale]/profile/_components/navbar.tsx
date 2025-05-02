@@ -35,7 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
 
   const menuItems = [
     {
-      href: `/${lng}/profile/map`,
+      href: `/profile/map`,
       label: "नक्सा",
       icon: Map,
       color: "from-emerald-500 to-green-600",
@@ -53,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Enhanced Logo */}
-            <Link href={`/${lng}`} className="flex items-center gap-3 group">
+            <Link href={`/profile`} className="flex items-center gap-3 group">
               <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white group-hover:shadow-lg group-hover:shadow-green-500/25 transition-all duration-300">
                 <Mountain className="w-5 h-5" />
               </div>
@@ -138,9 +138,6 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
                     </Link>
                   </motion.div>
                 ))}
-                <div className="p-3 mt-2 border-t border-green-100">
-                  <ChangeLanguage lng={lng} />
-                </div>
               </div>
             </motion.div>
           )}

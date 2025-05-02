@@ -13,35 +13,35 @@ const Statistics = () => {
 
   const stats = [
     {
-      label: "Total Area",
+      label: "कुल क्षेत्रफल",
       value: 124.38,
-      suffix: "km²",
+      suffix: "वर्ग कि.मि.",
       icon: <MapPinned className="w-5 h-5" />,
-      description: "Total land coverage",
+      description: "कुल भूमि क्षेत्रफल",
       color: "from-green-500 to-emerald-600",
     },
     {
-      label: "Population",
+      label: "जनसंख्या",
       value: 5534,
       suffix: "+",
       icon: <Users className="w-5 h-5" />,
-      description: "Resident count",
+      description: "बासिन्दा संख्या",
       color: "from-emerald-500 to-green-600",
     },
     {
-      label: "Wards",
+      label: "वडाहरू",
       value: 5,
       suffix: "",
       icon: <Home className="w-5 h-5" />,
-      description: "Administrative divisions",
+      description: "प्रशासनिक विभाजन",
       color: "from-green-400 to-emerald-500",
     },
     {
-      label: "Villages",
+      label: "गाउँहरू",
       value: 3,
       suffix: "",
       icon: <Trees className="w-5 h-5" />,
-      description: "Rural communities",
+      description: "ग्रामीण समुदायहरू",
       color: "from-emerald-400 to-green-500",
     },
   ];
@@ -59,15 +59,15 @@ const Statistics = () => {
           className="text-center mb-16 space-y-4"
         >
           <Badge variant="outline" className="mb-4">
-            <TrendingUp className="w-4 h-4 mr-1" />
-            Municipality Overview
+            <TrendingUp className="w-4 ह-4 mr-1" />
+            नगरपालिका अवलोकन
           </Badge>
           <h2 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">
-            Key Statistics
+            प्रमुख जनसांख्यिकी
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Essential figures and data that define our local governance and
-            community development
+            हाम्रो स्थानीय शासन र समुदाय विकासलाई परिभाषित गर्ने आवश्यक आँकडा र
+            तथ्याङ्क
           </p>
         </motion.div>
 
@@ -104,7 +104,9 @@ const Statistics = () => {
                               <CountUp
                                 end={stat.value}
                                 duration={2}
-                                decimals={stat.label === "Total Area" ? 2 : 0}
+                                decimals={
+                                  stat.label === "कुल क्षेत्रफल" ? 2 : 0
+                                }
                               />
                             )}
                           </span>

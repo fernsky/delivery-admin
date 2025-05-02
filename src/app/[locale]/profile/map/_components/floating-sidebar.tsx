@@ -2,7 +2,7 @@
 import React from "react";
 import { Layers } from "lucide-react";
 import useStore from "../../_store/app-store";
-import { useTranslation } from "@/app/i18n/client";
+// Removed useTranslation import
 import { motion } from "framer-motion";
 import { Tooltip } from "react-tooltip";
 
@@ -11,8 +11,7 @@ interface FloatingSidebarProps {
 }
 
 const FloatingSidebar: React.FC<FloatingSidebarProps> = ({ lng }) => {
-  const { t } = useTranslation(lng, "mapSidebar", {});
-
+  // Removed useTranslation hook
   const setMapSidebarOpen = useStore((state) => state.setMapSidebarOpen);
 
   return (
@@ -38,7 +37,7 @@ const FloatingSidebar: React.FC<FloatingSidebarProps> = ({ lng }) => {
           className="text-[13px] font-semibold tracking-wide bg-gradient-to-br from-gray-900 to-gray-600 
         bg-clip-text text-transparent group-hover:from-green-700 group-hover:to-emerald-800"
         >
-          {t("layers")}
+          तहहरू
         </span>
       </button>
       <Tooltip
@@ -46,7 +45,7 @@ const FloatingSidebar: React.FC<FloatingSidebarProps> = ({ lng }) => {
         place="left"
         className="!bg-black/75 backdrop-blur-sm !font-medium !px-2.5 !py-1.5 !rounded-lg !text-xs"
       >
-        {t("layersTooltip")}
+        तहहरू प्रबन्धन खुलाउनुहोस्
       </Tooltip>
     </motion.div>
   );
