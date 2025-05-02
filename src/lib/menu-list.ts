@@ -65,6 +65,11 @@ const menuConfig: Menu[] = [
         label: "वडा जनसंख्या समयावधि",
         roles: ["admin", "superadmin"],
       },
+       {
+        href: "/digital-profile/demographics/ward-wise-demographic-summary", 
+        label: "वडा अनुसार जनसांख्यिकीय सारांश",
+        roles: ["admin", "superadmin"],
+      },
     ],
   },
 
