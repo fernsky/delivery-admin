@@ -19,8 +19,8 @@ export const getAllWardTimeSeries = publicProcedure
   .input(wardTimeSeriesFilterSchema.optional())
   .query(async ({ ctx, input }) => {
     try {
-      // Ensure connection is using UTF-8
-      await ctx.db.execute(sql`SET client_encoding TO 'UTF8'`);
+      // Set UTF-8 encoding explicitly before running query
+      await ctx.db.execute(sql`SET client_encoding = 'UTF8'`);
 
       // Build query with conditions
       const baseQuery = ctx.db.select().from(wardTimeSeriesPopulation);

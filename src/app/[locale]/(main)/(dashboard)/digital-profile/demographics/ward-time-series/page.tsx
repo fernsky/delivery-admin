@@ -1,9 +1,8 @@
 "use client";
 
-import { PageHeader } from "@/components/page-header";
 import { api } from "@/trpc/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, AlertCircle, PlusCircle } from "lucide-react";
+import { Loader2, AlertCircle, PlusCircle, LineChart } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import WardTimeSeriesTable from "./_components/ward-time-series-table";
@@ -17,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
 
 export default function WardTimeSeriesPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -42,38 +42,49 @@ export default function WardTimeSeriesPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-96 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-        <span className="ml-2 text-lg text-gray-500">डाटा लोड गर्दै...</span>
-      </div>
+      <ContentLayout
+        title="वडा जनसंख्या समयावधि डाटा"
+        subtitle="विभिन्न वर्षहरूमा वडा अनुसार जनसंख्या डाटा"
+        icon={<LineChart className="h-6 w-6 text-primary" />}
+      >
+        <div className="flex h-96 items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+          <span className="ml-2 text-lg text-gray-500">डाटा लोड गर्दै...</span>
+        </div>
+      </ContentLayout>
     );
   }
 
   if (error) {
     return (
-      <Alert variant="destructive" className="my-8">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>त्रुटि</AlertTitle>
-        <AlertDescription>
-          {error.message || "वडा जनसांख्यिकीय डाटा प्राप्त गर्न असमर्थ"}
-        </AlertDescription>
-      </Alert>
+      <ContentLayout
+        title="वडा जनसंख्या समयावधि डाटा"
+        subtitle="विभिन्न वर्षहरूमा वडा अनुसार जनसंख्या डाटा"
+        icon={<LineChart className="h-6 w-6 text-primary" />}
+      >
+        <Alert variant="destructive" className="my-8">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>त्रुटि</AlertTitle>
+          <AlertDescription>
+            {error.message || "वडा जनसांख्यिकीय डाटा प्राप्त गर्न असमर्थ"}
+          </AlertDescription>
+        </Alert>
+      </ContentLayout>
     );
   }
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex justify-between items-center mb-6">
-        <PageHeader
-          heading="वडा जनसंख्या समयावधि डाटा"
-          text="विभिन्न वर्षहरूमा वडा अनुसार जनसंख्या डाटा व्यवस्थापन गर्नुहोस्"
-        />
+    <ContentLayout
+      title="वडा जनसंख्या समयावधि डाटा"
+      subtitle="विभिन्न वर्षहरूमा वडा अनुसार जनसंख्या डाटा व्यवस्थापन गर्नुहोस्"
+      icon={<LineChart className="h-6 w-6 text-primary" />}
+      actions={
         <Button onClick={handleAddNew} className="flex items-center gap-2">
           <PlusCircle className="h-4 w-4" />
           नयाँ डाटा थप्नुहोस्
         </Button>
-      </div>
-
+      }
+    >
       <Tabs defaultValue="table" className="mt-6">
         <TabsList className="grid w-full max-w-md grid-cols-2">
           <TabsTrigger value="table">तालिका दृश्य</TabsTrigger>
@@ -141,6 +152,6 @@ export default function WardTimeSeriesPage() {
           />
         </DialogContent>
       </Dialog>
-    </div>
+    </ContentLayout>
   );
 }
