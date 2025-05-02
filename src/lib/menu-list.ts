@@ -65,8 +65,18 @@ const menuConfig: Menu[] = [
         label: "वडा जनसंख्या समयावधि",
         roles: ["admin", "superadmin"],
       },
-       {
-        href: "/digital-profile/demographics/ward-wise-demographic-summary", 
+      {
+        href: "/digital-profile/demographics/ward-househead-gender",
+        label: "वडा घरमूली लिङ्ग",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/digital-profile/demographics/ward-age-population",
+        label: "उमेर अनुसार जनसंख्या",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/digital-profile/demographics/ward-wise-demographic-summary",
         label: "वडा अनुसार जनसांख्यिकीय सारांश",
         roles: ["admin", "superadmin"],
       },
