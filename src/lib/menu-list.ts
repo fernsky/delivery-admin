@@ -14,6 +14,8 @@ import {
   Paperclip,
   Home,
   PersonStanding,
+  BarChart3, // For demographic summary icon
+  LineChart, // Add this import for the ward time series icon
 } from "lucide-react";
 
 export type Role = "admin" | "superadmin" | "enumerator";
@@ -42,107 +44,127 @@ type Group = {
 const menuConfig: Menu[] = [
   {
     href: "/",
-    label: "Home",
+    label: "होम",
     icon: LayoutGrid,
     roles: ["admin", "superadmin", "enumerator"],
   },
+  // Demographics submenu with children
   {
-    href: "/qr-code",
-    label: "QR Code",
-    icon: ScanBarcode,
-    roles: ["enumerator"],
-  },
-  {
-    href: "/requested-areas",
-    label: "Requested Areas",
-    icon: LandPlot,
-    roles: ["enumerator"],
-  },
-  {
-    href: "/account",
-    label: "User Account", 
-    icon: User2Icon,
-    roles: ["enumerator"],
-  },
-  {
-    href: "/collections",
-    label: "My Collections", 
-    icon: Paperclip,
-    roles: ["enumerator"],
-  },
-  
-  {
-    href: "/ward",
-    label: "Wards",
-    icon: AreaChart,
+    href: "#",
+    label: "जनसांख्यिकी",
+    icon: BarChart3,
     roles: ["admin", "superadmin"],
-    submenus: [],
+    submenus: [
+      {
+        href: "/digital-profile/demographics/demographics-summary",
+        label: "जनसांख्यिकीय सारांश",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/digital-profile/demographics/ward-time-series",
+        label: "वडा जनसंख्या समयावधि",
+        roles: ["admin", "superadmin"],
+      },
+    ],
   },
-  {
-    href: "/area", 
-    label: "Areas",
-    icon: LandPlot,
-    roles: ["admin", "superadmin"],
-    submenus: [],
-  },
-  {
-    href: "/buildings",
-    label: "Buildings",
-    icon: Building2,
-    roles: ["admin", "superadmin"],
-  },
-  {
-    href: "/businesses",
-    label: "Businesses", 
-    icon: Store,
-    roles: ["admin", "superadmin"],
-  },
-  {
-    href: "/families",
-    label: "Families",
-    icon: UsersRound,
-    roles: ["admin", "superadmin"],
-  },
-{
-    href: "/submissions",
-    label: "Submissions",
-    icon: Paperclip, 
-    roles: ["admin", "superadmin"],
-    submenus: [],
-  },
-  {
-    href:"/wardwise",
-    label: "Wardwise Data",
-    icon:Home,
-    roles: ["admin", "superadmin"],
-    submenus:[],
-  },
- {
-    href:"/enumeratorwise",
-    label: "Enumerator Wise Data",
-    icon:PersonStanding,
-    roles: ["admin", "superadmin"],
-    submenus:[],
-  },
-  {
-    href: "/individuals",
-    label: "Individuals",
-    icon: User2Icon,
-    roles: ["admin", "superadmin"],
-  },
-  {
-    href: "/deaths",
-    label: "Deaths",
-    icon: GitPullRequest,
-    roles: ["admin", "superadmin"],
-  },
-  {
-    href: "/enumerators",
-    label: "Enumerators",
-    icon: UsersRound, 
-    roles: ["admin", "superadmin"],
-    submenus: [],
-  },
+
+  //   {
+  //     href: "/qr-code",
+  //     label: "क्यूआर कोड",
+  //     icon: ScanBarcode,
+  //     roles: ["enumerator"],
+  //   },
+  //   {
+  //     href: "/requested-areas",
+  //     label: "अनुरोध गरिएका क्षेत्रहरू",
+  //     icon: LandPlot,
+  //     roles: ["enumerator"],
+  //   },
+  //   {
+  //     href: "/account",
+  //     label: "प्रयोगकर्ता खाता",
+  //     icon: User2Icon,
+  //     roles: ["enumerator"],
+  //   },
+  //   {
+  //     href: "/collections",
+  //     label: "मेरो संग्रह",
+  //     icon: Paperclip,
+  //     roles: ["enumerator"],
+  //   },
+
+  //   {
+  //     href: "/ward",
+  //     label: "वडाहरू",
+  //     icon: AreaChart,
+  //     roles: ["admin", "superadmin"],
+  //     submenus: [],
+  //   },
+  //   {
+  //     href: "/area",
+  //     label: "क्षेत्रहरू",
+  //     icon: LandPlot,
+  //     roles: ["admin", "superadmin"],
+  //     submenus: [],
+  //   },
+  //   {
+  //     href: "/buildings",
+  //     label: "भवनहरू",
+  //     icon: Building2,
+  //     roles: ["admin", "superadmin"],
+  //   },
+  //   {
+  //     href: "/businesses",
+  //     label: "व्यवसायहरू",
+  //     icon: Store,
+  //     roles: ["admin", "superadmin"],
+  //   },
+  //   {
+  //     href: "/families",
+  //     label: "परिवारहरू",
+  //     icon: UsersRound,
+  //     roles: ["admin", "superadmin"],
+  //   },
+  // {
+  //     href: "/submissions",
+  //     label: "प्रस्तुतिहरू",
+  //     icon: Paperclip,
+  //     roles: ["admin", "superadmin"],
+  //     submenus: [],
+  //   },
+  //   {
+  //     href:"/wardwise",
+  //     label: "वडा अनुसार डाटा",
+  //     icon:Home,
+  //     roles: ["admin", "superadmin"],
+  //     submenus:[],
+  //   },
+  //  {
+  //     href:"/enumeratorwise",
+  //     label: "गणकअनुसार डाटा",
+  //     icon:PersonStanding,
+  //     roles: ["admin", "superadmin"],
+  //     submenus:[],
+  //   },
+  //   {
+  //     href: "/individuals",
+  //     label: "व्यक्तिहरू",
+  //     icon: User2Icon,
+  //     roles: ["admin", "superadmin"],
+  //   },
+  //   {
+  //     href: "/deaths",
+  //     label: "मृत्युहरू",
+  //     icon: GitPullRequest,
+  //     roles: ["admin", "superadmin"],
+  //   },
+  //   {
+  //     href: "/enumerators",
+  //     label: "गणकहरू",
+  //     icon: UsersRound,
+  //     roles: ["admin", "superadmin"],
+  //     submenus: [],
+  //   },
 ];
 
 export function getMenuList(pathname: string, userRole: Role): Group[] {
