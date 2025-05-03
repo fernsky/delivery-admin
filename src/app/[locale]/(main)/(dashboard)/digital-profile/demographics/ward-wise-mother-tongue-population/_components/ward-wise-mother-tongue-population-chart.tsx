@@ -18,62 +18,72 @@ import {
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsivePie } from "@nivo/pie";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { casteOptions } from "@/server/api/routers/profile/demographics/ward-wise-caste-population.schema";
 
-interface WardWiseCastePopulationData {
+interface WardWiseMotherTonguePopulationData {
   id: string;
-  wardNumber: number;
+  wardId: string;
+  wardNumber?: number;
   wardName?: string | null;
-  casteType: string;
-  casteTypeDisplay: string;
+  languageType: string;
+  languageName: string;
   population?: number | null;
-  households?: number | null;
   percentage?: string | null;
 }
 
-interface WardWiseCastePopulationChartProps {
-  data: WardWiseCastePopulationData[];
+interface WardWiseMotherTonguePopulationChartProps {
+  data: WardWiseMotherTonguePopulationData[];
 }
 
-export default function WardWiseCastePopulationChart({
+export default function WardWiseMotherTonguePopulationChart({
   data,
-}: WardWiseCastePopulationChartProps) {
+}: WardWiseMotherTonguePopulationChartProps) {
   const [selectedMetric, setSelectedMetric] = useState<string>("population");
   const [selectedWard, setSelectedWard] = useState<string>("all");
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardNumber))).sort(
-      (a, b) => a - b,
+    return Array.from(new Set(data.map((item) => item.wardId))).sort();
+  }, [data]);
+
+  // Get ward numbers for display
+  const wardIdToNumber = useMemo(() => {
+    return data.reduce(
+      (acc, item) => {
+        if (item.wardId && item.wardNumber) {
+          acc[item.wardId] = item.wardNumber;
+        }
+        return acc;
+      },
+      {} as Record<string, number>,
     );
   }, [data]);
 
-  // Get unique castes
-  const uniqueCastes = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.casteType))).sort();
+  // Get unique languages
+  const uniqueLanguages = useMemo(() => {
+    return Array.from(new Set(data.map((item) => item.languageType))).sort();
   }, [data]);
 
   // Filter by selected ward
   const filteredData = useMemo(() => {
     if (selectedWard === "all") return data;
-    return data.filter((item) => item.wardNumber === parseInt(selectedWard));
+    return data.filter((item) => item.wardId === selectedWard);
   }, [data, selectedWard]);
 
-  // Group by ward and aggregate castes for bar chart
+  // Group by ward and aggregate languages for bar chart
   const barChartData = useMemo(() => {
     if (selectedWard !== "all") {
-      // For a single ward, show all castes
+      // For a single ward, show all languages
       return filteredData
         .sort((a, b) => {
           // Handle percentage correctly by converting to number
           const valueA =
             selectedMetric === "percentage"
-              ? parseFloat((a[selectedMetric] as string) || "0")
+              ? parseFloat(a.percentage || "0")
               : (a[selectedMetric as keyof typeof a] as number) || 0;
 
           const valueB =
             selectedMetric === "percentage"
-              ? parseFloat((b[selectedMetric] as string) || "0")
+              ? parseFloat(b.percentage || "0")
               : (b[selectedMetric as keyof typeof b] as number) || 0;
 
           return valueB - valueA;
@@ -82,20 +92,18 @@ export default function WardWiseCastePopulationChart({
           // Generate consistent colors based on index
           const hue = (index * 137.5) % 360;
           return {
-            caste: item.casteTypeDisplay, // Use the localized caste name
+            language: item.languageType,
             [selectedMetric]:
               selectedMetric === "percentage"
-                ? parseFloat((item[selectedMetric] as string) || "0")
+                ? parseFloat(item.percentage || "0")
                 : item[selectedMetric as keyof typeof item] || 0,
             color: `hsl(${hue}, 70%, 50%)`,
           };
         });
     } else {
       // For all wards, group by ward and show the total for the selected metric
-      return uniqueWards.map((ward, index) => {
-        const wardData = filteredData.filter(
-          (item) => item.wardNumber === ward,
-        );
+      return uniqueWards.map((wardId, index) => {
+        const wardData = filteredData.filter((item) => item.wardId === wardId);
 
         // Calculate ward total properly handling percentage values
         let wardTotal = 0;
@@ -107,8 +115,7 @@ export default function WardWiseCastePopulationChart({
           if (validEntries.length > 0) {
             wardTotal =
               validEntries.reduce(
-                (sum, item) =>
-                  sum + parseFloat((item.percentage as string) || "0"),
+                (sum, item) => sum + parseFloat(item.percentage || "0"),
                 0,
               ) / validEntries.length;
           }
@@ -122,33 +129,34 @@ export default function WardWiseCastePopulationChart({
         }
 
         // Generate consistent colors based on ward number
-        const hue = (ward * 30) % 360;
+        const wardNumber = wardIdToNumber[wardId] || parseInt(wardId);
+        const hue = (wardNumber * 30) % 360;
 
         return {
-          caste: `वडा ${ward}`,
+          language: `वडा ${wardNumber}`,
           [selectedMetric]: wardTotal,
           color: `hsl(${hue}, 70%, 50%)`,
         };
       });
     }
-  }, [filteredData, selectedMetric, selectedWard, uniqueWards]);
+  }, [filteredData, selectedMetric, selectedWard, uniqueWards, wardIdToNumber]);
 
   // Prepare pie chart data
   const pieChartData = useMemo(() => {
-    const casteGroups = uniqueCastes
-      .map((casteName) => {
-        const casteData = filteredData.filter(
-          (item) => item.casteType === casteName,
+    const languageGroups = uniqueLanguages
+      .map((languageName) => {
+        const languageData = filteredData.filter(
+          (item) => item.languageType === languageName,
         );
-        const total = casteData.reduce(
+        const total = languageData.reduce(
           (sum, item) =>
             sum + ((item[selectedMetric as keyof typeof item] as number) || 0),
           0,
         );
 
         return {
-          id: casteName,
-          label: casteName,
+          id: languageName,
+          label: languageName,
           value: total,
           color: `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`,
         };
@@ -156,13 +164,12 @@ export default function WardWiseCastePopulationChart({
       .filter((item) => item.value > 0);
 
     // Sort by value for better visualization
-    return casteGroups.sort((a, b) => b.value - a.value);
-  }, [filteredData, uniqueCastes, selectedMetric]);
+    return languageGroups.sort((a, b) => b.value - a.value);
+  }, [filteredData, uniqueLanguages, selectedMetric]);
 
   // Define metrics options
   const metrics = [
     { value: "population", label: "जनसंख्या" },
-    { value: "households", label: "घरधुरी" },
     { value: "percentage", label: "प्रतिशत" },
   ];
 
@@ -177,7 +184,7 @@ export default function WardWiseCastePopulationChart({
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 text-lg">
-          कुनै डाटा उपलब्ध छैन। पहिले वडा जात/जनजाति जनसंख्या डाटा थप्नुहोस्।
+          कुनै डाटा उपलब्ध छैन। पहिले वडा मातृभाषा जनसंख्या डाटा थप्नुहोस्।
         </p>
       </div>
     );
@@ -186,9 +193,9 @@ export default function WardWiseCastePopulationChart({
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle>वडा अनुसार जात/जनजाति जनसंख्या विश्लेषण</CardTitle>
+        <CardTitle>वडा अनुसार मातृभाषा जनसंख्या विश्लेषण</CardTitle>
         <CardDescription>
-          वडा र जात/जनजाति अनुसार जनसंख्या डाटा हेर्नुहोस्
+          वडा र मातृभाषा अनुसार जनसंख्या डाटा हेर्नुहोस्
         </CardDescription>
 
         <div className="flex flex-wrap gap-4 mt-4">
@@ -220,9 +227,9 @@ export default function WardWiseCastePopulationChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((ward) => (
-                  <SelectItem key={ward} value={ward.toString()}>
-                    वडा {ward}
+                {uniqueWards.map((wardId) => (
+                  <SelectItem key={wardId} value={wardId}>
+                    वडा {wardIdToNumber[wardId] || wardId}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -243,7 +250,7 @@ export default function WardWiseCastePopulationChart({
               <ResponsiveBar
                 data={barChartData}
                 keys={[selectedMetric]}
-                indexBy="caste"
+                indexBy="language"
                 margin={{ top: 50, right: 130, bottom: 80, left: 60 }}
                 padding={0.3}
                 valueScale={{ type: "linear" }}
@@ -259,7 +266,7 @@ export default function WardWiseCastePopulationChart({
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 45,
-                  legend: selectedWard !== "all" ? "जात/जनजाति" : "वडा",
+                  legend: selectedWard !== "all" ? "मातृभाषा" : "वडा",
                   legendPosition: "middle",
                   legendOffset: 50,
                   truncateTickAt: 0,

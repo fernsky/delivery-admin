@@ -9,10 +9,12 @@ import {
   wardWiseCastePopulationSchema,
   wardWiseCastePopulationFilterSchema,
   updateWardWiseCastePopulationSchema,
+  casteOptions,
 } from "./ward-wise-caste-population.schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
+import { CasteTypes } from "@/server/db/schema/common/enums";
 
 // Get all ward-wise caste population data with optional filtering
 export const getAllWardWiseCastePopulation = publicProcedure
@@ -34,8 +36,8 @@ export const getAllWardWiseCastePopulation = publicProcedure
       }
 
       if (input?.casteType) {
-        conditions.push(eq(wardWiseCastePopulation.casteType, input.casteType));
-      }
+              conditions.push(eq(wardWiseCastePopulation.casteType, input.casteType as keyof typeof CasteTypes));
+            }
 
       const queryWithFilters = conditions.length
         ? baseQuery.where(and(...conditions))
@@ -47,7 +49,11 @@ export const getAllWardWiseCastePopulation = publicProcedure
         wardWiseCastePopulation.casteType,
       );
 
-      return data;
+      // Transform the data to include Nepali caste names
+      return data.map(item => ({
+        ...item,
+        casteTypeDisplay: CasteTypes[item.casteType as keyof typeof CasteTypes] || item.casteType,
+      }));
     } catch (error) {
       console.error("Error fetching ward-wise caste population data:", error);
       throw new TRPCError({
@@ -67,7 +73,11 @@ export const getWardWiseCastePopulation = publicProcedure
       .where(eq(wardWiseCastePopulation.wardNumber, input.wardNumber))
       .orderBy(wardWiseCastePopulation.casteType);
 
-    return data;
+    // Transform data to include Nepali caste names
+    return data.map(item => ({
+      ...item,
+      casteTypeDisplay: CasteTypes[item.casteType as keyof typeof CasteTypes] || item.casteType,
+    }));
   });
 
 // Create a new ward-wise caste population entry
@@ -89,7 +99,7 @@ export const createWardWiseCastePopulation = protectedProcedure
       .where(
         and(
           eq(wardWiseCastePopulation.wardNumber, input.wardNumber),
-          eq(wardWiseCastePopulation.casteType, input.casteType),
+          eq(wardWiseCastePopulation.casteType, input.casteType as keyof typeof CasteTypes),
         ),
       )
       .limit(1);
@@ -101,10 +111,18 @@ export const createWardWiseCastePopulation = protectedProcedure
       });
     }
 
+    // Verify caste type is valid
+    if (!Object.keys(CasteTypes).includes(input.casteType)) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `Invalid caste type: ${input.casteType}`,
+      });
+    }
+
     const processedInput = {
       id: input.id || uuidv4(),
       wardNumber: input.wardNumber,
-      casteType: input.casteType,
+      casteType: input.casteType as keyof typeof CasteTypes,
       population: input.population,
     };
 
@@ -150,7 +168,16 @@ export const updateWardWiseCastePopulation = protectedProcedure
     const processedInput: Record<string, unknown> = { id: input.id };
 
     if (input.wardNumber !== undefined) processedInput.wardNumber = input.wardNumber;
-    if (input.casteType !== undefined) processedInput.casteType = input.casteType;
+    if (input.casteType !== undefined) {
+      // Verify caste type is valid
+      if (!Object.keys(CasteTypes).includes(input.casteType)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `Invalid caste type: ${input.casteType}`,
+        });
+      }
+      processedInput.casteType = input.casteType;
+    }
     if (input.population !== undefined) processedInput.population = input.population;
 
     // Update the record
@@ -201,6 +228,7 @@ export const getCastePopulationSummary = publicProcedure.query(
         if (!summaryMap.has(entry.casteType)) {
           summaryMap.set(entry.casteType, {
             casteType: entry.casteType,
+            casteTypeDisplay: CasteTypes[entry.casteType as keyof typeof CasteTypes] || entry.casteType,
             totalPopulation: 0,
             wardDistribution: [],
           });

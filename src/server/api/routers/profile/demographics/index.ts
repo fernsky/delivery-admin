@@ -4,11 +4,14 @@ import { wardTimeSeriesRouter } from "./ward-time-series.procedure";
 import { wardWiseDemographicSummaryRouter } from "./ward-wise-demographic-summary.procedure";
 import { wardWiseCastePopulationRouter } from "./ward-wise-caste-population.procedure";
 import { wardAgeWisePopulationRouter } from "./ward-age-wise-population.procedure";
+import { wardWiseMotherTonguePopulationRouter } from "./ward-wise-mother-tongue-population.procedure";
+
 
 export const demographicsRouter = createTRPCRouter({
   summary: demographicSummaryRouter,
   wardTimeSeries: wardTimeSeriesRouter,
   wardWiseDemographicSummary: wardWiseDemographicSummaryRouter,
   wardAgeWisePopulation: wardAgeWisePopulationRouter,
-  wardWiseCastePopulation: wardWiseCastePopulationRouter
+  wardWiseCastePopulation: wardWiseCastePopulationRouter,
+  wardWiseMotherTonguePopulation: wardWiseMotherTonguePopulationRouter
 });

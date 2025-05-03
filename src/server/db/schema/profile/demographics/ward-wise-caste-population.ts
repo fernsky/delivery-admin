@@ -5,6 +5,7 @@ import {
   varchar,
   text,
 } from "drizzle-orm/pg-core";
+import { CasteType, casteTypeValues } from "../../common/enums";
 
 export const wardWiseCastePopulation = pgTable("ward_wise_caste_population", {
   id: varchar("id", { length: 36 }).primaryKey(),
@@ -12,8 +13,8 @@ export const wardWiseCastePopulation = pgTable("ward_wise_caste_population", {
   // Ward identification
   wardNumber: integer("ward_number").notNull(),
 
-  // Caste or ethnic group
-  casteType: varchar("caste_type", { length: 100 }).notNull(),
+  // Caste or ethnic group - using the enum values
+  casteType: varchar("caste_type", { length: 100 }).$type<CasteType>().notNull(),
 
   // Population count for this caste in the ward
   population: integer("population"),

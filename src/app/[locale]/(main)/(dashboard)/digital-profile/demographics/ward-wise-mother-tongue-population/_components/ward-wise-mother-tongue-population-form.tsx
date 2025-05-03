@@ -24,42 +24,56 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { casteOptions } from "@/server/api/routers/profile/demographics/ward-wise-caste-population.schema";
-import { CasteTypes } from "@/server/db/schema/common/enums";
+import { LanguageTypeEnum } from "@/server/api/routers/profile/demographics/ward-wise-mother-tongue-population.schema";
 
 // Create a schema for the form
 const formSchema = z.object({
   id: z.string().optional(),
-  wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
+  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
+  wardNumber: z.coerce.number().int().min(1).optional(),
   wardName: z.string().optional(),
-  casteType: z.string().min(1, "जात/जनजाति नाम आवश्यक छ"),
+  languageType: z.string().min(1, "मातृभाषा आवश्यक छ"),
   population: z.coerce.number().int().nonnegative().optional(),
-  households: z.coerce.number().int().nonnegative().optional(),
-  percentage: z.coerce.number().nonnegative().max(100).optional(),
+  percentage: z.string().optional(),
 });
 
-interface WardWiseCastePopulationFormProps {
+interface WardWiseMotherTonguePopulationFormProps {
   editId: string | null;
   onClose: () => void;
   existingData: any[];
 }
 
-export default function WardWiseCastePopulationForm({
+// Helper function to get language display names
+const getLanguageOptions = () => {
+  const enumValues = Object.values(LanguageTypeEnum.Values);
+  return enumValues.map((value) => ({
+    value,
+    label: value, // Using the enum value directly as label
+  }));
+};
+
+export default function WardWiseMotherTonguePopulationForm({
   editId,
   onClose,
   existingData,
-}: WardWiseCastePopulationFormProps) {
+}: WardWiseMotherTonguePopulationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const utils = api.useContext();
+  const languageOptions = getLanguageOptions();
 
   // Get unique wards from existing data
   const uniqueWards = Array.from(
-    new Set(existingData.map((item) => item.wardNumber)),
-  ).sort((a, b) => a - b);
+    new Set(
+      existingData.map((item) => ({
+        id: item.wardId,
+        number: item.wardNumber || parseInt(item.wardId),
+      })),
+    ),
+  ).sort((a, b) => a.number - b.number);
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
-    api.profile.demographics.wardWiseCastePopulation.getAll.useQuery(
+    api.profile.demographics.wardWiseMotherTonguePopulation.getAll.useQuery(
       undefined,
       {
         enabled: !!editId,
@@ -67,10 +81,10 @@ export default function WardWiseCastePopulationForm({
     );
 
   const createMutation =
-    api.profile.demographics.wardWiseCastePopulation.create.useMutation({
+    api.profile.demographics.wardWiseMotherTonguePopulation.create.useMutation({
       onSuccess: () => {
-        toast.success("नयाँ जात/जनजाति जनसंख्या डाटा सफलतापूर्वक थपियो");
-        utils.profile.demographics.wardWiseCastePopulation.getAll.invalidate();
+        toast.success("नयाँ मातृभाषा जनसंख्या डाटा सफलतापूर्वक थपियो");
+        utils.profile.demographics.wardWiseMotherTonguePopulation.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },
@@ -81,10 +95,10 @@ export default function WardWiseCastePopulationForm({
     });
 
   const updateMutation =
-    api.profile.demographics.wardWiseCastePopulation.update.useMutation({
+    api.profile.demographics.wardWiseMotherTonguePopulation.update.useMutation({
       onSuccess: () => {
-        toast.success("जात/जनजाति जनसंख्या डाटा सफलतापूर्वक अपडेट गरियो");
-        utils.profile.demographics.wardWiseCastePopulation.getAll.invalidate();
+        toast.success("मातृभाषा जनसंख्या डाटा सफलतापूर्वक अपडेट गरियो");
+        utils.profile.demographics.wardWiseMotherTonguePopulation.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },
@@ -98,12 +112,12 @@ export default function WardWiseCastePopulationForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      wardId: "",
       wardNumber: undefined,
       wardName: "",
-      casteType: "",
+      languageType: "",
       population: undefined,
-      households: undefined,
-      percentage: undefined,
+      percentage: "",
     },
   });
 
@@ -114,11 +128,12 @@ export default function WardWiseCastePopulationForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardNumber: recordToEdit.wardNumber,
-          casteType: recordToEdit.casteType,
+          wardId: recordToEdit.wardId,
+          wardNumber: (recordToEdit as any).wardNumber || undefined,
+          wardName: (recordToEdit as any).wardName || "",
+          languageType: recordToEdit.languageType,
           population: recordToEdit.population || undefined,
-          households: undefined,
-          percentage: undefined,
+          percentage: (recordToEdit as any).percentage || "",
         });
       }
     }
@@ -127,26 +142,33 @@ export default function WardWiseCastePopulationForm({
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
 
-    // Check if a record already exists with this ward and caste (for new records)
+    // Check if a record already exists with this ward and language (for new records)
     if (!editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardNumber === values.wardNumber &&
-          item.casteType === values.casteType,
+          item.wardId === values.wardId &&
+          item.languageType === values.languageType,
       );
       if (duplicate) {
         toast.error(
-          `वडा ${values.wardNumber} को लागि ${values.casteType} जात/जनजातिको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${values.wardNumber || values.wardId} को लागि ${values.languageType} मातृभाषाको डाटा पहिले नै अवस्थित छ`,
         );
         setIsSubmitting(false);
         return;
       }
     }
 
+    // Ensure population has a default value of 0 if it's undefined
+    const dataToSubmit = {
+      ...values,
+      population: values.population ?? 0,
+      languageType: values.languageType as keyof typeof LanguageTypeEnum.Values,
+    };
+
     if (editId) {
-      updateMutation.mutate(values);
+      updateMutation.mutate(dataToSubmit);
     } else {
-      createMutation.mutate(values);
+      createMutation.mutate(dataToSubmit);
     }
   };
 
@@ -165,33 +187,42 @@ export default function WardWiseCastePopulationForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="wardNumber"
+            name="wardId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>वडा नम्बर</FormLabel>
+                <FormLabel>वडा</FormLabel>
                 <FormControl>
                   <Select
-                    value={field.value?.toString() || ""}
-                    onValueChange={(value) => field.onChange(parseInt(value))}
+                    value={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      // Update ward number if available
+                      const selectedWard = uniqueWards.find(
+                        (ward) => ward.id === value,
+                      );
+                      if (selectedWard) {
+                        form.setValue("wardNumber", selectedWard.number);
+                      }
+                    }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="वडा नम्बर चयन गर्नुहोस्" />
+                      <SelectValue placeholder="वडा चयन गर्नुहोस्" />
                     </SelectTrigger>
                     <SelectContent>
                       {uniqueWards.map((ward) => (
-                        <SelectItem key={ward} value={ward.toString()}>
-                          वडा {ward}
+                        <SelectItem key={ward.id} value={ward.id}>
+                          वडा {ward.number}
                         </SelectItem>
                       ))}
                       {/* Allow adding new wards */}
                       {Array.from({ length: 32 }, (_, i) => i + 1)
-                        .filter((ward) => !uniqueWards.includes(ward))
-                        .map((ward) => (
-                          <SelectItem
-                            key={`new-${ward}`}
-                            value={ward.toString()}
-                          >
-                            वडा {ward}
+                        .filter(
+                          (num) =>
+                            !uniqueWards.some((ward) => ward.number === num),
+                        )
+                        .map((num) => (
+                          <SelectItem key={`new-${num}`} value={num.toString()}>
+                            वडा {num} (नयाँ)
                           </SelectItem>
                         ))}
                     </SelectContent>
@@ -218,23 +249,26 @@ export default function WardWiseCastePopulationForm({
         </div>
 
         <div className="border-t pt-4">
-          <h3 className="text-lg font-medium mb-4">जात/जनजाति विवरण</h3>
+          <h3 className="text-lg font-medium mb-4">मातृभाषा विवरण</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="casteType"
+              name="languageType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>जात/जनजाति</FormLabel>
+                  <FormLabel>मातृभाषा</FormLabel>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
-                        <SelectValue placeholder="जात/जनजाति चयन गर्नुहोस्" />
+                        <SelectValue placeholder="मातृभाषा चयन गर्नुहोस्" />
                       </SelectTrigger>
                       <SelectContent>
-                        {casteOptions.map((caste) => (
-                          <SelectItem key={caste.value} value={caste.value}>
-                            {caste.label}
+                        {languageOptions.map((language) => (
+                          <SelectItem
+                            key={language.value}
+                            value={language.value}
+                          >
+                            {language.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -261,31 +295,12 @@ export default function WardWiseCastePopulationForm({
 
             <FormField
               control={form.control}
-              name="households"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>घरधुरी</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="percentage"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>प्रतिशत (%)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      {...field}
-                    />
+                    <Input type="text" placeholder="0.00%" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
