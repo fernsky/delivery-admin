@@ -89,6 +89,11 @@ const menuConfig: Menu[] = [
         href: "/digital-profile/demographics/ward-wise-mother-tongue-population",
         label: "वडा अनुसार मातृभाषा जनसंख्या",
         roles: ["admin", "superadmin"],
+      },
+         {
+        href: "/digital-profile/demographics/ward-wise-religion-population",
+        label: "वडा अनुसार धर्म जनसंख्या",
+        roles: ["admin", "superadmin"],
       }
     ],
   },
