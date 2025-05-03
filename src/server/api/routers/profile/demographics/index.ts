@@ -7,6 +7,7 @@ import { wardAgeWisePopulationRouter } from "./ward-age-wise-population.procedur
 import { wardWiseHouseHeadGenderRouter } from "./ward-wise-househead-gender.procedure";
 import { wardWiseMotherTonguePopulationRouter } from "./ward-wise-mother-tongue-population.procedure";
 import { wardWiseReligionPopulationRouter } from "./ward-wise-religion-population.procedure";
+import { ageWiseMaritalStatusRouter } from "./age-wise-marital-status.procedure";
 
 export const demographicsRouter = createTRPCRouter({
   summary: demographicSummaryRouter,
@@ -17,4 +18,5 @@ export const demographicsRouter = createTRPCRouter({
   wardWiseHouseHeadGender: wardWiseHouseHeadGenderRouter,
   wardWiseMotherTonguePopulation: wardWiseMotherTonguePopulationRouter,
   wardWiseReligionPopulation: wardWiseReligionPopulationRouter,
+  ageWiseMaritalStatus: ageWiseMaritalStatusRouter,  
 });

@@ -94,6 +94,11 @@ const menuConfig: Menu[] = [
         href: "/digital-profile/demographics/ward-wise-religion-population",
         label: "वडा अनुसार धर्म जनसंख्या",
         roles: ["admin", "superadmin"],
+      },
+         {
+        href: "/digital-profile/demographics/age-wise-marital-status",
+        label: "वडा अनुसार वैवाहिक स्थिति",
+        roles: ["admin", "superadmin"],
       }
     ],
   },
