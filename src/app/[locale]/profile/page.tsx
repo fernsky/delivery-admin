@@ -21,6 +21,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
+// Force dynamic rendering since child routes use headers
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "पालिका प्रोफाइल पोर्टल | स्थानीय तथ्याङ्क",
   description:

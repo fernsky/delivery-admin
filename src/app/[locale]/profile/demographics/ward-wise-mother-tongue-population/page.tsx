@@ -6,6 +6,9 @@ import Image from "next/image";
 import MotherTongueCharts from "./_components/mother-tongue-charts";
 import LanguageAnalysisSection from "./_components/language-analysis-section";
 
+// Force dynamic rendering since we're using tRPC which relies on headers
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "मातृभाषा अनुसार जनसंख्या | पालिका प्रोफाइल",
   description:

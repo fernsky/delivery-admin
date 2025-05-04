@@ -19,6 +19,9 @@ import {
 import { api } from "@/trpc/server";
 import Image from "next/image";
 
+// Force dynamic rendering since we're using tRPC which relies on headers
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "पालिका जनसांख्यिकी तथ्याङ्क | पालिका प्रोफाइल पोर्टल",
   description:
