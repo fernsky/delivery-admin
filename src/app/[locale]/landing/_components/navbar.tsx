@@ -35,7 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
 
   const menuItems = [
     {
-      href: `/profile/map`,
+      href: `/landing/map`,
       label: "नक्सा",
       icon: Map,
       color: "from-emerald-500 to-green-600",
