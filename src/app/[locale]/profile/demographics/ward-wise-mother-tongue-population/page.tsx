@@ -165,23 +165,13 @@ export default async function WardWiseMotherTonguePopulationPage() {
         <section>
           <div className="relative rounded-lg overflow-hidden mb-8">
             <Image
-              src="/images/language-diversity.jpg"
+              src="/images/language-diversity.svg"
               width={1200}
               height={400}
               alt="भाषिक विविधता"
-              className="w-full h-[250px] object-cover"
+              className="w-full h-[250px] object-cover rounded-sm"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 flex items-center">
-              <div className="p-6 text-white">
-                <h1 className="text-3xl font-bold mb-2">
-                  मातृभाषा अनुसार जनसंख्या वितरण
-                </h1>
-                <p className="text-lg opacity-90 max-w-xl">
-                  पालिकाको वडा अनुसार विभिन्न मातृभाषीहरूको जनसंख्या विवरण
-                </p>
-              </div>
-            </div>
           </div>
 
           <div className="prose prose-slate dark:prose-invert max-w-none">
