@@ -74,13 +74,14 @@ export default function WardWiseAbsenteeEducationalLevelPage() {
     );
   }
 
-  // Process the raw data to add educational level display names
+  // Process the raw data to add educational level display names and ensure wardNumber is always a number
   const processedData =
     data?.map((item) => ({
       ...item,
       educationalLevelDisplay: getEducationalLevelDisplay(
         item.educationalLevel,
       ),
+      wardNumber: item.wardNumber ?? 0, // Replace null with 0 to ensure wardNumber is always a number
     })) || [];
 
   return (

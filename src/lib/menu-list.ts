@@ -113,9 +113,58 @@ const menuConfig: Menu[] = [
         href: "/digital-profile/demographics/ward-wise-absentee-educational-level",
         label: "प्रवासी शिक्षा स्तर",
         roles: ["admin", "superadmin"],
+      },
+       {
+        href: "/digital-profile/demographics/ward-wise-absentee-educational-level",
+        label: "प्रवासी शिक्षा स्तर",
+        roles: ["admin", "superadmin"],
+      },
+       {
+        href: "/digital-profile/demographics/ward-wise-absentee-absence-reason",
+        label: "प्रवासी अनुपस्थितिको कारण",
+        roles: ["admin", "superadmin"],
+      },
+       {
+        href: "/digital-profile/demographics/ward-wise-absentee-location",
+        label: "प्रवासी स्थान",
+        roles: ["admin", "superadmin"],
       }
     ],
   },
+
+  {
+    href: "#",
+    label: "अर्थशास्त्र",
+    icon: LineChart,
+    roles: ["admin", "superadmin"],
+    submenus: [
+      {
+        href: "/digital-profile/economics/economic-summary",
+        label: "आर्थिक सारांश",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/digital-profile/economics/household-income",
+        label: "घरायसी आय",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/digital-profile/economics/employment-status",
+        label: "रोजगारी स्थिति",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/digital-profile/economics/occupational-distribution",
+        label: "व्यवसायिक वितरण",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/digital-profile/economics/business-sectors",
+        label: "व्यापार क्षेत्रहरू",
+        roles: ["admin", "superadmin"],
+      }
+    ]
+  }
 
   //   {
   //     href: "/qr-code",
