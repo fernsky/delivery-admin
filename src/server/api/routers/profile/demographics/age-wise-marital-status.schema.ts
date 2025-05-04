@@ -21,10 +21,12 @@ export type AgeGroup = z.infer<typeof AgeGroupEnum>;
 
 // Define the marital status enum to match the database enum
 export const MaritalStatusEnum = z.enum([
-  "SINGLE", 
-  "MARRIED",
-  "DIVORCED",
+  "UNMARRIED", 
+  "ONE_MARRIAGE",
+  "MULTI_MARRIAGE",
+  "REMARRIAGE",
   "WIDOWED",
+  "DIVORCED",
   "SEPARATED",
   "NOT_STATED",
 ]);
@@ -78,11 +80,13 @@ export const getAgeGroupDisplayName = (ageGroup: AgeGroup): string => {
 
 export const getMaritalStatusDisplayName = (status: MaritalStatus): string => {
   const displayNames: Record<MaritalStatus, string> = {
-    SINGLE: "अविवाहित",
-    MARRIED: "विवाहित",
-    DIVORCED: "सम्बन्ध विच्छेद",
-    WIDOWED: "विधवा/विधुर",
-    SEPARATED: "अलग बसेको",
+    UNMARRIED: "विवाह नभएको",
+    ONE_MARRIAGE: "एक विवाह",
+    MULTI_MARRIAGE: "बहुविवाह",
+    REMARRIAGE: "पुनर्विवाह",
+    WIDOWED: "विधुर/विधवा",
+    DIVORCED: "पारपाचुके",
+    SEPARATED: "छुट्टिएको",
     NOT_STATED: "उल्लेख नभएको",
   };
   return displayNames[status] || status;

@@ -101,45 +101,57 @@ export default function WardWiseMotherTonguePopulationChart({
           };
         });
     } else {
-      // For all wards, group by ward and show the total for the selected metric
-      return uniqueWards.map((wardId, index) => {
-        const wardData = filteredData.filter((item) => item.wardId === wardId);
+      // For all wards, group by language instead of ward
+      const languageGroups = uniqueLanguages.reduce(
+        (acc, language) => {
+          acc[language] = {
+            totalValue: 0,
+            count: 0,
+          };
+          return acc;
+        },
+        {} as Record<string, { totalValue: number; count: number }>,
+      );
 
-        // Calculate ward total properly handling percentage values
-        let wardTotal = 0;
-        if (selectedMetric === "percentage") {
-          // For percentages, we take the average
-          const validEntries = wardData.filter(
-            (item) => item.percentage !== null && item.percentage !== undefined,
-          );
-          if (validEntries.length > 0) {
-            wardTotal =
-              validEntries.reduce(
-                (sum, item) => sum + parseFloat(item.percentage || "0"),
-                0,
-              ) / validEntries.length;
+      // Calculate total for each language
+      filteredData.forEach((item) => {
+        if (item.languageType) {
+          if (selectedMetric === "percentage") {
+            if (item.percentage) {
+              languageGroups[item.languageType].totalValue += parseFloat(
+                item.percentage,
+              );
+              languageGroups[item.languageType].count++;
+            }
+          } else {
+            languageGroups[item.languageType].totalValue +=
+              (item[selectedMetric as keyof typeof item] as number) || 0;
+            languageGroups[item.languageType].count++;
           }
-        } else {
-          // For numeric values, we sum them
-          wardTotal = wardData.reduce(
-            (sum, item) =>
-              sum + (Number(item[selectedMetric as keyof typeof item]) || 0),
-            0,
-          );
         }
-
-        // Generate consistent colors based on ward number
-        const wardNumber = wardIdToNumber[wardId] || parseInt(wardId);
-        const hue = (wardNumber * 30) % 360;
-
-        return {
-          language: `वडा ${wardNumber}`,
-          [selectedMetric]: wardTotal,
-          color: `hsl(${hue}, 70%, 50%)`,
-        };
       });
+
+      // Create chart data from language groups
+      return Object.keys(languageGroups)
+        .map((language, index) => {
+          const hue = (index * 137.5) % 360;
+          const value =
+            selectedMetric === "percentage"
+              ? languageGroups[language].count > 0
+                ? languageGroups[language].totalValue /
+                  languageGroups[language].count
+                : 0
+              : languageGroups[language].totalValue;
+
+          return {
+            language,
+            [selectedMetric]: value,
+            color: `hsl(${hue}, 70%, 50%)`,
+          };
+        })
+        .sort((a, b) => Number(b[selectedMetric]) - Number(a[selectedMetric]));
     }
-  }, [filteredData, selectedMetric, selectedWard, uniqueWards, wardIdToNumber]);
+  }, [filteredData, selectedMetric, selectedWard, uniqueLanguages]);
 
   // Prepare pie chart data
   const pieChartData = useMemo(() => {
@@ -266,7 +278,7 @@ export default function WardWiseMotherTonguePopulationChart({
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 45,
-                  legend: selectedWard !== "all" ? "मातृभाषा" : "वडा",
+                  legend: "मातृभाषा",
                   legendPosition: "middle",
                   legendOffset: 50,
                   truncateTickAt: 0,

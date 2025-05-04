@@ -99,6 +99,11 @@ const menuConfig: Menu[] = [
         href: "/digital-profile/demographics/age-wise-marital-status",
         label: "वडा अनुसार वैवाहिक स्थिति",
         roles: ["admin", "superadmin"],
+      },
+        {
+        href: "/digital-profile/demographics/ward-age-gender-wise-married-age",
+        label: "वडा अनुसार उमेर, लिङ्ग र विवाह उमेर",
+        roles: ["admin", "superadmin"],
       }
     ],
   },

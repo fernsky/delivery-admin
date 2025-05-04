@@ -91,47 +91,73 @@ export default function WardWiseCastePopulationChart({
           };
         });
     } else {
-      // For all wards, group by ward and show the total for the selected metric
-      return uniqueWards.map((ward, index) => {
-        const wardData = filteredData.filter(
-          (item) => item.wardNumber === ward,
-        );
+      // For all wards, group by caste type instead of ward
+      const casteGroups = uniqueCastes.reduce(
+        (acc, casteType) => {
+          acc[casteType] = {
+            totalValue: 0,
+            count: 0,
+            displayName: "",
+          };
+          return acc;
+        },
+        {} as Record<
+          string,
+          { totalValue: number; count: number; displayName: string }
+        >,
+      );
 
-        // Calculate ward total properly handling percentage values
-        let wardTotal = 0;
-        if (selectedMetric === "percentage") {
-          // For percentages, we take the average
-          const validEntries = wardData.filter(
-            (item) => item.percentage !== null && item.percentage !== undefined,
-          );
-          if (validEntries.length > 0) {
-            wardTotal =
-              validEntries.reduce(
-                (sum, item) =>
-                  sum + parseFloat((item.percentage as string) || "0"),
-                0,
-              ) / validEntries.length;
+      // Calculate total for each caste
+      filteredData.forEach((item) => {
+        if (item.casteType) {
+          if (selectedMetric === "percentage") {
+            if (item.percentage !== null && item.percentage !== undefined) {
+              casteGroups[item.casteType].totalValue += parseFloat(
+                item.percentage,
+              );
+              casteGroups[item.casteType].count++;
+            }
+          } else {
+            casteGroups[item.casteType].totalValue +=
+              (item[selectedMetric as keyof typeof item] as number) || 0;
+            casteGroups[item.casteType].count++;
           }
-        } else {
-          // For numeric values, we sum them
-          wardTotal = wardData.reduce(
-            (sum, item) =>
-              sum + (Number(item[selectedMetric as keyof typeof item]) || 0),
-            0,
-          );
+          // Store display name
+          casteGroups[item.casteType].displayName = item.casteTypeDisplay;
         }
-
-        // Generate consistent colors based on ward number
-        const hue = (ward * 30) % 360;
-
-        return {
-          caste: `वडा ${ward}`,
-          [selectedMetric]: wardTotal,
-          color: `hsl(${hue}, 70%, 50%)`,
-        };
       });
+
+      // Create chart data from caste groups
+      return Object.keys(casteGroups)
+        .map((casteType, index) => {
+          const hue = (index * 137.5) % 360;
+          const value =
+            selectedMetric === "percentage"
+              ? casteGroups[casteType].count > 0
+                ? casteGroups[casteType].totalValue /
+                  casteGroups[casteType].count
+                : 0
+              : casteGroups[casteType].totalValue;
+
+          return {
+            caste: casteGroups[casteType].displayName || casteType,
+            [selectedMetric]: value,
+            color: `hsl(${hue}, 70%, 50%)`,
+          };
+        })
+        .sort((a, b) => {
+          const valueA =
+            typeof a[selectedMetric] === "string"
+              ? parseFloat(a[selectedMetric] as string)
+              : (a[selectedMetric] as number);
+          const valueB =
+            typeof b[selectedMetric] === "string"
+              ? parseFloat(b[selectedMetric] as string)
+              : (b[selectedMetric] as number);
+          return valueB - valueA;
+        });
     }
-  }, [filteredData, selectedMetric, selectedWard, uniqueWards]);
+  }, [filteredData, selectedMetric, selectedWard, uniqueCastes]);
 
   // Prepare pie chart data
   const pieChartData = useMemo(() => {
@@ -259,7 +285,7 @@ export default function WardWiseCastePopulationChart({
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 45,
-                  legend: selectedWard !== "all" ? "जात/जनजाति" : "वडा",
+                  legend: "जात/जनजाति",
                   legendPosition: "middle",
                   legendOffset: 50,
                   truncateTickAt: 0,

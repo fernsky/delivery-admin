@@ -101,45 +101,57 @@ export default function WardWiseReligionPopulationChart({
           };
         });
     } else {
-      // For all wards, group by ward and show the total for the selected metric
-      return uniqueWards.map((wardId, index) => {
-        const wardData = filteredData.filter((item) => item.wardId === wardId);
+      // For all wards, group by religion type instead of ward
+      const religionGroups = uniqueReligions.reduce(
+        (acc, religionType) => {
+          acc[religionType] = {
+            totalValue: 0,
+            count: 0,
+          };
+          return acc;
+        },
+        {} as Record<string, { totalValue: number; count: number }>,
+      );
 
-        // Calculate ward total properly handling percentage values
-        let wardTotal = 0;
-        if (selectedMetric === "percentage") {
-          // For percentages, we take the average
-          const validEntries = wardData.filter(
-            (item) => item.percentage !== null && item.percentage !== undefined,
-          );
-          if (validEntries.length > 0) {
-            wardTotal =
-              validEntries.reduce(
-                (sum, item) => sum + parseFloat(item.percentage || "0"),
-                0,
-              ) / validEntries.length;
+      // Calculate total for each religion
+      filteredData.forEach((item) => {
+        if (item.religionType) {
+          if (selectedMetric === "percentage") {
+            if (item.percentage !== null && item.percentage !== undefined) {
+              religionGroups[item.religionType].totalValue += parseFloat(
+                item.percentage || "0",
+              );
+              religionGroups[item.religionType].count++;
+            }
+          } else {
+            religionGroups[item.religionType].totalValue +=
+              (item[selectedMetric as keyof typeof item] as number) || 0;
+            religionGroups[item.religionType].count++;
           }
-        } else {
-          // For numeric values, we sum them
-          wardTotal = wardData.reduce(
-            (sum, item) =>
-              sum + (Number(item[selectedMetric as keyof typeof item]) || 0),
-            0,
-          );
         }
-
-        // Generate consistent colors based on ward number
-        const wardNumber = wardIdToNumber[wardId] || parseInt(wardId);
-        const hue = (wardNumber * 30) % 360;
-
-        return {
-          religion: `वडा ${wardNumber}`,
-          [selectedMetric]: wardTotal,
-          color: `hsl(${hue}, 70%, 50%)`,
-        };
       });
+
+      // Create chart data from religion groups
+      return Object.keys(religionGroups)
+        .map((religionType, index) => {
+          const hue = (index * 137.5) % 360;
+          const value =
+            selectedMetric === "percentage"
+              ? religionGroups[religionType].count > 0
+                ? religionGroups[religionType].totalValue /
+                  religionGroups[religionType].count
+                : 0
+              : religionGroups[religionType].totalValue;
+
+          return {
+            religion: religionType,
+            [selectedMetric]: value,
+            color: `hsl(${hue}, 70%, 50%)`,
+          };
+        })
+        .sort((a, b) => Number(b[selectedMetric]) - Number(a[selectedMetric]));
     }
-  }, [filteredData, selectedMetric, selectedWard, uniqueWards, wardIdToNumber]);
+  }, [filteredData, selectedMetric, selectedWard, uniqueReligions]);
 
   // Prepare pie chart data
   const pieChartData = useMemo(() => {
@@ -266,7 +278,7 @@ export default function WardWiseReligionPopulationChart({
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 45,
-                  legend: selectedWard !== "all" ? "धर्म" : "वडा",
+                  legend: "धर्म",
                   legendPosition: "middle",
                   legendOffset: 50,
                   truncateTickAt: 0,
