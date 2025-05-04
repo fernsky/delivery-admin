@@ -30,20 +30,17 @@ export const getAllAgeWiseMaritalStatus = publicProcedure
       let conditions = [];
 
       if (input?.wardId) {
-        conditions.push(
-          eq(wardWiseMaritalStatus.wardId, input.wardId),
-        );
+        conditions.push(eq(wardWiseMaritalStatus.wardId, input.wardId));
       }
 
       if (input?.ageGroup) {
-        conditions.push(
-          eq(wardWiseMaritalStatus.ageGroup, input.ageGroup),
-        );
+        conditions.push(eq(wardWiseMaritalStatus.ageGroup, input.ageGroup));
       }
 
       if (input?.maritalStatus) {
+        // Type assertion to ensure compatibility with database enum type
         conditions.push(
-          eq(wardWiseMaritalStatus.maritalStatus, input.maritalStatus),
+          eq(wardWiseMaritalStatus.maritalStatus, input.maritalStatus as any),
         );
       }
 
@@ -76,7 +73,10 @@ export const getAgeWiseMaritalStatusByWard = publicProcedure
       .select()
       .from(wardWiseMaritalStatus)
       .where(eq(wardWiseMaritalStatus.wardId, input.wardId))
-      .orderBy(wardWiseMaritalStatus.ageGroup, wardWiseMaritalStatus.maritalStatus);
+      .orderBy(
+        wardWiseMaritalStatus.ageGroup,
+        wardWiseMaritalStatus.maritalStatus,
+      );
 
     return data;
   });
@@ -89,8 +89,7 @@ export const createAgeWiseMaritalStatus = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can create age-wise marital status data",
+        message: "Only administrators can create age-wise marital status data",
       });
     }
 
@@ -102,7 +101,7 @@ export const createAgeWiseMaritalStatus = protectedProcedure
         and(
           eq(wardWiseMaritalStatus.wardId, input.wardId),
           eq(wardWiseMaritalStatus.ageGroup, input.ageGroup),
-          eq(wardWiseMaritalStatus.maritalStatus, input.maritalStatus),
+          eq(wardWiseMaritalStatus.maritalStatus, input.maritalStatus as any),
         ),
       )
       .limit(1);
@@ -119,7 +118,7 @@ export const createAgeWiseMaritalStatus = protectedProcedure
       id: input.id || uuidv4(),
       wardId: input.wardId,
       ageGroup: input.ageGroup,
-      maritalStatus: input.maritalStatus,
+      maritalStatus: input.maritalStatus as any,
       population: input.population,
       malePopulation: input.malePopulation,
       femalePopulation: input.femalePopulation,
@@ -137,8 +136,7 @@ export const updateAgeWiseMaritalStatus = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can update age-wise marital status data",
+        message: "Only administrators can update age-wise marital status data",
       });
     }
 
@@ -169,7 +167,7 @@ export const updateAgeWiseMaritalStatus = protectedProcedure
       .set({
         wardId: input.wardId,
         ageGroup: input.ageGroup,
-        maritalStatus: input.maritalStatus,
+        maritalStatus: input.maritalStatus as any,
         population: input.population,
         malePopulation: input.malePopulation,
         femalePopulation: input.femalePopulation,
@@ -188,8 +186,7 @@ export const deleteAgeWiseMaritalStatus = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can delete age-wise marital status data",
+        message: "Only administrators can delete age-wise marital status data",
       });
     }
 

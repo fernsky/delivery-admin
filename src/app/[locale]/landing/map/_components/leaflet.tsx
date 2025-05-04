@@ -272,7 +272,7 @@ const Leaflet: React.FC = () => {
               L.marker(latlng, { icon: icons.office })
             }
           >
-            <Popup>{office.name_np || office.name_en}</Popup>
+            <Popup>{office.name_ne || office.name_en}</Popup>
           </GeoJSON>
         ))}
       {showHealth &&
@@ -284,14 +284,14 @@ const Leaflet: React.FC = () => {
               L.marker(latlng, { icon: icons.health })
             }
             onEachFeature={(feature, layer) => {
-              layer.bindTooltip(health.name_np || health.name_en, {
+              layer.bindTooltip(health.name_ne || health.name_en, {
                 permanent: true,
                 direction: "auto",
                 className: "health-label",
               });
             }}
           >
-            <Popup>{health.name_np || health.name_en}</Popup>
+            <Popup>{health.name_ne || health.name_en}</Popup>
           </GeoJSON>
         ))}
       {showPhysicalInfrastructures &&
@@ -304,7 +304,7 @@ const Leaflet: React.FC = () => {
             }
             onEachFeature={(feature, layer) => {
               layer.bindTooltip(
-                infrastructure.name_np || infrastructure.name_en,
+                infrastructure.name_ne || infrastructure.name_en,
                 {
                   permanent: true,
                   direction: "auto",
@@ -323,14 +323,14 @@ const Leaflet: React.FC = () => {
               L.marker(latlng, { icon: icons.school })
             }
             onEachFeature={(feature, layer) => {
-              layer.bindTooltip(school.name_np || school.name_en, {
+              layer.bindTooltip(school.name_ne || school.name_en, {
                 permanent: true,
                 direction: "auto",
                 className: "school-label",
               });
             }}
           >
-            <Popup>{school.name_np || school.name_en}</Popup>
+            <Popup>{school.name_ne || school.name_en}</Popup>
           </GeoJSON>
         ))}
       {showTouristPlaces &&
@@ -342,14 +342,14 @@ const Leaflet: React.FC = () => {
               L.marker(latlng, { icon: icons.tourist })
             }
             onEachFeature={(feature, layer) => {
-              layer.bindTooltip(place.name_np || place.name_en, {
+              layer.bindTooltip(place.name_ne || place.name_en, {
                 permanent: true,
                 direction: "auto",
                 className: "tourist-label",
               });
             }}
           >
-            <Popup>{place.name_np || place.name_en}</Popup>
+            <Popup>{place.name_ne || place.name_en}</Popup>
           </GeoJSON>
         ))}
       {showWardBoundaries &&
@@ -359,7 +359,7 @@ const Leaflet: React.FC = () => {
             data={JSON.parse(boundary.geometry as unknown as string)}
             style={() => getPolygonStyle("ward")}
             onEachFeature={(feature, layer) => {
-              layer.bindTooltip(boundary.name_np || boundary.name_en, {
+              layer.bindTooltip(boundary.name_ne || boundary.name_en, {
                 permanent: true,
                 direction: "center",
                 className: "ward-label",
@@ -376,14 +376,14 @@ const Leaflet: React.FC = () => {
               L.marker(latlng, { icon: icons.office })
             }
             onEachFeature={(feature, layer) => {
-              layer.bindTooltip(office.name_np || office.name_en, {
+              layer.bindTooltip(office.name_ne || office.name_en, {
                 permanent: true,
                 direction: "auto",
                 className: "office-label",
               });
             }}
           >
-            <Popup>{office.name_np || office.name_en}</Popup>
+            <Popup>{office.name_ne || office.name_en}</Popup>
           </GeoJSON>
         ))}
       {showAspectFlat && aspectFlat && (

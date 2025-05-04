@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import Navbar from "./_components/navbar";
-import { AppStoreProvider } from "./_components/app-store-provider";
+import React from "react";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -17,10 +17,10 @@ interface RootLayoutProps {
 const RootLayout: React.FC<RootLayoutProps> = async ({ children, params }) => {
   const { lng } = await params;
   return (
-    <AppStoreProvider>
+    <React.Fragment>
       <Navbar lng={lng} />
       {children}
-    </AppStoreProvider>
+    </React.Fragment>
   );
 };
 

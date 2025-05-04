@@ -1,4 +1,3 @@
-import { RawBuildingData } from "../parser/product/parse-buildings";
 import { decodeSingleChoice, decodeMultipleChoices } from "./utils";
 
 export const buildingChoices = {
@@ -110,7 +109,7 @@ export const buildingChoices = {
   },
 };
 
-export const mapBuildingChoices = (building: RawBuildingData) => {
+export const mapBuildingChoices = (building: any) => {
   return {
     ...building,
     house_base: decodeSingleChoice(
