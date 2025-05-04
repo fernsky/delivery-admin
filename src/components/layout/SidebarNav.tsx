@@ -8,18 +8,29 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  ChevronDown,
+  FileText,
+  Layout,
+  Users,
+  PieChart,
+  BookOpen,
+  Activity,
+  Building,
+} from "lucide-react";
 
 const navItems = [
   {
     title: "पालिका प्रोफाइल",
     href: "/profile",
+    icon: <Layout className="w-4 h-4" />,
     items: [],
   },
   {
     title: "जनसांख्यिकी",
     href: "/profile/demographics",
+    icon: <Users className="w-4 h-4" />,
     items: [
       {
         title: "जनसंख्या सारांश",
@@ -30,15 +41,15 @@ const navItems = [
         href: "/profile/demographics/ward-wise-demographic-summary",
       },
       {
-        title: "वडा अनुसार जात/जनजाति जनसंख्या",
+        title: "जात/जनजाति अनुसार जनसंख्या",
         href: "/profile/demographics/ward-wise-caste-population",
       },
       {
-        title: "वडा अनुसार मातृभाषा जनसंख्या",
+        title: "मातृभाषा अनुसार जनसंख्या",
         href: "/profile/demographics/ward-wise-mother-tongue-population",
       },
       {
-        title: "वडा अनुसार धर्म जनसंख्या",
+        title: "धर्म अनुसार जनसंख्या",
         href: "/profile/demographics/ward-wise-religion-population",
       },
       {
@@ -66,6 +77,7 @@ const navItems = [
   {
     title: "शिक्षा",
     href: "/profile/education",
+    icon: <BookOpen className="w-4 h-4" />,
     items: [
       {
         title: "शैक्षिक स्थिति",
@@ -80,6 +92,7 @@ const navItems = [
   {
     title: "स्वास्थ्य",
     href: "/profile/health",
+    icon: <Activity className="w-4 h-4" />,
     items: [
       {
         title: "स्वास्थ्य सुविधाहरू",
@@ -94,6 +107,7 @@ const navItems = [
   {
     title: "भौतिक पूर्वाधार",
     href: "/profile/infrastructure",
+    icon: <Building className="w-4 h-4" />,
     items: [
       {
         title: "सडक नेटवर्क",
@@ -108,6 +122,7 @@ const navItems = [
   {
     title: "अर्थतन्त्र",
     href: "/profile/economy",
+    icon: <PieChart className="w-4 h-4" />,
     items: [
       {
         title: "रोजगारी स्थिति",
@@ -133,7 +148,7 @@ export default function SidebarNav() {
   };
 
   // Automatically open the section that contains the current page
-  useState(() => {
+  useEffect(() => {
     const openInitialSection = () => {
       const initialOpenSections: Record<string, boolean> = {};
       navItems.forEach((section) => {
@@ -149,31 +164,32 @@ export default function SidebarNav() {
     };
 
     openInitialSection();
-  });
+  }, [pathname]);
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-1.5">
+      <div className="text-sm text-muted-foreground font-medium mb-2 pl-2">
+        तथ्याङ्क वर्गहरू
+      </div>
       {navItems.map((section) => (
-        <div key={section.title} className="mb-2">
+        <div key={section.title} className="mb-1.5">
           {section.items.length > 0 ? (
             <Collapsible
               open={openSections[section.title]}
               onOpenChange={() => toggleSection(section.title)}
             >
-              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm font-medium hover:bg-slate-100 hover:text-slate-900">
-                <Link href={section.href}>
-                  <span
-                    className={cn(
-                      "text-base",
-                      pathname === section.href ||
-                        pathname.startsWith(section.href + "/")
-                        ? "font-bold text-primary"
-                        : "font-medium text-slate-600",
-                    )}
-                  >
-                    {section.title}
-                  </span>
-                </Link>
+              <CollapsibleTrigger
+                className={cn(
+                  "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                  pathname.startsWith(section.href)
+                    ? "bg-accent text-accent-foreground font-medium"
+                    : "hover:bg-muted",
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  {section.icon}
+                  <span>{section.title}</span>
+                </div>
                 <ChevronDown
                   className="h-4 w-4 shrink-0 transition-transform duration-200"
                   style={{
@@ -183,18 +199,19 @@ export default function SidebarNav() {
                   }}
                 />
               </CollapsibleTrigger>
-              <CollapsibleContent className="pl-4 pt-1">
+              <CollapsibleContent className="ml-2 pl-4 border-l mt-1">
                 {section.items.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "flex items-center rounded-md px-3 py-2 text-sm hover:bg-slate-100 hover:text-slate-900",
+                      "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors mb-1",
                       pathname === item.href
-                        ? "font-medium bg-slate-100 text-primary"
-                        : "text-slate-600",
+                        ? "bg-primary text-primary-foreground font-medium"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
                     )}
                   >
+                    <FileText className="w-3 h-3 opacity-70" />
                     {item.title}
                   </Link>
                 ))}
@@ -204,12 +221,13 @@ export default function SidebarNav() {
             <Link
               href={section.href}
               className={cn(
-                "flex w-full items-center rounded-md px-3 py-2 text-sm font-medium",
+                "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors w-full",
                 pathname === section.href
-                  ? "font-medium bg-slate-100 text-primary"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+                  ? "bg-primary text-primary-foreground font-medium"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
+              {section.icon}
               {section.title}
             </Link>
           )}
