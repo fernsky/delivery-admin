@@ -57,52 +57,61 @@ const menuConfig: Menu[] = [
     submenus: [
       {
         href: "/digital-profile/demographics/demographics-summary",
-        label: "जनसांख्यिकीय सारांश",
+        label: "सारांश",
         roles: ["admin", "superadmin"],
       },
       {
         href: "/digital-profile/demographics/ward-time-series",
-        label: "वडा जनसंख्या समयावधि",
+        label: "समय शृंखला",
         roles: ["admin", "superadmin"],
       },
       {
         href: "/digital-profile/demographics/ward-househead-gender",
-        label: "वडा घरमूली लिङ्ग",
+        label: "घरमूली लिङ्ग",
         roles: ["admin", "superadmin"],
       },
       {
         href: "/digital-profile/demographics/ward-age-population",
-        label: "उमेर अनुसार जनसंख्या",
+        label: "उमेर जनसंख्या",
         roles: ["admin", "superadmin"],
       },
       {
         href: "/digital-profile/demographics/ward-wise-demographic-summary",
-        label: "वडा अनुसार जनसांख्यिकीय सारांश",
+        label: "वडा सारांश",
         roles: ["admin", "superadmin"],
       },
        {
         href: "/digital-profile/demographics/ward-wise-caste-population", 
-        label: "वडा अनुसार जात/जनजाति जनसंख्या",
+        label: "जाति जनसंख्या",
         roles: ["admin", "superadmin"],
       },
         {
         href: "/digital-profile/demographics/ward-wise-mother-tongue-population",
-        label: "वडा अनुसार मातृभाषा जनसंख्या",
+        label: "मातृभाषा",
         roles: ["admin", "superadmin"],
       },
          {
         href: "/digital-profile/demographics/ward-wise-religion-population",
-        label: "वडा अनुसार धर्म जनसंख्या",
+        label: "धर्म",
         roles: ["admin", "superadmin"],
       },
          {
         href: "/digital-profile/demographics/age-wise-marital-status",
-        label: "वडा अनुसार वैवाहिक स्थिति",
+        label: "वैवाहिक स्थिति",
         roles: ["admin", "superadmin"],
       },
         {
         href: "/digital-profile/demographics/ward-age-gender-wise-married-age",
-        label: "वडा अनुसार उमेर, लिङ्ग र विवाह उमेर",
+        label: "विवाह उमेर",
+        roles: ["admin", "superadmin"],
+      },
+       {
+        href: "/digital-profile/demographics/ward-age-gender-wise-absentee",
+        label: "उमेर र लिङ्ग अनुसार प्रवासी",
+        roles: ["admin", "superadmin"],
+      }, {
+        href: "/digital-profile/demographics/ward-wise-absentee-educational-level",
+        label: "प्रवासी शिक्षा स्तर",
         roles: ["admin", "superadmin"],
       }
     ],
