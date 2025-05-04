@@ -59,5 +59,74 @@ export function generateSchemaOrgDataset(
       name: "खजुरा गाउँपालिका",
       url: "https://digprofile.com/khajura",
     },
+    temporalCoverage: `${new Date().getFullYear() - 5}/${new Date().getFullYear()}`,
+    spatialCoverage: {
+      "@type": "Place",
+      name: "खजुरा गाउँपालिका, बाँके, नेपाल",
+    },
+  };
+}
+
+export function generateSchemaOrgArticle(
+  title: string,
+  description: string,
+  url: string,
+  datePublished: string,
+  dateModified: string,
+  image?: string,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: description,
+    datePublished: datePublished,
+    dateModified: dateModified,
+    url: url,
+    image: image || `https://digprofile.com/khajura/images/og-image.jpg`,
+    author: {
+      "@type": "Organization",
+      name: "खजुरा गाउँपालिका",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "खजुरा गाउँपालिका",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://digprofile.com/khajura/images/logo.png",
+      },
+    },
+    isAccessibleForFree: "True",
+    inLanguage: "ne-NP",
+  };
+}
+
+export function generateSchemaOrgFAQPage(
+  questions: Array<{ question: string; answer: string }>,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: questions.map((q) => ({
+      "@type": "Question",
+      name: q.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: q.answer,
+      },
+    })),
+  };
+}
+
+export function generateSchemaOrgTable(
+  caption: string,
+  columns: string[],
+  rows: Array<Record<string, string | number>>,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Table",
+    about: caption,
+    mainContentOfPage: false,
   };
 }

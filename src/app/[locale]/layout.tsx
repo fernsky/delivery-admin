@@ -169,7 +169,7 @@ export default async function RootLayout(props: {
   const { user } = await validateRequest();
 
   // Choose the appropriate font based on locale
-  const fontClass = inter.className;
+  const fontClass = notoSansDevanagari.className;
   // Include both font variables for theming purposes
   const fontVariables = `${GeistSans.className} ${inter.variable} ${notoSansDevanagari.variable}`;
 
