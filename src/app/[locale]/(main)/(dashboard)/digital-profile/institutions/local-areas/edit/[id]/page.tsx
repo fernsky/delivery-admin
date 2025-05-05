@@ -63,10 +63,7 @@ export default function EditLocalAreaPage({
       }
     >
       <div className="grid gap-8">
-        <LocationEditForm 
-          initialData={locationData} 
-          locationId={params.id} 
-        />
+        <LocationEditForm initialData={locationData} locationId={params.id} />
       </div>
     </ContentLayout>
   );

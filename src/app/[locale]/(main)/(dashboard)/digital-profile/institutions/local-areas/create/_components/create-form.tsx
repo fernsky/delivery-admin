@@ -7,7 +7,6 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/trpc/react";
-import type { MediaFile } from "./create-media-section";
 import { Card } from "@/components/ui/card";
 import {
   Form,
@@ -32,7 +31,6 @@ import { Loader, MapPin } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LocationMapInput } from "./location-map-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreateMediaSection } from "./create-media-section";
 
 // Define the form schema
 const formSchema = z.object({
@@ -62,8 +60,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function CreateLocalAreaForm() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("basic"); // Add the activeTab state
-  const [uploadedFiles, setUploadedFiles] = useState<MediaFile[]>([]);
+  const [activeTab, setActiveTab] = useState("basic");
 
   // Set up the form with default values
   const form = useForm<FormValues>({
@@ -81,54 +78,12 @@ export function CreateLocalAreaForm() {
     api.profile.localAreas.locations.create.useMutation({
       onSuccess: (data) => {
         toast.success("स्थान सफलतापूर्वक सिर्जना गरियो");
-
-        // If files were uploaded, associate them with the new location
-        if (uploadedFiles.length > 0) {
-          // Abstract the setPrimary mutations using mutateAsync for better control
-          associateUploadedFiles(uploadedFiles, data.id)
-            .then(() => {
-              router.push("/digital-profile/institutions/local-areas");
-            })
-            .catch((error) => {
-              console.error("Error associating media:", error);
-              toast.error("फाइल जोड्न समस्या भयो, तर स्थान सिर्जना भएको छ");
-              setTimeout(() => {
-                router.push("/digital-profile/institutions/local-areas");
-              }, 2000);
-            });
-        } else {
-          // Redirect immediately if no files to process
-          router.push("/digital-profile/institutions/local-areas");
-        }
+        router.push("/digital-profile/institutions/local-areas");
       },
       onError: (error) => {
         toast.error(`स्थान सिर्जना गर्न असफल: ${error.message}`);
       },
     });
-
-  // Get the mutateAsync function for setPrimary
-  const { mutateAsync: setPrimaryMediaAsync } =
-    api.common.media.setPrimary.useMutation();
-
-  // Function to associate uploaded files with a location
-  const associateUploadedFiles = async (
-    files: MediaFile[],
-    locationId: string,
-  ) => {
-    // Process files sequentially to ensure correct primary status
-    for (const file of files) {
-      try {
-        await setPrimaryMediaAsync({
-          mediaId: file.id,
-          entityId: locationId,
-          entityType: "LOCATION",
-        });
-      } catch (error) {
-        console.error(`Error associating file ${file.id}:`, error);
-        // Continue with other files even if one fails
-      }
-    }
-  };
 
   const locationTypes = [
     { value: "VILLAGE", label: "गाउँ" },
@@ -164,10 +119,9 @@ export function CreateLocalAreaForm() {
   return (
     <Card className="p-6">
       <Tabs defaultValue="basic" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 mb-6">
+        <TabsList className="grid grid-cols-2 mb-6">
           <TabsTrigger value="basic">आधारभूत जानकारी</TabsTrigger>
           <TabsTrigger value="location">स्थान</TabsTrigger>
-          <TabsTrigger value="media">मिडिया</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic">
@@ -430,39 +384,15 @@ export function CreateLocalAreaForm() {
                 >
                   पछिल्लो
                 </Button>
-                <Button type="button" onClick={() => setActiveTab("media")}>
-                  अर्को
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading && (
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  सुरक्षित गर्नुहोस्
                 </Button>
               </div>
             </form>
           </Form>
-        </TabsContent>
-
-        <TabsContent value="media">
-          <div className="space-y-8">
-            <CreateMediaSection
-              uploadedFiles={uploadedFiles}
-              setUploadedFiles={setUploadedFiles}
-            />
-
-            <div className="flex gap-2 justify-end">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setActiveTab("location")}
-              >
-                पछिल्लो
-              </Button>
-              <Button
-                type="button"
-                onClick={() => form.handleSubmit(onSubmit)()}
-                disabled={isLoading}
-              >
-                {isLoading && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-                सुरक्षित गर्नुहोस्
-              </Button>
-            </div>
-          </div>
         </TabsContent>
       </Tabs>
     </Card>
