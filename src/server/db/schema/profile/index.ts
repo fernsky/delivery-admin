@@ -1,3 +1,3 @@
-export * from "./demographics/demographic-summary";
-export * from "./demographics/ward-time-series-population";
-export * from "./institutions/legacy";
+export * from "./common";
+export * from "./demographics";
+export * from "./institutions";
