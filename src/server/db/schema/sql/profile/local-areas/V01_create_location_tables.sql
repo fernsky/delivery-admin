@@ -13,7 +13,7 @@ EXCEPTION
 END $$;
 
 -- Create the location table
-CREATE TABLE IF NOT EXISTS location (
+CREATE TABLE IF NOT EXISTS acme_location (
     id VARCHAR(36) PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,
@@ -31,10 +31,10 @@ CREATE TABLE IF NOT EXISTS location (
 );
 
 -- Create spatial indexes for faster geospatial queries
-CREATE INDEX IF NOT EXISTS idx_location_point_geometry ON location USING GIST (point_geometry);
-CREATE INDEX IF NOT EXISTS idx_location_polygon_geometry ON location USING GIST (polygon_geometry);
+CREATE INDEX IF NOT EXISTS idx_location_point_geometry ON acme_location USING GIST (point_geometry);
+CREATE INDEX IF NOT EXISTS idx_location_polygon_geometry ON acme_location USING GIST (polygon_geometry);
 
 -- Create indexes for other common lookups
-CREATE INDEX IF NOT EXISTS idx_location_type ON location(type);
-CREATE INDEX IF NOT EXISTS idx_location_name ON location(name);
-CREATE INDEX IF NOT EXISTS idx_location_parent ON location(parent_id);
+CREATE INDEX IF NOT EXISTS idx_location_type ON acme_location(type);
+CREATE INDEX IF NOT EXISTS idx_location_name ON acme_location(name);
+CREATE INDEX IF NOT EXISTS idx_location_parent ON acme_location(parent_id);

@@ -21,7 +21,7 @@ EXCEPTION
 END $$;
 
 -- Create media table
-CREATE TABLE IF NOT EXISTS media (
+CREATE TABLE IF NOT EXISTS acme_media (
     id VARCHAR(36) PRIMARY KEY,
     file_name VARCHAR(255) NOT NULL,
     file_path VARCHAR(1024) NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS media (
 );
 
 -- Create entity_media table for relationships
-CREATE TABLE IF NOT EXISTS entity_media (
+CREATE TABLE IF NOT EXISTS acme_entity_media (
     id VARCHAR(36) PRIMARY KEY,
     entity_id VARCHAR(36) NOT NULL,
     entity_type entity_type NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS entity_media (
 );
 
 -- Create indexes for faster lookups
-CREATE INDEX IF NOT EXISTS idx_media_type ON media(type);
-CREATE INDEX IF NOT EXISTS idx_entity_media_lookup ON entity_media(entity_id, entity_type);
-CREATE INDEX IF NOT EXISTS idx_primary_media ON entity_media(entity_id, entity_type, is_primary) 
+CREATE INDEX IF NOT EXISTS idx_media_type ON acme_media(type);
+CREATE INDEX IF NOT EXISTS idx_entity_media_lookup ON acme_entity_media(entity_id, entity_type);
+CREATE INDEX IF NOT EXISTS idx_primary_media ON acme_entity_media(entity_id, entity_type, is_primary) 
 WHERE is_primary = true;

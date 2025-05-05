@@ -29,10 +29,10 @@ export const location = pgTable("location", {
   isTownPlanned: boolean("is_town_planned").default(false),
 
   // Point geometry stored as PostGIS point
-  pointGeometry: geometry("geometry", { type: "Point" }),
+  pointGeometry: geometry("point_geometry", { type: "Point" }),
 
   // Polygon geometry stored as PostGIS polygon or GeoJSON
-  polygonGeometry: geometry("geometry", { type: "Polygon" }),
+  polygonGeometry: geometry("polygon_geometry", { type: "Polygon" }),
 
   // Optional parent location (for hierarchical relationships)
   parentId: varchar("parent_id", { length: 36 }),

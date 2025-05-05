@@ -6,6 +6,9 @@ import { locales } from "@/i18n/config";
 import { GeistSans } from "geist/font/sans";
 import { validateRequest } from "@/lib/auth/validate-request";
 import { Providers } from "@/components/providers";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { uploadRouter } from "@/app/api/uploadthing/core";
 
 import "@/app/globals.css";
 
@@ -218,6 +221,7 @@ export default async function RootLayout(props: {
         <meta name="gov:confidentiality" content="public" />
       </head>
       <body className={fontClass}>
+        <NextSSRPlugin routerConfig={extractRouterConfig(uploadRouter)} />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers user={user}>{children}</Providers>
         </NextIntlClientProvider>
