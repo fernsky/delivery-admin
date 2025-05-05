@@ -1,11 +1,11 @@
-import { pgTable } from "../../../schema/basic";
+import { pgTable } from "../../basic";
 import {
   integer,
   timestamp,
   varchar,
   pgEnum,
 } from "drizzle-orm/pg-core";
-import { wardWiseDemographicSummary } from "./ward-wise-demographic-summary";
+import { wardWiseDemographicSummary } from "../demographics/ward-wise-demographic-summary";
 
 // Define economically active age group enum
 export const economicallyActiveAgeGroupEnum = pgEnum("economically_active_age_group", [
@@ -15,7 +15,7 @@ export const economicallyActiveAgeGroupEnum = pgEnum("economically_active_age_gr
 ]);
 
 // Reuse the gender enum already defined in the married age schema
-import { genderEnum } from "./ward-age-gender-wise-married-age";
+import { genderEnum } from "../demographics/common";
 
 export const wardAgeGenderWiseEconomicallyActivePopulation = pgTable("ward_age_gender_wise_economically_active_population", {
   id: varchar("id", { length: 36 }).primaryKey(),

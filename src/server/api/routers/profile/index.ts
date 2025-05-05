@@ -8,4 +8,4 @@ export const profileRouter = createTRPCRouter({
   economics: economicsRouter,
   localAreas: localAreasRouter,
   // Add other profile-related routers here in the future
-
+});

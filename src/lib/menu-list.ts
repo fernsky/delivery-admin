@@ -144,8 +144,8 @@ const menuConfig: Menu[] = [
         roles: ["admin", "superadmin"],
       },
       {
-        href: "/digital-profile/economics/household-income",
-        label: "घरायसी आय",
+        href: "/digital-profile/economics/ward-wise-major-occupation",
+        label: "मुख्य पेशा",
         roles: ["admin", "superadmin"],
       },
       {

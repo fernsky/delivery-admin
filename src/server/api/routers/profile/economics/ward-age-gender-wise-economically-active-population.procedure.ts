@@ -3,7 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { wardAgeGenderWiseEconomicallyActivePopulation } from "@/server/db/schema/profile/demographics/ward-age-gender-wise-economically-active-population";
+import { wardAgeGenderWiseEconomicallyActivePopulation } from "@/server/db/schema/profile/economics/ward-age-gender-wise-economically-active-population";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
   wardAgeGenderWiseEconomicallyActivePopulationSchema,

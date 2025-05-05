@@ -14,11 +14,12 @@ export const marriedAgeGroupEnum = pgEnum("married_age_group", [
   "AGE_40_AND_ABOVE",
 ]);
 
+
+
 export const wardAgeGenderWiseMarriedAge = pgTable(
   "ward_age_gender_wise_married_age",
   {
     id: varchar("id", { length: 36 }).primaryKey(),
-
     // Reference to the ward entity through the demographic summary
     wardId: varchar("ward_id", { length: 36 })
       .notNull()
