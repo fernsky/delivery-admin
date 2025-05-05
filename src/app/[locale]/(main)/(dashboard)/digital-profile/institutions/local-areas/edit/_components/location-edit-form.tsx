@@ -213,10 +213,10 @@ export function LocationEditForm({
                               लोड हुँदैछ...
                             </SelectItem>
                           ) : existingLocations &&
-                            existingLocations.length > 0 ? (
-                            existingLocations
+                            existingLocations.items.length > 0 ? (
+                            existingLocations.items
                               .filter(
-                                (loc) =>
+                                (loc: { id: string }) =>
                                   loc.id !== locationId &&
                                   loc.id !== initialData?.parentId,
                               )

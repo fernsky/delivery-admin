@@ -1,21 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { api } from "@/trpc/react"; // Updated API import
-import { ContentLayout } from "@/components/admin-panel/content-layout"; // Replaced with ContentLayout
+import { useRouter, useSearchParams } from "next/navigation";
+import { api } from "@/trpc/react";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
@@ -23,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MapPin, Edit, Trash2, Plus, Search, Loader } from "lucide-react";
+import { Loader, Plus, Search } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,25 +27,61 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useDebounce } from "@/hooks/use-debounce";
+
+// Import view components
+import { TableView } from "./_components/table-view";
+import { GridView } from "./_components/grid-view";
+import { MapView } from "./_components/map-view";
+import { ViewSelector } from "./_components/view-selector";
+import { Pagination } from "./_components/pagination";
 
 export default function LocalAreasPage() {
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("all"); // Use "all" as default instead of empty string
+  const searchParams = useSearchParams();
+
+  // Get query params with defaults
+  const currentView =
+    (searchParams.get("view") as "table" | "grid" | "map") || "table";
+  const currentPage = Number(searchParams.get("page") || "1");
+  const pageSize = Number(searchParams.get("pageSize") || "10");
+  const currentType = searchParams.get("type") || "all";
+  const currentSearch = searchParams.get("search") || "";
+
+  // Local state
+  const [searchTerm, setSearchTerm] = useState(currentSearch);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState<{
     id: string;
     name: string;
   } | null>(null);
 
-  // Get locations data
+  // Debounce search term
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Location types
+  const locationTypes = [
+    { value: "VILLAGE", label: "गाउँ" },
+    { value: "SETTLEMENT", label: "बस्ती" },
+    { value: "TOLE", label: "टोल" },
+    { value: "WARD", label: "वडा" },
+    { value: "SQUATTER_AREA", label: "सुकुम्बासी क्षेत्र" },
+  ];
+
+  // Get locations data with query params
   const {
-    data: locations,
+    data: locationsData,
     isLoading,
+    isError,
     refetch,
   } = api.profile.localAreas.locations.getAll.useQuery({
-    name: searchTerm || undefined,
-    type: typeFilter && typeFilter !== "all" ? typeFilter : undefined, // Only send type filter if not "all"
+    name: debouncedSearchTerm || undefined,
+    type: currentType !== "all" ? (currentType as any) : undefined,
+    page: currentPage,
+    pageSize: currentView === "map" ? 100 : pageSize, // Load more items for map view
+    viewType: currentView,
+    sortBy: "name",
+    sortOrder: "asc",
   });
 
   // Delete mutation
@@ -70,20 +98,62 @@ export default function LocalAreasPage() {
       },
     });
 
-  // Location types
-  const locationTypes = [
-    { value: "VILLAGE", label: "गाउँ" },
-    { value: "SETTLEMENT", label: "बस्ती" },
-    { value: "TOLE", label: "टोल" },
-    { value: "WARD", label: "वडा" },
-    { value: "SQUATTER_AREA", label: "सुकुम्बासी क्षेत्र" },
-  ];
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
 
+    if (currentView !== "table") params.set("view", currentView);
+    if (currentPage > 1) params.set("page", String(currentPage));
+    if (currentType !== "all") params.set("type", currentType);
+    if (debouncedSearchTerm) params.set("search", debouncedSearchTerm);
+    if (pageSize !== 10) params.set("pageSize", String(pageSize));
+
+    const queryString = params.toString();
+    const url = queryString ? `?${queryString}` : "";
+
+    // Replace the URL to avoid adding to history stack
+    router.replace(`/digital-profile/institutions/local-areas${url}`, {
+      scroll: false,
+    });
+  }, [
+    debouncedSearchTerm,
+    currentType,
+    currentPage,
+    pageSize,
+    currentView,
+    router,
+  ]);
+
+  // Handle view change
+  const handleViewChange = (view: "table" | "grid" | "map") => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("view", view);
+    params.set("page", "1"); // Reset to first page on view change
+    router.replace(`?${params.toString()}`);
+  };
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", String(page));
+    router.replace(`?${params.toString()}`);
+  };
+
+  // Handle type filter change
+  const handleTypeChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("type", value);
+    params.set("page", "1"); // Reset to first page
+    router.replace(`?${params.toString()}`);
+  };
+
+  // Handle delete dialog
   const handleDeleteClick = (location: { id: string; name: string }) => {
     setLocationToDelete(location);
     setIsDeleteDialogOpen(true);
   };
 
+  // Confirm delete
   const confirmDelete = () => {
     if (locationToDelete) {
       deleteLocation(locationToDelete.id);
@@ -103,150 +173,98 @@ export default function LocalAreasPage() {
     >
       <div className="space-y-4">
         <Card className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="स्थानको नाम खोज्नुहोस्..."
-                className="pl-8"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+          <div className="flex flex-col sm:flex-row gap-4 justify-between">
+            <div className="flex flex-1 gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="स्थानको नाम खोज्नुहोस्..."
+                  className="pl-8"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Select value={currentType} onValueChange={handleTypeChange}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="सबै प्रकार" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">सबै प्रकार</SelectItem>
+                  {locationTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <Select
-              value={typeFilter}
-              onValueChange={(value) => setTypeFilter(value)}
-            >
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="सबै प्रकार" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">सबै प्रकार</SelectItem>
-                {locationTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
+            <ViewSelector
+              currentView={currentView}
+              onViewChange={handleViewChange}
+            />
           </div>
         </Card>
 
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>नाम</TableHead>
-                <TableHead>प्रकार</TableHead>
-                <TableHead>विशेषताहरू</TableHead>
-                <TableHead className="w-36 text-right">कार्यहरू</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
-                    <div className="flex justify-center">
-                      <Loader className="h-6 w-6 animate-spin text-primary" />
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      डाटा लोड हुँदैछ...
-                    </p>
-                  </TableCell>
-                </TableRow>
-              ) : locations && locations.length > 0 ? (
-                locations.map((location) => {
-                  const locationType = locationTypes.find(
-                    (t) => t.value === location.type,
-                  );
+        {isLoading && (
+          <div className="flex justify-center py-12">
+            <div className="flex flex-col items-center gap-2">
+              <Loader className="h-8 w-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">
+                डाटा लोड हुँदैछ...
+              </p>
+            </div>
+          </div>
+        )}
 
-                  return (
-                    <TableRow key={location.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-start">
-                          {location.primaryMedia && (
-                            <div className="mr-3 flex-shrink-0">
-                              <img
-                                src={location.primaryMedia.url}
-                                alt={location.name}
-                                className="h-10 w-10 rounded-md object-cover"
-                              />
-                            </div>
-                          )}
-                          <div>
-                            {location.name}
-                            {location.pointGeometry && (
-                              <div className="flex items-center text-xs text-muted-foreground mt-1">
-                                <MapPin className="h-3 w-3 mr-1" />
-                                <span>
-                                  {location.pointGeometry.coordinates.join(
-                                    ", ",
-                                  )}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {locationType?.label || location.type}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {location.isNewSettlement && (
-                            <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
-                              नयाँ बस्ती
-                            </span>
-                          )}
-                          {location.isTownPlanned && (
-                            <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700">
-                              नियोजित शहरी क्षेत्र
-                            </span>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() =>
-                              router.push(
-                                `/digital-profile/institutions/local-areas/edit/${location.id}`,
-                              )
-                            }
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() =>
-                              handleDeleteClick({
-                                id: location.id,
-                                name: location.name,
-                              })
-                            }
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8">
-                    <p className="text-muted-foreground">
-                      कुनै पनि स्थान फेला परेन
-                    </p>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Card>
+        {isError && (
+          <div className="text-center py-12">
+            <p className="text-red-500">
+              डाटा प्राप्त गर्न त्रुटि भयो। कृपया पुनः प्रयास गर्नुहोस्।
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => refetch()}
+              className="mt-4"
+            >
+              पुनः प्रयास गर्नुहोस्
+            </Button>
+          </div>
+        )}
+
+        {!isLoading && !isError && locationsData && (
+          <div className="min-h-[400px]">
+            {currentView === "table" && (
+              <TableView
+                locations={locationsData.items}
+                locationTypes={locationTypes}
+                pagination={locationsData.pagination}
+                onPageChange={handlePageChange}
+                onDelete={handleDeleteClick}
+                isLoading={isLoading}
+              />
+            )}
+
+            {currentView === "grid" && (
+              <GridView
+                locations={locationsData.items}
+                locationTypes={locationTypes}
+                pagination={locationsData.pagination}
+                onPageChange={handlePageChange}
+                onDelete={handleDeleteClick}
+                isLoading={isLoading}
+              />
+            )}
+
+            {currentView === "map" && (
+              <MapView
+                locations={locationsData.items}
+                locationTypes={locationTypes}
+                isLoading={isLoading}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       <AlertDialog

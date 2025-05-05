@@ -240,6 +240,7 @@ export function CreateLocalAreaForm() {
                               लोड हुँदैछ...
                             </SelectItem>
                           ) : existingLocations &&
+                            Array.isArray(existingLocations) &&
                             existingLocations.length > 0 ? (
                             existingLocations.map((location) => (
                               <SelectItem

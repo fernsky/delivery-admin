@@ -1,11 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Trash2, Map as MapIcon } from "lucide-react";
+import { Trash2, Map as MapIcon, RotateCcw, Compass } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import dynamic from "next/dynamic";
 import { useMapViewStore } from "@/store/map-view-store";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Define the types for our component
 type Point = {
@@ -44,6 +50,11 @@ export function LocationMapInput({
     initialPolygon,
   );
   const { isStreetView, toggleView } = useMapViewStore();
+  const [rotation, setRotation] = useState(0);
+  const [tilt, setTilt] = useState(0);
+
+  // Reference to access map controls exposed by OpenLayersMap
+  const mapControlsRef = useRef<any>(null);
 
   const handleModeSwitchChange = (value: string) => {
     if (value === "point" || value === "polygon") {
@@ -72,10 +83,42 @@ export function LocationMapInput({
     onLocationSelect(point, polygon);
   };
 
+  // Reset map rotation and tilt
+  const handleResetView = (e: any) => {
+    e?.preventDefault();
+    if (window && (window as any).mapControls) {
+      (window as any).mapControls.resetRotation();
+      setRotation(0);
+      setTilt(0);
+    }
+  };
+
+  // Rotate map 45 degrees (for quick rotation)
+  const handleRotate = (e: any) => {
+    e?.preventDefault();
+    if (window && (window as any).mapControls) {
+      // Toggle between 0 and 45-degree rotation
+      const newRotation = rotation === 0 ? Math.PI / 4 : 0;
+      (window as any).mapControls.setRotation(newRotation);
+      setRotation(newRotation);
+    }
+  };
+
+  // Toggle tilt (for quick 3D-like view)
+  const handleToggleTilt = (e: any) => {
+    e?.preventDefault();
+    if (window && (window as any).mapControls) {
+      // Toggle between 0 and 30-degree tilt
+      const newTilt = tilt === 0 ? 30 : 0;
+      (window as any).mapControls.applyTilt(newTilt);
+      setTilt(newTilt);
+    }
+  };
+
   return (
     <div className="flex flex-col">
       <div className="p-3 border-b bg-background flex flex-col sm:flex-row gap-4 justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           <ToggleGroup
             type="single"
             value={mapMode}
@@ -110,6 +153,72 @@ export function LocationMapInput({
             <MapIcon className="h-3 w-3 mr-1" />
             {isStreetView ? "उपग्रह दृश्य" : "सडक दृश्य"}
           </Button>
+
+          <TooltipProvider>
+            <div className="flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-9 h-9 p-0"
+                    onClick={handleResetView}
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Reset View</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-9 h-9 p-0"
+                    onClick={handleRotate}
+                  >
+                    <Compass className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Toggle 45° Rotation</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-9 h-9 p-0"
+                    onClick={handleToggleTilt}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 22l-9-4V6l9 4" />
+                      <path d="M12 22V10" />
+                      <path d="M12 22l9-4V6l-9 4" />
+                    </svg>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Toggle 3D View</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
         </div>
 
         <div className="flex gap-2">
@@ -136,8 +245,8 @@ export function LocationMapInput({
         </div>
       </div>
 
-      {/* Height increased for better UX - now even taller */}
-      <div className="w-full h-[750px]">
+      {/* Height increased for better UX */}
+      <div className="w-full h-[750px] relative">
         <OpenLayersMap
           mapMode={mapMode}
           isDrawing={isDrawing}
@@ -148,12 +257,18 @@ export function LocationMapInput({
         />
       </div>
 
-      <div className="p-2 border-t text-xs bg-muted/20">
-        {mapMode === "point"
-          ? "नक्सामा बिन्दु चयन गर्नका लागि क्लिक गर्नुहोस्"
-          : isDrawing
-            ? "रेखाङ्कन गर्न बिन्दुहरू क्लिक गर्दै जानुहोस् र पहिलो बिन्दुमा क्लिक गरेर समाप्त गर्नुहोस्"
-            : "क्षेत्र रेखाङ्कन गर्न माथिको बटन क्लिक गर्नुहोस्"}
+      <div className="p-3 border-t text-xs bg-muted/20 flex justify-between items-center">
+        <div>
+          {mapMode === "point"
+            ? "नक्सामा बिन्दु चयन गर्नका लागि क्लिक गर्नुहोस्"
+            : isDrawing
+              ? "रेखाङ्कन गर्न बिन्दुहरू क्लिक गर्दै जानुहोस् र पहिलो बिन्दुमा क्लिक गरेर समाप्त गर्नुहोस्"
+              : "क्षेत्र रेखाङ्कन गर्न माथिको बटन क्लिक गर्नुहोस्"}
+        </div>
+        <div className="text-muted-foreground">
+          नक्सा घुमाउन <kbd className="px-1 rounded bg-muted">Shift</kbd> + माउस
+          ड्र्याग प्रयोग गर्नुहोस्
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,10 @@
 import { protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { location } from "@/server/db/schema/profile/institutions/local-areas/location";
-import { eq, sql } from "drizzle-orm";
+import {
+  location,
+  generateSlug,
+} from "@/server/db/schema/profile/institutions/local-areas/location";
+import { eq, sql, and, ne } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
 // Define enum for location types
@@ -22,6 +25,7 @@ const polygonGeometrySchema = z.object({
 const locationSchema = z.object({
   id: z.string(),
   name: z.string().min(1, "Name is required"),
+  slug: z.string().optional(),
   description: z.string().optional(),
   type: z.enum(locationEnum as [string, ...string[]]),
   isNewSettlement: z.boolean().optional(),
@@ -29,6 +33,10 @@ const locationSchema = z.object({
   pointGeometry: pointGeometrySchema.optional(),
   polygonGeometry: polygonGeometrySchema.optional(),
   parentId: z.string().optional(),
+  // SEO fields
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  keywords: z.string().optional(),
 });
 
 // Update a location
@@ -46,7 +54,7 @@ export const updateLocation = protectedProcedure
     try {
       // Check if location exists
       const existing = await ctx.db
-        .select({ id: location.id })
+        .select({ id: location.id, slug: location.slug })
         .from(location)
         .where(eq(location.id, input.id));
 
@@ -55,6 +63,39 @@ export const updateLocation = protectedProcedure
           code: "NOT_FOUND",
           message: "Location not found",
         });
+      }
+
+      // Handle slug
+      let slug = input.slug || existing[0].slug;
+
+      // If name changed but slug wasn't explicitly provided, regenerate slug
+      if (!input.slug && input.name) {
+        const baseSlug = generateSlug(input.name);
+
+        // Check if new slug would conflict with existing ones (except our own)
+        let slugExists = true;
+        let slugCounter = 1;
+        slug = baseSlug;
+
+        while (slugExists) {
+          const existingSlug = await ctx.db
+            .select({ id: location.id })
+            .from(location)
+            .where(
+              and(
+                eq(location.slug, slug),
+                ne(location.id, input.id), // Don't match our own record
+              ),
+            )
+            .limit(1);
+
+          if (existingSlug.length === 0) {
+            slugExists = false;
+          } else {
+            slug = `${baseSlug}-${slugCounter}`;
+            slugCounter++;
+          }
+        }
       }
 
       // Process point geometry if provided
@@ -89,6 +130,7 @@ export const updateLocation = protectedProcedure
 
       const updateData: any = {
         name: input.name,
+        slug,
         description: input.description,
         type: input.type as any,
         isNewSettlement: input.isNewSettlement,
@@ -96,6 +138,10 @@ export const updateLocation = protectedProcedure
         parentId: input.parentId,
         updatedBy: ctx.user.id,
         updatedAt: new Date(),
+        // SEO fields
+        metaTitle: input.metaTitle || input.name,
+        metaDescription: input.metaDescription,
+        keywords: input.keywords,
       };
 
       // Only add geometry fields if they were provided
@@ -107,12 +153,17 @@ export const updateLocation = protectedProcedure
         updateData.polygonGeometry = polygonGeometryValue;
       }
 
-      await ctx.db
+      // Update the location
+      const result = await ctx.db
         .update(location)
         .set(updateData)
-        .where(eq(location.id, input.id));
+        .where(eq(location.id, input.id))
+        .returning();
 
-      return { success: true };
+      return {
+        success: true,
+        slug: result[0].slug,
+      };
     } catch (error) {
       console.error("Error updating location:", error);
       if (error instanceof TRPCError) throw error;

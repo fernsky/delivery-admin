@@ -23,10 +23,16 @@ export const locationTypeEnum = pgEnum("location_type", [
 export const location = pgTable("location", {
   id: varchar("id", { length: 36 }).primaryKey(),
   name: text("name").notNull(),
+  slug: text("slug").notNull(), // Add slug for SEO-friendly URLs
   description: text("description"),
   type: locationTypeEnum("type").notNull(),
   isNewSettlement: boolean("is_new_settlement").default(false),
   isTownPlanned: boolean("is_town_planned").default(false),
+
+  // SEO fields
+  metaTitle: text("meta_title"), // SEO meta title
+  metaDescription: text("meta_description"), // SEO meta description
+  keywords: text("keywords"), // SEO keywords
 
   // Point geometry stored as PostGIS point
   pointGeometry: geometry("point_geometry", { type: "Point" }),
@@ -47,3 +53,13 @@ export const location = pgTable("location", {
 
 export type Location = typeof location.$inferSelect;
 export type NewLocation = typeof location.$inferInsert;
+
+// Slug generation helper function for use in procedures
+export const generateSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "") // Remove special characters
+    .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
+    .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+};

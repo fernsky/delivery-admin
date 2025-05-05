@@ -16,13 +16,20 @@ END $$;
 CREATE TABLE IF NOT EXISTS acme_location (
     id VARCHAR(36) PRIMARY KEY,
     name TEXT NOT NULL,
+    slug TEXT NOT NULL, -- SEO-friendly URL slug
     description TEXT,
     type location_type NOT NULL,
     is_new_settlement BOOLEAN DEFAULT false,
     is_town_planned BOOLEAN DEFAULT false,
+    
+    -- SEO fields
+    meta_title TEXT, -- SEO meta title
+    meta_description TEXT, -- SEO meta description
+    keywords TEXT, -- SEO keywords
+    
     point_geometry GEOMETRY(Point, 4326),
     polygon_geometry GEOMETRY(Polygon, 4326),
-    parent_id VARCHAR(36) REFERENCES location(id),
+    parent_id VARCHAR(36) REFERENCES acme_location(id), -- Fixed reference to acme_location
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
@@ -38,3 +45,6 @@ CREATE INDEX IF NOT EXISTS idx_location_polygon_geometry ON acme_location USING 
 CREATE INDEX IF NOT EXISTS idx_location_type ON acme_location(type);
 CREATE INDEX IF NOT EXISTS idx_location_name ON acme_location(name);
 CREATE INDEX IF NOT EXISTS idx_location_parent ON acme_location(parent_id);
+
+-- Add index for the slug for faster lookups when accessing via SEO-friendly URLs
+CREATE INDEX IF NOT EXISTS idx_location_slug ON acme_location(slug);

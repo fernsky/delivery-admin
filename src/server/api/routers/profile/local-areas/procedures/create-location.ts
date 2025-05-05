@@ -1,7 +1,10 @@
 import { protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { location } from "@/server/db/schema/profile/institutions/local-areas/location";
-import { sql } from "drizzle-orm";
+import {
+  location,
+  generateSlug,
+} from "@/server/db/schema/profile/institutions/local-areas/location";
+import { sql, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { v4 as uuidv4 } from "uuid";
 
@@ -23,6 +26,7 @@ const polygonGeometrySchema = z.object({
 const locationSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required"),
+  slug: z.string().optional(), // Optional slug - will generate if not provided
   description: z.string().optional(),
   type: z.enum(locationEnum as [string, ...string[]]),
   isNewSettlement: z.boolean().optional(),
@@ -30,6 +34,10 @@ const locationSchema = z.object({
   pointGeometry: pointGeometrySchema.optional(),
   polygonGeometry: polygonGeometrySchema.optional(),
   parentId: z.string().optional(),
+  // SEO fields
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  keywords: z.string().optional(),
 });
 
 // Create a new location
@@ -47,7 +55,30 @@ export const createLocation = protectedProcedure
     const id = input.id || uuidv4();
     const now = new Date();
 
+    // Generate slug from name if not provided
+    const baseSlug = input.slug || generateSlug(input.name);
+
     try {
+      // Check if slug already exists
+      let slug = baseSlug;
+      let slugExists = true;
+      let slugCounter = 1;
+
+      while (slugExists) {
+        const existingSlug = await ctx.db
+          .select({ id: location.id })
+          .from(location)
+          .where(eq(location.slug, slug))
+          .limit(1);
+
+        if (existingSlug.length === 0) {
+          slugExists = false;
+        } else {
+          slug = `${baseSlug}-${slugCounter}`;
+          slugCounter++;
+        }
+      }
+
       // Process point geometry if provided
       let pointGeometryValue = null;
       if (input.pointGeometry) {
@@ -86,6 +117,7 @@ export const createLocation = protectedProcedure
           .values({
             id,
             name: input.name,
+            slug,
             description: input.description,
             type: input.type as any,
             isNewSettlement: input.isNewSettlement || false,
@@ -97,6 +129,15 @@ export const createLocation = protectedProcedure
               ? sql`${polygonGeometryValue}`
               : null,
             parentId: input.parentId,
+            // SEO fields
+            metaTitle: input.metaTitle || input.name,
+            metaDescription:
+              input.metaDescription ||
+              input.description?.substring(0, 160) ||
+              `Information about ${input.name}`,
+            keywords:
+              input.keywords ||
+              `${input.name}, ${input.type.toLowerCase()}, local area`,
             createdAt: now,
             updatedAt: now,
             createdBy: ctx.user.id,
@@ -104,7 +145,7 @@ export const createLocation = protectedProcedure
           })
           .returning();
 
-        return { id, success: true };
+        return { id, slug, success: true };
       });
     } catch (error) {
       console.error("Error creating location:", error);

@@ -211,7 +211,7 @@ export function OpenLayersMap({
 
   // Reset rotation and tilt
   const resetRotationAndTilt = (e: any) => {
-    e.preventDefault();
+    e?.preventDefault();
     if (viewRef.current) {
       viewRef.current.animate({
         rotation: 0,
