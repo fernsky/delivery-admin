@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Table,
@@ -11,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { MapPin, Edit, Trash2 } from "lucide-react";
+import { MapPin, Edit, Trash2, Image } from "lucide-react";
 import { Pagination } from "./pagination";
 
 interface LocationItem {
@@ -29,6 +28,7 @@ interface LocationItem {
   primaryMedia?: {
     mediaId: string;
     url: string;
+    fileName?: string;
   };
 }
 
@@ -81,13 +81,17 @@ export function TableView({
                   <TableRow key={location.id}>
                     <TableCell className="font-medium">
                       <div className="flex items-start">
-                        {location.primaryMedia && (
+                        {location.primaryMedia?.url ? (
                           <div className="mr-3 flex-shrink-0">
                             <img
                               src={location.primaryMedia.url}
                               alt={location.name}
                               className="h-10 w-10 rounded-md object-cover"
                             />
+                          </div>
+                        ) : (
+                          <div className="mr-3 flex-shrink-0 h-10 w-10 rounded-md bg-muted flex items-center justify-center">
+                            <Image className="h-5 w-5 text-muted-foreground opacity-70" />
                           </div>
                         )}
                         <div>
@@ -99,7 +103,7 @@ export function TableView({
                                 {location.pointGeometry.coordinates[1].toFixed(
                                   6,
                                 )}
-                                ,
+                                ,{" "}
                                 {location.pointGeometry.coordinates[0].toFixed(
                                   6,
                                 )}

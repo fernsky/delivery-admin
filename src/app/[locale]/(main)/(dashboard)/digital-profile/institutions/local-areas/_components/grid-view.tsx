@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { MapPin, Edit, Trash2, Pin } from "lucide-react";
+import { MapPin, Edit, Trash2, Pin, Image } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "./pagination";
 
@@ -22,6 +22,7 @@ interface LocationItem {
   primaryMedia?: {
     mediaId: string;
     url: string;
+    fileName?: string;
   };
 }
 
@@ -70,7 +71,7 @@ export function GridView({
           return (
             <Card key={location.id} className="overflow-hidden">
               <div className="aspect-video relative bg-muted">
-                {location.primaryMedia ? (
+                {location.primaryMedia?.url ? (
                   <img
                     src={location.primaryMedia.url}
                     alt={location.name}
@@ -78,7 +79,7 @@ export function GridView({
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center bg-muted">
-                    <Pin className="h-12 w-12 text-muted-foreground opacity-20" />
+                    <Image className="h-12 w-12 text-muted-foreground opacity-20" />
                   </div>
                 )}
                 <div className="absolute top-2 right-2 flex gap-1">
@@ -129,7 +130,7 @@ export function GridView({
                   className="w-full"
                   onClick={() =>
                     router.push(
-                      `/digital-profile/institutions/local-areas/${location.slug}`,
+                      `/digital-profile/institutions/local-areas/${location.slug || location.id}`,
                     )
                   }
                 >

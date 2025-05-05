@@ -35,31 +35,36 @@ export async function generatePresignedUrl(
 }
 
 /**
- * Generate presigned URLs for multiple files in batch
- * @param minio MinIO client instance
- * @param files Array of file objects containing id and filePath
- * @param expirySeconds Time in seconds until the URL expires
- * @returns Array of objects with id, url and filename
+ * Generate presigned URLs for multiple media files in one batch
  */
-export async function generateBatchPresignedUrls<
-  T extends { id: string; filePath: string; fileName?: string },
->(
-  minio: MinioClient,
-  files: T[],
-  expirySeconds: number = 24 * 60 * 60, // Default: 24 hours
-): Promise<Array<{ id: string; url: string | null; fileName?: string }>> {
-  return await Promise.all(
-    files.map(async (file) => {
-      const url = await generatePresignedUrl(
-        minio,
-        file.filePath,
-        expirySeconds,
-      );
-      return {
-        id: file.id,
-        url,
-        fileName: file.fileName,
-      };
+export async function generateBatchPresignedUrls(
+  minioClient: MinioClient,
+  mediaFiles: Array<{ id: string; filePath: string; fileName?: string }>,
+  expirySeconds = 24 * 60 * 60, // Default 24 hour expiry
+) {
+  return Promise.all(
+    mediaFiles.map(async (file) => {
+      try {
+        // Generate the presigned URL
+        const url = await minioClient.presignedGetObject(
+          env.BUCKET_NAME!,
+          file.filePath, // Use the filePath from the database
+          expirySeconds,
+        );
+
+        return {
+          id: file.id,
+          url,
+          fileName: file.fileName || file.id,
+        };
+      } catch (error) {
+        console.error(`Error generating presigned URL for ${file.id}:`, error);
+        return {
+          id: file.id,
+          url: null,
+          fileName: file.fileName || file.id,
+        };
+      }
     }),
   );
 }
