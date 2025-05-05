@@ -38,6 +38,11 @@ interface LocationItem {
     type: string;
     coordinates: [number, number];
   };
+  primaryMedia?: {
+    mediaId: string;
+    url: string;
+    fileName?: string;
+  };
 }
 
 interface MapViewProps {
@@ -321,7 +326,16 @@ export function MapView({ locations, locationTypes, isLoading }: MapViewProps) {
         {/* Popup overlay */}
         <div ref={overlayContentRef} className="ol-popup">
           {selectedLocation && (
-            <Card className="w-64 shadow-lg">
+            <Card className="w-64 shadow-lg overflow-hidden">
+              {selectedLocation.primaryMedia?.url && (
+                <div className="w-full h-32">
+                  <img
+                    src={selectedLocation.primaryMedia.url}
+                    alt={selectedLocation.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
               <CardContent className="p-3">
                 <h3 className="font-medium">{selectedLocation.name}</h3>
                 <p className="text-sm text-muted-foreground">

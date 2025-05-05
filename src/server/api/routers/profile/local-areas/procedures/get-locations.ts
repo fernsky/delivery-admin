@@ -96,6 +96,9 @@ export const getAllLocations = publicProcedure
         selectFields.centroid = sql`CASE WHEN ${location.polygonGeometry} IS NOT NULL THEN ST_AsGeoJSON(ST_Centroid(${location.polygonGeometry})) 
                       WHEN ${location.pointGeometry} IS NOT NULL THEN ST_AsGeoJSON(${location.pointGeometry})
                       ELSE NULL END`;
+      } else {
+        // For non-map views, only include point geometry for display purposes
+        selectFields.pointGeometry = sql`CASE WHEN ${location.pointGeometry} IS NOT NULL THEN ST_AsGeoJSON(${location.pointGeometry}) ELSE NULL END`;
       }
 
       // Get total count for pagination
@@ -122,13 +125,13 @@ export const getAllLocations = publicProcedure
       const processedLocations = locations.map((loc) => {
         const result: any = { ...loc.location };
 
-        // Only process geometry for map view
+        if (loc.location.pointGeometry) {
+          result.pointGeometry = JSON.parse(
+            loc.location.pointGeometry as string,
+          );
+        }
+
         if (viewType === "map") {
-          if (loc.location.pointGeometry) {
-            result.pointGeometry = JSON.parse(
-              loc.location.pointGeometry as string,
-            );
-          }
           if (loc.location.polygonGeometry) {
             result.polygonGeometry = JSON.parse(
               loc.location.polygonGeometry as string,
@@ -138,54 +141,56 @@ export const getAllLocations = publicProcedure
             result.centroid = JSON.parse(loc.location.centroid as string);
           }
         }
+
         return result;
       });
 
-      // Get primary media for each location for grid and table views
+      // Get primary media for each location
+      const locationIds = processedLocations.map((loc) => loc.id);
+
+      // Only query media if we have locations
       let locationsWithMedia = processedLocations;
 
-      if (viewType === "table" || viewType === "grid") {
-        const locationIds = processedLocations.map((loc) => loc.id);
-
-        // Only query media if we have locations
-        let primaryMediaMap = new Map();
-        if (locationIds.length > 0) {
-          const primaryMedia = await ctx.db
-            .select({
-              entityId: entityMedia.entityId,
-              mediaId: media.id,
-              filePath: media.filePath,
-            })
-            .from(entityMedia)
-            .innerJoin(media, eq(entityMedia.mediaId, media.id))
-            .where(
-              and(
-                inArray(entityMedia.entityId, locationIds),
-                eq(entityMedia.entityType, "LOCATION"),
-                eq(entityMedia.isPrimary, true),
-              ),
-            );
-
-          // Generate presigned URLs for primary media
-          const mediaWithUrls = await generateBatchPresignedUrls(
-            ctx.minio,
-            primaryMedia.map((item) => ({
-              id: item.mediaId,
-              filePath: item.filePath,
-            })),
+      if (locationIds.length > 0) {
+        const primaryMedia = await ctx.db
+          .select({
+            entityId: entityMedia.entityId,
+            mediaId: media.id,
+            filePath: media.filePath,
+            fileName: media.fileName,
+          })
+          .from(entityMedia)
+          .innerJoin(media, eq(entityMedia.mediaId, media.id))
+          .where(
+            and(
+              inArray(entityMedia.entityId, locationIds),
+              eq(entityMedia.entityType, "LOCATION"),
+              eq(entityMedia.isPrimary, true),
+            ),
           );
 
-          // Create a map of entity ID to media data with presigned URL
-          primaryMediaMap = new Map(
-            primaryMedia.map((item, index) => [
-              item.entityId,
-              {
-                mediaId: item.mediaId,
-                url: mediaWithUrls[index].url,
-              },
-            ]),
-          );
-        }
+        // Generate presigned URLs using the minio-helpers utility
+        const mediaWithUrls = await generateBatchPresignedUrls(
+          ctx.minio,
+          primaryMedia.map((item) => ({
+            id: item.mediaId,
+            filePath: item.filePath,
+            fileName: item.fileName,
+          })),
+          24 * 60 * 60, // 24 hour expiry
+        );
+
+        // Create a map of entity ID to media data with presigned URL
+        const primaryMediaMap = new Map(
+          mediaWithUrls.map((item, index) => [
+            primaryMedia[index].entityId,
+            {
+              mediaId: primaryMedia[index].mediaId,
+              url: item.url || "",
+              fileName: item.fileName || primaryMedia[index].fileName,
+            },
+          ]),
+        );
 
         // Combine locations with their primary media
         locationsWithMedia = processedLocations.map((loc) => ({
