@@ -1,3 +1,4 @@
+--DUMMY DATA
 -- Create the enums if they don't exist
 DO $$ BEGIN
     CREATE TYPE married_age_group AS ENUM (
