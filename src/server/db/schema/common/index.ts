@@ -1,3 +1,3 @@
 export * from "./entity-media";
 export * from "./media";
-export * from "./enums.ts";
+export * from "./enums";
