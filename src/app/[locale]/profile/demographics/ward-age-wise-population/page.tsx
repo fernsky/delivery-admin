@@ -99,7 +99,7 @@ export default async function WardAgeWisePopulationPage() {
     summaryData = null;
   }
 
-  // Process data for overall summary by age group
+  // Define type for age group summary
   type AgeGroupSummary = {
     ageGroup: string;
     ageGroupName: string;
@@ -109,31 +109,32 @@ export default async function WardAgeWisePopulationPage() {
     other: number;
   };
 
-  const aggregatedByAgeGroup = ageData.reduce<Record<string, AgeGroupSummary>>(
-    (acc, item) => {
-      const key = item.ageGroup;
-      if (!acc[key]) {
-        acc[key] = {
-          ageGroup: key,
-          ageGroupName: AGE_GROUP_NAMES[key] || key,
-          total: 0,
-          male: 0,
-          female: 0,
-          other: 0,
-        };
-      }
-      // Convert to array and sort by age group order
-      const ageGroupOrder = Object.keys(AGE_GROUP_NAMES);
-      const overallSummaryByAge: AgeGroupSummary[] = Object.values(
-        aggregatedByAgeGroup,
-      ).sort(
-        (a, b) =>
-          ageGroupOrder.indexOf(a.ageGroup) - ageGroupOrder.indexOf(b.ageGroup),
-      );
-      return acc;
-    },
-    {},
-  );
+  // Process data for overall summary by age group
+  const aggregatedByAgeGroup: Record<string, AgeGroupSummary> = {};
+
+  // Populate age group summary
+  ageData.forEach((item) => {
+    const key = item.ageGroup;
+    if (!aggregatedByAgeGroup[key]) {
+      aggregatedByAgeGroup[key] = {
+        ageGroup: key,
+        ageGroupName: AGE_GROUP_NAMES[key] || key,
+        total: 0,
+        male: 0,
+        female: 0,
+        other: 0,
+      };
+    }
+
+    aggregatedByAgeGroup[key].total += item.population;
+
+    if (item.gender === "MALE")
+      aggregatedByAgeGroup[key].male += item.population;
+    else if (item.gender === "FEMALE")
+      aggregatedByAgeGroup[key].female += item.population;
+    else if (item.gender === "OTHER")
+      aggregatedByAgeGroup[key].other += item.population;
+  });
 
   // Convert to array and sort by age group order
   const ageGroupOrder = Object.keys(AGE_GROUP_NAMES);
@@ -143,20 +144,23 @@ export default async function WardAgeWisePopulationPage() {
   );
 
   // Process data for overall summary by gender
-  const aggregatedByGender = ageData.reduce<
-    Record<string, { gender: string; genderName: string; population: number }>
-  >((acc, item) => {
+  const aggregatedByGender: Record<
+    string,
+    { gender: string; genderName: string; population: number }
+  > = {};
+
+  // Populate gender summary
+  ageData.forEach((item) => {
     const key = item.gender;
-    if (!acc[key]) {
-      acc[key] = {
+    if (!aggregatedByGender[key]) {
+      aggregatedByGender[key] = {
         gender: key,
         genderName: GENDER_NAMES[key] || key,
         population: 0,
       };
     }
-    acc[key].population += item.population;
-    return acc;
-  }, {});
+    aggregatedByGender[key].population += item.population;
+  });
 
   const overallSummaryByGender = Object.values(aggregatedByGender);
   const totalPopulation = overallSummaryByGender.reduce(

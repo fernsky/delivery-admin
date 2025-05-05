@@ -19,6 +19,46 @@ interface AgeAnalysisProps {
   AGE_CATEGORIES: Record<string, string[]>;
 }
 
+// Helper function to estimate median age from age group
+const getMedianAgeEstimate = (ageGroup: string): number => {
+  switch (ageGroup) {
+    case "AGE_0_4":
+      return 2.5;
+    case "AGE_5_9":
+      return 7.5;
+    case "AGE_10_14":
+      return 12.5;
+    case "AGE_15_19":
+      return 17.5;
+    case "AGE_20_24":
+      return 22.5;
+    case "AGE_25_29":
+      return 27.5;
+    case "AGE_30_34":
+      return 32.5;
+    case "AGE_35_39":
+      return 37.5;
+    case "AGE_40_44":
+      return 42.5;
+    case "AGE_45_49":
+      return 47.5;
+    case "AGE_50_54":
+      return 52.5;
+    case "AGE_55_59":
+      return 57.5;
+    case "AGE_60_64":
+      return 62.5;
+    case "AGE_65_69":
+      return 67.5;
+    case "AGE_70_74":
+      return 72.5;
+    case "AGE_75_AND_ABOVE":
+      return 80;
+    default:
+      return 30;
+  }
+};
+
 export default function AgeAnalysisSection({
   overallSummaryByAge,
   totalPopulation,
@@ -92,46 +132,6 @@ export default function AgeAnalysisSection({
       medianAge: medianAgeEstimate,
     };
   }, [overallSummaryByAge, totalPopulation, AGE_CATEGORIES]);
-
-  // Helper function to estimate median age from age group
-  const getMedianAgeEstimate = (ageGroup: string): number => {
-    switch (ageGroup) {
-      case "AGE_0_4":
-        return 2.5;
-      case "AGE_5_9":
-        return 7.5;
-      case "AGE_10_14":
-        return 12.5;
-      case "AGE_15_19":
-        return 17.5;
-      case "AGE_20_24":
-        return 22.5;
-      case "AGE_25_29":
-        return 27.5;
-      case "AGE_30_34":
-        return 32.5;
-      case "AGE_35_39":
-        return 37.5;
-      case "AGE_40_44":
-        return 42.5;
-      case "AGE_45_49":
-        return 47.5;
-      case "AGE_50_54":
-        return 52.5;
-      case "AGE_55_59":
-        return 57.5;
-      case "AGE_60_64":
-        return 62.5;
-      case "AGE_65_69":
-        return 67.5;
-      case "AGE_70_74":
-        return 72.5;
-      case "AGE_75_AND_ABOVE":
-        return 80;
-      default:
-        return 30;
-    }
-  };
 
   return (
     <>
