@@ -137,7 +137,7 @@ export function LocationMapInput({
       </div>
 
       {/* Height increased for better UX - now even taller */}
-      <div className="w-full h-[450px]">
+      <div className="w-full h-[750px]">
         <OpenLayersMap
           mapMode={mapMode}
           isDrawing={isDrawing}
