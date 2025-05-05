@@ -145,7 +145,6 @@ export function LocationMapInput({
           initialPolygon={initialPolygon}
           onUpdate={handleMapUpdate}
           startDrawing={isDrawing}
-          isStreetView={isStreetView}
         />
       </div>
 

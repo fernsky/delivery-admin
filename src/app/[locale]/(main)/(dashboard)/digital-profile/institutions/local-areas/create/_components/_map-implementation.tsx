@@ -14,6 +14,7 @@ import { Point as OLPoint, Polygon as OLPolygon } from "ol/geom";
 import { Feature } from "ol";
 import { Style, Fill, Stroke, Circle } from "ol/style";
 import DrawInteraction from "ol/interaction/Draw";
+import { useMapViewStore } from "@/store/map-view-store";
 
 // Define the types
 type Point = {
@@ -32,7 +33,6 @@ interface OpenLayersMapProps {
   initialPoint?: Point;
   initialPolygon?: Polygon;
   startDrawing: boolean;
-  isStreetView: boolean;
   onUpdate: (point?: Point, polygon?: Polygon) => void;
 }
 
@@ -42,17 +42,16 @@ export function OpenLayersMap({
   initialPoint,
   initialPolygon,
   startDrawing,
-  isStreetView,
   onUpdate,
 }: OpenLayersMapProps) {
+  // Get isStreetView directly from the store instead of props
+  const { isStreetView } = useMapViewStore();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const pointSourceRef = useRef<VectorSource>(new VectorSource());
   const polygonSourceRef = useRef<VectorSource>(new VectorSource());
   const drawInteractionRef = useRef<DrawInteraction | null>(null);
-  const [baseTileLayer, setBaseTileLayer] = useState<TileLayer<any> | null>(
-    null,
-  );
+  const tileLayerRef = useRef<TileLayer<any> | null>(null);
 
   // Initialize map
   useEffect(() => {
@@ -79,21 +78,19 @@ export function OpenLayersMap({
     });
 
     // Create the initial tile layer based on the view preference
-    const initialTileLayer = isStreetView
-      ? new TileLayer({
-          source: new XYZ({
+    const initialTileLayer = new TileLayer({
+      source: isStreetView
+        ? new XYZ({
             url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
             maxZoom: 19,
-          }),
-        })
-      : new TileLayer({
-          source: new XYZ({
+          })
+        : new XYZ({
             url: "https://mt1.google.com/vt/lyrs=y,h&x={x}&y={y}&z={z}",
             maxZoom: 19,
           }),
-        });
+    });
 
-    setBaseTileLayer(initialTileLayer);
+    tileLayerRef.current = initialTileLayer;
 
     // Create the map
     mapRef.current = new Map({
@@ -135,28 +132,33 @@ export function OpenLayersMap({
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Remove the existing base tile layer
-    if (baseTileLayer) {
-      mapRef.current.removeLayer(baseTileLayer);
-    }
-
-    // Create and add the new tile layer based on the view preference
-    const newTileLayer = isStreetView
-      ? new TileLayer({
-          source: new XYZ({
-            url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-            maxZoom: 19,
-          }),
+    // Create a new tile source based on the current view setting
+    const newSource = isStreetView
+      ? new XYZ({
+          url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+          maxZoom: 19,
         })
-      : new TileLayer({
-          source: new XYZ({
-            url: "https://mt1.google.com/vt/lyrs=y,h&x={x}&y={y}&z={z}",
-            maxZoom: 19,
-          }),
+      : new XYZ({
+          url: "https://mt1.google.com/vt/lyrs=y,h&x={x}&y={y}&z={z}",
+          maxZoom: 19,
         });
 
-    mapRef.current.getLayers().insertAt(0, newTileLayer);
-    setBaseTileLayer(newTileLayer);
+    // If we have a tile layer reference, update its source
+    if (tileLayerRef.current) {
+      tileLayerRef.current.setSource(newSource);
+    } else {
+      // If for some reason the tile layer reference is lost, create a new one
+      const newTileLayer = new TileLayer({ source: newSource });
+      tileLayerRef.current = newTileLayer;
+
+      // Insert it at the bottom of the layer stack
+      if (mapRef.current.getLayers().getLength() > 0) {
+        mapRef.current.getLayers().removeAt(0);
+        mapRef.current.getLayers().insertAt(0, newTileLayer);
+      } else {
+        mapRef.current.addLayer(newTileLayer);
+      }
+    }
   }, [isStreetView]);
 
   // Handle map mode changes and drawing state
