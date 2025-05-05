@@ -62,7 +62,6 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function CreateLocalAreaPage() {
   const router = useRouter();
-  const [isMapOpen, setIsMapOpen] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<
     Array<{ id: string; fileUrl: string; isPrimary?: boolean }>
   >([]);
@@ -151,10 +150,6 @@ export default function CreateLocalAreaPage() {
     createLocation(values);
   };
 
-  const handleMapToggle = () => {
-    setIsMapOpen(!isMapOpen);
-  };
-
   const handleLocationSelect = (
     pointGeometry?: { type: "Point"; coordinates: [number, number] },
     polygonGeometry?: { type: "Polygon"; coordinates: [number, number][][] },
@@ -166,8 +161,6 @@ export default function CreateLocalAreaPage() {
     if (polygonGeometry) {
       form.setValue("polygonGeometry", polygonGeometry);
     }
-
-    setIsMapOpen(false);
   };
 
   const { mutate: addMedia } = api.common.media.upload.useMutation({
@@ -416,44 +409,63 @@ export default function CreateLocalAreaPage() {
               <div className="space-y-4">
                 <div className="text-lg font-medium">स्थान भौगोलिक जानकारी</div>
                 <div className="grid grid-cols-1 gap-6">
-                  <div className="flex flex-col space-y-2">
-                    <Button
-                      type="button"
-                      onClick={handleMapToggle}
-                      variant="outline"
-                      className="w-full sm:w-auto"
-                    >
-                      <MapPin className="mr-2 h-4 w-4" />
-                      मानचित्रमा स्थान चयन गर्नुहोस्
-                    </Button>
+                  {/* Location coordinates display, shown when we have coordinates */}
+                  {(form.watch("pointGeometry") ||
+                    form.watch("polygonGeometry")) && (
+                    <div className="bg-muted p-3 rounded-md">
+                      <div className="text-sm text-muted-foreground">
+                        {form.watch("pointGeometry") && (
+                          <div className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-1 text-primary" />
+                            <span>
+                              बिन्दु स्थान:{" "}
+                              {form
+                                .watch("pointGeometry")
+                                ?.coordinates[1].toFixed(6)}
+                              ,
+                              {form
+                                .watch("pointGeometry")
+                                ?.coordinates[0].toFixed(6)}
+                            </span>
+                          </div>
+                        )}
 
-                    <div className="text-sm text-muted-foreground">
-                      {form.watch("pointGeometry") && (
-                        <div>
-                          बिन्दु स्थान:{" "}
-                          {form.watch("pointGeometry")?.coordinates[1]},
-                          {form.watch("pointGeometry")?.coordinates[0]}
-                        </div>
-                      )}
-
-                      {form.watch("polygonGeometry") && (
-                        <div>
-                          बहुभुज क्षेत्र:{" "}
-                          {form.watch("polygonGeometry")?.coordinates[0]
-                            ?.length || 0}{" "}
-                          बिन्दुहरू
-                        </div>
-                      )}
+                        {form.watch("polygonGeometry") && (
+                          <div className="flex items-center mt-1">
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              className="h-4 w-4 mr-1 text-primary"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M3 7L9 4L15 7L21 4V17L15 20L9 17L3 20V7Z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            <span>
+                              बहुभुज क्षेत्र:{" "}
+                              {form.watch("polygonGeometry")?.coordinates[0]
+                                ?.length || 0}{" "}
+                              बिन्दुहरू
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {isMapOpen && (
+                  {/* Always show the map in a larger container */}
+                  <div className="border rounded-lg overflow-hidden">
                     <LocationMapInput
                       onLocationSelect={handleLocationSelect}
                       initialPoint={form.watch("pointGeometry")}
                       initialPolygon={form.watch("polygonGeometry")}
                     />
-                  )}
+                  </div>
                 </div>
               </div>
 

@@ -6,6 +6,7 @@ import Map from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
+import XYZ from "ol/source/XYZ";
 import { fromLonLat, toLonLat } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
@@ -31,6 +32,7 @@ interface OpenLayersMapProps {
   initialPoint?: Point;
   initialPolygon?: Polygon;
   startDrawing: boolean;
+  isStreetView: boolean;
   onUpdate: (point?: Point, polygon?: Polygon) => void;
 }
 
@@ -40,6 +42,7 @@ export function OpenLayersMap({
   initialPoint,
   initialPolygon,
   startDrawing,
+  isStreetView,
   onUpdate,
 }: OpenLayersMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -47,6 +50,9 @@ export function OpenLayersMap({
   const pointSourceRef = useRef<VectorSource>(new VectorSource());
   const polygonSourceRef = useRef<VectorSource>(new VectorSource());
   const drawInteractionRef = useRef<DrawInteraction | null>(null);
+  const [baseTileLayer, setBaseTileLayer] = useState<TileLayer<any> | null>(
+    null,
+  );
 
   // Initialize map
   useEffect(() => {
@@ -72,16 +78,27 @@ export function OpenLayersMap({
       }),
     });
 
+    // Create the initial tile layer based on the view preference
+    const initialTileLayer = isStreetView
+      ? new TileLayer({
+          source: new XYZ({
+            url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+            maxZoom: 19,
+          }),
+        })
+      : new TileLayer({
+          source: new XYZ({
+            url: "https://mt1.google.com/vt/lyrs=y,h&x={x}&y={y}&z={z}",
+            maxZoom: 19,
+          }),
+        });
+
+    setBaseTileLayer(initialTileLayer);
+
     // Create the map
     mapRef.current = new Map({
       target: mapContainer.current,
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-        polygonVectorLayer,
-        pointVectorLayer,
-      ],
+      layers: [initialTileLayer, polygonVectorLayer, pointVectorLayer],
       view: new View({
         center: fromLonLat([84.0, 28.3]), // Default center of Nepal
         zoom: 6,
@@ -113,6 +130,34 @@ export function OpenLayersMap({
       }
     };
   }, []);
+
+  // Update the tile layer when view type changes
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    // Remove the existing base tile layer
+    if (baseTileLayer) {
+      mapRef.current.removeLayer(baseTileLayer);
+    }
+
+    // Create and add the new tile layer based on the view preference
+    const newTileLayer = isStreetView
+      ? new TileLayer({
+          source: new XYZ({
+            url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+            maxZoom: 19,
+          }),
+        })
+      : new TileLayer({
+          source: new XYZ({
+            url: "https://mt1.google.com/vt/lyrs=y,h&x={x}&y={y}&z={z}",
+            maxZoom: 19,
+          }),
+        });
+
+    mapRef.current.getLayers().insertAt(0, newTileLayer);
+    setBaseTileLayer(newTileLayer);
+  }, [isStreetView]);
 
   // Handle map mode changes and drawing state
   useEffect(() => {

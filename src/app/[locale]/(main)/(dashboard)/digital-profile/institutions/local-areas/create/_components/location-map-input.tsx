@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Trash2, Map as MapIcon } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Trash2, MapPin, Edit } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useMapViewStore } from "@/store/map-view-store";
 
 // Define the types for our component
 type Point = {
@@ -43,6 +43,7 @@ export function LocationMapInput({
   const [selectedPolygon, setSelectedPolygon] = useState<Polygon | undefined>(
     initialPolygon,
   );
+  const { isStreetView, toggleView } = useMapViewStore();
 
   const handleModeSwitchChange = (value: string) => {
     if (value === "point" || value === "polygon") {
@@ -51,87 +52,92 @@ export function LocationMapInput({
     }
   };
 
-  const handleStartDrawing = (e: any) => {
-    e.preventDefault();
+  const handleStartDrawing = () => {
     setIsDrawing(true);
   };
 
-  const handleCompletePolygon = (e: any) => {
-    e.preventDefault();
-
-    // This is just UI feedback - actual completion is handled in the map component
-    if (isDrawing) {
-      alert("पहिलो बिन्दुमा क्लिक गरेर रेखाङ्कन पूरा गर्नुहोस्");
-    }
-  };
-
-  const handleClearSelection = (e: any) => {
-    e.preventDefault();
+  const handleClearSelection = () => {
     setSelectedPoint(undefined);
     setSelectedPolygon(undefined);
     setIsDrawing(false);
-  };
-
-  const handleSave = (e: any) => {
-    e.preventDefault();
-    onLocationSelect(selectedPoint, selectedPolygon);
+    onLocationSelect(undefined, undefined);
   };
 
   const handleMapUpdate = (point?: Point, polygon?: Polygon) => {
     if (point) setSelectedPoint(point);
     if (polygon) setSelectedPolygon(polygon);
     if (polygon) setIsDrawing(false);
+
+    // Immediately notify parent of the selection
+    onLocationSelect(point, polygon);
   };
 
   return (
-    <Card className="p-0 overflow-hidden">
-      <div className="p-4 border-b flex flex-col sm:flex-row gap-4 justify-between">
-        <ToggleGroup
-          type="single"
-          value={mapMode}
-          onValueChange={handleModeSwitchChange}
-        >
-          <ToggleGroupItem value="point" aria-label="Toggle point mode">
-            <MapPin className="h-4 w-4 mr-2" />
-            बिन्दु स्थान
-          </ToggleGroupItem>
-          <ToggleGroupItem value="polygon" aria-label="Toggle polygon mode">
-            <Edit className="h-4 w-4 mr-2" />
-            क्षेत्र आकार
-          </ToggleGroupItem>
-        </ToggleGroup>
+    <div className="flex flex-col">
+      <div className="p-3 border-b bg-background flex flex-col sm:flex-row gap-4 justify-between">
+        <div className="flex items-center gap-4">
+          <ToggleGroup
+            type="single"
+            value={mapMode}
+            onValueChange={handleModeSwitchChange}
+            className="justify-start"
+          >
+            <ToggleGroupItem
+              value="point"
+              aria-label="Toggle point mode"
+              className="text-xs sm:text-sm"
+            >
+              बिन्दु स्थान
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="polygon"
+              aria-label="Toggle polygon mode"
+              className="text-xs sm:text-sm"
+            >
+              क्षेत्र आकार
+            </ToggleGroupItem>
+          </ToggleGroup>
+
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-xs sm:text-sm"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleView();
+            }}
+          >
+            <MapIcon className="h-3 w-3 mr-1" />
+            {isStreetView ? "उपग्रह दृश्य" : "सडक दृश्य"}
+          </Button>
+        </div>
 
         <div className="flex gap-2">
-          {mapMode === "polygon" && (
-            <>
-              {!isDrawing ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleStartDrawing}
-                >
-                  रेखाङ्कन सुरु गर्नुहोस्
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleCompletePolygon}
-                >
-                  रेखाङ्कन पूरा गर्नुहोस्
-                </Button>
-              )}
-            </>
+          {mapMode === "polygon" && !isDrawing && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleStartDrawing}
+              className="text-xs sm:text-sm"
+            >
+              रेखाङ्कन सुरु
+            </Button>
           )}
 
-          <Button variant="ghost" size="sm" onClick={handleClearSelection}>
-            <Trash2 className="h-4 w-4 mr-2" />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleClearSelection}
+            className="text-xs sm:text-sm"
+          >
+            <Trash2 className="h-3 w-3 mr-1" />
             सबै हटाउनुहोस्
           </Button>
         </div>
       </div>
 
-      <div className="w-full h-[400px]">
+      {/* Height increased for better UX - now even taller */}
+      <div className="w-full h-[450px]">
         <OpenLayersMap
           mapMode={mapMode}
           isDrawing={isDrawing}
@@ -139,22 +145,18 @@ export function LocationMapInput({
           initialPolygon={initialPolygon}
           onUpdate={handleMapUpdate}
           startDrawing={isDrawing}
+          isStreetView={isStreetView}
         />
       </div>
 
-      <div className="p-4 border-t flex justify-between">
-        <div className="text-sm">
-          {mapMode === "point"
-            ? "नक्सामा बिन्दु चयन गर्नका लागि क्लिक गर्नुहोस्"
-            : isDrawing
-              ? "रेखाङ्कन गर्न बिन्दुहरू क्लिक गर्दै जानुहोस् र पहिलो बिन्दुमा क्लिक गरेर समाप्त गर्नुहोस्"
-              : "क्षेत्र रेखाङ्कन गर्न माथिको बटन क्लिक गर्नुहोस्"}
-        </div>
-        <Button variant="default" size="sm" onClick={handleSave}>
-          स्थान पुष्टि गर्नुहोस्
-        </Button>
+      <div className="p-2 border-t text-xs bg-muted/20">
+        {mapMode === "point"
+          ? "नक्सामा बिन्दु चयन गर्नका लागि क्लिक गर्नुहोस्"
+          : isDrawing
+            ? "रेखाङ्कन गर्न बिन्दुहरू क्लिक गर्दै जानुहोस् र पहिलो बिन्दुमा क्लिक गरेर समाप्त गर्नुहोस्"
+            : "क्षेत्र रेखाङ्कन गर्न माथिको बटन क्लिक गर्नुहोस्"}
       </div>
-    </Card>
+    </div>
   );
 }
 
