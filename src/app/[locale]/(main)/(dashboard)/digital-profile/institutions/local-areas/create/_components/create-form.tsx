@@ -384,7 +384,10 @@ export function CreateLocalAreaForm() {
                 >
                   पछिल्लो
                 </Button>
-                <Button type="submit" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  disabled={isLoading || !form.formState.isValid}
+                >
                   {isLoading && (
                     <Loader className="mr-2 h-4 w-4 animate-spin" />
                   )}

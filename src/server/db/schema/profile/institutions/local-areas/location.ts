@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
+import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define location type enum
 export const locationTypeEnum = pgEnum("location_type", [
@@ -54,12 +55,5 @@ export const location = pgTable("location", {
 export type Location = typeof location.$inferSelect;
 export type NewLocation = typeof location.$inferInsert;
 
-// Slug generation helper function for use in procedures
-export const generateSlug = (name: string): string => {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "") // Remove special characters
-    .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
-    .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
-};
+// Export the slug generation helper for use in procedures
+export { generateSlug } from "@/server/utils/slug-helpers";

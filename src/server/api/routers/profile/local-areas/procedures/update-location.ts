@@ -1,9 +1,7 @@
 import { protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import {
-  location,
-  generateSlug,
-} from "@/server/db/schema/profile/institutions/local-areas/location";
+import { location } from "@/server/db/schema/profile/institutions/local-areas/location";
+import { generateSlug } from "@/server/utils/slug-helpers";
 import { eq, sql, and, ne } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
@@ -68,7 +66,7 @@ export const updateLocation = protectedProcedure
       // Handle slug
       let slug = input.slug || existing[0].slug;
 
-      // If name changed but slug wasn't explicitly provided, regenerate slug
+      // If name changed but slug wasn't explicitly provided, regenerate slug with romanization
       if (!input.slug && input.name) {
         const baseSlug = generateSlug(input.name);
 

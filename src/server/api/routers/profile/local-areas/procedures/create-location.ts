@@ -1,9 +1,7 @@
 import { protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import {
-  location,
-  generateSlug,
-} from "@/server/db/schema/profile/institutions/local-areas/location";
+import { location } from "@/server/db/schema/profile/institutions/local-areas/location";
+import { generateSlug } from "@/server/utils/slug-helpers";
 import { sql, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { v4 as uuidv4 } from "uuid";
@@ -55,7 +53,7 @@ export const createLocation = protectedProcedure
     const id = input.id || uuidv4();
     const now = new Date();
 
-    // Generate slug from name if not provided
+    // Generate slug from name if not provided, now with romanization support
     const baseSlug = input.slug || generateSlug(input.name);
 
     try {
