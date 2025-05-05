@@ -139,8 +139,8 @@ const menuConfig: Menu[] = [
     roles: ["admin", "superadmin"],
     submenus: [
       {
-        href: "/digital-profile/economics/economic-summary",
-        label: "आर्थिक सारांश",
+        href: "/digital-profile/economics/ward-age-gender-wise-economically-active-population",
+        label: "आर्थिक रुपमा सक्रिय जनसंख्या",
         roles: ["admin", "superadmin"],
       },
       {
