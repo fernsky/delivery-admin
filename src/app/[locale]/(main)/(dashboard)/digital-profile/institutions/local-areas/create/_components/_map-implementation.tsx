@@ -14,6 +14,8 @@ import { Point as OLPoint, Polygon as OLPolygon } from "ol/geom";
 import { Feature } from "ol";
 import { Style, Fill, Stroke, Circle } from "ol/style";
 import DrawInteraction from "ol/interaction/Draw";
+import DragRotateAndZoom from "ol/interaction/DragRotateAndZoom";
+import { defaults as defaultInteractions } from "ol/interaction";
 import { useMapViewStore } from "@/store/map-view-store";
 
 // Define the types
@@ -48,10 +50,13 @@ export function OpenLayersMap({
   const { isStreetView } = useMapViewStore();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
+  const viewRef = useRef<View | null>(null);
   const pointSourceRef = useRef<VectorSource>(new VectorSource());
   const polygonSourceRef = useRef<VectorSource>(new VectorSource());
   const drawInteractionRef = useRef<DrawInteraction | null>(null);
   const tileLayerRef = useRef<TileLayer<any> | null>(null);
+  const [rotation, setRotation] = useState(0);
+  const [tilt, setTilt] = useState(0); // Pseudo-tilt for UI feedback
 
   // Initialize map
   useEffect(() => {
@@ -92,14 +97,24 @@ export function OpenLayersMap({
 
     tileLayerRef.current = initialTileLayer;
 
-    // Create the map
+    // Create a view with rotation enabled
+    const view = new View({
+      center: fromLonLat([84.0, 28.3]), // Default center of Nepal
+      zoom: 6,
+      rotation: 0, // Initial rotation
+      enableRotation: true, // Enable rotation
+    });
+
+    viewRef.current = view;
+
+    // Create the map with DragRotateAndZoom interaction
     mapRef.current = new Map({
       target: mapContainer.current,
       layers: [initialTileLayer, polygonVectorLayer, pointVectorLayer],
-      view: new View({
-        center: fromLonLat([84.0, 28.3]), // Default center of Nepal
-        zoom: 6,
-      }),
+      view: view,
+      interactions: defaultInteractions().extend([
+        new DragRotateAndZoom(), // Add drag rotate and zoom interaction
+      ]),
     });
 
     // Add click handler for point selection
@@ -107,6 +122,13 @@ export function OpenLayersMap({
       if (mapMode === "point" && !isDrawing) {
         const coordinates = toLonLat(event.coordinate);
         addPointFeature(coordinates as [number, number]);
+      }
+    });
+
+    // Listen for view rotation changes
+    view.on("change:rotation", () => {
+      if (viewRef.current) {
+        setRotation(viewRef.current.getRotation());
       }
     });
 
@@ -176,6 +198,47 @@ export function OpenLayersMap({
       startDrawingPolygon();
     }
   }, [mapMode, startDrawing]);
+
+  // Set map rotation
+  const setMapRotation = (angle: number) => {
+    if (viewRef.current) {
+      viewRef.current.animate({
+        rotation: angle,
+        duration: 250,
+      });
+    }
+  };
+
+  // Reset rotation and tilt
+  const resetRotationAndTilt = (e: any) => {
+    e.preventDefault();
+    if (viewRef.current) {
+      viewRef.current.animate({
+        rotation: 0,
+        duration: 250,
+      });
+      setTilt(0);
+    }
+  };
+
+  // Apply tilt effect (pseudo-3D)
+  const applyTilt = (tiltValue: number) => {
+    setTilt(tiltValue);
+
+    // Apply a slight rotation based on tilt to give a 3D illusion
+    if (viewRef.current && mapRef.current) {
+      // Scale the view slightly based on tilt to give a perspective effect
+      const scaleFactor = 1 + tiltValue / 20;
+
+      // Apply CSS 3D transform to the map container for a tilt effect
+      const mapElement = mapRef.current.getTargetElement();
+      if (mapElement) {
+        // Apply a subtle perspective transformation
+        mapElement.style.transform = `perspective(1000px) rotateX(${tiltValue}deg)`;
+        mapElement.style.transformOrigin = "center bottom";
+      }
+    }
+  };
 
   // Add a point feature to the map
   const addPointFeature = (coordinates: [number, number]) => {
@@ -258,5 +321,63 @@ export function OpenLayersMap({
     mapRef.current.addInteraction(drawInteractionRef.current);
   };
 
-  return <div ref={mapContainer} style={{ width: "100%", height: "100%" }} />;
+  // Expose rotation and tilt controls to the parent
+  React.useEffect(() => {
+    if (window) {
+      (window as any).mapControls = {
+        setRotation: setMapRotation,
+        resetRotation: resetRotationAndTilt,
+        applyTilt,
+      };
+    }
+
+    return () => {
+      if (window && (window as any).mapControls) {
+        delete (window as any).mapControls;
+      }
+    };
+  }, []);
+
+  return (
+    <div className="relative w-full h-full">
+      <div ref={mapContainer} style={{ width: "100%", height: "100%" }} />
+
+      {/* Map overlay controls for rotation and tilt */}
+      <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-md p-2 opacity-80 hover:opacity-100 transition-opacity">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2 items-center">
+            <span className="text-xs">Rotate:</span>
+            <input
+              type="range"
+              min="-3.14"
+              max="3.14"
+              step="0.01"
+              value={rotation}
+              onChange={(e) => setMapRotation(parseFloat(e.target.value))}
+              className="w-24"
+            />
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <span className="text-xs">Tilt:</span>
+            <input
+              type="range"
+              min="0"
+              max="45"
+              value={tilt}
+              onChange={(e) => applyTilt(parseInt(e.target.value))}
+              className="w-24"
+            />
+          </div>
+
+          <button
+            onClick={resetRotationAndTilt}
+            className="text-xs bg-primary text-white px-2 py-1 rounded hover:bg-primary/80 mt-1"
+          >
+            Reset View
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
