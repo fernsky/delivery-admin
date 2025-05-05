@@ -3,10 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import {
-  location,
-  locationTypeEnum,
-} from "@/server/db/schema/profile/institutions/local-areas/location";
+import { location } from "@/server/db/schema/profile/institutions/local-areas/location";
 import { entityMedia } from "@/server/db/schema/common/entity-media";
 import { media } from "@/server/db/schema/common/media";
 import { eq, and, desc, sql, like, inArray } from "drizzle-orm";
@@ -14,6 +11,8 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import { env } from "@/env";
+
+const locationEnum = ["VILLAGE", "SETTLEMENT", "TOLE", "WARD", "SQUATTER_AREA"];
 
 // Define schema for geometry input
 const pointGeometrySchema = z.object({
@@ -31,9 +30,7 @@ const locationSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
-  type: z.enum(
-    Object.keys(locationTypeEnum.enumValues) as [string, ...string[]],
-  ),
+  type: z.enum(locationEnum as [string, ...string[]]),
   isNewSettlement: z.boolean().optional(),
   isTownPlanned: z.boolean().optional(),
   pointGeometry: pointGeometrySchema.optional(),
@@ -43,9 +40,7 @@ const locationSchema = z.object({
 
 // Filter schema
 const locationFilterSchema = z.object({
-  type: z
-    .enum(Object.keys(locationTypeEnum.enumValues) as [string, ...string[]])
-    .optional(),
+  type: z.enum(locationEnum as [string, ...string[]]).optional(),
   name: z.string().optional(),
   isNewSettlement: z.boolean().optional(),
   isTownPlanned: z.boolean().optional(),
@@ -63,7 +58,7 @@ export const getAllLocations = publicProcedure
       // Build query with conditions
       const conditions = [];
 
-      if (input?.type) {
+      if (input?.type && input.type.trim() !== "") {
         conditions.push(eq(location.type, input.type as any));
       }
 
@@ -275,6 +270,7 @@ export const createLocation = protectedProcedure
     }
 
     const id = input.id || uuidv4();
+    const now = new Date();
 
     try {
       // Process point geometry if provided
@@ -307,28 +303,40 @@ export const createLocation = protectedProcedure
         }
       }
 
-      await ctx.db.insert(location).values({
-        id,
-        name: input.name,
-        description: input.description,
-        type: input.type as any,
-        isNewSettlement: input.isNewSettlement || false,
-        isTownPlanned: input.isTownPlanned || false,
-        pointGeometry: pointGeometryValue ? sql`${pointGeometryValue}` : null,
-        polygonGeometry: polygonGeometryValue
-          ? sql`${polygonGeometryValue}`
-          : null,
-        parentId: input.parentId,
-        createdBy: ctx.user.id,
-        updatedBy: ctx.user.id,
-      });
+      // Use a transaction for data consistency
+      return await ctx.db.transaction(async (tx) => {
+        // Insert the location
+        const insertedLocation = await tx
+          .insert(location)
+          .values({
+            id,
+            name: input.name,
+            description: input.description,
+            type: input.type as any,
+            isNewSettlement: input.isNewSettlement || false,
+            isTownPlanned: input.isTownPlanned || false,
+            pointGeometry: pointGeometryValue
+              ? sql`${pointGeometryValue}`
+              : null,
+            polygonGeometry: polygonGeometryValue
+              ? sql`${polygonGeometryValue}`
+              : null,
+            parentId: input.parentId,
+            createdAt: now,
+            updatedAt: now,
+            createdBy: ctx.user.id,
+            updatedBy: ctx.user.id,
+          })
+          .returning();
 
-      return { id, success: true };
+        return { id, success: true };
+      });
     } catch (error) {
       console.error("Error creating location:", error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to create location",
+        cause: error,
       });
     }
   });

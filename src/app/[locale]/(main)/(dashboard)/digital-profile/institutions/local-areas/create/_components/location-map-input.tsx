@@ -51,12 +51,12 @@ export function LocationMapInput({
     }
   };
 
-  const handleStartDrawing = (e) => {
+  const handleStartDrawing = (e: any) => {
     e.preventDefault();
     setIsDrawing(true);
   };
 
-  const handleCompletePolygon = (e) => {
+  const handleCompletePolygon = (e: any) => {
     e.preventDefault();
 
     // This is just UI feedback - actual completion is handled in the map component
@@ -65,14 +65,14 @@ export function LocationMapInput({
     }
   };
 
-  const handleClearSelection = (e) => {
+  const handleClearSelection = (e: any) => {
     e.preventDefault();
     setSelectedPoint(undefined);
     setSelectedPolygon(undefined);
     setIsDrawing(false);
   };
 
-  const handleSave = (e) => {
+  const handleSave = (e: any) => {
     e.preventDefault();
     onLocationSelect(selectedPoint, selectedPolygon);
   };
@@ -150,7 +150,7 @@ export function LocationMapInput({
               ? "रेखाङ्कन गर्न बिन्दुहरू क्लिक गर्दै जानुहोस् र पहिलो बिन्दुमा क्लिक गरेर समाप्त गर्नुहोस्"
               : "क्षेत्र रेखाङ्कन गर्न माथिको बटन क्लिक गर्नुहोस्"}
         </div>
-        <Button variant="primary" size="sm" onClick={handleSave}>
+        <Button variant="default" size="sm" onClick={handleSave}>
           स्थान पुष्टि गर्नुहोस्
         </Button>
       </div>

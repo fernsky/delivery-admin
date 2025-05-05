@@ -1,12 +1,13 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import { mediaUploadProcedures, uploadRouter } from "./media";
+import { getPresignedUrls, mediaUploadProcedures, uploadRouter } from "./media";
 
 export const mediaRouter = createTRPCRouter({
   upload: mediaUploadProcedures.uploadMedia,
-  uploadMultipart: mediaUploadProcedures.uploadMediaMultipart,
   getByEntity: mediaUploadProcedures.getMediaByEntity,
+  getById: mediaUploadProcedures.getById,
   delete: mediaUploadProcedures.deleteMedia,
   setPrimary: mediaUploadProcedures.setPrimaryMedia,
+  getPresignedUrls: mediaUploadProcedures.getPresignedUrls,
 });
 
 // Export the upload router for use with uploadthing

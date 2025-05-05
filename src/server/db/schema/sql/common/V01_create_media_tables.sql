@@ -20,11 +20,12 @@ EXCEPTION
   WHEN duplicate_object THEN null;
 END $$;
 
--- Create media table
+-- Create media table with additional file_url field
 CREATE TABLE IF NOT EXISTS acme_media (
     id VARCHAR(36) PRIMARY KEY,
     file_name VARCHAR(255) NOT NULL,
     file_path VARCHAR(1024) NOT NULL,
+    file_url VARCHAR(1024), -- Added file_url field for direct URL access
     file_size INTEGER,
     mime_type VARCHAR(255),
     type media_type NOT NULL,
@@ -36,12 +37,12 @@ CREATE TABLE IF NOT EXISTS acme_media (
     updated_by VARCHAR(36)
 );
 
--- Create entity_media table for relationships
+-- Create entity_media table for relationships - fix reference to acme_media
 CREATE TABLE IF NOT EXISTS acme_entity_media (
     id VARCHAR(36) PRIMARY KEY,
     entity_id VARCHAR(36) NOT NULL,
     entity_type entity_type NOT NULL,
-    media_id VARCHAR(36) NOT NULL REFERENCES media(id) ON DELETE CASCADE,
+    media_id VARCHAR(36) NOT NULL REFERENCES acme_media(id) ON DELETE CASCADE, -- Fixed reference to acme_media
     is_primary BOOLEAN DEFAULT false,
     display_order INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW(),

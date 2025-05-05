@@ -92,7 +92,7 @@ export function OpenLayersMap({
     mapRef.current.on("click", (event) => {
       if (mapMode === "point" && !isDrawing) {
         const coordinates = toLonLat(event.coordinate);
-        addPointFeature(coordinates);
+        addPointFeature(coordinates as [number, number]);
       }
     });
 

@@ -66,6 +66,7 @@ export default function CreateLocalAreaPage() {
   const [uploadedFiles, setUploadedFiles] = useState<
     Array<{ id: string; fileUrl: string; isPrimary?: boolean }>
   >([]);
+  const [processedMediaIds, setProcessedMediaIds] = useState(new Set<string>());
 
   // Set up the form with default values
   const form = useForm<FormValues>({
@@ -86,9 +87,18 @@ export default function CreateLocalAreaPage() {
 
         // If files were uploaded, associate them with the new location
         if (uploadedFiles.length > 0) {
-          uploadedFiles.forEach((file) => {
-            addMediaToLocation(file, data.id);
-          });
+          // Abstract the setPrimary mutations using mutateAsync for better control
+          associateUploadedFiles(uploadedFiles, data.id)
+            .then(() => {
+              router.push("/digital-profile/institutions/local-areas");
+            })
+            .catch((error) => {
+              console.error("Error associating media:", error);
+              toast.error("फाइल जोड्न समस्या भयो, तर स्थान सिर्जना भएको छ");
+              setTimeout(() => {
+                router.push("/digital-profile/institutions/local-areas");
+              }, 2000);
+            });
         } else {
           // Redirect immediately if no files to process
           router.push("/digital-profile/institutions/local-areas");
@@ -99,15 +109,29 @@ export default function CreateLocalAreaPage() {
       },
     });
 
-  const { mutate: addMedia } = api.common.media.uploadMultipart.useMutation({
-    onSuccess: () => {
-      toast.success("मिडिया सफलतापूर्वक थपियो");
-      router.refresh();
-    },
-    onError: (error) => {
-      toast.error(`मिडिया थप्न असफल: ${error.message}`);
-    },
-  });
+  // Get the mutateAsync function for setPrimary
+  const { mutateAsync: setPrimaryMediaAsync } =
+    api.common.media.setPrimary.useMutation();
+
+  // Function to associate uploaded files with a location
+  const associateUploadedFiles = async (
+    files: Array<{ id: string; fileUrl: string; isPrimary?: boolean }>,
+    locationId: string,
+  ) => {
+    // Process files sequentially to ensure correct primary status
+    for (const file of files) {
+      try {
+        await setPrimaryMediaAsync({
+          mediaId: file.id,
+          entityId: locationId,
+          entityType: "LOCATION",
+        });
+      } catch (error) {
+        console.error(`Error associating file ${file.id}:`, error);
+        // Continue with other files even if one fails
+      }
+    }
+  };
 
   const locationTypes = [
     { value: "VILLAGE", label: "गाउँ" },
@@ -122,22 +146,6 @@ export default function CreateLocalAreaPage() {
     api.profile.localAreas.locations.getAll.useQuery(undefined, {
       staleTime: 5000,
     });
-
-  function addMediaToLocation(
-    file: { id: string; fileUrl: string; isPrimary?: boolean },
-    locationId: string,
-  ) {
-    addMedia({
-      fileKey: file.id,
-      fileUrl: file.fileUrl,
-      fileName: file.id,
-      fileSize: 0,
-      mimeType: "image/jpeg",
-      entityId: locationId,
-      entityType: "LOCATION",
-      isPrimary: file.isPrimary || false,
-    });
-  }
 
   const onSubmit = (values: FormValues) => {
     createLocation(values);
@@ -162,15 +170,54 @@ export default function CreateLocalAreaPage() {
     setIsMapOpen(false);
   };
 
+  const { mutate: addMedia } = api.common.media.upload.useMutation({
+    onSuccess: (data) => {
+      // Ensure we don't add duplicates
+      if (!processedMediaIds.has(data.id)) {
+        toast.success("मिडिया सफलतापूर्वक थपियो");
+
+        // Add to processed IDs
+        setProcessedMediaIds((prev) => new Set(prev).add(data.id));
+
+        // Update uploaded files list
+        setUploadedFiles((prev) => [
+          ...prev,
+          {
+            id: data.id,
+            fileUrl: data.fileUrl || "", // Ensure fileUrl is always a string
+            isPrimary: uploadedFiles.length === 0, // First file is primary by default
+          },
+        ]);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(`मिडिया थप्न असफल: ${error.message}`);
+    },
+  });
+
   const handleFileUploadComplete = (fileData: any) => {
-    setUploadedFiles((prev) => [
-      ...prev,
-      {
-        id: fileData.fileKey,
-        fileUrl: fileData.url,
-        isPrimary: prev.length === 0, // First file is primary by default
-      },
-    ]);
+    // Check if we've already processed this file ID
+    if (fileData.id && processedMediaIds.has(fileData.id)) {
+      return;
+    }
+
+    // Mark this file as processed
+    if (fileData.id) {
+      setProcessedMediaIds((prev) => new Set(prev).add(fileData.id));
+    }
+
+    // Let addMedia handle the state update through its onSuccess
+    addMedia({
+      fileKey: fileData.id || fileData.fileKey,
+      fileUrl: fileData.fileUrl || fileData.url || "",
+      fileName: fileData.fileName || fileData.id || fileData.fileKey,
+      fileSize: fileData.fileSize || 0,
+      mimeType: fileData.mimeType || "image/jpeg",
+      // Don't include entityId/entityType since we don't have a locationId yet
+      // Will associate later with setPrimaryMedia
+      isPrimary: uploadedFiles.length === 0,
+      fileContent: fileData.fileContent,
+    });
   };
 
   const setFilePrimary = (fileId: string) => {
@@ -185,16 +232,6 @@ export default function CreateLocalAreaPage() {
   return (
     <ContentLayout
       title="नयाँ स्थान थप्नुहोस्"
-      description="तपाईंको नगरपालिकामा नयाँ स्थान विवरण थप्नुहोस्"
-      breadcrumb={[
-        { title: "मुख्य पृष्ठ", href: "/dashboard" },
-        { title: "संस्थागत विवरण", href: "/digital-profile/institutions" },
-        {
-          title: "स्थानीय क्षेत्रहरू",
-          href: "/digital-profile/institutions/local-areas",
-        },
-        { title: "नयाँ स्थान थप्नुहोस्", href: "#" },
-      ]}
       actions={
         <Button
           variant="outline"
@@ -273,12 +310,16 @@ export default function CreateLocalAreaPage() {
                         </FormControl>
                         <SelectContent>
                           {isLocationsLoading ? (
-                            <SelectItem value="loading" disabled>
+                            <SelectItem value="_loading" disabled>
                               लोड हुँदैछ...
                             </SelectItem>
-                          ) : (
-                            existingLocations?.map((location) => (
-                              <SelectItem key={location.id} value={location.id}>
+                          ) : existingLocations &&
+                            existingLocations.length > 0 ? (
+                            existingLocations.map((location) => (
+                              <SelectItem
+                                key={location.id}
+                                value={location.id || "_empty"}
+                              >
                                 {location.name} (
                                 {
                                   locationTypes.find(
@@ -288,6 +329,10 @@ export default function CreateLocalAreaPage() {
                                 )
                               </SelectItem>
                             ))
+                          ) : (
+                            <SelectItem value="_no_locations" disabled>
+                              कुनै स्थान उपलब्ध छैन
+                            </SelectItem>
                           )}
                         </SelectContent>
                       </Select>
@@ -428,7 +473,11 @@ export default function CreateLocalAreaPage() {
                     {uploadedFiles.map((file) => (
                       <div
                         key={file.id}
-                        className={`relative rounded-md overflow-hidden border ${file.isPrimary ? "border-primary border-2" : "border-border"}`}
+                        className={`relative rounded-md overflow-hidden border ${
+                          file.isPrimary
+                            ? "border-primary border-2"
+                            : "border-border"
+                        }`}
                       >
                         <img
                           src={file.fileUrl}

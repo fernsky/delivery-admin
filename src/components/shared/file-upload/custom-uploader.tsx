@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import { useDropzone, Accept } from "react-dropzone";
 import { api } from "@/trpc/react";
 import { Button } from "@/components/ui/button";
 import { Loader, Upload, X } from "lucide-react";
@@ -30,8 +30,8 @@ export function FileUploader({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-  // TRPC mutation for multipart file upload
-  const { mutateAsync: uploadMultipart } = api.media.uploadMultipart.useMutation({
+  // TRPC mutation for file upload with mutateAsync
+  const { mutateAsync: uploadFile } = api.common.media.upload.useMutation({
     onSuccess: (data) => {
       setUploadProgress(100);
       setTimeout(() => {
@@ -40,17 +40,17 @@ export function FileUploader({
         onUploadComplete?.(data);
         setSelectedFiles([]);
       }, 500);
+      toast.success("फाइल सफलतापूर्वक अपलोड गरियो");
     },
     onError: (error) => {
       setIsUploading(false);
       setUploadProgress(0);
-      onUploadError?.(error);
       toast.error(`अपलोड त्रुटि: ${error.message}`);
-    }
+    },
   });
 
   // Accept mime types based on uploadType
-  const getAcceptedFileTypes = () => {
+  const getAcceptedFileTypes = (): Accept => {
     switch (uploadType) {
       case "image":
         return {
@@ -74,23 +74,15 @@ export function FileUploader({
         return {
           "image/*": [".jpg", ".jpeg", ".png", ".gif", ".webp"],
         };
+      }
     }
   };
 
-  // Convert file to base64
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-  };
-
   // Upload a file
-  const uploadFile = async (file: File) => {
+  const handleFileUpload = async (file: File) => {
     try {
       setIsUploading(true);
+
       // Show progress animation
       const simulateProgress = () => {
         let progress = 0;
@@ -106,36 +98,52 @@ export function FileUploader({
 
       const progressInterval = simulateProgress();
 
-      // Convert file to base64
-      const base64Data = await fileToBase64(file);
-
       // Generate a unique file key
       const fileKey = uuidv4();
 
-      // Create a temporary file URL for preview
-      const fileUrl = URL.createObjectURL(file);
+      // Read file as base64 for direct upload
+      const fileContent = await readFileAsBase64(file);
 
-      // Upload via TRPC with fileKey and fileUrl
-      const result = await uploadMultipart({
-        base64Data,
+      // Upload the file with content - we pass entity details if available
+      // This will register the media and create association in one step
+      const result = await uploadFile({
         fileName: file.name,
         fileKey,
-        fileUrl,
-        entityId,
-        entityType,
+        fileSize: file.size,
+        mimeType: file.type,
+        entityId, // This will create association if provided
+        entityType, // This will create association if provided
         isPrimary: selectedFiles.length === 0, // First file is primary
+        fileContent, // Include the base64 file content for MinIO upload
       });
 
       clearInterval(progressInterval);
 
-      return { fileKey, fileUrl, fileName: file.name };
+      // Pass the result back to the parent component
+      // so it knows the file has been uploaded and associated
+      onUploadComplete?.(result);
+
+      return result;
     } catch (error) {
-      setIsUploading(false);
-      setUploadProgress(0);
-      onUploadError?.(error as Error);
       console.error("फाइल अपलोड त्रुटि:", error);
       throw error;
     }
+  };
+
+  // Read file as base64
+  const readFileAsBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          resolve(reader.result);
+        } else {
+          reject(new Error("Failed to read file"));
+        }
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -152,9 +160,10 @@ export function FileUploader({
     if (selectedFiles.length === 0) return;
     try {
       // Upload first file
-      await uploadFile(selectedFiles[0]);
+      await handleFileUpload(selectedFiles[0]);
     } catch (error) {
       console.error("Error uploading file:", error);
+      onUploadError?.(error as Error);
     }
   }, [selectedFiles]);
 

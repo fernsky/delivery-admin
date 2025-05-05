@@ -3,9 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
-import { DashboardHeader } from "@/components/header";
-import { DashboardShell } from "@/components/shell";
+import { api } from "@/trpc/react"; // Updated API import
+import { ContentLayout } from "@/components/admin-panel/content-layout"; // Replaced with ContentLayout
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -40,7 +39,7 @@ import { toast } from "sonner";
 export default function LocalAreasPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>("all"); // Use "all" as default instead of empty string
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState<{
     id: string;
@@ -54,7 +53,7 @@ export default function LocalAreasPage() {
     refetch,
   } = api.profile.localAreas.locations.getAll.useQuery({
     name: searchTerm || undefined,
-    type: (typeFilter as any) || undefined,
+    type: typeFilter && typeFilter !== "all" ? typeFilter : undefined, // Only send type filter if not "all"
   });
 
   // Delete mutation
@@ -92,18 +91,16 @@ export default function LocalAreasPage() {
   };
 
   return (
-    <DashboardShell>
-      <DashboardHeader
-        heading="स्थानीय क्षेत्रहरू"
-        text="नगरपालिकाको स्थानीय क्षेत्रहरूको व्यवस्थापन गर्नुहोस्"
-      >
+    <ContentLayout
+      title="स्थानीय क्षेत्रहरू"
+      actions={
         <Link href="/digital-profile/institutions/local-areas/create">
           <Button>
             <Plus className="mr-2 h-4 w-4" /> नयाँ स्थान
           </Button>
         </Link>
-      </DashboardHeader>
-
+      }
+    >
       <div className="space-y-4">
         <Card className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
@@ -124,7 +121,7 @@ export default function LocalAreasPage() {
                 <SelectValue placeholder="सबै प्रकार" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">सबै प्रकार</SelectItem>
+                <SelectItem value="all">सबै प्रकार</SelectItem>
                 {locationTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
                     {type.label}
@@ -182,13 +179,9 @@ export default function LocalAreasPage() {
                               <div className="flex items-center text-xs text-muted-foreground mt-1">
                                 <MapPin className="h-3 w-3 mr-1" />
                                 <span>
-                                  {typeof location.pointGeometry === "string"
-                                    ? JSON.parse(
-                                        location.pointGeometry,
-                                      ).coordinates.join(", ")
-                                    : location.pointGeometry.coordinates.join(
-                                        ", ",
-                                      )}
+                                  {location.pointGeometry.coordinates.join(
+                                    ", ",
+                                  )}
                                 </span>
                               </div>
                             )}
@@ -277,6 +270,6 @@ export default function LocalAreasPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </DashboardShell>
+    </ContentLayout>
   );
 }
