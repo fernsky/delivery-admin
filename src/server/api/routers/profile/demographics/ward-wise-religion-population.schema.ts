@@ -5,7 +5,7 @@ export const ReligionTypeEnum = z.enum([
   "HINDU",
   "BUDDHIST",
   "KIRANT",
-  "CHRISTIAN", 
+  "CHRISTIAN",
   "ISLAM",
   "NATURE",
   "BON",
@@ -36,7 +36,8 @@ export const updateWardWiseReligionPopulationSchema =
 export type WardWiseReligionPopulationData = z.infer<
   typeof wardWiseReligionPopulationSchema
 >;
-export type UpdateWardWiseReligionPopulationData = WardWiseReligionPopulationData;
+export type UpdateWardWiseReligionPopulationData =
+  WardWiseReligionPopulationData;
 export type WardWiseReligionPopulationFilter = z.infer<
   typeof wardWiseReligionPopulationFilterSchema
 >;

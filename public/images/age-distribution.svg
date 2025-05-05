@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6a11cb" />
+      <stop offset="100%" stop-color="#2575fc" />
+    </linearGradient>
+    
+    <!-- Age bubble path definition -->
+    <path id="age-bubble" 
+          d="M0,0 Q5,-15 20,-15 L80,-15 Q95,-15 100,0 L100,40 Q100,55 85,55 L60,55 L45,70 L30,55 L15,55 Q0,55 0,40 Z" />
+          
+    <!-- Text path for curve -->
+    <path id="curved-text-path" d="M150,350 Q600,200 1050,350" fill="none" />
+    
+    <!-- Person silhouettes of different ages -->
+    <!-- Child -->
+    <path id="child-silhouette" d="M20,0 C31,0 40,9 40,20 C40,31 31,40 20,40 C9,40 0,31 0,20 C0,9 9,0 20,0 Z M10,45 L30,45 L35,100 L30,100 L30,80 L10,80 L10,100 L5,100 Z" />
+    
+    <!-- Adult -->
+    <path id="adult-silhouette" d="M40,0 C62,0 80,18 80,40 C80,62 62,80 40,80 C18,80 0,62 0,40 C0,18 18,0 40,0 Z M20,95 L60,95 L70,220 L60,220 L60,160 L20,160 L20,220 L10,220 Z" />
+    
+    <!-- Elderly -->
+    <path id="elderly-silhouette" d="M40,0 C62,0 80,18 80,40 C80,62 62,80 40,80 C18,80 0,62 0,40 C0,18 18,0 40,0 Z M20,95 C20,95 10,110 10,130 C30,130 50,125 60,95 Z M35,130 L35,220 L25,220 L25,130 Z M50,130 C50,130 55,160 55,180 C55,190 50,200 40,200 L40,220 L60,220 L60,180 C60,150 55,130 55,130 Z" />
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bg-gradient)" />
+  
+  <!-- Decorative elements -->
+  <g opacity="0.1">
+    <circle cx="200" cy="80" r="50" fill="white" />
+    <circle cx="1000" cy="100" r="70" fill="white" />
+    <circle cx="600" cy="50" r="30" fill="white" />
+    <circle cx="120" cy="300" r="40" fill="white" />
+    <circle cx="900" cy="320" r="60" fill="white" />
+  </g>
+  
+  <!-- Population pyramid sketch -->
+  <g transform="translate(500, 80)" opacity="0.2">
+    <rect x="-150" y="0" width="150" height="20" fill="white" />
+    <rect x="0" y="0" width="150" height="20" fill="white" />
+    
+    <rect x="-180" y="25" width="180" height="20" fill="white" />
+    <rect x="0" y="25" width="180" height="20" fill="white" />
+    
+    <rect x="-200" y="50" width="200" height="20" fill="white" />
+    <rect x="0" y="50" width="200" height="20" fill="white" />
+    
+    <rect x="-160" y="75" width="160" height="20" fill="white" />
+    <rect x="0" y="75" width="160" height="20" fill="white" />
+    
+    <rect x="-140" y="100" width="140" height="20" fill="white" />
+    <rect x="0" y="100" width="140" height="20" fill="white" />
+    
+    <rect x="-100" y="125" width="100" height="20" fill="white" />
+    <rect x="0" y="125" width="100" height="20" fill="white" />
+    
+    <line x1="0" y1="-10" x2="0" y2="155" stroke="white" stroke-width="2" />
+  </g>
+  
+  <!-- Age Bubbles Group -->
+  <g>
+    <!-- Children 0-4 -->
+    <g transform="translate(150, 120) scale(1.2)">
+      <use href="#age-bubble" fill="#4BC0C0" />
+      <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">०-४ वर्ष</text>
+    </g>
+    
+    <!-- Children 5-9 -->
+    <g transform="translate(280, 80) scale(1.1)">
+      <use href="#age-bubble" fill="#4BC0C0" opacity="0.9" />
+      <text x="50" y="25" font-family="Arial" font-size="15" fill="white" text-anchor="middle">५-९ वर्ष</text>
+    </g>
+    
+    <!-- Children 10-14 -->
+    <g transform="translate(400, 110) scale(1)">
+      <use href="#age-bubble" fill="#4BC0C0" opacity="0.8" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">१०-१४ वर्ष</text>
+    </g>
+    
+    <!-- Youth 15-19 -->
+    <g transform="translate(520, 90) scale(1.15)">
+      <use href="#age-bubble" fill="#FF9F40" />
+      <text x="50" y="25" font-family="Arial" font-size="15" fill="white" text-anchor="middle">१५-१९ वर्ष</text>
+    </g>
+    
+    <!-- Youth 20-24 -->
+    <g transform="translate(650, 120) scale(1.1)">
+      <use href="#age-bubble" fill="#FF9F40" opacity="0.9" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">२०-२४ वर्ष</text>
+    </g>
+    
+    <!-- Youth 25-29 -->
+    <g transform="translate(770, 80) scale(1.05)">
+      <use href="#age-bubble" fill="#FF9F40" opacity="0.8" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">२५-२९ वर्ष</text>
+    </g>
+    
+    <!-- Adult 30-44 -->
+    <g transform="translate(900, 100) scale(1.2)">
+      <use href="#age-bubble" fill="#9966FF" />
+      <text x="50" y="25" font-family="Arial" font-size="15" fill="white" text-anchor="middle">३०-४४ वर्ष</text>
+    </g>
+    
+    <!-- Adult 45-59 -->
+    <g transform="translate(1020, 70) scale(1.1)">
+      <use href="#age-bubble" fill="#9966FF" opacity="0.9" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">४५-५९ वर्ष</text>
+    </g>
+    
+    <!-- Elderly 60-74 -->
+    <g transform="translate(150, 220) scale(1.1)">
+      <use href="#age-bubble" fill="#FF6384" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">६०-७४ वर्ष</text>
+    </g>
+    
+    <!-- Elderly 75+ -->
+    <g transform="translate(300, 190) scale(1)">
+      <use href="#age-bubble" fill="#FF6384" opacity="0.9" />
+      <text x="50" y="25" font-family="Arial" font-size="13" fill="white" text-anchor="middle">७५+ वर्ष</text>
+    </g>
+    
+    <!-- Working Age Group -->
+    <g transform="translate(450, 200) scale(1.2)">
+      <use href="#age-bubble" fill="#36A2EB" />
+      <text x="50" y="25" font-family="Arial" font-size="15" fill="white" text-anchor="middle">कार्यशील उमेर</text>
+    </g>
+    
+    <!-- Dependency Ratio -->
+    <g transform="translate(630, 180) scale(1.1)">
+      <use href="#age-bubble" fill="#FFD700" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">निर्भरता अनुपात</text>
+    </g>
+    
+    <!-- Demographic Dividend -->
+    <g transform="translate(800, 210) scale(1.15)">
+      <use href="#age-bubble" fill="#7CFC00" />
+      <text x="50" y="25" font-family="Arial" font-size="13" fill="white" text-anchor="middle">जनसांख्यिकीय लाभांश</text>
+    </g>
+    
+    <!-- Median Age -->
+    <g transform="translate(950, 190) scale(1)">
+      <use href="#age-bubble" fill="#FFA500" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">मध्यम उमेर</text>
+    </g>
+  </g>
+  
+  <!-- Title text at bottom -->
+  <text font-family="Arial" font-size="20" fill="white" text-anchor="middle">
+    <textPath href="#curved-text-path" startOffset="50%">उमेर अनुसार जनसंख्या वितरण</textPath>
+  </text>
+  
+  <!-- People silhouettes representing different age groups -->
+  <!-- Children -->
+  <g transform="translate(120, 300)">
+    <g transform="scale(0.4)">
+      <use href="#child-silhouette" fill="#4BC0C0" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(160, 300)">
+    <g transform="scale(0.5)">
+      <use href="#child-silhouette" fill="#4BC0C0" opacity="0.7" />
+    </g>
+  </g>
+  
+  <g transform="translate(200, 300)">
+    <g transform="scale(0.6)">
+      <use href="#child-silhouette" fill="#4BC0C0" opacity="0.9" />
+    </g>
+  </g>
+  
+  <!-- Youth and Adults -->
+  <g transform="translate(260, 300)">
+    <g transform="scale(0.4)">
+      <use href="#adult-silhouette" fill="#FF9F40" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(300, 300)">
+    <g transform="scale(0.45)">
+      <use href="#adult-silhouette" fill="#FF9F40" opacity="0.9" />
+    </g>
+  </g>
+  
+  <g transform="translate(350, 300)">
+    <g transform="scale(0.5)">
+      <use href="#adult-silhouette" fill="#9966FF" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(400, 300)">
+    <g transform="scale(0.5)">
+      <use href="#adult-silhouette" fill="#9966FF" opacity="0.9" />
+    </g>
+  </g>
+  
+  <g transform="translate(450, 300)">
+    <g transform="scale(0.5)">
+      <use href="#adult-silhouette" fill="#9966FF" opacity="0.7" />
+    </g>
+  </g>
+  
+  <!-- Elderly -->
+  <g transform="translate(520, 300)">
+    <g transform="scale(0.4)">
+      <use href="#elderly-silhouette" fill="#FF6384" opacity="0.7" />
+    </g>
+  </g>
+  
+  <g transform="translate(570, 300)">
+    <g transform="scale(0.45)">
+      <use href="#elderly-silhouette" fill="#FF6384" opacity="0.8" />
+    </g>
+  </g>
+  
+  <!-- More silhouettes on the right side -->
+  <g transform="translate(700, 300)">
+    <g transform="scale(0.5)">
+      <use href="#adult-silhouette" fill="#36A2EB" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(750, 300)">
+    <g transform="scale(0.5)">
+      <use href="#adult-silhouette" fill="#36A2EB" opacity="0.7" />
+    </g>
+  </g>
+  
+  <g transform="translate(800, 300)">
+    <g transform="scale(0.45)">
+      <use href="#child-silhouette" fill="#4BC0C0" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(840, 300)">
+    <g transform="scale(0.4)">
+      <use href="#child-silhouette" fill="#4BC0C0" opacity="0.9" />
+    </g>
+  </g>
+  
+  <g transform="translate(880, 300)">
+    <g transform="scale(0.5)">
+      <use href="#adult-silhouette" fill="#9966FF" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(930, 300)">
+    <g transform="scale(0.5)">
+      <use href="#adult-silhouette" fill="#FF9F40" opacity="0.7" />
+    </g>
+  </g>
+  
+  <g transform="translate(980, 300)">
+    <g transform="scale(0.45)">
+      <use href="#elderly-silhouette" fill="#FF6384" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(1030, 300)">
+    <g transform="scale(0.4)">
+      <use href="#elderly-silhouette" fill="#FF6384" opacity="0.9" />
+    </g>
+  </g>
+</svg>

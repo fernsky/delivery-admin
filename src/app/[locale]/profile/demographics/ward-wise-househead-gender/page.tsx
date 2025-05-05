@@ -122,7 +122,7 @@ export default async function WardWiseHouseheadGenderPage() {
         <section>
           <div className="relative rounded-lg overflow-hidden mb-8">
             <Image
-              src="/images/househead-gender.svg" // You'll need this image
+              src="/images/househead-gender.svg"
               width={1200}
               height={400}
               alt="घरमूली लिङ्ग वितरण"

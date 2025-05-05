@@ -1,10 +1,5 @@
 import { pgTable } from "../../../schema/basic";
-import {
-  integer,
-  timestamp,
-  varchar,
-  pgEnum,
-} from "drizzle-orm/pg-core";
+import { integer, timestamp, varchar, pgEnum } from "drizzle-orm/pg-core";
 import { wardWiseDemographicSummary } from "./ward-wise-demographic-summary";
 
 // Define absentee age group enum
@@ -13,41 +8,45 @@ export const absenteeAgeGroupEnum = pgEnum("absentee_age_group", [
   "AGE_5_9",
   "AGE_10_14",
   "AGE_15_19",
-  "AGE_20_24", 
+  "AGE_20_24",
   "AGE_25_29",
   "AGE_30_34",
   "AGE_35_39",
   "AGE_40_44",
   "AGE_45_49",
-  "AGE_50_AND_ABOVE"
+  "AGE_50_AND_ABOVE",
 ]);
 
-// Reuse the gender enum already defined in the married age schema
-import { genderEnum } from "./ward-age-gender-wise-married-age";
+import { genderEnum } from "./common";
 
-export const wardAgeGenderWiseAbsentee = pgTable("ward_age_gender_wise_absentee", {
-  id: varchar("id", { length: 36 }).primaryKey(),
+export const wardAgeGenderWiseAbsentee = pgTable(
+  "ward_age_gender_wise_absentee",
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
 
-  // Reference to the ward entity through the demographic summary
-  wardId: varchar("ward_id", { length: 36 })
-    .notNull()
-    .references(() => wardWiseDemographicSummary.id),
-  
-  // Age group category of absentee
-  ageGroup: absenteeAgeGroupEnum("age_group").notNull(),
-  
-  // Gender category
-  gender: genderEnum("gender").notNull(),
-  
-  // Number of absentee people in this demographic category
-  population: integer("population").notNull(),
+    // Reference to the ward entity through the demographic summary
+    wardId: varchar("ward_id", { length: 36 })
+      .notNull()
+      .references(() => wardWiseDemographicSummary.id),
 
-  // Metadata
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+    // Age group category of absentee
+    ageGroup: absenteeAgeGroupEnum("age_group").notNull(),
 
-export type WardAgeGenderWiseAbsentee = typeof wardAgeGenderWiseAbsentee.$inferSelect;
-export type NewWardAgeGenderWiseAbsentee = typeof wardAgeGenderWiseAbsentee.$inferInsert;
+    // Gender category
+    gender: genderEnum("gender").notNull(),
+
+    // Number of absentee people in this demographic category
+    population: integer("population").notNull(),
+
+    // Metadata
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+);
+
+export type WardAgeGenderWiseAbsentee =
+  typeof wardAgeGenderWiseAbsentee.$inferSelect;
+export type NewWardAgeGenderWiseAbsentee =
+  typeof wardAgeGenderWiseAbsentee.$inferInsert;

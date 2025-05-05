@@ -1,8 +1,6 @@
 import { pgTable } from "../../../schema/basic";
 import { integer, varchar, pgEnum } from "drizzle-orm/pg-core";
-
-// Define the gender enum type
-export const genderEnum = pgEnum("gender", ["MALE", "FEMALE", "OTHER"]);
+import { genderEnum } from "./common";
 
 // Define the ward wise house head gender table
 export const wardWiseHouseHeadGender = pgTable("ward_wise_househead_gender", {
