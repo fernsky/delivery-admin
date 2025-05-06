@@ -17,7 +17,6 @@ import { BasicTransportDetails } from "../../create/_components/basic-transport-
 import { TransportRouteDetails } from "../../create/_components/transport-route-details";
 import { TransportScheduleDetails } from "../../create/_components/transport-schedule-details";
 import { TransportFeaturesDetails } from "../../create/_components/transport-features-details";
-import { PublicTransportMediaSection } from "./public-transport-media-section";
 
 // Define the form schema
 const formSchema = z.object({
@@ -246,11 +245,10 @@ export function PublicTransportEditForm({
   return (
     <Card className="p-6">
       <Tabs defaultValue="basic" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-4 mb-6">
+        <TabsList className="grid grid-cols-3 mb-6">
           <TabsTrigger value="basic">आधारभूत जानकारी</TabsTrigger>
           <TabsTrigger value="details">मार्ग र समय तालिका</TabsTrigger>
           <TabsTrigger value="location">नक्सा र स्थान</TabsTrigger>
-          <TabsTrigger value="media">फोटोहरू</TabsTrigger>
         </TabsList>
 
         <TabsContent value="basic">
@@ -324,45 +322,15 @@ export function PublicTransportEditForm({
                 >
                   पछिल्लो
                 </Button>
-                <Button type="submit" disabled={isLoading} className="mr-2">
+                <Button type="submit" disabled={isLoading}>
                   {isLoading && (
                     <Loader className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   सुरक्षित गर्नुहोस्
                 </Button>
-                <Button type="button" onClick={() => setActiveTab("media")}>
-                  मिडिया व्यवस्थापन
-                </Button>
               </div>
             </form>
           </Form>
-        </TabsContent>
-
-        <TabsContent value="media">
-          <PublicTransportMediaSection
-            transportId={transportId}
-            media={initialData.media || []}
-          />
-
-          <div className="flex gap-2 justify-end mt-6">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setActiveTab("location")}
-            >
-              पछिल्लो
-            </Button>
-            <Button
-              onClick={() =>
-                router.push(
-                  "/dashboard/digital-profile/institutions/transportation/public-transports",
-                )
-              }
-              variant="default"
-            >
-              सकियो
-            </Button>
-          </div>
         </TabsContent>
       </Tabs>
     </Card>
