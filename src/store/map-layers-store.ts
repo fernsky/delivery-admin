@@ -11,6 +11,12 @@ interface MapLayersState {
   // For parking facility layers
   showPolygons: boolean;
   setShowPolygons: (show: boolean) => void;
+
+  // For public transport layers
+  showRoutes: boolean;
+  showStops: boolean;
+  setShowRoutes: (show: boolean) => void;
+  setShowStops: (show: boolean) => void;
 }
 
 export const useMapLayersStore = create<MapLayersState>()(
@@ -25,6 +31,12 @@ export const useMapLayersStore = create<MapLayersState>()(
       // For parking facility layers
       showPolygons: true, // Show polygons by default
       setShowPolygons: (show: boolean) => set({ showPolygons: show }),
+
+      // For public transport layers
+      showRoutes: true, // Show routes by default
+      showStops: true, // Show stops by default
+      setShowRoutes: (show: boolean) => set({ showRoutes: show }),
+      setShowStops: (show: boolean) => set({ showStops: show }),
     }),
     {
       name: "map-layers", // Unique name for localStorage
