@@ -97,8 +97,8 @@ export function ParkingFacilityMap({ facility }: ParkingFacilityMapProps) {
       // Add polygon feature for parking area boundary
       try {
         // For Polygon, we need coordinates in [[[x,y],[x,y],...]] format
-        const coordinates = facility.areaPolygon.coordinates.map((ring) =>
-          ring.map((coord) => fromLonLat(coord)),
+        const coordinates = facility.areaPolygon.coordinates.map((ring: any) =>
+          ring.map((coord: any) => fromLonLat(coord)),
         );
 
         const polygon = new OLPolygon(coordinates);
