@@ -32,61 +32,72 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
-// Define agricultural zone types
-const agricZoneTypes = [
-  { value: "PULSES", label: "दलहन" },
-  { value: "OILSEEDS", label: "तेलहन" },
-  { value: "COMMERCIAL_FLOWER", label: "व्यावसायिक फूल खेती" },
-  { value: "SEASONAL_CROPS", label: "मौसमी बाली" },
-  { value: "SUPER_ZONE", label: "सुपर जोन" },
-  { value: "POCKET_AREA", label: "पकेट क्षेत्र" },
+// Define grazing area types
+const grazingAreaTypes = [
+  { value: "OPEN_RANGE", label: "खुल्ला चरन क्षेत्र" },
+  { value: "ALPINE_MEADOW", label: "हिमाली घाँसे मैदान" },
+  { value: "COMMUNITY_PASTURE", label: "सामुदायिक चरन" },
+  { value: "FOREST_UNDERSTORY", label: "वन मुनिको चरन क्षेत्र" },
+  { value: "FLOODPLAIN", label: "बाढी मैदान चरन" },
+  { value: "SEASONAL_PASTURE", label: "मौसमी चरन" },
+  { value: "DRY_SEASON_RESERVE", label: "सुख्खा मौसम आरक्षित क्षेत्र" },
+  { value: "ROTATIONAL_PADDOCK", label: "चक्रीय खर्क" },
   { value: "MIXED", label: "मिश्रित" },
   { value: "OTHER", label: "अन्य" },
 ];
 
-export default function AgricZonesPage() {
+export default function GrazingAreasPage() {
   const router = useRouter();
   const [currentView, setCurrentView] = useState<"table" | "grid" | "map">(
     "table",
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [zoneToDelete, setZoneToDelete] = useState<{
+  const [grazingAreaToDelete, setGrazingAreaToDelete] = useState<{
     id: string;
     name: string;
   } | null>(null);
   const [currentType, setCurrentType] = useState<string>("all");
-  const [soilQuality, setSoilQuality] = useState<string>("all");
+  const [hasWaterSource, setHasWaterSource] = useState<boolean | undefined>(
+    undefined,
+  );
+  const [selectedAccessibility, setSelectedAccessibility] =
+    useState<string>("all");
 
-  // Fetch agricultural zones with filters
-  const { data, isLoading, isError, refetch } =
-    api.profile.agricZones.getAll.useQuery({
+  // Fetch grazing areas with filters
+  const { data, isLoading, isError, refetch } = api.grazingArea.getAll.useQuery(
+    {
       page: currentPage,
       pageSize: 12,
       searchTerm: searchTerm,
       type: currentType !== "all" ? currentType : undefined,
-      soilQuality: soilQuality !== "all" ? soilQuality : undefined,
+      hasWaterSource: hasWaterSource,
+      accessibility:
+        selectedAccessibility !== "all"
+          ? (selectedAccessibility as any)
+          : undefined,
       viewType: currentView,
-    });
+    },
+  );
 
-  // Delete agricultural zone mutation
-  const { mutate: deleteZone, isLoading: isDeleting } =
-    api.profile.agricZones.delete.useMutation({
+  // Delete grazing area mutation
+  const { mutate: deleteGrazingArea, isLoading: isDeleting } =
+    api.grazingArea.delete.useMutation({
       onSuccess: () => {
-        toast.success("कृषि क्षेत्र सफलतापूर्वक हटाइयो");
+        toast.success("चरन खर्क क्षेत्र सफलतापूर्वक हटाइयो");
         refetch();
-        setZoneToDelete(null);
+        setGrazingAreaToDelete(null);
       },
       onError: (error) => {
-        toast.error(`कृषि क्षेत्र हटाउन असफल: ${error.message}`);
-        setZoneToDelete(null);
+        toast.error(`चरन खर्क क्षेत्र हटाउन असफल: ${error.message}`);
+        setGrazingAreaToDelete(null);
       },
     });
 
-  // Handle zone deletion confirmation
+  // Handle deletion confirmation
   const handleConfirmDelete = () => {
-    if (zoneToDelete) {
-      deleteZone(zoneToDelete.id);
+    if (grazingAreaToDelete) {
+      deleteGrazingArea(grazingAreaToDelete.id);
     }
   };
 
@@ -102,9 +113,21 @@ export default function AgricZonesPage() {
     setCurrentPage(1);
   };
 
-  // Handle soil quality filter change
-  const handleSoilQualityChange = (value: string) => {
-    setSoilQuality(value);
+  // Handle accessibility filter change
+  const handleAccessibilityChange = (value: string) => {
+    setSelectedAccessibility(value);
+    setCurrentPage(1);
+  };
+
+  // Handle water source filter change
+  const handleWaterSourceChange = (value: string) => {
+    if (value === "all") {
+      setHasWaterSource(undefined);
+    } else if (value === "yes") {
+      setHasWaterSource(true);
+    } else if (value === "no") {
+      setHasWaterSource(false);
+    }
     setCurrentPage(1);
   };
 
@@ -118,9 +141,12 @@ export default function AgricZonesPage() {
     setCurrentPage(page);
   };
 
-  // Handle zone deletion request
-  const handleDeleteZone = (zone: { id: string; name: string }) => {
-    setZoneToDelete(zone);
+  // Handle grazing area deletion request
+  const handleDeleteGrazingArea = (grazingArea: {
+    id: string;
+    name: string;
+  }) => {
+    setGrazingAreaToDelete(grazingArea);
   };
 
   // Prepare pagination data
@@ -144,17 +170,17 @@ export default function AgricZonesPage() {
 
   return (
     <ContentLayout
-      title="कृषि क्षेत्र व्यवस्थापन"
+      title="चरन खर्क क्षेत्र व्यवस्थापन"
       actions={
         <Button
           onClick={() =>
             router.push(
-              "/dashboard/digital-profile/institutions/agricultural/agric-zones/create",
+              "/dashboard/digital-profile/institutions/agricultural/grazing-areas/create",
             )
           }
         >
           <Plus className="mr-2 h-4 w-4" />
-          नयाँ कृषि क्षेत्र थप्नुहोस्
+          नयाँ चरन खर्क क्षेत्र थप्नुहोस्
         </Button>
       }
     >
@@ -168,7 +194,7 @@ export default function AgricZonesPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै प्रकार</SelectItem>
-                  {agricZoneTypes.map((type) => (
+                  {grazingAreaTypes.map((type) => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}
                     </SelectItem>
@@ -177,24 +203,48 @@ export default function AgricZonesPage() {
               </Select>
 
               <Select
-                value={soilQuality}
-                onValueChange={handleSoilQualityChange}
+                value={selectedAccessibility}
+                onValueChange={handleAccessibilityChange}
               >
                 <SelectTrigger className="w-full sm:w-[180px]">
-                  <SelectValue placeholder="माटोको गुणस्तर" />
+                  <SelectValue placeholder="पहुँचयोग्यता" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">सबै गुणस्तरहरू</SelectItem>
-                  <SelectItem value="EXCELLENT">उत्तम</SelectItem>
-                  <SelectItem value="GOOD">राम्रो</SelectItem>
-                  <SelectItem value="AVERAGE">औसत</SelectItem>
-                  <SelectItem value="POOR">कमजोर</SelectItem>
-                  <SelectItem value="VERY_POOR">धेरै कमजोर</SelectItem>
+                  <SelectItem value="all">सबै</SelectItem>
+                  <SelectItem value="EASILY_ACCESSIBLE">
+                    सजिलै पहुँच योग्य
+                  </SelectItem>
+                  <SelectItem value="MODERATELY_ACCESSIBLE">
+                    मध्यम पहुँच योग्य
+                  </SelectItem>
+                  <SelectItem value="DIFFICULT_ACCESS">कठिन पहुँच</SelectItem>
+                  <SelectItem value="SEASONAL_ACCESS">मौसमी पहुँच</SelectItem>
+                  <SelectItem value="REMOTE">दुर्गम</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={
+                  hasWaterSource === undefined
+                    ? "all"
+                    : hasWaterSource
+                      ? "yes"
+                      : "no"
+                }
+                onValueChange={handleWaterSourceChange}
+              >
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="पानी स्रोत" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">सबै</SelectItem>
+                  <SelectItem value="yes">पानी स्रोत छ</SelectItem>
+                  <SelectItem value="no">पानी स्रोत छैन</SelectItem>
                 </SelectContent>
               </Select>
 
               <Input
-                placeholder="कृषि क्षेत्रको नाम खोज्नुहोस्..."
+                placeholder="चरन खर्क क्षेत्रको नाम खोज्नुहोस्..."
                 value={searchTerm}
                 onChange={handleSearchChange}
                 className="flex-1"
@@ -239,53 +289,53 @@ export default function AgricZonesPage() {
         {!isLoading && !isError && data?.items?.length === 0 && (
           <Alert className="bg-muted">
             <AlertDescription className="text-center py-6">
-              कुनै कृषि क्षेत्र फेला परेन। नयाँ कृषि क्षेत्र थप्न माथिको बटन
-              प्रयोग गर्नुहोस्।
+              कुनै चरन खर्क क्षेत्र फेला परेन। नयाँ चरन खर्क क्षेत्र थप्न माथिको
+              बटन प्रयोग गर्नुहोस्।
             </AlertDescription>
           </Alert>
         )}
 
         {!isLoading && !isError && data?.items && currentView === "table" && (
           <TableView
-            zones={data.items}
-            zoneTypes={agricZoneTypes}
+            grazingAreas={data.items}
+            grazingAreaTypes={grazingAreaTypes}
             pagination={pagination}
             onPageChange={handlePageChange}
-            onDelete={handleDeleteZone}
+            onDelete={handleDeleteGrazingArea}
             isLoading={isLoading}
           />
         )}
 
         {!isLoading && !isError && data?.items && currentView === "grid" && (
           <GridView
-            zones={data.items}
-            zoneTypes={agricZoneTypes}
+            grazingAreas={data.items}
+            grazingAreaTypes={grazingAreaTypes}
             pagination={pagination}
             onPageChange={handlePageChange}
-            onDelete={handleDeleteZone}
+            onDelete={handleDeleteGrazingArea}
             isLoading={isLoading}
           />
         )}
 
         {!isLoading && !isError && data?.items && currentView === "map" && (
           <MapView
-            zones={data.items}
-            zoneTypes={agricZoneTypes}
+            grazingAreas={data.items}
+            grazingAreaTypes={grazingAreaTypes}
             isLoading={isLoading}
           />
         )}
       </div>
 
       <AlertDialog
-        open={!!zoneToDelete}
-        onOpenChange={() => setZoneToDelete(null)}
+        open={!!grazingAreaToDelete}
+        onOpenChange={() => setGrazingAreaToDelete(null)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>के तपाईं निश्चित हुनुहुन्छ?</AlertDialogTitle>
             <AlertDialogDescription>
-              कृषि क्षेत्र &quot;{zoneToDelete?.name}&quot; हटाउने। यो कार्य
-              पूर्ववत हुन सक्दैन।
+              चरन खर्क क्षेत्र &quot;{grazingAreaToDelete?.name}&quot; हटाउने।
+              यो कार्य पूर्ववत हुन सक्दैन।
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
