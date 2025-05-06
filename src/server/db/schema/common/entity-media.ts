@@ -23,6 +23,7 @@ export const entityTypeEnum = pgEnum("entity_type", [
   // Roads
   "ROAD",
   "PARKING_FACILITY",
+  "PUBLIC_TRANSPORT",
 ]);
 
 // Entity-Media relationship table
