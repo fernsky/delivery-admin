@@ -1,41 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  ImagePlus,
-  Trash2,
-  X,
-  Loader,
-  Image as ImageIcon,
-  Check,
-  Upload,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { api } from "@/trpc/react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { Trash2 } from "lucide-react";
+import { api } from "@/trpc/react";
 import { FileUploader } from "@/components/shared/file-upload/custom-uploader";
+import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+
+interface MediaFile {
+  id: string;
+  fileUrl?: string;
+  url?: string;
+  isPrimary?: boolean;
+  fileContent?: string;
+}
 
 interface ParkingFacilityMediaSectionProps {
   facilityId: string;
-  existingMedia: {
-    id: string;
-    fileName?: string;
-    url: string;
-    title?: string;
-    description?: string;
-    isPrimary: boolean;
-    mimeType?: string;
-  }[];
+  existingMedia: MediaFile[];
   entityType: "PARKING_FACILITY";
 }
 
@@ -45,203 +29,214 @@ export function ParkingFacilityMediaSection({
   entityType,
 }: ParkingFacilityMediaSectionProps) {
   const router = useRouter();
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
 
-  // Delete media mutation
-  const { mutate: deleteMedia, isLoading: isDeleting } =
-    api.common.media.delete.useMutation({
-      onSuccess: () => {
-        toast.success("मिडिया हटाइयो");
-        router.refresh();
-      },
-      onError: (error) => {
-        toast.error(`मिडिया हटाउन असफल: ${error.message}`);
-      },
-    });
+  // Track media IDs that have already been processed to prevent duplicates
+  const [processedMediaIds, setProcessedMediaIds] = useState(new Set<string>());
 
-  // Set primary media mutation
-  const { mutate: setPrimaryMedia, isLoading: isSettingPrimary } =
-    api.common.media.setPrimary.useMutation({
-      onSuccess: () => {
-        toast.success("प्राथमिक मिडिया अपडेट गरियो");
-        router.refresh();
+  // Get presigned URLs for existing media
+  const { data: presignedUrls, isLoading: loadingUrls } =
+    api.common.media.getPresignedUrls.useQuery(
+      {
+        mediaIds: existingMedia.map((media) => media.id),
       },
-      onError: (error) => {
-        toast.error(`प्राथमिक मिडिया अपडेट गर्न असफल: ${error.message}`);
+      {
+        enabled: existingMedia.length > 0,
       },
-    });
+    );
 
-  // Media upload mutation
-  const { mutate: uploadMedia } = api.common.media.uploadMedia.useMutation({
-    onSuccess: () => {
-      toast.success("मिडिया सफलतापूर्वक अपलोड गरियो");
-      setIsUploading(false);
-      router.refresh();
+  useEffect(() => {
+    if (existingMedia && presignedUrls) {
+      // Create a set of processed media IDs
+      const mediaIds = new Set(existingMedia.map((media) => media.id));
+      setProcessedMediaIds(mediaIds);
+
+      // Combine initial media with presigned URLs
+      const mediaWithUrls = existingMedia.map((media) => {
+        const presignedUrl = presignedUrls.find((item) => item.id === media.id);
+        return {
+          ...media,
+          fileUrl: presignedUrl?.url || media.url || media.fileUrl,
+          isPrimary: media.isPrimary,
+        };
+      });
+      setMediaFiles(mediaWithUrls);
+    } else if (existingMedia) {
+      // Use available URLs if presigned URLs are not available yet
+      setProcessedMediaIds(new Set(existingMedia.map((media) => media.id)));
+      setMediaFiles(
+        existingMedia.map((media) => ({
+          ...media,
+          fileUrl: media.url || media.fileUrl,
+        })),
+      );
+    }
+  }, [existingMedia, presignedUrls]);
+
+  // Upload media mutation with enhanced direct file upload support
+  const { mutate: addMedia } = api.common.media.upload.useMutation({
+    onSuccess: (data) => {
+      // Check if this media already exists in our state to prevent duplicates
+      if (!processedMediaIds.has(data.id)) {
+        toast.success("मिडिया सफलतापूर्वक थपियो");
+
+        // Add to processed media IDs
+        setProcessedMediaIds((prev) => new Set(prev).add(data.id));
+
+        // Add new file to the local list with full data including id
+        setMediaFiles((prev) => [
+          ...prev,
+          {
+            id: data.id,
+            fileUrl: data.fileUrl || "",
+            isPrimary: mediaFiles.length === 0, // First file is primary by default
+          },
+        ]);
+      }
     },
-    onError: (error) => {
-      toast.error(`मिडिया अपलोड गर्न असफल: ${error.message}`);
-      setIsUploading(false);
+    onError: (error: any) => {
+      toast.error(`मिडिया थप्न असफल: ${error.message}`);
     },
   });
 
-  // Handle delete
-  const handleDelete = (mediaId: string) => {
-    if (confirm("के तपाईं निश्चित हुनुहुन्छ?")) {
-      deleteMedia({ id: mediaId });
+  // Set media as primary mutation
+  const { mutate: setPrimaryMedia } = api.common.media.setPrimary.useMutation({
+    onSuccess: () => {
+      toast.success("प्राथमिक मिडिया अपडेट गरियो");
+    },
+    onError: (error) => {
+      toast.error(`प्राथमिक मिडिया अपडेट गर्न असफल: ${error.message}`);
+    },
+  });
+
+  // Delete media mutation
+  const { mutate: deleteMedia } = api.common.media.delete.useMutation({
+    onSuccess: (data) => {
+      toast.success("मिडिया हटाइयो");
+    },
+    onError: (error) => {
+      toast.error(`मिडिया हटाउन असफल: ${error.message}`);
+    },
+  });
+
+  const handleFileUploadComplete = (fileData: any) => {
+    // If this media is already in our list, don't add it again
+    if (processedMediaIds.has(fileData.id)) {
+      return;
     }
-  };
 
-  // Handle set primary media
-  const handleSetPrimary = (mediaId: string) => {
-    setPrimaryMedia({
-      mediaId,
+    // The file is already uploaded through the FileUploader component
+    addMedia({
+      fileKey: fileData.id || fileData.fileKey,
+      fileUrl: fileData.fileUrl || fileData.url || "",
+      fileName: fileData.id || fileData.fileKey || fileData.fileName,
+      fileSize: fileData.fileSize || 0,
+      mimeType: fileData.mimeType || "image/jpeg",
       entityId: facilityId,
-      entityType,
+      entityType: entityType,
+      isPrimary: mediaFiles.length === 0,
+      fileContent: fileData.fileContent,
     });
   };
 
-  // Handle file upload using the FileUploader component
-  const handleFilesSelected = (files: File[]) => {
-    if (files.length === 0) return;
-    setIsUploading(true);
+  const handleDeleteFile = (fileId: string) => {
+    // Remove from state for UI responsiveness
+    setMediaFiles((prev) => prev.filter((file) => file.id !== fileId));
 
-    uploadMedia({
-      files,
-      entityId: facilityId,
-      entityType,
-    });
+    // Remove from processed IDs
+    const newProcessedIds = new Set(processedMediaIds);
+    newProcessedIds.delete(fileId);
+    setProcessedMediaIds(newProcessedIds);
+
+    // Delete from server
+    deleteMedia({ id: fileId });
   };
 
-  // Render image lightbox
-  const renderLightbox = () => {
-    if (!selectedImage) return null;
-
-    return (
-      <div
-        className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-        onClick={() => setSelectedImage(null)}
-      >
-        <div className="relative max-w-4xl max-h-screen">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-2 right-2 bg-black/50 text-white z-10"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedImage(null);
-            }}
-          >
-            <X className="h-6 w-6" />
-          </Button>
-          <img
-            src={selectedImage}
-            alt="Full size"
-            className="max-w-full max-h-[90vh] object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      </div>
+  const handleSetFilePrimary = (fileId: string) => {
+    // Update state for UI responsiveness
+    setMediaFiles((prev) =>
+      prev.map((file) => ({
+        ...file,
+        isPrimary: file.id === fileId,
+      })),
     );
+
+    // Update on server
+    setPrimaryMedia({
+      mediaId: fileId,
+      entityId: facilityId,
+      entityType: entityType,
+    });
   };
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>पार्किङ सुविधाको फोटोहरू</CardTitle>
-          <CardDescription>
-            पार्किङ सुविधाको लागि फोटो वा कागजातहरू अपलोड गर्नुहोस्
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {/* File uploader component */}
-          <div className="mb-8">
-            <FileUploader
-              accept="image/*"
-              multiple
-              maxFiles={10}
-              maxSize={5 * 1024 * 1024} // 5MB
-              onFilesSelected={handleFilesSelected}
-              uploading={isUploading}
-              text="पार्किङ सुविधाको फोटो अपलोड गर्नुहोस्"
-              icon={<Upload className="h-5 w-5 mr-2" />}
-              buttonText="फोटोहरू छान्नुहोस्"
-              instruction="फोटोहरू यहाँ तान्नुहोस् वा फाइलहरू छान्नुहोस्"
-              note="अधिकतम 10 फोटोहरू, प्रत्येक 5MB सम्म"
-            />
-          </div>
+    <div className="space-y-4">
+      <div className="text-lg font-medium">पार्किङ सुविधाको फोटोहरू</div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {existingMedia.map((item) => (
-              <div
-                key={item.id}
-                className={`group relative border rounded-md overflow-hidden ${
-                  item.isPrimary ? "ring-2 ring-primary ring-offset-1" : ""
-                }`}
-              >
-                {item.mimeType?.startsWith("image/") ? (
-                  <div
-                    className="aspect-video cursor-pointer"
-                    onClick={() => setSelectedImage(item.url)}
-                  >
-                    <img
-                      src={item.url}
-                      alt={item.title || "Image"}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="aspect-video flex items-center justify-center bg-muted">
-                    <ImageIcon className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                )}
+      <FileUploader
+        maxFiles={10}
+        uploadType="image"
+        entityId={facilityId}
+        entityType={entityType}
+        onUploadComplete={handleFileUploadComplete}
+        onUploadError={(error) => toast.error(`अपलोड त्रुटि: ${error.message}`)}
+      />
 
-                <div className="p-2 flex flex-col gap-1">
-                  <div className="text-xs truncate">{item.fileName}</div>
-                  {item.title && (
-                    <div className="text-xs font-medium truncate">
-                      {item.title}
-                    </div>
-                  )}
+      {loadingUrls && (
+        <p className="text-sm text-muted-foreground">फोटोहरू लोड हुँदैछ...</p>
+      )}
+
+      {mediaFiles.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+          {mediaFiles.map((file) => (
+            <div
+              key={file.id}
+              className={`relative rounded-md overflow-hidden border ${
+                file.isPrimary ? "border-primary border-2" : "border-border"
+              }`}
+            >
+              {file.fileUrl ? (
+                <img
+                  src={file.fileUrl}
+                  alt="Media file"
+                  className="w-full h-32 object-cover"
+                />
+              ) : (
+                <div className="w-full h-32 flex items-center justify-center bg-muted">
+                  Loading...
                 </div>
+              )}
 
-                {/* Hover actions */}
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
+                <div className="flex gap-2">
+                  {!file.isPrimary && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => handleSetFilePrimary(file.id)}
+                    >
+                      प्राथमिक
+                    </Button>
+                  )}
                   <Button
                     variant="destructive"
-                    size="icon"
-                    className="h-7 w-7"
-                    onClick={() => handleDelete(item.id)}
-                    disabled={isDeleting}
+                    size="sm"
+                    onClick={() => handleDeleteFile(file.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
-
-                {/* Set as primary button */}
-                {!item.isPrimary && (
-                  <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="h-7 text-xs"
-                      onClick={() => handleSetPrimary(item.id)}
-                      disabled={isSettingPrimary}
-                    >
-                      <Check className="h-3 w-3 mr-1" />
-                      प्राथमिक बनाउनुहोस्
-                    </Button>
-                  </div>
-                )}
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Lightbox */}
-      {renderLightbox()}
-    </>
+              {file.isPrimary && (
+                <Badge className="absolute top-2 right-2" variant="secondary">
+                  प्राथमिक
+                </Badge>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
