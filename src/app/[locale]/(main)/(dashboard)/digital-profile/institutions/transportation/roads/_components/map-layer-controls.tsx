@@ -1,4 +1,4 @@
-import { Layers, MapPin, Road } from "lucide-react";
+import { Layers, MapPin, Route } from "lucide-react";
 import { useMapLayersStore } from "@/store/map-layers-store";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,7 +36,7 @@ export function MapLayerControls() {
             htmlFor="show-lines"
             className="flex items-center gap-2 cursor-pointer"
           >
-            <Road className="h-4 w-4 text-primary" />
+            <Route className="h-4 w-4 text-primary" />
             <span>रेखाहरू देखाउनुहोस्</span>
           </Label>
           <Switch

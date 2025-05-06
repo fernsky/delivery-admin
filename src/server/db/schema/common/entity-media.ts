@@ -11,14 +11,18 @@ import { media } from "./media";
 
 // Define entity type enum for different types of entities that can have media
 export const entityTypeEnum = pgEnum("entity_type", [
+  // Local Areas
   "LOCATION",
   "WARD",
   "SETTLEMENT",
   "SQUATTER_AREA",
-  "ROAD", // Make sure ROAD is included
   "AGRICULTURAL_AREA",
   "BUSINESS_AREA",
   "INDUSTRIAL_AREA",
+
+  // Roads
+  "ROAD",
+  "PARKING_FACILITY",
 ]);
 
 // Entity-Media relationship table

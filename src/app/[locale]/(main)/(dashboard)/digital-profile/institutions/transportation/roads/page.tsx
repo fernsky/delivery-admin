@@ -77,6 +77,7 @@ export default function RoadsPage() {
       searchTerm: searchTerm,
       type: currentType !== "all" ? currentType : undefined,
       condition: currentCondition !== "all" ? currentCondition : undefined,
+      viewType: currentView,
     });
 
   // Delete road mutation

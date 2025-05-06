@@ -9,15 +9,22 @@ EXCEPTION
   WHEN duplicate_object THEN null;
 END $$;
 
--- Create entity_type enum
+-- Create entity_type enum with PARKING_FACILITY
 DO $$ 
 BEGIN
   CREATE TYPE entity_type AS ENUM (
     'LOCATION', 'WARD', 'SETTLEMENT', 'SQUATTER_AREA',
-    'ROAD', 'AGRICULTURAL_AREA', 'BUSINESS_AREA', 'INDUSTRIAL_AREA'
+    'ROAD', 'AGRICULTURAL_AREA', 'BUSINESS_AREA', 'INDUSTRIAL_AREA', 
+    'PARKING_FACILITY'
   );
 EXCEPTION
-  WHEN duplicate_object THEN null;
+  WHEN duplicate_object THEN 
+    -- If the type already exists, try to add the new value
+    BEGIN
+      ALTER TYPE entity_type ADD VALUE 'PARKING_FACILITY' IF NOT EXISTS;
+    EXCEPTION
+      WHEN others THEN null;
+    END;
 END $$;
 
 -- Create media table with additional file_url field

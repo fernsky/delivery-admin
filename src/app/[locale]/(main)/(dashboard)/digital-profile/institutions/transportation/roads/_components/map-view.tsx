@@ -237,22 +237,8 @@ export function MapView({ roads, roadTypes, isLoading }: MapViewProps) {
     // Add features for all roads
     addRoadFeatures(pointSource, lineSource, roads);
 
-    // Auto-fit to all road features if there are any
-    const extent = lineSource.getExtent();
-    if (extent[0] !== Infinity && extent[1] !== Infinity) {
-      mapRef.current.getView().fit(extent, {
-        padding: [50, 50, 50, 50],
-        maxZoom: 14,
-      });
-    } else {
-      const pointExtent = pointSource.getExtent();
-      if (pointExtent[0] !== Infinity && pointExtent[1] !== Infinity) {
-        mapRef.current.getView().fit(pointExtent, {
-          padding: [50, 50, 50, 50],
-          maxZoom: 14,
-        });
-      }
-    }
+    // Auto-fit to all road features
+    fitMapToFeatures(lineSource, pointSource);
 
     // Cleanup function
     return () => {
@@ -286,21 +272,7 @@ export function MapView({ roads, roadTypes, isLoading }: MapViewProps) {
     }
 
     // Auto-fit to all road features
-    const extent = lineSource?.getExtent()!;
-    if (extent[0] !== Infinity && extent[1] !== Infinity) {
-      mapRef.current.getView().fit(extent, {
-        padding: [50, 50, 50, 50],
-        maxZoom: 14,
-      });
-    } else {
-      const pointExtent = pointSource?.getExtent()!;
-      if (pointExtent[0] !== Infinity && pointExtent[1] !== Infinity) {
-        mapRef.current.getView().fit(pointExtent, {
-          padding: [50, 50, 50, 50],
-          maxZoom: 14,
-        });
-      }
-    }
+    fitMapToFeatures(lineSource, pointSource);
   }, [roads]);
 
   // Update the tile layer when view type changes
@@ -337,6 +309,37 @@ export function MapView({ roads, roadTypes, isLoading }: MapViewProps) {
     }
   }, [showLines]);
 
+  // Helper function to fit the map view to features
+  const fitMapToFeatures = (
+    lineSource: VectorSource | null,
+    pointSource: VectorSource | null,
+  ) => {
+    if (!mapRef.current) return;
+
+    // Try to fit to line features first
+    if (lineSource && lineSource.getFeatures().length > 0) {
+      const lineExtent = lineSource.getExtent();
+      if (lineExtent[0] !== Infinity && lineExtent[1] !== Infinity) {
+        mapRef.current.getView().fit(lineExtent, {
+          padding: [50, 50, 50, 50],
+          maxZoom: 14,
+        });
+        return;
+      }
+    }
+
+    // If no line features, try to fit to point features
+    if (pointSource && pointSource.getFeatures().length > 0) {
+      const pointExtent = pointSource.getExtent();
+      if (pointExtent[0] !== Infinity && pointExtent[1] !== Infinity) {
+        mapRef.current.getView().fit(pointExtent, {
+          padding: [50, 50, 50, 50],
+          maxZoom: 14,
+        });
+      }
+    }
+  };
+
   // Helper function to add features to the map
   const addRoadFeatures = (
     pointSource: VectorSource | null,
@@ -354,6 +357,7 @@ export function MapView({ roads, roadTypes, isLoading }: MapViewProps) {
           );
 
           const line = new OLLineString(coordinates);
+          console.log(line);
           const feature = new Feature({
             geometry: line,
             id: road.id,
@@ -362,12 +366,14 @@ export function MapView({ roads, roadTypes, isLoading }: MapViewProps) {
             condition: road.condition,
           });
           lineSource.addFeature(feature);
+
+          console.log(`Added road path for ${road.name}:`, road.roadPath);
         } catch (error) {
           console.error("Error adding road path for", road.id, error);
         }
       }
 
-      // For representative point or if no path is available
+      // For representative point or along the path
       try {
         let coordinates;
         if (road.representativePoint) {
@@ -389,11 +395,17 @@ export function MapView({ roads, roadTypes, isLoading }: MapViewProps) {
             condition: road.condition,
           });
           pointSource.addFeature(feature);
+
+          console.log(`Added point for ${road.name}:`, coordinates);
         }
       } catch (error) {
         console.error("Error adding point for", road.id, error);
       }
     });
+
+    console.log("Total roads:", roads.length);
+    console.log("Total line features:", lineSource.getFeatures().length);
+    console.log("Total point features:", pointSource.getFeatures().length);
   };
 
   // Function to view road details
