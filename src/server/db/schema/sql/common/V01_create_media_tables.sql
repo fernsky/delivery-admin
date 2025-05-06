@@ -8,13 +8,13 @@ BEGIN
 EXCEPTION
   WHEN duplicate_object THEN null;
 END $$;
--- Create entity_type enum with PARKING_FACILITY and PUBLIC_TRANSPORT
+-- Create entity_type enum with PARKING_FACILITY, PUBLIC_TRANSPORT, and PETROL_PUMP
 DO $$ 
 BEGIN
   CREATE TYPE entity_type AS ENUM (
     'LOCATION', 'WARD', 'SETTLEMENT', 'SQUATTER_AREA',
     'ROAD', 'AGRICULTURAL_AREA', 'BUSINESS_AREA', 'INDUSTRIAL_AREA', 
-    'PARKING_FACILITY', 'PUBLIC_TRANSPORT'
+    'PARKING_FACILITY', 'PUBLIC_TRANSPORT', 'PETROL_PUMP'
   );
 EXCEPTION
   WHEN duplicate_object THEN 
@@ -38,6 +38,16 @@ EXCEPTION
           AND enumtypid = 'entity_type'::regtype
       ) THEN
         ALTER TYPE entity_type ADD VALUE 'PUBLIC_TRANSPORT';
+      END IF;
+      
+      -- Check and add PETROL_PUMP if not exists
+      IF NOT EXISTS (
+        SELECT 1 
+        FROM pg_enum 
+        WHERE enumlabel = 'PETROL_PUMP' 
+          AND enumtypid = 'entity_type'::regtype
+      ) THEN
+        ALTER TYPE entity_type ADD VALUE 'PETROL_PUMP';
       END IF;
     EXCEPTION
       WHEN others THEN null;
