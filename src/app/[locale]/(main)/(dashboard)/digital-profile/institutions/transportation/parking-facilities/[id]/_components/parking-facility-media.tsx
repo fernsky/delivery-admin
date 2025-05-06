@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Image, X, FileText, Video, FileImage, Parking } from "lucide-react";
+import {
+  Image,
+  X,
+  FileText,
+  Video,
+  FileImage,
+  CircleParking,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
@@ -113,7 +120,7 @@ export function ParkingFacilityMedia({
         <CardContent>
           {media.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              <Parking className="h-20 w-20 mx-auto opacity-10 mb-4" />
+              <CircleParking className="h-20 w-20 mx-auto opacity-10 mb-4" />
               <p>कुनै फोटो फेला परेन</p>
               <p className="text-sm mt-2">
                 पार्किङ सुविधाको फोटोहरू संलग्न गर्न सम्पादन पृष्ठमा जानुहोस्

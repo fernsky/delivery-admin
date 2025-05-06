@@ -19,9 +19,16 @@ BEGIN
   );
 EXCEPTION
   WHEN duplicate_object THEN 
-    -- If the type already exists, try to add the new value
+    -- If the type already exists, try to add the new value safely
     BEGIN
-      ALTER TYPE entity_type ADD VALUE 'PARKING_FACILITY' IF NOT EXISTS;
+      IF NOT EXISTS (
+        SELECT 1 
+        FROM pg_enum 
+        WHERE enumlabel = 'PARKING_FACILITY' 
+          AND enumtypid = 'entity_type'::regtype
+      ) THEN
+        ALTER TYPE entity_type ADD VALUE 'PARKING_FACILITY';
+      END IF;
     EXCEPTION
       WHEN others THEN null;
     END;

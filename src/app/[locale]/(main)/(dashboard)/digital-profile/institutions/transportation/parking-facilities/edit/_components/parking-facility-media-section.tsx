@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -17,22 +17,13 @@ import {
   Loader,
   Image as ImageIcon,
   Check,
+  Upload,
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { FileUploader } from "@/components/shared/file-upload/custom-uploader";
 
 interface ParkingFacilityMediaSectionProps {
   facilityId: string;
@@ -54,31 +45,8 @@ export function ParkingFacilityMediaSection({
   entityType,
 }: ParkingFacilityMediaSectionProps) {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [fileTitle, setFileTitle] = useState("");
-  const [fileDescription, setFileDescription] = useState("");
-  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
-  // Media upload mutation
-  const { mutate: uploadMedia } = api.common.media.uploadMedia.useMutation({
-    onSuccess: () => {
-      toast.success("मिडिया सफलतापूर्वक अपलोड गरियो");
-      setSelectedFiles([]);
-      setFileTitle("");
-      setFileDescription("");
-      setIsUploadDialogOpen(false);
-      setIsUploading(false);
-      router.refresh();
-    },
-    onError: (error) => {
-      toast.error(`मिडिया अपलोड गर्न असफल: ${error.message}`);
-      setIsUploading(false);
-    },
-  });
+  const [isUploading, setIsUploading] = useState(false);
 
   // Delete media mutation
   const { mutate: deleteMedia, isLoading: isDeleting } =
@@ -104,44 +72,18 @@ export function ParkingFacilityMediaSection({
       },
     });
 
-  // Handle file selection
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const filesArray = Array.from(event.target.files).slice(0, 10); // Limit to 10 files
-      setSelectedFiles(filesArray);
-      setIsUploadDialogOpen(true);
-    }
-  };
-
-  // Handle file upload
-  const handleUpload = () => {
-    if (selectedFiles.length === 0) return;
-    setIsUploading(true);
-    setUploadProgress(0);
-
-    // Simulate progress (in a real app, you might get this from an upload event)
-    const simulateProgress = () => {
-      setUploadProgress((prev) => {
-        if (prev < 90) {
-          const next = prev + Math.random() * 10;
-          setTimeout(simulateProgress, 300);
-          return next;
-        }
-        return prev;
-      });
-    };
-
-    simulateProgress();
-
-    // Handle file upload
-    uploadMedia({
-      files: selectedFiles,
-      entityId: facilityId,
-      entityType,
-      title: fileTitle,
-      description: fileDescription,
-    });
-  };
+  // Media upload mutation
+  const { mutate: uploadMedia } = api.common.media.uploadMedia.useMutation({
+    onSuccess: () => {
+      toast.success("मिडिया सफलतापूर्वक अपलोड गरियो");
+      setIsUploading(false);
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error(`मिडिया अपलोड गर्न असफल: ${error.message}`);
+      setIsUploading(false);
+    },
+  });
 
   // Handle delete
   const handleDelete = (mediaId: string) => {
@@ -150,7 +92,7 @@ export function ParkingFacilityMediaSection({
     }
   };
 
-  // Handle set primary
+  // Handle set primary media
   const handleSetPrimary = (mediaId: string) => {
     setPrimaryMedia({
       mediaId,
@@ -159,9 +101,16 @@ export function ParkingFacilityMediaSection({
     });
   };
 
-  // Trigger file input click
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
+  // Handle file upload using the FileUploader component
+  const handleFilesSelected = (files: File[]) => {
+    if (files.length === 0) return;
+    setIsUploading(true);
+
+    uploadMedia({
+      files,
+      entityId: facilityId,
+      entityType,
+    });
   };
 
   // Render image lightbox
@@ -206,6 +155,23 @@ export function ParkingFacilityMediaSection({
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* File uploader component */}
+          <div className="mb-8">
+            <FileUploader
+              accept="image/*"
+              multiple
+              maxFiles={10}
+              maxSize={5 * 1024 * 1024} // 5MB
+              onFilesSelected={handleFilesSelected}
+              uploading={isUploading}
+              text="पार्किङ सुविधाको फोटो अपलोड गर्नुहोस्"
+              icon={<Upload className="h-5 w-5 mr-2" />}
+              buttonText="फोटोहरू छान्नुहोस्"
+              instruction="फोटोहरू यहाँ तान्नुहोस् वा फाइलहरू छान्नुहोस्"
+              note="अधिकतम 10 फोटोहरू, प्रत्येक 5MB सम्म"
+            />
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {existingMedia.map((item) => (
               <div
@@ -270,132 +236,9 @@ export function ParkingFacilityMediaSection({
                 )}
               </div>
             ))}
-
-            <div
-              className="border border-dashed rounded-md flex items-center justify-center aspect-video cursor-pointer hover:bg-muted/50 transition-colors"
-              onClick={triggerFileInput}
-            >
-              <div className="text-center p-4">
-                <ImagePlus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">
-                  फोटो अपलोड गर्नुहोस्
-                </p>
-              </div>
-            </div>
           </div>
         </CardContent>
-        <CardFooter>
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            onChange={handleFileChange}
-            multiple
-            accept="image/*"
-          />
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={triggerFileInput}
-          >
-            <ImagePlus className="h-4 w-4 mr-2" />
-            फोटोहरू थप्नुहोस्
-          </Button>
-        </CardFooter>
       </Card>
-
-      {/* Upload dialog */}
-      <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>फोटो अपलोड गर्नुहोस्</DialogTitle>
-            <DialogDescription>
-              {selectedFiles.length} फाइल(हरू) अपलोड गर्न तयार
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="fileTitle">शीर्षक</Label>
-              <Input
-                id="fileTitle"
-                value={fileTitle}
-                onChange={(e) => setFileTitle(e.target.value)}
-                placeholder="यी फोटोहरूको शीर्षक दिनुहोस्"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="fileDescription">विवरण</Label>
-              <Textarea
-                id="fileDescription"
-                value={fileDescription}
-                onChange={(e) => setFileDescription(e.target.value)}
-                placeholder="यी फोटोहरूको विवरण दिनुहोस्"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>चयन गरिएका फाइलहरू</Label>
-              <div className="max-h-40 overflow-y-auto">
-                <ul className="space-y-1">
-                  {selectedFiles.map((file, index) => (
-                    <li
-                      key={index}
-                      className="text-sm border rounded-md p-2 flex justify-between"
-                    >
-                      <span className="truncate max-w-[80%]">
-                        {file.name} ({(file.size / 1024).toFixed(1)} KB)
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-5 w-5"
-                        onClick={() => {
-                          const newFiles = [...selectedFiles];
-                          newFiles.splice(index, 1);
-                          setSelectedFiles(newFiles);
-                        }}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {isUploading && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span>अपलोड गर्दै...</span>
-                  <span>{Math.round(uploadProgress)}%</span>
-                </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary"
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsUploadDialogOpen(false)}
-              disabled={isUploading}
-            >
-              रद्द गर्नुहोस्
-            </Button>
-            <Button onClick={handleUpload} disabled={isUploading}>
-              {isUploading && <Loader className="h-4 w-4 mr-2 animate-spin" />}
-              अपलोड गर्नुहोस्
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Lightbox */}
       {renderLightbox()}
