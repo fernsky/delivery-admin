@@ -132,16 +132,16 @@ export const getPublicTransportBySlug = publicProcedure
       }));
 
       // Also fetch related entities information if IDs are available
-      let relatedRoads = [];
-      let relatedParkingFacilities = [];
+      // let relatedRoads = [];
+      // let relatedParkingFacilities = [];
 
       // Note: For now we're just returning raw IDs, full implementation would fetch related entity details
 
       return {
         ...processedTransport,
         media: mediaResult,
-        relatedRoads,
-        relatedParkingFacilities,
+        // relatedRoads,
+        // relatedParkingFacilities,
       };
     } catch (error) {
       console.error("Error fetching public transport by slug:", error);

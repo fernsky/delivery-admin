@@ -151,7 +151,7 @@ export function GridView({
                     className="h-8 w-8"
                     onClick={() =>
                       router.push(
-                        `/digital-profile/institutions/local-areas/edit/${location.id}`,
+                        `/dashboard/digital-profile/institutions/local-areas/edit/${location.id}`,
                       )
                     }
                   >

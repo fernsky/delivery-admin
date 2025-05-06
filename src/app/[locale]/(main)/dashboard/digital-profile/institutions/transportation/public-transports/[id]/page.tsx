@@ -124,7 +124,7 @@ export default function ViewPublicTransportPage({
             variant="outline"
             onClick={() =>
               router.push(
-                `/digital-profile/institutions/transportation/public-transports/edit/${transport.id}`,
+                `/dashboard/digital-profile/institutions/transportation/public-transports/edit/${transport.id}`,
               )
             }
           >

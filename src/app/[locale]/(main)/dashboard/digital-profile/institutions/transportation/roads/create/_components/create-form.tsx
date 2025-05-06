@@ -116,7 +116,7 @@ export function CreateRoadForm() {
       onSuccess: (data) => {
         toast.success("सडक सफलतापूर्वक सिर्जना गरियो");
         router.push(
-          `/digital-profile/institutions/transportation/roads/${data.id}`,
+          `/dashboard/digital-profile/institutions/transportation/roads/${data.id}`,
         );
       },
       onError: (error) => {

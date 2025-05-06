@@ -60,7 +60,7 @@ export function TableView({
 
   const handleViewFacility = (facilityId: string) => {
     router.push(
-      `/digital-profile/institutions/transportation/parking-facilities/${facilityId}`,
+      `/dashboard/digital-profile/institutions/transportation/parking-facilities/${facilityId}`,
     );
   };
 
@@ -191,7 +191,7 @@ export function TableView({
                           size="icon"
                           onClick={() =>
                             router.push(
-                              `/digital-profile/institutions/transportation/parking-facilities/edit/${facility.id}`,
+                              `/dashboard/digital-profile/institutions/transportation/parking-facilities/edit/${facility.id}`,
                             )
                           }
                         >

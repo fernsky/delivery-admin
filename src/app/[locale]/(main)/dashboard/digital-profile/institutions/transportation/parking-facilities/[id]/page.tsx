@@ -124,7 +124,7 @@ export default function ViewParkingFacilityPage({
             variant="outline"
             onClick={() =>
               router.push(
-                `/digital-profile/institutions/transportation/parking-facilities/edit/${facility.id}`,
+                `/dashboard/digital-profile/institutions/transportation/parking-facilities/edit/${facility.id}`,
               )
             }
           >

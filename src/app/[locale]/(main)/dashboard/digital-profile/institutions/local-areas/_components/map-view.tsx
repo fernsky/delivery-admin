@@ -301,7 +301,7 @@ export function MapView({ locations, locationTypes, isLoading }: MapViewProps) {
   const handleViewLocation = () => {
     if (selectedLocation) {
       router.push(
-        `/digital-profile/institutions/local-areas/${selectedLocation.id}`,
+        `/dashboard/digital-profile/institutions/local-areas/${selectedLocation.id}`,
       );
     }
   };

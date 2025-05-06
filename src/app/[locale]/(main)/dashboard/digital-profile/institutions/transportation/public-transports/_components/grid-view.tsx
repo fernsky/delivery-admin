@@ -57,7 +57,7 @@ export function GridView({
 
   const handleViewTransport = (transportId: string) => {
     router.push(
-      `/digital-profile/institutions/transportation/public-transports/${transportId}`,
+      `/dashboard/digital-profile/institutions/transportation/public-transports/${transportId}`,
     );
   };
 
@@ -222,7 +222,7 @@ export function GridView({
                     className="h-8 w-8"
                     onClick={() =>
                       router.push(
-                        `/digital-profile/institutions/transportation/public-transports/edit/${transport.id}`,
+                        `/dashboard/digital-profile/institutions/transportation/public-transports/edit/${transport.id}`,
                       )
                     }
                   >

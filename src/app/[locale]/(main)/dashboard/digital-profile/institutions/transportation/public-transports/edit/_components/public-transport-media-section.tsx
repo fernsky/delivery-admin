@@ -294,7 +294,7 @@ export function PublicTransportMediaSection({
                       onClick={() => setSelectedImage(item.url)}
                     >
                       <img
-                        src={item.url}
+                        src={item.url as string}
                         alt={item.fileName || "Image"}
                         className="w-full h-32 object-cover"
                       />

@@ -153,7 +153,7 @@ export function CreatePublicTransportForm() {
       onSuccess: (data) => {
         toast.success("सार्वजनिक यातायात सफलतापूर्वक सिर्जना गरियो");
         router.push(
-          `/digital-profile/institutions/transportation/public-transports/${data.id}`,
+          `/dashboard/digital-profile/institutions/transportation/public-transports/${data.id}`,
         );
       },
       onError: (error) => {

@@ -198,7 +198,7 @@ export function GridView({
                     className="h-8 w-8"
                     onClick={() =>
                       router.push(
-                        `/digital-profile/institutions/transportation/roads/edit/${road.id}`,
+                        `/dashboard/digital-profile/institutions/transportation/roads/edit/${road.id}`,
                       )
                     }
                   >

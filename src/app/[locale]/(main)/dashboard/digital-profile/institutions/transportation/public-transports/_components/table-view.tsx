@@ -66,7 +66,7 @@ export function TableView({
 
   const handleViewTransport = (transportId: string) => {
     router.push(
-      `/digital-profile/institutions/transportation/public-transports/${transportId}`,
+      `/dashboard/digital-profile/institutions/transportation/public-transports/${transportId}`,
     );
   };
 
@@ -236,7 +236,7 @@ export function TableView({
                           size="icon"
                           onClick={() =>
                             router.push(
-                              `/digital-profile/institutions/transportation/public-transports/edit/${transport.id}`,
+                              `/dashboard/digital-profile/institutions/transportation/public-transports/edit/${transport.id}`,
                             )
                           }
                         >

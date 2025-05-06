@@ -412,7 +412,7 @@ export function MapView({ roads, roadTypes, isLoading }: MapViewProps) {
   const handleViewRoad = () => {
     if (selectedRoad) {
       router.push(
-        `/digital-profile/institutions/transportation/roads/${selectedRoad.id}`,
+        `/dashboard/digital-profile/institutions/transportation/roads/${selectedRoad.id}`,
       );
     }
   };

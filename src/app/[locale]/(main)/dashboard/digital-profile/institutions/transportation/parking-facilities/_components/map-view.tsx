@@ -422,7 +422,7 @@ export function MapView({
   const handleViewFacility = () => {
     if (selectedFacility) {
       router.push(
-        `/digital-profile/institutions/transportation/parking-facilities/${selectedFacility.id}`,
+        `/dashboard/digital-profile/institutions/transportation/parking-facilities/${selectedFacility.id}`,
       );
     }
   };

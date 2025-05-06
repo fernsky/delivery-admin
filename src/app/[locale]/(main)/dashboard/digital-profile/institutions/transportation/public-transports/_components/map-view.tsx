@@ -382,7 +382,7 @@ export function MapView({
   const handleViewTransport = () => {
     if (selectedTransport) {
       router.push(
-        `/digital-profile/institutions/transportation/public-transports/${selectedTransport.id}`,
+        `/dashboard/digital-profile/institutions/transportation/public-transports/${selectedTransport.id}`,
       );
     }
   };

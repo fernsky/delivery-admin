@@ -143,7 +143,7 @@ export function CreateParkingFacilityForm() {
       onSuccess: (data) => {
         toast.success("पार्किङ सुविधा सफलतापूर्वक सिर्जना गरियो");
         router.push(
-          `/digital-profile/institutions/transportation/parking-facilities/${data.id}`,
+          `/dashboard/digital-profile/institutions/transportation/parking-facilities/${data.id}`,
         );
       },
       onError: (error) => {

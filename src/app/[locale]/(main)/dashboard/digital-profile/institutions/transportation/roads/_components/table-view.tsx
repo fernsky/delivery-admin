@@ -179,7 +179,7 @@ export function TableView({
                           size="icon"
                           onClick={() =>
                             router.push(
-                              `/digital-profile/institutions/transportation/roads/edit/${road.id}`,
+                              `/dashboard/digital-profile/institutions/transportation/roads/edit/${road.id}`,
                             )
                           }
                         >

@@ -113,7 +113,7 @@ export default function ViewLocalAreaPage({
             variant="outline"
             onClick={() =>
               router.push(
-                `/digital-profile/institutions/local-areas/edit/${location.id}`,
+                `/dashboard/digital-profile/institutions/local-areas/edit/${location.id}`,
               )
             }
           >

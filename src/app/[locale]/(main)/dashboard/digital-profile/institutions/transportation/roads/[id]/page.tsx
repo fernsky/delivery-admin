@@ -118,7 +118,7 @@ export default function ViewRoadPage({ params }: { params: { id: string } }) {
             variant="outline"
             onClick={() =>
               router.push(
-                `/digital-profile/institutions/transportation/roads/edit/${road.id}`,
+                `/dashboard/digital-profile/institutions/transportation/roads/edit/${road.id}`,
               )
             }
           >

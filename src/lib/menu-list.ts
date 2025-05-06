@@ -18,7 +18,7 @@ import {
   LineChart, // Add this import for the ward time series icon
   Building, // For institutions icon
   MapPin, // For local areas icon
-  Road, // For roads icon
+  Route, // For roads icon
   ParkingCircle, // For parking facilities icon
   Bus, // For public transport icon
 } from "lucide-react";

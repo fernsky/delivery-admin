@@ -158,7 +158,7 @@ export function TableView({
                           size="icon"
                           onClick={() =>
                             router.push(
-                              `/digital-profile/institutions/local-areas/edit/${location.id}`,
+                              `/dashboard/digital-profile/institutions/local-areas/edit/${location.id}`,
                             )
                           }
                         >
