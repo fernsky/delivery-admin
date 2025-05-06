@@ -10,21 +10,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { MapPin, Edit, Trash2, Image, Eye } from "lucide-react";
+import { Edit, Trash2, Image, Eye } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Pagination } from "./pagination";
 
-interface LocationItem {
+interface RoadItem {
   id: string;
   name: string;
   slug: string;
   type: string;
-  description?: string;
-  isNewSettlement?: boolean;
-  isTownPlanned?: boolean;
-  pointGeometry?: {
-    type: string;
-    coordinates: [number, number];
-  };
+  condition?: string;
+  widthInMeters?: number;
+  length?: number;
+  hasStreetLights?: boolean;
+  hasPedestrian?: boolean;
   primaryMedia?: {
     mediaId: string;
     url: string;
@@ -33,8 +32,8 @@ interface LocationItem {
 }
 
 interface TableViewProps {
-  locations: LocationItem[];
-  locationTypes: { value: string; label: string }[];
+  roads: RoadItem[];
+  roadTypes: { value: string; label: string }[];
   pagination: {
     page: number;
     pageSize: number;
@@ -44,13 +43,13 @@ interface TableViewProps {
     hasPreviousPage: boolean;
   };
   onPageChange: (page: number) => void;
-  onDelete: (location: { id: string; name: string }) => void;
+  onDelete: (road: { id: string; name: string }) => void;
   isLoading?: boolean;
 }
 
 export function TableView({
-  locations,
-  locationTypes,
+  roads,
+  roadTypes,
   pagination,
   onPageChange,
   onDelete,
@@ -58,9 +57,41 @@ export function TableView({
 }: TableViewProps) {
   const router = useRouter();
 
-  const handleViewLocation = (locationId: string, slug?: string) => {
-    // Navigate to location detail page using ID
-    router.push(`/digital-profile/institutions/local-areas/${locationId}`);
+  const handleViewRoad = (roadId: string) => {
+    router.push(`/digital-profile/institutions/transportation/roads/${roadId}`);
+  };
+
+  const getRoadConditionLabel = (condition?: string) => {
+    if (!condition) return "अज्ञात";
+
+    const conditions = {
+      EXCELLENT: "उत्कृष्ट",
+      GOOD: "राम्रो",
+      FAIR: "ठीकै",
+      POOR: "खराब",
+      VERY_POOR: "धेरै खराब",
+      UNDER_CONSTRUCTION: "निर्माणाधीन",
+    };
+    return conditions[condition as keyof typeof conditions] || condition;
+  };
+
+  const getConditionColor = (condition?: string) => {
+    if (!condition) return "bg-gray-100 text-gray-800";
+
+    switch (condition) {
+      case "EXCELLENT":
+      case "GOOD":
+        return "bg-green-100 text-green-800";
+      case "FAIR":
+        return "bg-yellow-100 text-yellow-800";
+      case "POOR":
+      case "VERY_POOR":
+        return "bg-red-100 text-red-800";
+      case "UNDER_CONSTRUCTION":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
   };
 
   return (
@@ -71,26 +102,25 @@ export function TableView({
             <TableRow>
               <TableHead>नाम</TableHead>
               <TableHead>प्रकार</TableHead>
-              <TableHead>विशेषताहरू</TableHead>
+              <TableHead>अवस्था</TableHead>
+              <TableHead>विवरण</TableHead>
               <TableHead className="w-36 text-right">कार्यहरू</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {locations.length > 0 ? (
-              locations.map((location) => {
-                const locationType = locationTypes.find(
-                  (t) => t.value === location.type,
-                );
+            {roads.length > 0 ? (
+              roads.map((road) => {
+                const roadType = roadTypes.find((t) => t.value === road.type);
 
                 return (
-                  <TableRow key={location.id}>
+                  <TableRow key={road.id}>
                     <TableCell className="font-medium">
                       <div className="flex items-start">
-                        {location.primaryMedia?.url ? (
+                        {road.primaryMedia?.url ? (
                           <div className="mr-3 flex-shrink-0">
                             <img
-                              src={location.primaryMedia.url}
-                              alt={location.name}
+                              src={road.primaryMedia.url}
+                              alt={road.name}
                               className="h-10 w-10 rounded-md object-cover"
                             />
                           </div>
@@ -102,43 +132,36 @@ export function TableView({
                         <div>
                           <button
                             className="hover:underline text-left font-medium"
-                            onClick={() =>
-                              handleViewLocation(location.id, location.slug)
-                            }
+                            onClick={() => handleViewRoad(road.id)}
                           >
-                            {location.name}
+                            {road.name}
                           </button>
-                          {location.pointGeometry && (
-                            <div className="flex items-center text-xs text-muted-foreground mt-1">
-                              <MapPin className="h-3 w-3 mr-1" />
-                              <span>
-                                {location.pointGeometry.coordinates[1].toFixed(
-                                  6,
-                                )}
-                                ,{" "}
-                                {location.pointGeometry.coordinates[0].toFixed(
-                                  6,
-                                )}
-                              </span>
-                            </div>
-                          )}
                         </div>
                       </div>
                     </TableCell>
+                    <TableCell>{roadType?.label || road.type}</TableCell>
                     <TableCell>
-                      {locationType?.label || location.type}
+                      <Badge className={getConditionColor(road.condition)}>
+                        {getRoadConditionLabel(road.condition)}
+                      </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {location.isNewSettlement && (
-                          <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
-                            नयाँ बस्ती
+                      <div className="text-xs text-muted-foreground">
+                        {road.widthInMeters && (
+                          <span className="mr-2">
+                            चौडाई: {road.widthInMeters} मि.
                           </span>
                         )}
-                        {location.isTownPlanned && (
-                          <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700">
-                            नियोजित शहरी क्षेत्र
+                        {road.length && (
+                          <span className="mr-2">
+                            लम्बाई: {road.length} मि.
                           </span>
+                        )}
+                        {road.hasStreetLights && (
+                          <span className="mr-2">स्ट्रिट लाइट</span>
+                        )}
+                        {road.hasPedestrian && (
+                          <span className="mr-2">पैदल मार्ग</span>
                         )}
                       </div>
                     </TableCell>
@@ -147,9 +170,7 @@ export function TableView({
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() =>
-                            handleViewLocation(location.id, location.slug)
-                          }
+                          onClick={() => handleViewRoad(road.id)}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -158,7 +179,7 @@ export function TableView({
                           size="icon"
                           onClick={() =>
                             router.push(
-                              `/digital-profile/institutions/local-areas/edit/${location.id}`,
+                              `/digital-profile/institutions/transportation/roads/edit/${road.id}`,
                             )
                           }
                         >
@@ -169,8 +190,8 @@ export function TableView({
                           size="icon"
                           onClick={() =>
                             onDelete({
-                              id: location.id,
-                              name: location.name,
+                              id: road.id,
+                              name: road.name,
                             })
                           }
                         >
@@ -183,9 +204,9 @@ export function TableView({
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-8">
+                <TableCell colSpan={5} className="text-center py-8">
                   <p className="text-muted-foreground">
-                    कुनै पनि स्थान फेला परेन
+                    कुनै पनि सडक फेला परेन
                   </p>
                 </TableCell>
               </TableRow>

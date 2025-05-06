@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { MapPin, Edit, Trash2, Pin, Image } from "lucide-react";
+import { MapPin, Edit, Trash2, Eye, Image } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "./pagination";
 
@@ -52,6 +52,11 @@ export function GridView({
 }: GridViewProps) {
   const router = useRouter();
 
+  const handleViewLocation = (locationId: string) => {
+    // Navigate to location detail page using ID
+    router.push(`/digital-profile/institutions/local-areas/${locationId}`);
+  };
+
   if (locations.length === 0) {
     return (
       <div className="text-center py-12">
@@ -70,7 +75,10 @@ export function GridView({
 
           return (
             <Card key={location.id} className="overflow-hidden">
-              <div className="aspect-video relative bg-muted">
+              <div
+                className="aspect-video relative bg-muted cursor-pointer"
+                onClick={() => handleViewLocation(location.id)}
+              >
                 {location.primaryMedia?.url ? (
                   <img
                     src={location.primaryMedia.url}
@@ -87,7 +95,10 @@ export function GridView({
                 </div>
               </div>
               <CardContent className="p-4">
-                <h3 className="font-medium text-lg truncate">
+                <h3
+                  className="font-medium text-lg truncate cursor-pointer hover:underline"
+                  onClick={() => handleViewLocation(location.id)}
+                >
                   {location.name}
                 </h3>
                 {location.description && (
@@ -128,12 +139,9 @@ export function GridView({
                   variant="outline"
                   size="sm"
                   className="w-full"
-                  onClick={() =>
-                    router.push(
-                      `/digital-profile/institutions/local-areas/${location.slug || location.id}`,
-                    )
-                  }
+                  onClick={() => handleViewLocation(location.id)}
                 >
+                  <Eye className="h-4 w-4 mr-2" />
                   हेर्नुहोस्
                 </Button>
                 <div className="flex gap-1">

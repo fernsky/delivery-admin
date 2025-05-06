@@ -15,7 +15,7 @@ export const entityTypeEnum = pgEnum("entity_type", [
   "WARD",
   "SETTLEMENT",
   "SQUATTER_AREA",
-  "ROAD",
+  "ROAD", // Make sure ROAD is included
   "AGRICULTURAL_AREA",
   "BUSINESS_AREA",
   "INDUSTRIAL_AREA",

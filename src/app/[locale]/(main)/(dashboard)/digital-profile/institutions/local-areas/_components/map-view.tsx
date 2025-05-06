@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Map as MapIcon } from "lucide-react";
+import { MapPin, Map as MapIcon, Eye } from "lucide-react";
 import "ol/ol.css";
 import Map from "ol/Map";
 import View from "ol/View";
@@ -301,7 +301,7 @@ export function MapView({ locations, locationTypes, isLoading }: MapViewProps) {
   const handleViewLocation = () => {
     if (selectedLocation) {
       router.push(
-        `/digital-profile/institutions/local-areas/${selectedLocation.slug}`,
+        `/digital-profile/institutions/local-areas/${selectedLocation.id}`,
       );
     }
   };
@@ -348,6 +348,7 @@ export function MapView({ locations, locationTypes, isLoading }: MapViewProps) {
                     variant="default"
                     onClick={handleViewLocation}
                   >
+                    <Eye className="h-4 w-4 mr-2" />
                     हेर्नुहोस्
                   </Button>
                 </div>

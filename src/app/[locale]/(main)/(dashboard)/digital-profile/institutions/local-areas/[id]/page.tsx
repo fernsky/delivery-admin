@@ -25,16 +25,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function ViewLocalAreaPage({
   params,
 }: {
-  params: { slug: string };
+  params: { id: string };
 }) {
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  // Fetch location data by slug - now using getBySlug instead of getById
+  // Fetch location data by ID - using getById directly
   const { data: location, isLoading } =
-    api.profile.localAreas.locations.getBySlug.useQuery(params.slug, {
+    api.profile.localAreas.locations.getById.useQuery(params.id, {
       retry: false,
-      enabled: !!params.slug,
+      enabled: !!params.id,
       onError: () => {
         router.push("/digital-profile/institutions/local-areas");
         toast.error("स्थान फेला परेन");
@@ -106,6 +106,7 @@ export default function ViewLocalAreaPage({
     <ContentLayout
       title={location.name}
       subtitle={getLocationTypeLabel(location.type)}
+      backHref="/digital-profile/institutions/local-areas"
       actions={
         <div className="flex gap-2">
           <Button
