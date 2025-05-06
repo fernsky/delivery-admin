@@ -202,11 +202,14 @@ export const updateRoad = protectedProcedure
         .update(road)
         .set(updateData)
         .where(eq(road.id, input.id))
-        .returning();
+        .returning({
+          id: road.id,
+          slug: road.slug,
+        });
 
       return {
         success: true,
-        slug: result[0].slug,
+        slug: result[0]?.slug,
       };
     } catch (error) {
       console.error("Error updating road:", error);

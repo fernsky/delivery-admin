@@ -141,7 +141,9 @@ export const createLocation = protectedProcedure
             createdBy: ctx.user.id,
             updatedBy: ctx.user.id,
           })
-          .returning();
+          .returning({
+            id: location.id,
+          });
 
         return { id, slug, success: true };
       });

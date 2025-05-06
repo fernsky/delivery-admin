@@ -105,12 +105,12 @@ export function RoadEditForm({ initialData, roadId }: RoadEditFormProps) {
       description: initialData?.description || "",
       type: initialData?.type || undefined,
       widthInMeters: initialData?.widthInMeters
-        ? String(initialData.widthInMeters)
-        : "",
+        ? Number(initialData.widthInMeters)
+        : undefined,
       condition: initialData?.condition || undefined,
       drainageSystem: initialData?.drainageSystem || undefined,
       maintenanceYear: initialData?.maintenanceYear || "",
-      length: initialData?.length ? String(initialData.length) : "",
+      length: initialData?.length ? Number(initialData.length) : undefined,
       startPoint: initialData?.startPoint || "",
       endPoint: initialData?.endPoint || "",
       hasStreetLights: initialData?.hasStreetLights || false,

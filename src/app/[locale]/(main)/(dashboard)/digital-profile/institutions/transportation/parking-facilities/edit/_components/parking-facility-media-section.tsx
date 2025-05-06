@@ -10,11 +10,15 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 
 interface MediaFile {
+  url: string | null;
   id: string;
-  fileUrl?: string;
-  url?: string;
-  isPrimary?: boolean;
-  fileContent?: string;
+  fileName: string;
+  filePath: string;
+  title: string | null;
+  description: string | null;
+  mimeType: string | null;
+  isPrimary: boolean | null;
+  displayOrder: number | null;
 }
 
 interface ParkingFacilityMediaSectionProps {
@@ -56,7 +60,7 @@ export function ParkingFacilityMediaSection({
         const presignedUrl = presignedUrls.find((item) => item.id === media.id);
         return {
           ...media,
-          fileUrl: presignedUrl?.url || media.url || media.fileUrl,
+          fileUrl: presignedUrl?.url || media.url,
           isPrimary: media.isPrimary,
         };
       });
@@ -67,7 +71,7 @@ export function ParkingFacilityMediaSection({
       setMediaFiles(
         existingMedia.map((media) => ({
           ...media,
-          fileUrl: media.url || media.fileUrl,
+          fileUrl: media.url,
         })),
       );
     }
@@ -88,8 +92,14 @@ export function ParkingFacilityMediaSection({
           ...prev,
           {
             id: data.id,
-            fileUrl: data.fileUrl || "",
-            isPrimary: mediaFiles.length === 0, // First file is primary by default
+            fileName: data.fileName || "",
+            filePath: data.filePath || "",
+            url: null,
+            title: data.title || null,
+            description: data.description || null,
+            mimeType: data.mimeType || null,
+            isPrimary: prev.length === 0, // first file is primary
+            displayOrder: prev.length, // auto-increment order
           },
         ]);
       }
@@ -195,9 +205,9 @@ export function ParkingFacilityMediaSection({
                 file.isPrimary ? "border-primary border-2" : "border-border"
               }`}
             >
-              {file.fileUrl ? (
+              {file.url ? (
                 <img
-                  src={file.fileUrl}
+                  src={file.url}
                   alt="Media file"
                   className="w-full h-32 object-cover"
                 />

@@ -230,7 +230,10 @@ export const updateParkingFacility = protectedProcedure
         .update(parkingFacility)
         .set(updateData)
         .where(eq(parkingFacility.id, input.id))
-        .returning();
+        .returning({
+          id: parkingFacility.id,
+          slug: parkingFacility.slug,
+        });
 
       return {
         success: true,
