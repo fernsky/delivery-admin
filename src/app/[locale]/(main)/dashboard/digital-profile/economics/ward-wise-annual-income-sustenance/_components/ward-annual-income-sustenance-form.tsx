@@ -27,7 +27,10 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
-import { timeSpentEnum } from "@/server/db/schema/profile/economics/ward-time-wise-household-chores";
+import {
+  MonthsSustainedEnum,
+  monthsSustainedLabels,
+} from "@/server/api/routers/profile/economics/ward-wise-annual-income-sustenance.schema";
 
 // Create a schema for the form
 const formSchema = z.object({
@@ -37,49 +40,36 @@ const formSchema = z.object({
     .number()
     .int()
     .min(1, "वडा नम्बर १ वा सो भन्दा बढी हुनुपर्छ"),
-  timePeriod: z.string().min(1, "समय अवधि आवश्यक छ"),
-  maleCount: z.coerce
+  monthsSustained: z.string().min(1, "महिनाको अवधि श्रेणी आवश्यक छ"),
+  households: z.coerce
     .number()
-    .int("पुरुषको संख्या पूर्णांक हुनुपर्छ")
-    .nonnegative("पुरुषको संख्या नेगेटिभ हुन सक्दैन")
-    .default(0),
-  femaleCount: z.coerce
-    .number()
-    .int("महिलाको संख्या पूर्णांक हुनुपर्छ")
-    .nonnegative("महिलाको संख्या नेगेटिभ हुन सक्दैन")
-    .default(0),
-  otherCount: z.coerce
-    .number()
-    .int("अन्य लिङ्गको संख्या पूर्णांक हुनुपर्छ")
-    .nonnegative("अन्य लिङ्गको संख्या नेगेटिभ हुन सक्दैन")
+    .int("घरपरिवार संख्या पूर्णांक हुनुपर्छ")
+    .nonnegative("घरपरिवार संख्या नेगेटिभ हुन सक्दैन")
     .default(0),
 });
 
-interface WardTimeHouseholdChoresFormProps {
+interface WardAnnualIncomeSustenanceFormProps {
   editId: string | null;
   onClose: () => void;
   existingData: any[];
 }
 
-// Helper function to get time period display names
-const getTimePeriodOptions = () => [
-  { value: "LESS_THAN_1_HOUR", label: "१ घण्टा भन्दा कम" },
-  { value: "1_TO_2_HOURS", label: "१ देखि २ घण्टा" },
-  { value: "2_TO_3_HOURS", label: "२ देखि ३ घण्टा" },
-  { value: "3_TO_4_HOURS", label: "३ देखि ४ घण्टा" },
-  { value: "4_TO_6_HOURS", label: "४ देखि ६ घण्टा" },
-  { value: "MORE_THAN_6_HOURS", label: "६ घण्टा भन्दा बढी" },
-];
+// Helper function to get months sustained display options
+const getMonthsSustainedOptions = () =>
+  Object.entries(monthsSustainedLabels).map(([value, label]) => ({
+    value,
+    label,
+  }));
 
-export default function WardTimeHouseholdChoresForm({
+export default function WardAnnualIncomeSustenanceForm({
   editId,
   onClose,
   existingData,
-}: WardTimeHouseholdChoresFormProps) {
+}: WardAnnualIncomeSustenanceFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [duplicateError, setDuplicateError] = useState<string | null>(null);
   const utils = api.useContext();
-  const timePeriodOptions = getTimePeriodOptions();
+  const monthsSustainedOptions = getMonthsSustainedOptions();
 
   // Extract unique ward information from existing data
   const uniqueWards = Array.from(
@@ -108,36 +98,20 @@ export default function WardTimeHouseholdChoresForm({
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
-    api.profile.economics.wardTimeWiseHouseholdChores.getAll.useQuery(
+    api.profile.economics.wardWiseAnnualIncomeSustenance.getAll.useQuery(
       undefined,
       {
         enabled: !!editId,
       },
     );
 
-  const createMutation =
-    api.profile.economics.wardTimeWiseHouseholdChores.createRecord.useMutation({
+  const addMutation =
+    api.profile.economics.wardWiseAnnualIncomeSustenance.add.useMutation({
       onSuccess: () => {
         toast.success(
-          "नयाँ वडा अनुसार घरायसी काममा बिताउने समय विवरण सफलतापूर्वक थपियो",
+          "नयाँ वडा अनुसार वार्षिक आम्दानी हुने महिनाको विवरण डाटा सफलतापूर्वक थपियो",
         );
-        utils.profile.economics.wardTimeWiseHouseholdChores.getAll.invalidate();
-        setIsSubmitting(false);
-        onClose();
-      },
-      onError: (error) => {
-        toast.error(`त्रुटि: ${error.message}`);
-        setIsSubmitting(false);
-      },
-    });
-
-  const updateMutation =
-    api.profile.economics.wardTimeWiseHouseholdChores.updateRecord.useMutation({
-      onSuccess: () => {
-        toast.success(
-          "वडा अनुसार घरायसी काममा बिताउने समय विवरण सफलतापूर्वक अपडेट गरियो",
-        );
-        utils.profile.economics.wardTimeWiseHouseholdChores.getAll.invalidate();
+        utils.profile.economics.wardWiseAnnualIncomeSustenance.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },
@@ -153,16 +127,14 @@ export default function WardTimeHouseholdChoresForm({
     defaultValues: {
       wardId: "",
       wardNumber: undefined,
-      timePeriod: "",
-      maleCount: 0,
-      femaleCount: 0,
-      otherCount: 0,
+      monthsSustained: "",
+      households: 0,
     },
   });
 
   // Watch for changes to check for duplicates
   const watchWardId = form.watch("wardId");
-  const watchTimePeriod = form.watch("timePeriod");
+  const watchMonthsSustained = form.watch("monthsSustained");
 
   // Populate the form when editing
   useEffect(() => {
@@ -173,10 +145,8 @@ export default function WardTimeHouseholdChoresForm({
           id: recordToEdit.id,
           wardId: recordToEdit.wardId,
           wardNumber: recordToEdit.wardNumber || parseInt(recordToEdit.wardId),
-          timePeriod: recordToEdit.timePeriod,
-          maleCount: recordToEdit.maleCount || 0,
-          femaleCount: recordToEdit.femaleCount || 0,
-          otherCount: recordToEdit.otherCount || 0,
+          monthsSustained: recordToEdit.monthsSustained,
+          households: recordToEdit.households || 0,
         });
       }
     }
@@ -186,24 +156,32 @@ export default function WardTimeHouseholdChoresForm({
   useEffect(() => {
     setDuplicateError(null);
 
-    if (watchWardId && watchTimePeriod && !editId) {
+    if (watchWardId && watchMonthsSustained && !editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardId === watchWardId && item.timePeriod === watchTimePeriod,
+          item.wardId === watchWardId &&
+          item.monthsSustained === watchMonthsSustained,
       );
 
       if (duplicate) {
         const wardNumber = duplicate.wardNumber || parseInt(watchWardId);
-        const timePeriodLabel =
-          timePeriodOptions.find((opt) => opt.value === watchTimePeriod)
-            ?.label || watchTimePeriod;
+        const monthsSustainedLabel =
+          monthsSustainedOptions.find(
+            (opt) => opt.value === watchMonthsSustained,
+          )?.label || watchMonthsSustained;
 
         setDuplicateError(
-          `वडा ${wardNumber} को लागि ${timePeriodLabel} समय अवधिको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${wardNumber} को लागि "${monthsSustainedLabel}" महिनाको अवधि श्रेणीको डाटा पहिले नै अवस्थित छ`,
         );
       }
     }
-  }, [watchWardId, watchTimePeriod, existingData, editId, timePeriodOptions]);
+  }, [
+    watchWardId,
+    watchMonthsSustained,
+    existingData,
+    editId,
+    monthsSustainedOptions,
+  ]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     // Don't submit if there's a duplicate error
@@ -214,19 +192,48 @@ export default function WardTimeHouseholdChoresForm({
 
     setIsSubmitting(true);
 
-    // Prepare data for submission
-    const dataToSubmit = {
-      ...values,
-      maleCount: values.maleCount ?? 0,
-      femaleCount: values.femaleCount ?? 0,
-      otherCount: values.otherCount ?? 0,
-      timePeriod: values.timePeriod as keyof typeof timeSpentEnum,
-    };
-
+    // For editing, we'll collect all the months sustained categories for this ward
+    // and submit them together with our updated/new value
     if (editId) {
-      updateMutation.mutate(dataToSubmit);
+      // Get all existing entries for this ward
+      const wardData = existingData.filter(
+        (item) => item.wardId === values.wardId && item.id !== editId,
+      );
+
+      // Create an array of all months sustained categories for this ward
+      const dataToSubmit = {
+        wardId: values.wardId,
+        wardNumber: values.wardNumber,
+        data: [
+          ...wardData.map((item) => ({
+            monthsSustained:
+              item.monthsSustained as keyof typeof MonthsSustainedEnum.Values,
+            households: item.households,
+          })),
+          {
+            monthsSustained:
+              values.monthsSustained as keyof typeof MonthsSustainedEnum.Values,
+            households: values.households,
+          },
+        ],
+      };
+
+      addMutation.mutate(dataToSubmit);
     } else {
-      createMutation.mutate(dataToSubmit);
+      // For new entries
+      const dataToSubmit = {
+        wardId: values.wardId,
+        wardNumber: values.wardNumber,
+        data: [
+          {
+            monthsSustained:
+              values.monthsSustained as keyof typeof MonthsSustainedEnum.Values,
+            households: values.households,
+          },
+        ],
+      };
+
+      addMutation.mutate(dataToSubmit);
     }
   };
 
@@ -314,53 +321,34 @@ export default function WardTimeHouseholdChoresForm({
 
             <div className="bg-muted/40 p-4 rounded-lg">
               <h3 className="text-sm font-medium mb-3">
-                घरायसी काममा बिताउने समय विवरण
+                वार्षिक आम्दानी विवरण
               </h3>
-
-              <FormField
-                control={form.control}
-                name="timePeriod"
-                render={({ field }) => (
-                  <FormItem className="mb-4">
-                    <FormLabel>समय अवधि</FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="समय अवधि चयन गर्नुहोस्" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {timePeriodOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="maleCount"
+                  name="monthsSustained"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>पुरुष संख्या</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          {...field}
-                          onChange={(e) => {
-                            const value =
-                              e.target.value === "" ? "0" : e.target.value;
-                            field.onChange(value);
-                          }}
-                        />
-                      </FormControl>
+                      <FormLabel>
+                        वार्षिक आम्दानीले धान्ने महिनाको अवधि
+                      </FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="महिनाको अवधि श्रेणी चयन गर्नुहोस्" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {monthsSustainedOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -368,33 +356,10 @@ export default function WardTimeHouseholdChoresForm({
 
                 <FormField
                   control={form.control}
-                  name="femaleCount"
+                  name="households"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>महिला संख्या</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          {...field}
-                          onChange={(e) => {
-                            const value =
-                              e.target.value === "" ? "0" : e.target.value;
-                            field.onChange(value);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="otherCount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>अन्य लिङ्ग संख्या</FormLabel>
+                      <FormLabel>घरपरिवार संख्या</FormLabel>
                       <FormControl>
                         <Input
                           type="number"

@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
-import { timeSpentEnum } from "@/server/db/schema/profile/economics/ward-time-wise-household-chores";
 
 // Create a schema for the form
 const formSchema = z.object({
@@ -37,49 +36,26 @@ const formSchema = z.object({
     .number()
     .int()
     .min(1, "वडा नम्बर १ वा सो भन्दा बढी हुनुपर्छ"),
-  timePeriod: z.string().min(1, "समय अवधि आवश्यक छ"),
-  maleCount: z.coerce
+  households: z.coerce
     .number()
-    .int("पुरुषको संख्या पूर्णांक हुनुपर्छ")
-    .nonnegative("पुरुषको संख्या नेगेटिभ हुन सक्दैन")
-    .default(0),
-  femaleCount: z.coerce
-    .number()
-    .int("महिलाको संख्या पूर्णांक हुनुपर्छ")
-    .nonnegative("महिलाको संख्या नेगेटिभ हुन सक्दैन")
-    .default(0),
-  otherCount: z.coerce
-    .number()
-    .int("अन्य लिङ्गको संख्या पूर्णांक हुनुपर्छ")
-    .nonnegative("अन्य लिङ्गको संख्या नेगेटिभ हुन सक्दैन")
-    .default(0),
+    .int("घरधुरी संख्या पूर्णांक हुनुपर्छ")
+    .nonnegative("घरधुरी संख्या नेगेटिभ हुन सक्दैन"),
 });
 
-interface WardTimeHouseholdChoresFormProps {
+interface WardWiseHouseholdsOnLoanFormProps {
   editId: string | null;
   onClose: () => void;
   existingData: any[];
 }
 
-// Helper function to get time period display names
-const getTimePeriodOptions = () => [
-  { value: "LESS_THAN_1_HOUR", label: "१ घण्टा भन्दा कम" },
-  { value: "1_TO_2_HOURS", label: "१ देखि २ घण्टा" },
-  { value: "2_TO_3_HOURS", label: "२ देखि ३ घण्टा" },
-  { value: "3_TO_4_HOURS", label: "३ देखि ४ घण्टा" },
-  { value: "4_TO_6_HOURS", label: "४ देखि ६ घण्टा" },
-  { value: "MORE_THAN_6_HOURS", label: "६ घण्टा भन्दा बढी" },
-];
-
-export default function WardTimeHouseholdChoresForm({
+export default function WardWiseHouseholdsOnLoanForm({
   editId,
   onClose,
   existingData,
-}: WardTimeHouseholdChoresFormProps) {
+}: WardWiseHouseholdsOnLoanFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [duplicateError, setDuplicateError] = useState<string | null>(null);
   const utils = api.useContext();
-  const timePeriodOptions = getTimePeriodOptions();
 
   // Extract unique ward information from existing data
   const uniqueWards = Array.from(
@@ -108,36 +84,15 @@ export default function WardTimeHouseholdChoresForm({
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
-    api.profile.economics.wardTimeWiseHouseholdChores.getAll.useQuery(
-      undefined,
-      {
-        enabled: !!editId,
-      },
-    );
-
-  const createMutation =
-    api.profile.economics.wardTimeWiseHouseholdChores.createRecord.useMutation({
-      onSuccess: () => {
-        toast.success(
-          "नयाँ वडा अनुसार घरायसी काममा बिताउने समय विवरण सफलतापूर्वक थपियो",
-        );
-        utils.profile.economics.wardTimeWiseHouseholdChores.getAll.invalidate();
-        setIsSubmitting(false);
-        onClose();
-      },
-      onError: (error) => {
-        toast.error(`त्रुटि: ${error.message}`);
-        setIsSubmitting(false);
-      },
+    api.profile.economics.wardWiseHouseholdsOnLoan.getAll.useQuery(undefined, {
+      enabled: !!editId,
     });
 
-  const updateMutation =
-    api.profile.economics.wardTimeWiseHouseholdChores.updateRecord.useMutation({
+  const addMutation =
+    api.profile.economics.wardWiseHouseholdsOnLoan.add.useMutation({
       onSuccess: () => {
-        toast.success(
-          "वडा अनुसार घरायसी काममा बिताउने समय विवरण सफलतापूर्वक अपडेट गरियो",
-        );
-        utils.profile.economics.wardTimeWiseHouseholdChores.getAll.invalidate();
+        toast.success("ऋण लिएका घरधुरी डाटा सफलतापूर्वक थपियो");
+        utils.profile.economics.wardWiseHouseholdsOnLoan.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },
@@ -153,16 +108,12 @@ export default function WardTimeHouseholdChoresForm({
     defaultValues: {
       wardId: "",
       wardNumber: undefined,
-      timePeriod: "",
-      maleCount: 0,
-      femaleCount: 0,
-      otherCount: 0,
+      households: 0,
     },
   });
 
   // Watch for changes to check for duplicates
   const watchWardId = form.watch("wardId");
-  const watchTimePeriod = form.watch("timePeriod");
 
   // Populate the form when editing
   useEffect(() => {
@@ -173,10 +124,7 @@ export default function WardTimeHouseholdChoresForm({
           id: recordToEdit.id,
           wardId: recordToEdit.wardId,
           wardNumber: recordToEdit.wardNumber || parseInt(recordToEdit.wardId),
-          timePeriod: recordToEdit.timePeriod,
-          maleCount: recordToEdit.maleCount || 0,
-          femaleCount: recordToEdit.femaleCount || 0,
-          otherCount: recordToEdit.otherCount || 0,
+          households: recordToEdit.households || 0,
         });
       }
     }
@@ -186,24 +134,19 @@ export default function WardTimeHouseholdChoresForm({
   useEffect(() => {
     setDuplicateError(null);
 
-    if (watchWardId && watchTimePeriod && !editId) {
+    if (watchWardId && !editId) {
       const duplicate = existingData.find(
-        (item) =>
-          item.wardId === watchWardId && item.timePeriod === watchTimePeriod,
+        (item) => item.wardId === watchWardId,
       );
 
       if (duplicate) {
         const wardNumber = duplicate.wardNumber || parseInt(watchWardId);
-        const timePeriodLabel =
-          timePeriodOptions.find((opt) => opt.value === watchTimePeriod)
-            ?.label || watchTimePeriod;
-
         setDuplicateError(
-          `वडा ${wardNumber} को लागि ${timePeriodLabel} समय अवधिको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${wardNumber} को ऋण लिएका घरधुरीको डाटा पहिले नै अवस्थित छ`,
         );
       }
     }
-  }, [watchWardId, watchTimePeriod, existingData, editId, timePeriodOptions]);
+  }, [watchWardId, existingData, editId]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     // Don't submit if there's a duplicate error
@@ -214,20 +157,11 @@ export default function WardTimeHouseholdChoresForm({
 
     setIsSubmitting(true);
 
-    // Prepare data for submission
-    const dataToSubmit = {
-      ...values,
-      maleCount: values.maleCount ?? 0,
-      femaleCount: values.femaleCount ?? 0,
-      otherCount: values.otherCount ?? 0,
-      timePeriod: values.timePeriod as keyof typeof timeSpentEnum,
-    };
-
-    if (editId) {
-      updateMutation.mutate(dataToSubmit);
-    } else {
-      createMutation.mutate(dataToSubmit);
-    }
+    addMutation.mutate({
+      wardId: values.wardId,
+      wardNumber: values.wardNumber,
+      households: values.households,
+    });
   };
 
   if (editId && isLoadingEditData) {
@@ -314,87 +248,15 @@ export default function WardTimeHouseholdChoresForm({
 
             <div className="bg-muted/40 p-4 rounded-lg">
               <h3 className="text-sm font-medium mb-3">
-                घरायसी काममा बिताउने समय विवरण
+                ऋण लिएका घरधुरी विवरण
               </h3>
-
-              <FormField
-                control={form.control}
-                name="timePeriod"
-                render={({ field }) => (
-                  <FormItem className="mb-4">
-                    <FormLabel>समय अवधि</FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="समय अवधि चयन गर्नुहोस्" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {timePeriodOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              <div className="grid grid-cols-1 gap-4">
                 <FormField
                   control={form.control}
-                  name="maleCount"
+                  name="households"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>पुरुष संख्या</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          {...field}
-                          onChange={(e) => {
-                            const value =
-                              e.target.value === "" ? "0" : e.target.value;
-                            field.onChange(value);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="femaleCount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>महिला संख्या</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          {...field}
-                          onChange={(e) => {
-                            const value =
-                              e.target.value === "" ? "0" : e.target.value;
-                            field.onChange(value);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="otherCount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>अन्य लिङ्ग संख्या</FormLabel>
+                      <FormLabel>ऋण लिएका घरधुरी संख्या</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
