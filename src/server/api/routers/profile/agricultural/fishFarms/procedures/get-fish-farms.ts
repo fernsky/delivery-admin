@@ -437,7 +437,7 @@ export const getAllFishFarms = publicProcedure
           .where(
             and(
               inArray(entityMedia.entityId, farmIds),
-              eq(entityMedia.entityType, "FISH_FARM"),
+              eq(entityMedia.entityType, "FISH_FARM" as any),
               eq(entityMedia.isPrimary, true),
             ),
           );

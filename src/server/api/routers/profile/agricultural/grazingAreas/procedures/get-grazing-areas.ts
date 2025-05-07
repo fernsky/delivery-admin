@@ -316,7 +316,7 @@ export const getAllGrazingAreas = publicProcedure
           .where(
             and(
               inArray(entityMedia.entityId, areaIds),
-              eq(entityMedia.entityType, "GRAZING_AREA"),
+              eq(entityMedia.entityType, "GRAZING_AREA" as any),
               eq(entityMedia.isPrimary, true),
             ),
           );

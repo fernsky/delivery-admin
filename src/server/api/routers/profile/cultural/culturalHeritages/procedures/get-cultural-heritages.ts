@@ -396,7 +396,7 @@ export const getAllCulturalHeritages = publicProcedure
           .where(
             and(
               inArray(entityMedia.entityId, heritageIds),
-              eq(entityMedia.entityType, "CULTURAL_HERITAGE"),
+              eq(entityMedia.entityType, "CULTURAL_HERITAGE" as any),
               eq(entityMedia.isPrimary, true),
             ),
           );

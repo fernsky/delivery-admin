@@ -257,7 +257,7 @@ export const getAllGrasslands = publicProcedure
           .where(
             and(
               inArray(entityMedia.entityId, grasslandIds),
-              eq(entityMedia.entityType, "GRASSLAND"),
+              eq(entityMedia.entityType, "GRASSLAND" as any),
               eq(entityMedia.isPrimary, true),
             ),
           );

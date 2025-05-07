@@ -111,7 +111,7 @@ export const getGrasslandById = publicProcedure
         .where(
           and(
             eq(entityMedia.entityId, processedGrassland.id),
-            eq(entityMedia.entityType, "GRASSLAND"),
+            eq(entityMedia.entityType, "GRASSLAND" as any),
           ),
         )
         .orderBy(entityMedia.isPrimary, entityMedia.displayOrder);

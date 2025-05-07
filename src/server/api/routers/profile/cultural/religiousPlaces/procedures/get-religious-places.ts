@@ -440,7 +440,7 @@ export const getAllReligiousPlaces = publicProcedure
           .where(
             and(
               inArray(entityMedia.entityId, placeIds),
-              eq(entityMedia.entityType, "RELIGIOUS_PLACE"),
+              eq(entityMedia.entityType, "RELIGIOUS_PLACE" as any),
               eq(entityMedia.isPrimary, true),
             ),
           );

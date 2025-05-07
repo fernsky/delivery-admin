@@ -31,7 +31,7 @@ export const deleteReligiousPlace = protectedProcedure
         .where(
           and(
             eq(entityMedia.entityId, input),
-            eq(entityMedia.entityType, "RELIGIOUS_PLACE"),
+            eq(entityMedia.entityType, "RELIGIOUS_PLACE" as any),
           ),
         );
 

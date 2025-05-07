@@ -31,7 +31,7 @@ export const deleteHistoricalSite = protectedProcedure
         .where(
           and(
             eq(entityMedia.entityId, input),
-            eq(entityMedia.entityType, "HISTORICAL_SITE"),
+            eq(entityMedia.entityType, "HISTORICAL_SITE" as any),
           ),
         );
 

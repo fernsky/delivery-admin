@@ -1,6 +1,9 @@
 import { protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { farm } from "@/server/db/schema/profile/institutions/agricultural/farms";
+import {
+  Farm,
+  farm,
+} from "@/server/db/schema/profile/institutions/agricultural/farms";
 import { generateSlug } from "@/server/utils/slug-helpers";
 import { sql, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
@@ -456,7 +459,7 @@ export const createFarm = protectedProcedure
             updatedAt: now,
             createdBy: ctx.user.id,
             updatedBy: ctx.user.id,
-          })
+          } as unknown as Farm)
           .returning({
             id: farm.id,
           });

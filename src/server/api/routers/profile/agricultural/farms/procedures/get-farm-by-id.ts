@@ -181,7 +181,7 @@ export const getFarmById = publicProcedure
         .where(
           and(
             eq(entityMedia.entityId, processedFarm.id),
-            eq(entityMedia.entityType, "FARM"),
+            eq(entityMedia.entityType, "FARM" as any),
           ),
         )
         .orderBy(entityMedia.isPrimary, entityMedia.displayOrder);

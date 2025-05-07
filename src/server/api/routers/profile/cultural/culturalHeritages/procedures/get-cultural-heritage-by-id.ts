@@ -199,7 +199,7 @@ export const getCulturalHeritageById = publicProcedure
         .where(
           and(
             eq(entityMedia.entityId, processedHeritage.id),
-            eq(entityMedia.entityType, "CULTURAL_HERITAGE"),
+            eq(entityMedia.entityType, "CULTURAL_HERITAGE" as any),
           ),
         )
         .orderBy(entityMedia.isPrimary, entityMedia.displayOrder);

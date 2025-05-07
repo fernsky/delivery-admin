@@ -25,6 +25,18 @@ export const entityTypeEnum = pgEnum("entity_type", [
   "PARKING_FACILITY",
   "PUBLIC_TRANSPORT",
   "PETROL_PUMP",
+
+  // Agricultural
+  "AGRIC_ZONE",
+  "FARM",
+  "FISH_FARM",
+  "GRASSLAND",
+  "GRAZING_AREA",
+
+  // Cultural
+  "CULTURAL_HERITAGE",
+  "HISTORICAL_SITE",
+  "RELIGIOUS_PLACE",
 ]);
 
 // Entity-Media relationship table

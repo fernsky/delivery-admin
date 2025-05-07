@@ -1,6 +1,9 @@
 import { protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { religiousPlace } from "@/server/db/schema/profile/institutions/cultural/religiousPlaces";
+import {
+  ReligiousPlace,
+  religiousPlace,
+} from "@/server/db/schema/profile/institutions/cultural/religiousPlaces";
 import { generateSlug } from "@/server/utils/slug-helpers";
 import { sql, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
@@ -512,7 +515,7 @@ export const createReligiousPlace = protectedProcedure
           updatedAt: now,
           createdBy: ctx.user.id,
           updatedBy: ctx.user.id,
-        });
+        } as unknown as ReligiousPlace);
 
         return { id, slug, success: true };
       });

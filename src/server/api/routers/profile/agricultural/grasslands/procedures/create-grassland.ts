@@ -1,6 +1,9 @@
 import { protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { grassland } from "@/server/db/schema/profile/institutions/agricultural/grasslands";
+import {
+  Grassland,
+  grassland,
+} from "@/server/db/schema/profile/institutions/agricultural/grasslands";
 import { generateSlug } from "@/server/utils/slug-helpers";
 import { sql, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
@@ -244,7 +247,7 @@ export const createGrassland = protectedProcedure
             updatedAt: now,
             createdBy: ctx.user.id,
             updatedBy: ctx.user.id,
-          })
+          } as unknown as Grassland)
           .returning({
             id: grassland.id,
           });

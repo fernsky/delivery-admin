@@ -216,7 +216,7 @@ export const getReligiousPlaceBySlug = publicProcedure
         .where(
           and(
             eq(entityMedia.entityId, processedPlace.id),
-            eq(entityMedia.entityType, "RELIGIOUS_PLACE"),
+            eq(entityMedia.entityType, "RELIGIOUS_PLACE" as any),
           ),
         )
         .orderBy(entityMedia.isPrimary, entityMedia.displayOrder);

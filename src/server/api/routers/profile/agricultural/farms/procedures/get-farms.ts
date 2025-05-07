@@ -418,7 +418,7 @@ export const getAllFarms = publicProcedure
           .where(
             and(
               inArray(entityMedia.entityId, farmIds),
-              eq(entityMedia.entityType, "FARM"),
+              eq(entityMedia.entityType, "FARM" as any),
               eq(entityMedia.isPrimary, true),
             ),
           );

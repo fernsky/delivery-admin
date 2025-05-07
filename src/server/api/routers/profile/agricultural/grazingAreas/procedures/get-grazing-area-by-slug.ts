@@ -129,7 +129,7 @@ export const getGrazingAreaBySlug = publicProcedure
         .where(
           and(
             eq(entityMedia.entityId, processedGrazingArea.id),
-            eq(entityMedia.entityType, "GRAZING_AREA"),
+            eq(entityMedia.entityType, "GRAZING_AREA" as any),
           ),
         )
         .orderBy(entityMedia.isPrimary, entityMedia.displayOrder);

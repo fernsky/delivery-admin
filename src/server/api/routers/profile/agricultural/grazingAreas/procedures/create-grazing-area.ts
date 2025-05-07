@@ -1,6 +1,9 @@
 import { protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { grazingArea } from "@/server/db/schema/profile/institutions/agricultural/grazingAreas";
+import {
+  GrazingArea,
+  grazingArea,
+} from "@/server/db/schema/profile/institutions/agricultural/grazingAreas";
 import { generateSlug } from "@/server/utils/slug-helpers";
 import { sql, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
@@ -295,7 +298,7 @@ export const createGrazingArea = protectedProcedure
             updatedAt: now,
             createdBy: ctx.user.id,
             updatedBy: ctx.user.id,
-          })
+          } as unknown as GrazingArea)
           .returning({
             id: grazingArea.id,
           });

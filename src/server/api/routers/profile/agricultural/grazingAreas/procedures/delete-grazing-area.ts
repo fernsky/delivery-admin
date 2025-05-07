@@ -31,7 +31,7 @@ export const deleteGrazingArea = protectedProcedure
         .where(
           and(
             eq(entityMedia.entityId, input),
-            eq(entityMedia.entityType, "GRAZING_AREA"),
+            eq(entityMedia.entityType, "GRAZING_AREA" as any),
           ),
         );
 

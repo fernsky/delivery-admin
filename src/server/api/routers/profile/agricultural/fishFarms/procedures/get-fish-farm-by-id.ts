@@ -210,7 +210,7 @@ export const getFishFarmById = publicProcedure
         .where(
           and(
             eq(entityMedia.entityId, processedFarm.id),
-            eq(entityMedia.entityType, "FISH_FARM"),
+            eq(entityMedia.entityType, "FISH_FARM" as any),
           ),
         )
         .orderBy(entityMedia.isPrimary, entityMedia.displayOrder);

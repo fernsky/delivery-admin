@@ -372,7 +372,7 @@ export const getAllProcessingCenters = publicProcedure
           .where(
             and(
               inArray(entityMedia.entityId, centerIds),
-              eq(entityMedia.entityType, "AGRI_PROCESSING_CENTER"),
+              eq(entityMedia.entityType, "AGRI_PROCESSING_CENTER" as any),
               eq(entityMedia.isPrimary, true),
             ),
           );

@@ -31,7 +31,7 @@ export const deleteCulturalHeritage = protectedProcedure
         .where(
           and(
             eq(entityMedia.entityId, input),
-            eq(entityMedia.entityType, "CULTURAL_HERITAGE"),
+            eq(entityMedia.entityType, "CULTURAL_HERITAGE" as any),
           ),
         );
 

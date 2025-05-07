@@ -247,7 +247,7 @@ export const getHistoricalSiteBySlug = publicProcedure
         .where(
           and(
             eq(entityMedia.entityId, processedSite.id),
-            eq(entityMedia.entityType, "HISTORICAL_SITE"),
+            eq(entityMedia.entityType, "HISTORICAL_SITE" as any),
           ),
         )
         .orderBy(entityMedia.isPrimary, entityMedia.displayOrder);

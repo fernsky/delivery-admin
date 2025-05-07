@@ -498,7 +498,7 @@ export const getAllHistoricalSites = publicProcedure
           .where(
             and(
               inArray(entityMedia.entityId, siteIds),
-              eq(entityMedia.entityType, "HISTORICAL_SITE"),
+              eq(entityMedia.entityType, "HISTORICAL_SITE" as any),
               eq(entityMedia.isPrimary, true),
             ),
           );

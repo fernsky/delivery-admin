@@ -173,7 +173,7 @@ export const getProcessingCenterById = publicProcedure
         .where(
           and(
             eq(entityMedia.entityId, processedCenter.id),
-            eq(entityMedia.entityType, "AGRI_PROCESSING_CENTER"),
+            eq(entityMedia.entityType, "AGRI_PROCESSING_CENTER" as any),
           ),
         )
         .orderBy(entityMedia.isPrimary, entityMedia.displayOrder);

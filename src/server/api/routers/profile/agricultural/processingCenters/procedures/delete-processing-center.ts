@@ -31,7 +31,7 @@ export const deleteProcessingCenter = protectedProcedure
         .where(
           and(
             eq(entityMedia.entityId, input),
-            eq(entityMedia.entityType, "AGRI_PROCESSING_CENTER"),
+            eq(entityMedia.entityType, "AGRI_PROCESSING_CENTER" as any),
           ),
         );
 
