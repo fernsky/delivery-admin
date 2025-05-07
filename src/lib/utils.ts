@@ -26,17 +26,28 @@ export const getExceptionType = (error: unknown) => {
   return UnknownException;
 };
 
-export function formatDate(
-  date: Date | string | number,
-  options: Intl.DateTimeFormatOptions = {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  },
-) {
-  return new Intl.DateTimeFormat("en-US", {
-    ...options,
-  }).format(new Date(date));
+/**
+ * Format a date string to a human-readable format
+ * @param dateString - ISO date string
+ * @returns Formatted date string
+ */
+export function formatDate(dateString: string): string {
+  if (!dateString) return "";
+
+  try {
+    const date = new Date(dateString);
+    // Format: "YYYY-MM-DD HH:MM"
+    return new Intl.DateTimeFormat("ne-NP", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return dateString;
+  }
 }
 
 export function formatPrice(

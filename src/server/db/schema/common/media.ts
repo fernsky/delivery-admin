@@ -22,6 +22,7 @@ export const media = pgTable("media", {
   id: varchar("id", { length: 36 }).primaryKey(),
   fileName: varchar("file_name", { length: 255 }).notNull(),
   filePath: varchar("file_path", { length: 1024 }).notNull(),
+  fileUrl: varchar("file_url", { length: 1024 }), // Direct URL for uploaded files
   fileSize: integer("file_size"),
   mimeType: varchar("mime_type", { length: 255 }),
   type: mediaTypeEnum("type").notNull(),

@@ -16,6 +16,11 @@ import {
   PersonStanding,
   BarChart3, // For demographic summary icon
   LineChart, // Add this import for the ward time series icon
+  Building, // For institutions icon
+  MapPin, // For local areas icon
+  Route, // For roads icon
+  ParkingCircle, // For parking facilities icon
+  Bus, // For public transport icon
 } from "lucide-react";
 
 export type Role = "admin" | "superadmin" | "enumerator";
@@ -56,79 +61,80 @@ const menuConfig: Menu[] = [
     roles: ["admin", "superadmin"],
     submenus: [
       {
-        href: "/digital-profile/demographics/demographics-summary",
+        href: "/dashboard/digital-profile/demographics/demographics-summary",
         label: "सारांश",
         roles: ["admin", "superadmin"],
       },
       {
-        href: "/digital-profile/demographics/ward-time-series",
+        href: "/dashboard/digital-profile/demographics/ward-time-series",
         label: "समय शृंखला",
         roles: ["admin", "superadmin"],
       },
       {
-        href: "/digital-profile/demographics/ward-househead-gender",
+        href: "/dashboard/digital-profile/demographics/ward-househead-gender",
         label: "घरमूली लिङ्ग",
         roles: ["admin", "superadmin"],
       },
       {
-        href: "/digital-profile/demographics/ward-age-population",
+        href: "/dashboard/digital-profile/demographics/ward-age-population",
         label: "उमेर जनसंख्या",
         roles: ["admin", "superadmin"],
       },
       {
-        href: "/digital-profile/demographics/ward-wise-demographic-summary",
+        href: "/dashboard/digital-profile/demographics/ward-wise-demographic-summary",
         label: "वडा सारांश",
         roles: ["admin", "superadmin"],
       },
-       {
-        href: "/digital-profile/demographics/ward-wise-caste-population", 
+      {
+        href: "/dashboard/digital-profile/demographics/ward-wise-caste-population",
         label: "जाति जनसंख्या",
         roles: ["admin", "superadmin"],
       },
-        {
-        href: "/digital-profile/demographics/ward-wise-mother-tongue-population",
+      {
+        href: "/dashboard/digital-profile/demographics/ward-wise-mother-tongue-population",
         label: "मातृभाषा",
         roles: ["admin", "superadmin"],
       },
-         {
-        href: "/digital-profile/demographics/ward-wise-religion-population",
+      {
+        href: "/dashboard/digital-profile/demographics/ward-wise-religion-population",
         label: "धर्म",
         roles: ["admin", "superadmin"],
       },
-         {
-        href: "/digital-profile/demographics/age-wise-marital-status",
+      {
+        href: "/dashboard/digital-profile/demographics/age-wise-marital-status",
         label: "वैवाहिक स्थिति",
         roles: ["admin", "superadmin"],
       },
-        {
-        href: "/digital-profile/demographics/ward-age-gender-wise-married-age",
+      {
+        href: "/dashboard/digital-profile/demographics/ward-age-gender-wise-married-age",
         label: "विवाह उमेर",
         roles: ["admin", "superadmin"],
       },
-       {
-        href: "/digital-profile/demographics/ward-age-gender-wise-absentee",
+      {
+        href: "/dashboard/digital-profile/demographics/ward-age-gender-wise-absentee",
         label: "उमेर र लिङ्ग अनुसार प्रवासी",
         roles: ["admin", "superadmin"],
-      }, {
-        href: "/digital-profile/demographics/ward-wise-absentee-educational-level",
+      },
+      {
+        href: "/dashboard/digital-profile/demographics/ward-wise-absentee-educational-level",
         label: "प्रवासी शिक्षा स्तर",
         roles: ["admin", "superadmin"],
       },
-       {
-        href: "/digital-profile/demographics/ward-wise-absentee-educational-level",
+      {
+        href: "/dashboard/digital-profile/demographics/ward-wise-absentee-educational-level",
         label: "प्रवासी शिक्षा स्तर",
         roles: ["admin", "superadmin"],
       },
-       {
-        href: "/digital-profile/demographics/ward-wise-absentee-absence-reason",
+      {
+        href: "/dashboard/digital-profile/demographics/ward-wise-absentee-absence-reason",
         label: "प्रवासी अनुपस्थितिको कारण",
         roles: ["admin", "superadmin"],
       },
-       {
-        href: "/digital-profile/demographics/ward-wise-absentee-location",
+      {
+        href: "/dashboard/digital-profile/demographics/ward-wise-absentee-location",
         label: "प्रवासी स्थान",
         roles: ["admin", "superadmin"],
-      }
+      },
     ],
   },
 
@@ -139,32 +145,64 @@ const menuConfig: Menu[] = [
     roles: ["admin", "superadmin"],
     submenus: [
       {
-        href: "/digital-profile/economics/ward-age-gender-wise-economically-active-population",
+        href: "/dashboard/digital-profile/economics/ward-age-gender-wise-economically-active-population",
         label: "आर्थिक रुपमा सक्रिय जनसंख्या",
         roles: ["admin", "superadmin"],
       },
       {
-        href: "/digital-profile/economics/ward-wise-major-occupation",
+        href: "/dashboard/digital-profile/economics/ward-wise-major-occupation",
         label: "मुख्य पेशा",
         roles: ["admin", "superadmin"],
       },
       {
-        href: "/digital-profile/economics/employment-status",
+        href: "/dashboard/digital-profile/economics/employment-status",
         label: "रोजगारी स्थिति",
         roles: ["admin", "superadmin"],
       },
       {
-        href: "/digital-profile/economics/occupational-distribution",
+        href: "/dashboard/digital-profile/economics/occupational-distribution",
         label: "व्यवसायिक वितरण",
         roles: ["admin", "superadmin"],
       },
       {
-        href: "/digital-profile/economics/business-sectors",
+        href: "/dashboard/digital-profile/economics/business-sectors",
         label: "व्यापार क्षेत्रहरू",
         roles: ["admin", "superadmin"],
-      }
-    ]
-  }
+      },
+    ],
+  },
+
+  // New Institutions menu with submenus
+  {
+    href: "#",
+    label: "संस्थागत",
+    icon: Building,
+    roles: ["admin", "superadmin"],
+    submenus: [
+      // Local Areas submenu
+      {
+        href: "/dashboard/digital-profile/institutions/local-areas",
+        label: "स्थानीय क्षेत्रहरू",
+        roles: ["admin", "superadmin"],
+      },
+      // Transportation submenu - with sub-sections
+      {
+        href: "/dashboard/digital-profile/institutions/transportation/roads",
+        label: "सडकहरू",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/dashboard/digital-profile/institutions/transportation/parking-facilities",
+        label: "पार्किङ सुविधाहरू",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/dashboard/digital-profile/institutions/transportation/public-transports",
+        label: "सार्वजनिक यातायात",
+        roles: ["admin", "superadmin"],
+      },
+    ],
+  },
 
   //   {
   //     href: "/qr-code",

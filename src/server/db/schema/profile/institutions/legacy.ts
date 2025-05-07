@@ -5,7 +5,7 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import { geometry } from "@/server/db/geographical";
 
 const connectionString =
-  "postgres://crepeclan:OQt1h83yx2HmPVw3uisSQUD5yO936OFT@163.172.84.132:48432/likhupike";
+  "postgres://crepeclan:OQt1h83yx2HmPVw3uisSQUD5yO936OFT@163.172.84.132:48432/khajura";
 const pool = postgres(connectionString, { max: 1 });
 
 export const db = drizzle(pool);
@@ -224,8 +224,8 @@ export type NewHighway = typeof highway.$inferInsert;
 export type LandUse = typeof landUse.$inferSelect;
 export type NewLandUse = typeof landUse.$inferInsert;
 
-export type Road = typeof roads.$inferSelect;
-export type NewRoad = typeof roads.$inferInsert;
+// export type Road = typeof roads.$inferSelect;
+// export type NewRoad = typeof roads.$inferInsert;
 
 export type Slope = typeof slope.$inferSelect;
 export type NewSlope = typeof slope.$inferInsert;

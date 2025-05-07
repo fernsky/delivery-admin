@@ -49,3 +49,6 @@ declare module "lucia" {
 
 interface DatabaseSessionAttributes {}
 interface DatabaseUserAttributes extends Omit<DbUser, "hashedPassword"> {}
+
+// Export session utility
+export { getServerAuthSession } from "./session";

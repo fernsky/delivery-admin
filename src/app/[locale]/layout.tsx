@@ -6,6 +6,7 @@ import { locales } from "@/i18n/config";
 import { GeistSans } from "geist/font/sans";
 import { validateRequest } from "@/lib/auth/validate-request";
 import { Providers } from "@/components/providers";
+import { extractRouterConfig } from "uploadthing/server";
 
 import "@/app/globals.css";
 
@@ -49,7 +50,7 @@ export async function generateMetadata(props: {
     const t = await getTranslations({ locale, namespace: "seo.default" });
 
     const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL || "https://citizen.likhupike.gov.np";
+      process.env.NEXT_PUBLIC_BASE_URL || "https://citizen.khajura.gov.np";
 
     const appUrl = process.env.APP_URL
       ? `${process.env.APP_URL}`
@@ -65,7 +66,7 @@ export async function generateMetadata(props: {
       },
       description: t("description"),
       keywords: [
-        "Likhupike",
+        "khajura",
         "Digital Profile",
         "Nepal",
         "Government",
@@ -74,7 +75,7 @@ export async function generateMetadata(props: {
         "डिजिटल प्रोफाइल",
         "नेपाल",
         "सरकार",
-        "लिखुपिके",
+        "खजुरा",
       ],
       authors: [
         { name: "Digital Profile Information System, Government of Nepal" },
@@ -210,7 +211,7 @@ export default async function RootLayout(props: {
     >
       <head>
         {/* Government required meta tags */}
-        <meta name="gov:portal" content="Likhupike Digital Profile" />
+        <meta name="gov:portal" content="khajura Digital Profile" />
         <meta
           name="gov:department"
           content="Digital Profile Information System"
