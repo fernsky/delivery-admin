@@ -165,8 +165,8 @@ export function CreateAgricZoneForm() {
 
   // Handle geometry selection from map
   const handleGeometrySelect = (
-    locationPoint?: { type: "Point"; coordinates: [number, number] },
-    areaPolygon?: { type: "Polygon"; coordinates: [Array<[number, number]>] },
+    locationPoint?: { type: "Point"; coordinates: any },
+    areaPolygon?: { type: "Polygon"; coordinates: any },
   ) => {
     if (locationPoint) {
       form.setValue("locationPoint", locationPoint);

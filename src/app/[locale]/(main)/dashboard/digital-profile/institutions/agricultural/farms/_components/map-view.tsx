@@ -8,11 +8,11 @@ import {
   MapIcon,
   Eye,
   Tractor,
-  Cow,
-  Plant,
+  Milk,
+  Leaf,
   Database,
   Home,
-  Road,
+  Route,
 } from "lucide-react";
 import "ol/ol.css";
 import Map from "ol/Map";
@@ -61,6 +61,9 @@ interface FarmItem {
     fileName?: string;
     mimeType?: string;
   };
+  hasStorage?: boolean;
+  hasFarmHouse?: boolean;
+  hasRoadAccess?: boolean;
 }
 
 interface MapViewProps {
@@ -625,7 +628,7 @@ export function MapView({ farms, farmTypes, isLoading }: MapViewProps) {
 
                 {selectedFarm.hasLivestock && selectedFarm.livestockTypes && (
                   <div className="mt-1 text-xs text-muted-foreground flex items-center">
-                    <Cow className="h-3 w-3 mr-1" />
+                    <Milk className="h-3 w-3 mr-1" />
                     <span>{selectedFarm.livestockTypes}</span>
                   </div>
                 )}
@@ -645,7 +648,7 @@ export function MapView({ farms, farmTypes, isLoading }: MapViewProps) {
                   )}
                   {selectedFarm.hasRoadAccess && (
                     <Badge variant="outline" className="text-xs">
-                      <Road className="h-3 w-3 mr-1" />
+                      <Route className="h-3 w-3 mr-1" />
                       सडक पहुँच
                     </Badge>
                   )}

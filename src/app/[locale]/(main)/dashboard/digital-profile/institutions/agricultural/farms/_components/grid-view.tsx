@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Edit, Trash2, Eye, Tractor, Cow, Plant, Check } from "lucide-react";
+import { Edit, Trash2, Eye, Tractor, Milk, Leaf, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "./pagination";
 
@@ -204,14 +204,14 @@ export function GridView({
 
                   {farm.mainCrops && (
                     <p className="text-sm flex gap-1 items-center mt-1">
-                      <Plant className="h-4 w-4 text-green-600" />
+                      <Leaf className="h-4 w-4 text-green-600" />
                       <span className="line-clamp-1">{farm.mainCrops}</span>
                     </p>
                   )}
 
                   {farm.hasLivestock && farm.livestockTypes && (
                     <p className="text-sm flex gap-1 items-center mt-1">
-                      <Cow className="h-4 w-4 text-amber-600" />
+                      <Milk className="h-4 w-4 text-amber-600" />
                       <span className="line-clamp-1">
                         {farm.livestockTypes}
                       </span>

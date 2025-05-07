@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, Eye, Tractor, Cow, Plant } from "lucide-react";
+import { Edit, Trash2, Eye, Tractor, Milk, Leaf } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "./pagination";
 import { Check, X } from "lucide-react";
@@ -164,7 +164,7 @@ export function TableView({
                       <div>
                         {farm.mainCrops && (
                           <div className="flex items-center text-xs">
-                            <Plant className="h-3 w-3 mr-1" />
+                            <Leaf className="h-3 w-3 mr-1" />
                             <span>
                               {farm.mainCrops.substring(0, 30)}
                               {farm.mainCrops.length > 30 ? "..." : ""}
@@ -174,7 +174,7 @@ export function TableView({
 
                         {farm.hasLivestock && farm.livestockTypes && (
                           <div className="flex items-center text-xs mt-1">
-                            <Cow className="h-3 w-3 mr-1" />
+                            <Milk className="h-3 w-3 mr-1" />
                             <span>
                               {farm.livestockTypes.substring(0, 30)}
                               {farm.livestockTypes.length > 30 ? "..." : ""}
