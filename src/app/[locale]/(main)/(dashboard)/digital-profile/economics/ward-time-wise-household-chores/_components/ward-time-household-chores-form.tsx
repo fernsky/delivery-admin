@@ -26,11 +26,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  EconomicallyActiveAgeGroupEnum,
-  GenderEnum,
-} from "@/server/api/routers/profile/economics/ward-age-gender-wise-economically-active-population.schema";
 import { Card, CardContent } from "@/components/ui/card";
+import { timeSpentEnum } from "@/server/db/schema/profile/economics/ward-time-wise-household-chores";
 
 // Create a schema for the form
 const formSchema = z.object({
@@ -40,45 +37,49 @@ const formSchema = z.object({
     .number()
     .int()
     .min(1, "वडा नम्बर १ वा सो भन्दा बढी हुनुपर्छ"),
-  ageGroup: z.string().min(1, "उमेर समूह आवश्यक छ"),
-  gender: z.string().min(1, "लिङ्ग आवश्यक छ"),
-  population: z.coerce
+  timePeriod: z.string().min(1, "समय अवधि आवश्यक छ"),
+  maleCount: z.coerce
     .number()
-    .int("जनसंख्या पूर्णांक हुनुपर्छ")
-    .nonnegative("जनसंख्या नेगेटिभ हुन सक्दैन")
+    .int("पुरुषको संख्या पूर्णांक हुनुपर्छ")
+    .nonnegative("पुरुषको संख्या नेगेटिभ हुन सक्दैन")
+    .default(0),
+  femaleCount: z.coerce
+    .number()
+    .int("महिलाको संख्या पूर्णांक हुनुपर्छ")
+    .nonnegative("महिलाको संख्या नेगेटिभ हुन सक्दैन")
+    .default(0),
+  otherCount: z.coerce
+    .number()
+    .int("अन्य लिङ्गको संख्या पूर्णांक हुनुपर्छ")
+    .nonnegative("अन्य लिङ्गको संख्या नेगेटिभ हुन सक्दैन")
     .default(0),
 });
 
-interface WardAgeGenderWiseEconomicallyActivePopulationFormProps {
+interface WardTimeHouseholdChoresFormProps {
   editId: string | null;
   onClose: () => void;
   existingData: any[];
 }
 
-// Helper function to get age group display names
-const getAgeGroupOptions = () => [
-  { value: "AGE_0_TO_14", label: "० देखि १४ वर्ष" },
-  { value: "AGE_15_TO_59", label: "१५ देखि ५९ वर्ष" },
-  { value: "AGE_60_PLUS", label: "६० वर्ष वा सोभन्दा बढी" },
+// Helper function to get time period display names
+const getTimePeriodOptions = () => [
+  { value: "LESS_THAN_1_HOUR", label: "१ घण्टा भन्दा कम" },
+  { value: "1_TO_2_HOURS", label: "१ देखि २ घण्टा" },
+  { value: "2_TO_3_HOURS", label: "२ देखि ३ घण्टा" },
+  { value: "3_TO_4_HOURS", label: "३ देखि ४ घण्टा" },
+  { value: "4_TO_6_HOURS", label: "४ देखि ६ घण्टा" },
+  { value: "MORE_THAN_6_HOURS", label: "६ घण्टा भन्दा बढी" },
 ];
 
-// Helper function to get gender display names
-const getGenderOptions = () => [
-  { value: "MALE", label: "पुरुष" },
-  { value: "FEMALE", label: "महिला" },
-  { value: "OTHER", label: "अन्य" },
-];
-
-export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
+export default function WardTimeHouseholdChoresForm({
   editId,
   onClose,
   existingData,
-}: WardAgeGenderWiseEconomicallyActivePopulationFormProps) {
+}: WardTimeHouseholdChoresFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [duplicateError, setDuplicateError] = useState<string | null>(null);
   const utils = api.useContext();
-  const ageGroupOptions = getAgeGroupOptions();
-  const genderOptions = getGenderOptions();
+  const timePeriodOptions = getTimePeriodOptions();
 
   // Extract unique ward information from existing data
   const uniqueWards = Array.from(
@@ -107,7 +108,7 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
-    api.profile.economics.wardAgeGenderWiseEconomicallyActivePopulation.getAll.useQuery(
+    api.profile.economics.wardTimeWiseHouseholdChores.getAll.useQuery(
       undefined,
       {
         enabled: !!editId,
@@ -115,40 +116,36 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
     );
 
   const createMutation =
-    api.profile.economics.wardAgeGenderWiseEconomicallyActivePopulation.create.useMutation(
-      {
-        onSuccess: () => {
-          toast.success(
-            "नयाँ वडा अनुसार उमेर, लिङ्ग र आर्थिक रुपमा सक्रिय जनसंख्या डाटा सफलतापूर्वक थपियो",
-          );
-          utils.profile.economics.wardAgeGenderWiseEconomicallyActivePopulation.getAll.invalidate();
-          setIsSubmitting(false);
-          onClose();
-        },
-        onError: (error) => {
-          toast.error(`त्रुटि: ${error.message}`);
-          setIsSubmitting(false);
-        },
+    api.profile.economics.wardTimeWiseHouseholdChores.create.useMutation({
+      onSuccess: () => {
+        toast.success(
+          "नयाँ वडा अनुसार घरायसी काममा बिताउने समय विवरण सफलतापूर्वक थपियो",
+        );
+        utils.profile.economics.wardTimeWiseHouseholdChores.getAll.invalidate();
+        setIsSubmitting(false);
+        onClose();
       },
-    );
+      onError: (error) => {
+        toast.error(`त्रुटि: ${error.message}`);
+        setIsSubmitting(false);
+      },
+    });
 
   const updateMutation =
-    api.profile.economics.wardAgeGenderWiseEconomicallyActivePopulation.update.useMutation(
-      {
-        onSuccess: () => {
-          toast.success(
-            "वडा अनुसार उमेर, लिङ्ग र आर्थिक रुपमा सक्रिय जनसंख्या डाटा सफलतापूर्वक अपडेट गरियो",
-          );
-          utils.profile.economics.wardAgeGenderWiseEconomicallyActivePopulation.getAll.invalidate();
-          setIsSubmitting(false);
-          onClose();
-        },
-        onError: (error) => {
-          toast.error(`त्रुटि: ${error.message}`);
-          setIsSubmitting(false);
-        },
+    api.profile.economics.wardTimeWiseHouseholdChores.update.useMutation({
+      onSuccess: () => {
+        toast.success(
+          "वडा अनुसार घरायसी काममा बिताउने समय विवरण सफलतापूर्वक अपडेट गरियो",
+        );
+        utils.profile.economics.wardTimeWiseHouseholdChores.getAll.invalidate();
+        setIsSubmitting(false);
+        onClose();
       },
-    );
+      onError: (error) => {
+        toast.error(`त्रुटि: ${error.message}`);
+        setIsSubmitting(false);
+      },
+    });
 
   // Set up the form
   const form = useForm<z.infer<typeof formSchema>>({
@@ -156,16 +153,16 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
     defaultValues: {
       wardId: "",
       wardNumber: undefined,
-      ageGroup: "",
-      gender: "",
-      population: 0,
+      timePeriod: "",
+      maleCount: 0,
+      femaleCount: 0,
+      otherCount: 0,
     },
   });
 
   // Watch for changes to check for duplicates
   const watchWardId = form.watch("wardId");
-  const watchAgeGroup = form.watch("ageGroup");
-  const watchGender = form.watch("gender");
+  const watchTimePeriod = form.watch("timePeriod");
 
   // Populate the form when editing
   useEffect(() => {
@@ -176,9 +173,10 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
           id: recordToEdit.id,
           wardId: recordToEdit.wardId,
           wardNumber: recordToEdit.wardNumber || parseInt(recordToEdit.wardId),
-          ageGroup: recordToEdit.ageGroup,
-          gender: recordToEdit.gender,
-          population: recordToEdit.population || 0,
+          timePeriod: recordToEdit.timePeriod,
+          maleCount: recordToEdit.maleCount || 0,
+          femaleCount: recordToEdit.femaleCount || 0,
+          otherCount: recordToEdit.otherCount || 0,
         });
       }
     }
@@ -188,37 +186,24 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
   useEffect(() => {
     setDuplicateError(null);
 
-    if (watchWardId && watchAgeGroup && watchGender && !editId) {
+    if (watchWardId && watchTimePeriod && !editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardId === watchWardId &&
-          item.ageGroup === watchAgeGroup &&
-          item.gender === watchGender,
+          item.wardId === watchWardId && item.timePeriod === watchTimePeriod,
       );
 
       if (duplicate) {
         const wardNumber = duplicate.wardNumber || parseInt(watchWardId);
-        const ageGroupLabel =
-          ageGroupOptions.find((opt) => opt.value === watchAgeGroup)?.label ||
-          watchAgeGroup;
-        const genderLabel =
-          genderOptions.find((opt) => opt.value === watchGender)?.label ||
-          watchGender;
+        const timePeriodLabel =
+          timePeriodOptions.find((opt) => opt.value === watchTimePeriod)
+            ?.label || watchTimePeriod;
 
         setDuplicateError(
-          `वडा ${wardNumber} को लागि ${ageGroupLabel} उमेर समूह र ${genderLabel} लिङ्गको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${wardNumber} को लागि ${timePeriodLabel} समय अवधिको डाटा पहिले नै अवस्थित छ`,
         );
       }
     }
-  }, [
-    watchWardId,
-    watchAgeGroup,
-    watchGender,
-    existingData,
-    editId,
-    ageGroupOptions,
-    genderOptions,
-  ]);
+  }, [watchWardId, watchTimePeriod, existingData, editId, timePeriodOptions]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     // Don't submit if there's a duplicate error
@@ -232,10 +217,10 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
     // Prepare data for submission
     const dataToSubmit = {
       ...values,
-      population: values.population ?? 0,
-      ageGroup:
-        values.ageGroup as keyof typeof EconomicallyActiveAgeGroupEnum.Values,
-      gender: values.gender as keyof typeof GenderEnum.Values,
+      maleCount: values.maleCount ?? 0,
+      femaleCount: values.femaleCount ?? 0,
+      otherCount: values.otherCount ?? 0,
+      timePeriod: values.timePeriod as keyof typeof TimePeriodEnum.Values,
     };
 
     if (editId) {
@@ -328,31 +313,54 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
             </div>
 
             <div className="bg-muted/40 p-4 rounded-lg">
-              <h3 className="text-sm font-medium mb-3">जनसंख्या विवरण</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <h3 className="text-sm font-medium mb-3">
+                घरायसी काममा बिताउने समय विवरण
+              </h3>
+
+              <FormField
+                control={form.control}
+                name="timePeriod"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel>समय अवधि</FormLabel>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="समय अवधि चयन गर्नुहोस्" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {timePeriodOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                 <FormField
                   control={form.control}
-                  name="ageGroup"
+                  name="maleCount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>उमेर समूह</FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="उमेर समूह चयन गर्नुहोस्" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {ageGroupOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>पुरुष संख्या</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          {...field}
+                          onChange={(e) => {
+                            const value =
+                              e.target.value === "" ? "0" : e.target.value;
+                            field.onChange(value);
+                          }}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -360,27 +368,22 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
 
                 <FormField
                   control={form.control}
-                  name="gender"
+                  name="femaleCount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>लिङ्ग</FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="लिङ्ग चयन गर्नुहोस्" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {genderOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>महिला संख्या</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          {...field}
+                          onChange={(e) => {
+                            const value =
+                              e.target.value === "" ? "0" : e.target.value;
+                            field.onChange(value);
+                          }}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -388,10 +391,10 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
 
                 <FormField
                   control={form.control}
-                  name="population"
+                  name="otherCount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>जनसंख्या</FormLabel>
+                      <FormLabel>अन्य लिङ्ग संख्या</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
