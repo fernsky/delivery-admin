@@ -24,7 +24,7 @@ import { SEOFields } from "./seo-fields";
 // Define the form schema based on the farm data structure
 const formSchema = z.object({
   id: z.string(),
-  name: z.string().min(1, "Farm name is required"),
+  name: z.string().min(1, "फार्मको नाम आवश्यक छ"),
   description: z.string().optional(),
   farmType: z.string(),
   farmingSystem: z.string().optional(),
@@ -357,17 +357,18 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
   });
 
   // Update farm mutation
-  const { mutate: updateFarm, isLoading } = api.farm.update.useMutation({
-    onSuccess: () => {
-      toast.success("Farm updated successfully");
-      router.push(
-        `/dashboard/digital-profile/institutions/agricultural/farms/${farm.id}`,
-      );
-    },
-    onError: (error) => {
-      toast.error(`Failed to update farm: ${error.message}`);
-    },
-  });
+  const { mutate: updateFarm, isLoading } =
+    api.profile.agriculture.farms.update.useMutation({
+      onSuccess: () => {
+        toast.success("फार्म सफलतापूर्वक अपडेट गरियो");
+        router.push(
+          `/dashboard/digital-profile/institutions/agricultural/farms/${farm.id}`,
+        );
+      },
+      onError: (error) => {
+        toast.error(`फार्म अपडेट गर्न असफल: ${error.message}`);
+      },
+    });
 
   // Handle form submission
   const onSubmit = (values: FormValues) => {
@@ -449,46 +450,20 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
   return (
     <Card className="p-6">
       <Tabs defaultValue="basic" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-4 mb-6">
-          <TabsTrigger value="basic">Basic Info</TabsTrigger>
-          <TabsTrigger value="crops">Crops & Livestock</TabsTrigger>
-          <TabsTrigger value="infrastructure">Infrastructure</TabsTrigger>
-          <TabsTrigger value="location">Location</TabsTrigger>
+        <TabsList className="grid grid-cols-7 mb-6">
+          <TabsTrigger value="basic">आधारभूत विवरण</TabsTrigger>
+          <TabsTrigger value="location">स्थान विवरण</TabsTrigger>
+          <TabsTrigger value="crops">बाली र पशुधन</TabsTrigger>
+          <TabsTrigger value="farmer">किसान विवरण</TabsTrigger>
+          <TabsTrigger value="infrastructure">पूर्वाधार विवरण</TabsTrigger>
+          <TabsTrigger value="practices">व्यवस्थापन अभ्यास</TabsTrigger>
+          <TabsTrigger value="economics">आर्थिक विवरण</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="basic">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <BasicFarmDetails
-                formData={{
-                  name: form.watch("name"),
-                  description: form.watch("description"),
-                  farmType: form.watch("farmType"),
-                  farmingSystem: form.watch("farmingSystem"),
-                  metaTitle: form.watch("metaTitle"),
-                  metaDescription: form.watch("metaDescription"),
-                  keywords: form.watch("keywords"),
-                  isVerified: form.watch("isVerified"),
-                }}
-                updateFormData={(field, value) => form.setValue(field, value)}
-              />
-
-              <FarmerDetails
-                formData={{
-                  ownerName: form.watch("ownerName"),
-                  ownerContact: form.watch("ownerContact"),
-                  farmerType: form.watch("farmerType"),
-                  farmerEducation: form.watch("farmerEducation"),
-                  farmerExperienceYears: form.watch("farmerExperienceYears")
-                    ? Number(form.watch("farmerExperienceYears"))
-                    : undefined,
-                  hasCooperativeMembership: form.watch(
-                    "hasCooperativeMembership",
-                  ),
-                  cooperativeName: form.watch("cooperativeName"),
-                }}
-                updateFormData={(field, value) => form.setValue(field, value)}
-              />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <TabsContent value="basic">
+              <BasicFarmDetails form={form} />
 
               <SEOFields form={form} />
 
@@ -498,81 +473,19 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
                   variant="outline"
                   onClick={() => router.back()}
                 >
-                  Cancel
+                  रद्द गर्नुहोस्
                 </Button>
-                <Button type="button" onClick={() => setActiveTab("crops")}>
-                  Next
+                <Button type="button" onClick={() => setActiveTab("location")}>
+                  अर्को
                 </Button>
               </div>
-            </form>
-          </Form>
-        </TabsContent>
+            </TabsContent>
 
-        <TabsContent value="crops">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <CropsAndLivestockDetails
-                formData={{
-                  soilType: form.watch("soilType"),
-                  irrigationType: form.watch("irrigationType"),
-                  irrigationSourceDetails: form.watch(
-                    "irrigationSourceDetails",
-                  ),
-                  irrigatedAreaInHectares: form.watch("irrigatedAreaInHectares")
-                    ? Number(form.watch("irrigatedAreaInHectares"))
-                    : undefined,
-                  mainCrops: form.watch("mainCrops"),
-                  secondaryCrops: form.watch("secondaryCrops"),
-                  cropRotation: form.watch("cropRotation"),
-                  cropRotationDetails: form.watch("cropRotationDetails"),
-                  intercropping: form.watch("intercropping"),
-                  croppingSeasons: form.watch("croppingSeasons"),
-                  annualCropYieldMT: form.watch("annualCropYieldMT")
-                    ? Number(form.watch("annualCropYieldMT"))
-                    : undefined,
-                  recordedYearCrops: form.watch("recordedYearCrops"),
-                  hasLivestock: form.watch("hasLivestock"),
-                  livestockTypes: form.watch("livestockTypes"),
-                  cattleCount: form.watch("cattleCount")
-                    ? Number(form.watch("cattleCount"))
-                    : undefined,
-                  buffaloCount: form.watch("buffaloCount")
-                    ? Number(form.watch("buffaloCount"))
-                    : undefined,
-                  goatCount: form.watch("goatCount")
-                    ? Number(form.watch("goatCount"))
-                    : undefined,
-                  sheepCount: form.watch("sheepCount")
-                    ? Number(form.watch("sheepCount"))
-                    : undefined,
-                  pigCount: form.watch("pigCount")
-                    ? Number(form.watch("pigCount"))
-                    : undefined,
-                  poultryCount: form.watch("poultryCount")
-                    ? Number(form.watch("poultryCount"))
-                    : undefined,
-                  otherLivestockCount: form.watch("otherLivestockCount")
-                    ? Number(form.watch("otherLivestockCount"))
-                    : undefined,
-                  otherLivestockDetails: form.watch("otherLivestockDetails"),
-                  livestockHousingType: form.watch("livestockHousingType"),
-                  livestockManagementDetails: form.watch(
-                    "livestockManagementDetails",
-                  ),
-                  annualMilkProductionLiters: form.watch(
-                    "annualMilkProductionLiters",
-                  )
-                    ? Number(form.watch("annualMilkProductionLiters"))
-                    : undefined,
-                  annualEggProduction: form.watch("annualEggProduction")
-                    ? Number(form.watch("annualEggProduction"))
-                    : undefined,
-                  annualMeatProductionKg: form.watch("annualMeatProductionKg")
-                    ? Number(form.watch("annualMeatProductionKg"))
-                    : undefined,
-                  recordedYearLivestock: form.watch("recordedYearLivestock"),
-                }}
-                updateFormData={(field, value) => form.setValue(field, value)}
+            <TabsContent value="location">
+              <FarmLocationMap
+                onGeometrySelect={handleGeometrySelect}
+                initialLocationPoint={form.watch("locationPoint")}
+                initialFarmBoundary={form.watch("farmBoundary")}
               />
 
               <div className="flex gap-2 justify-end">
@@ -581,104 +494,33 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
                   variant="outline"
                   onClick={() => setActiveTab("basic")}
                 >
-                  Back
+                  पछाडि
                 </Button>
-                <Button
-                  type="button"
-                  onClick={() => setActiveTab("infrastructure")}
-                >
-                  Next
+                <Button type="button" onClick={() => setActiveTab("crops")}>
+                  अर्को
                 </Button>
               </div>
-            </form>
-          </Form>
-        </TabsContent>
+            </TabsContent>
 
-        <TabsContent value="infrastructure">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FarmInfrastructureDetails
-                formData={{
-                  totalAreaInHectares: form.watch("totalAreaInHectares")
-                    ? Number(form.watch("totalAreaInHectares"))
-                    : undefined,
-                  cultivatedAreaInHectares: form.watch(
-                    "cultivatedAreaInHectares",
-                  )
-                    ? Number(form.watch("cultivatedAreaInHectares"))
-                    : undefined,
-                  landOwnership: form.watch("landOwnership"),
-                  hasFarmHouse: form.watch("hasFarmHouse"),
-                  hasStorage: form.watch("hasStorage"),
-                  storageCapacityMT: form.watch("storageCapacityMT")
-                    ? Number(form.watch("storageCapacityMT"))
-                    : undefined,
-                  hasFarmEquipment: form.watch("hasFarmEquipment"),
-                  equipmentDetails: form.watch("equipmentDetails"),
-                  hasElectricity: form.watch("hasElectricity"),
-                  hasRoadAccess: form.watch("hasRoadAccess"),
-                  roadAccessType: form.watch("roadAccessType"),
-                }}
-                updateFormData={(field, value) => form.setValue(field, value)}
-              />
+            <TabsContent value="crops">
+              <CropsAndLivestockDetails form={form} />
 
-              <ManagementPractices
-                formData={{
-                  usesChemicalFertilizer: form.watch("usesChemicalFertilizer"),
-                  usesPesticides: form.watch("usesPesticides"),
-                  usesOrganicMethods: form.watch("usesOrganicMethods"),
-                  composting: form.watch("composting"),
-                  soilConservationPractices: form.watch(
-                    "soilConservationPractices",
-                  ),
-                  rainwaterHarvesting: form.watch("rainwaterHarvesting"),
-                  manureManagement: form.watch("manureManagement"),
-                  hasCertifications: form.watch("hasCertifications"),
-                  certificationDetails: form.watch("certificationDetails"),
-                  receivesExtensionServices: form.watch(
-                    "receivesExtensionServices",
-                  ),
-                  extensionServiceProvider: form.watch(
-                    "extensionServiceProvider",
-                  ),
-                  trainingReceived: form.watch("trainingReceived"),
-                  technicalSupportNeeds: form.watch("technicalSupportNeeds"),
-                  majorChallenges: form.watch("majorChallenges"),
-                  disasterVulnerabilities: form.watch(
-                    "disasterVulnerabilities",
-                  ),
-                  growthOpportunities: form.watch("growthOpportunities"),
-                  futureExpansionPlans: form.watch("futureExpansionPlans"),
-                }}
-                updateFormData={(field, value) => form.setValue(field, value)}
-              />
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("location")}
+                >
+                  पछाडि
+                </Button>
+                <Button type="button" onClick={() => setActiveTab("farmer")}>
+                  अर्को
+                </Button>
+              </div>
+            </TabsContent>
 
-              <EconomicsDetails
-                formData={{
-                  familyLaborCount: form.watch("familyLaborCount")
-                    ? Number(form.watch("familyLaborCount"))
-                    : undefined,
-                  hiredLaborCount: form.watch("hiredLaborCount")
-                    ? Number(form.watch("hiredLaborCount"))
-                    : undefined,
-                  annualInvestmentNPR: form.watch("annualInvestmentNPR")
-                    ? Number(form.watch("annualInvestmentNPR"))
-                    : undefined,
-                  annualIncomeNPR: form.watch("annualIncomeNPR")
-                    ? Number(form.watch("annualIncomeNPR"))
-                    : undefined,
-                  profitableOperation: form.watch("profitableOperation"),
-                  marketAccessDetails: form.watch("marketAccessDetails"),
-                  majorBuyerTypes: form.watch("majorBuyerTypes"),
-                  linkedGrazingAreas: form.watch("linkedGrazingAreas"),
-                  linkedProcessingCenters: form.watch(
-                    "linkedProcessingCenters",
-                  ),
-                  linkedAgricZones: form.watch("linkedAgricZones"),
-                  linkedGrasslands: form.watch("linkedGrasslands"),
-                }}
-                updateFormData={(field, value) => form.setValue(field, value)}
-              />
+            <TabsContent value="farmer">
+              <FarmerDetails form={form} />
 
               <div className="flex gap-2 justify-end">
                 <Button
@@ -686,41 +528,36 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
                   variant="outline"
                   onClick={() => setActiveTab("crops")}
                 >
-                  Back
+                  पछाडि
                 </Button>
-                <Button type="button" onClick={() => setActiveTab("location")}>
-                  Next
+                <Button
+                  type="button"
+                  onClick={() => setActiveTab("infrastructure")}
+                >
+                  अर्को
                 </Button>
               </div>
-            </form>
-          </Form>
-        </TabsContent>
+            </TabsContent>
 
-        <TabsContent value="location">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="space-y-4">
-                <div className="text-lg font-medium">Farm Location</div>
-                <div className="grid grid-cols-1 gap-6">
-                  <div className="border rounded-lg overflow-hidden">
-                    <FarmLocationMap
-                      formData={{
-                        wardNumber: form.watch("wardNumber")
-                          ? Number(form.watch("wardNumber"))
-                          : undefined,
-                        location: form.watch("location"),
-                        address: form.watch("address"),
-                        locationPoint: form.watch("locationPoint"),
-                        farmBoundary: form.watch("farmBoundary"),
-                      }}
-                      updateFormData={(field, value) =>
-                        form.setValue(field, value)
-                      }
-                      updateMapData={handleGeometrySelect}
-                    />
-                  </div>
-                </div>
+            <TabsContent value="infrastructure">
+              <FarmInfrastructureDetails form={form} />
+
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("farmer")}
+                >
+                  पछाडि
+                </Button>
+                <Button type="button" onClick={() => setActiveTab("practices")}>
+                  अर्को
+                </Button>
               </div>
+            </TabsContent>
+
+            <TabsContent value="practices">
+              <ManagementPractices form={form} />
 
               <div className="flex gap-2 justify-end">
                 <Button
@@ -728,18 +565,35 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
                   variant="outline"
                   onClick={() => setActiveTab("infrastructure")}
                 >
-                  Back
+                  पछाडि
+                </Button>
+                <Button type="button" onClick={() => setActiveTab("economics")}>
+                  अर्को
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="economics">
+              <EconomicsDetails form={form} />
+
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("practices")}
+                >
+                  पछाडि
                 </Button>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading && (
                     <Loader className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  Save Changes
+                  सुरक्षित गर्नुहोस्
                 </Button>
               </div>
-            </form>
-          </Form>
-        </TabsContent>
+            </TabsContent>
+          </form>
+        </Form>
       </Tabs>
     </Card>
   );

@@ -1,8 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { UseFormReturn } from "react-hook-form";
 import {
   FormControl,
   FormDescription,
@@ -18,225 +16,130 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-type FormData = {
-  name: string;
-  description: string;
-  farmType: string;
-  farmingSystem?: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  keywords?: string;
-  isVerified?: boolean;
-  [key: string]: any;
-};
+// Farm types data
+const farmTypes = [
+  { value: "CROP_FARM", label: "बाली फार्म" },
+  { value: "LIVESTOCK_FARM", label: "पशुपन्छी फार्म" },
+  { value: "MIXED_FARM", label: "मिश्रित फार्म" },
+  { value: "POULTRY_FARM", label: "कुखुरा फार्म" },
+  { value: "DAIRY_FARM", label: "डेरी फार्म" },
+  { value: "AQUACULTURE_FARM", label: "मत्स्य पालन फार्म" },
+  { value: "HORTICULTURE_FARM", label: "बागवानी फार्म" },
+  { value: "APICULTURE_FARM", label: "मौरीपालन फार्म" },
+  { value: "SERICULTURE_FARM", label: "रेशम खेती फार्म" },
+  { value: "ORGANIC_FARM", label: "जैविक फार्म" },
+  { value: "COMMERCIAL_FARM", label: "व्यावसायिक फार्म" },
+  { value: "SUBSISTENCE_FARM", label: "निर्वाहमुखी फार्म" },
+  { value: "AGROFORESTRY", label: "कृषिवन फार्म" },
+  { value: "OTHER", label: "अन्य" },
+];
+
+// Farming system options
+const farmingSystemOptions = [
+  { value: "CONVENTIONAL", label: "परम्परागत" },
+  { value: "ORGANIC", label: "जैविक" },
+  { value: "INTEGRATED", label: "एकीकृत" },
+  { value: "CONSERVATION", label: "संरक्षण" },
+  { value: "HYDROPONIC", label: "हाइड्रोपोनिक" },
+  { value: "PERMACULTURE", label: "परमाकल्चर" },
+  { value: "BIODYNAMIC", label: "जैवगतिशील" },
+  { value: "TRADITIONAL", label: "पारम्परिक" },
+  { value: "MIXED", label: "मिश्रित" },
+];
 
 interface BasicFarmDetailsProps {
-  formData: FormData;
-  updateFormData: (field: keyof FormData, value: any) => void;
+  form: UseFormReturn<any>;
 }
 
-export default function BasicFarmDetails({
-  formData,
-  updateFormData,
-}: BasicFarmDetailsProps) {
-  const t = useTranslations("Farms");
-
+export function BasicFarmDetails({ form }: BasicFarmDetailsProps) {
   return (
     <div className="space-y-6">
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">
-          {t("create.basicDetails.title")}
-        </h3>
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="name">{t("create.basicDetails.name")}</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => updateFormData("name", e.target.value)}
-              placeholder={t("create.basicDetails.namePlaceholder")}
-              className="mt-1"
-              required
-            />
-            <p className="text-sm text-muted-foreground mt-1">
-              {t("create.basicDetails.nameDescription")}
-            </p>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>फार्मको नाम</FormLabel>
+              <FormControl>
+                <Input placeholder="फार्मको नाम लेख्नुहोस्" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <div>
-            <Label htmlFor="description">
-              {t("create.basicDetails.description")}
-            </Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => updateFormData("description", e.target.value)}
-              placeholder={t("create.basicDetails.descriptionPlaceholder")}
-              className="mt-1 h-24"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="farmType">
-                {t("create.basicDetails.farmType")}
-              </Label>
-              <Select
-                value={formData.farmType}
-                onValueChange={(value) => updateFormData("farmType", value)}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue
-                    placeholder={t("create.basicDetails.farmTypePlaceholder")}
-                  />
-                </SelectTrigger>
+        <FormField
+          control={form.control}
+          name="farmType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>फार्मको प्रकार</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="फार्मको प्रकार छान्नुहोस्" />
+                  </SelectTrigger>
+                </FormControl>
                 <SelectContent>
-                  <SelectItem value="CROP_FARM">
-                    {t("farmTypes.CROP_FARM")}
-                  </SelectItem>
-                  <SelectItem value="LIVESTOCK_FARM">
-                    {t("farmTypes.LIVESTOCK_FARM")}
-                  </SelectItem>
-                  <SelectItem value="MIXED_FARM">
-                    {t("farmTypes.MIXED_FARM")}
-                  </SelectItem>
-                  <SelectItem value="POULTRY_FARM">
-                    {t("farmTypes.POULTRY_FARM")}
-                  </SelectItem>
-                  <SelectItem value="DAIRY_FARM">
-                    {t("farmTypes.DAIRY_FARM")}
-                  </SelectItem>
-                  <SelectItem value="AQUACULTURE_FARM">
-                    {t("farmTypes.AQUACULTURE_FARM")}
-                  </SelectItem>
-                  <SelectItem value="HORTICULTURE_FARM">
-                    {t("farmTypes.HORTICULTURE_FARM")}
-                  </SelectItem>
-                  <SelectItem value="APICULTURE_FARM">
-                    {t("farmTypes.APICULTURE_FARM")}
-                  </SelectItem>
-                  <SelectItem value="SERICULTURE_FARM">
-                    {t("farmTypes.SERICULTURE_FARM")}
-                  </SelectItem>
-                  <SelectItem value="ORGANIC_FARM">
-                    {t("farmTypes.ORGANIC_FARM")}
-                  </SelectItem>
-                  <SelectItem value="COMMERCIAL_FARM">
-                    {t("farmTypes.COMMERCIAL_FARM")}
-                  </SelectItem>
-                  <SelectItem value="SUBSISTENCE_FARM">
-                    {t("farmTypes.SUBSISTENCE_FARM")}
-                  </SelectItem>
-                  <SelectItem value="AGROFORESTRY">
-                    {t("farmTypes.AGROFORESTRY")}
-                  </SelectItem>
-                  <SelectItem value="OTHER">{t("farmTypes.OTHER")}</SelectItem>
+                  {farmTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-            </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
-            <div>
-              <Label htmlFor="farmingSystem">
-                {t("create.basicDetails.farmingSystem")}
-              </Label>
-              <Select
-                value={formData.farmingSystem || ""}
-                onValueChange={(value) =>
-                  updateFormData("farmingSystem", value)
-                }
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue
-                    placeholder={t(
-                      "create.basicDetails.farmingSystemPlaceholder",
-                    )}
-                  />
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>विवरण</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="फार्मको विवरण लेख्नुहोस्"
+                {...field}
+                rows={5}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="farmingSystem"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>कृषि प्रणाली</FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="कृषि प्रणाली छान्नुहोस्" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="CONVENTIONAL">
-                    {t("farmingSystems.CONVENTIONAL")}
+              </FormControl>
+              <SelectContent>
+                {farmingSystemOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
-                  <SelectItem value="ORGANIC">
-                    {t("farmingSystems.ORGANIC")}
-                  </SelectItem>
-                  <SelectItem value="INTEGRATED">
-                    {t("farmingSystems.INTEGRATED")}
-                  </SelectItem>
-                  <SelectItem value="CONSERVATION">
-                    {t("farmingSystems.CONSERVATION")}
-                  </SelectItem>
-                  <SelectItem value="HYDROPONIC">
-                    {t("farmingSystems.HYDROPONIC")}
-                  </SelectItem>
-                  <SelectItem value="PERMACULTURE">
-                    {t("farmingSystems.PERMACULTURE")}
-                  </SelectItem>
-                  <SelectItem value="BIODYNAMIC">
-                    {t("farmingSystems.BIODYNAMIC")}
-                  </SelectItem>
-                  <SelectItem value="TRADITIONAL">
-                    {t("farmingSystems.TRADITIONAL")}
-                  </SelectItem>
-                  <SelectItem value="MIXED">
-                    {t("farmingSystems.MIXED")}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* SEO Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">{t("create.seo.title")}</h3>
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="metaTitle">{t("create.seo.metaTitle")}</Label>
-            <Input
-              id="metaTitle"
-              value={formData.metaTitle || ""}
-              onChange={(e) => updateFormData("metaTitle", e.target.value)}
-              placeholder={t("create.seo.metaTitlePlaceholder")}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="metaDescription">
-              {t("create.seo.metaDescription")}
-            </Label>
-            <Textarea
-              id="metaDescription"
-              value={formData.metaDescription || ""}
-              onChange={(e) =>
-                updateFormData("metaDescription", e.target.value)
-              }
-              placeholder={t("create.seo.metaDescriptionPlaceholder")}
-              className="mt-1"
-            />
-            <p className="text-sm text-muted-foreground mt-1">
-              {t("create.seo.metaDescriptionHelp")}
-            </p>
-          </div>
-
-          <div>
-            <Label htmlFor="keywords">{t("create.seo.keywords")}</Label>
-            <Input
-              id="keywords"
-              value={formData.keywords || ""}
-              onChange={(e) => updateFormData("keywords", e.target.value)}
-              placeholder={t("create.seo.keywordsPlaceholder")}
-              className="mt-1"
-            />
-            <p className="text-sm text-muted-foreground mt-1">
-              {t("create.seo.keywordsHelp")}
-            </p>
-          </div>
-        </div>
-      </div>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 }

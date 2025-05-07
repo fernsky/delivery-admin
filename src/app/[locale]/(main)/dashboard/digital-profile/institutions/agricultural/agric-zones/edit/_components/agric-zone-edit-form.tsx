@@ -163,7 +163,7 @@ export function AgricZoneEditForm({ agricZone }: AgricZoneEditFormProps) {
 
   // Update agricultural zone mutation
   const { mutate: updateAgricZone, isLoading } =
-    api.profile.agricZones.update.useMutation({
+    api.profile.agriculture.agricZones.update.useMutation({
       onSuccess: () => {
         toast.success("कृषि क्षेत्र सफलतापूर्वक अपडेट गरियो");
         router.push(

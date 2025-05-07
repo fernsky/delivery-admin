@@ -1,358 +1,356 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2Icon } from "lucide-react";
-import { MediaUploader } from "@/components/media-uploader";
-import BasicFarmDetails from "./basic-farm-details";
-import FarmLocationMap from "./farm-location-map";
-import CropsAndLivestockDetails from "./crops-livestock-details";
-import FarmInfrastructureDetails from "./farm-infrastructure-details";
-import FarmerDetails from "./farmer-details";
-import ManagementPractices from "./management-practices";
-import EconomicsDetails from "./economics-details";
+import { Loader } from "lucide-react";
+import { Form } from "@/components/ui/form";
+import { Card } from "@/components/ui/card";
+import { BasicFarmDetails } from "./basic-farm-details";
+import { FarmLocationMap } from "./farm-location-map";
+import { CropsAndLivestockDetails } from "./crops-livestock-details";
+import { FarmInfrastructureDetails } from "./farm-infrastructure-details";
+import { FarmerDetails } from "./farmer-details";
+import { ManagementPractices } from "./management-practices";
+import { EconomicsDetails } from "./economics-details";
 
-type FormData = {
+// Define the form schema
+const formSchema = z.object({
   // Basic details
-  name: string;
-  description: string;
-  farmType: string;
-  farmingSystem?: string;
+  name: z.string().min(1, "कृषि फार्म नाम आवश्यक छ"),
+  description: z.string().optional(),
+  farmType: z.string().min(1, "फार्मको प्रकार आवश्यक छ"),
+  farmingSystem: z.string().optional(),
 
   // Location details
-  wardNumber?: number;
-  location?: string;
-  address?: string;
-  locationPoint?: {
-    type: "Point";
-    coordinates: [number, number]; // [longitude, latitude]
-  };
-  farmBoundary?: {
-    type: "Polygon";
-    coordinates: Array<Array<[number, number]>>; // Array of rings, each ring is array of [lon,lat] pairs
-  };
+  wardNumber: z.number().int().positive().optional(),
+  location: z.string().optional(),
+  address: z.string().optional(),
+  locationPoint: z
+    .object({
+      type: z.literal("Point"),
+      coordinates: z.tuple([z.number(), z.number()]),
+    })
+    .optional(),
+  farmBoundary: z
+    .object({
+      type: z.literal("Polygon"),
+      coordinates: z.array(z.array(z.tuple([z.number(), z.number()]))),
+    })
+    .optional(),
 
   // Land details
-  totalAreaInHectares?: number;
-  cultivatedAreaInHectares?: number;
-  landOwnership?: string;
-  soilType?: string;
-  irrigationType?: string;
-  irrigationSourceDetails?: string;
-  irrigatedAreaInHectares?: number;
+  totalAreaInHectares: z.number().positive().optional(),
+  cultivatedAreaInHectares: z.number().positive().optional(),
+  landOwnership: z.string().optional(),
+  soilType: z.string().optional(),
+  irrigationType: z.string().optional(),
+  irrigationSourceDetails: z.string().optional(),
+  irrigatedAreaInHectares: z.number().positive().optional(),
 
   // Crop details
-  mainCrops?: string;
-  secondaryCrops?: string;
-  cropRotation?: boolean;
-  cropRotationDetails?: string;
-  intercropping?: boolean;
-  croppingSeasons?: string;
-  annualCropYieldMT?: number;
-  recordedYearCrops?: string;
+  mainCrops: z.string().optional(),
+  secondaryCrops: z.string().optional(),
+  cropRotation: z.boolean().optional(),
+  cropRotationDetails: z.string().optional(),
+  intercropping: z.boolean().optional(),
+  croppingSeasons: z.string().optional(),
+  annualCropYieldMT: z.number().positive().optional(),
+  recordedYearCrops: z.string().optional(),
 
   // Livestock details
-  hasLivestock?: boolean;
-  livestockTypes?: string;
-  cattleCount?: number;
-  buffaloCount?: number;
-  goatCount?: number;
-  sheepCount?: number;
-  pigCount?: number;
-  poultryCount?: number;
-  otherLivestockCount?: number;
-  otherLivestockDetails?: string;
-  livestockHousingType?: string;
-  livestockManagementDetails?: string;
-  annualMilkProductionLiters?: number;
-  annualEggProduction?: number;
-  annualMeatProductionKg?: number;
-  recordedYearLivestock?: string;
+  hasLivestock: z.boolean().optional(),
+  livestockTypes: z.string().optional(),
+  cattleCount: z.number().int().nonnegative().optional(),
+  buffaloCount: z.number().int().nonnegative().optional(),
+  goatCount: z.number().int().nonnegative().optional(),
+  sheepCount: z.number().int().nonnegative().optional(),
+  pigCount: z.number().int().nonnegative().optional(),
+  poultryCount: z.number().int().nonnegative().optional(),
+  otherLivestockCount: z.number().int().nonnegative().optional(),
+  otherLivestockDetails: z.string().optional(),
+  livestockHousingType: z.string().optional(),
+  livestockManagementDetails: z.string().optional(),
+  annualMilkProductionLiters: z.number().nonnegative().optional(),
+  annualEggProduction: z.number().nonnegative().optional(),
+  annualMeatProductionKg: z.number().nonnegative().optional(),
+  recordedYearLivestock: z.string().optional(),
 
   // Farmer details
-  ownerName?: string;
-  ownerContact?: string;
-  farmerType?: string;
-  farmerEducation?: string;
-  farmerExperienceYears?: number;
-  hasCooperativeMembership?: boolean;
-  cooperativeName?: string;
+  ownerName: z.string().optional(),
+  ownerContact: z.string().optional(),
+  farmerType: z.string().optional(),
+  farmerEducation: z.string().optional(),
+  farmerExperienceYears: z.number().int().nonnegative().optional(),
+  hasCooperativeMembership: z.boolean().optional(),
+  cooperativeName: z.string().optional(),
 
   // Labor and economics
-  familyLaborCount?: number;
-  hiredLaborCount?: number;
-  annualInvestmentNPR?: number;
-  annualIncomeNPR?: number;
-  profitableOperation?: boolean;
-  marketAccessDetails?: string;
-  majorBuyerTypes?: string;
+  familyLaborCount: z.number().int().nonnegative().optional(),
+  hiredLaborCount: z.number().int().nonnegative().optional(),
+  annualInvestmentNPR: z.number().nonnegative().optional(),
+  annualIncomeNPR: z.number().nonnegative().optional(),
+  profitableOperation: z.boolean().optional(),
+  marketAccessDetails: z.string().optional(),
+  majorBuyerTypes: z.string().optional(),
 
   // Infrastructure
-  hasFarmHouse?: boolean;
-  hasStorage?: boolean;
-  storageCapacityMT?: number;
-  hasFarmEquipment?: boolean;
-  equipmentDetails?: string;
-  hasElectricity?: boolean;
-  hasRoadAccess?: boolean;
-  roadAccessType?: string;
+  hasFarmHouse: z.boolean().optional(),
+  hasStorage: z.boolean().optional(),
+  storageCapacityMT: z.number().nonnegative().optional(),
+  hasFarmEquipment: z.boolean().optional(),
+  equipmentDetails: z.string().optional(),
+  hasElectricity: z.boolean().optional(),
+  hasRoadAccess: z.boolean().optional(),
+  roadAccessType: z.string().optional(),
 
   // Sustainability and practices
-  usesChemicalFertilizer?: boolean;
-  usesPesticides?: boolean;
-  usesOrganicMethods?: boolean;
-  composting?: boolean;
-  soilConservationPractices?: string;
-  rainwaterHarvesting?: boolean;
-  manureManagement?: string;
-  hasCertifications?: boolean;
-  certificationDetails?: string;
+  usesChemicalFertilizer: z.boolean().optional(),
+  usesPesticides: z.boolean().optional(),
+  usesOrganicMethods: z.boolean().optional(),
+  composting: z.boolean().optional(),
+  soilConservationPractices: z.string().optional(),
+  rainwaterHarvesting: z.boolean().optional(),
+  manureManagement: z.string().optional(),
+  hasCertifications: z.boolean().optional(),
+  certificationDetails: z.string().optional(),
 
   // Technical support and training
-  receivesExtensionServices?: boolean;
-  extensionServiceProvider?: string;
-  trainingReceived?: string;
-  technicalSupportNeeds?: string;
+  receivesExtensionServices: z.boolean().optional(),
+  extensionServiceProvider: z.string().optional(),
+  trainingReceived: z.string().optional(),
+  technicalSupportNeeds: z.string().optional(),
 
   // Challenges and opportunities
-  majorChallenges?: string;
-  disasterVulnerabilities?: string;
-  growthOpportunities?: string;
-  futureExpansionPlans?: string;
+  majorChallenges: z.string().optional(),
+  disasterVulnerabilities: z.string().optional(),
+  growthOpportunities: z.string().optional(),
+  futureExpansionPlans: z.string().optional(),
 
   // Linked entities
-  linkedGrazingAreas?: Array<{ id: string; name?: string }>;
-  linkedProcessingCenters?: Array<{ id: string; name?: string }>;
-  linkedAgricZones?: Array<{ id: string; name?: string }>;
-  linkedGrasslands?: Array<{ id: string; name?: string }>;
+  linkedGrazingAreas: z
+    .array(z.object({ id: z.string(), name: z.string().optional() }))
+    .optional(),
+  linkedProcessingCenters: z
+    .array(z.object({ id: z.string(), name: z.string().optional() }))
+    .optional(),
+  linkedAgricZones: z
+    .array(z.object({ id: z.string(), name: z.string().optional() }))
+    .optional(),
+  linkedGrasslands: z
+    .array(z.object({ id: z.string(), name: z.string().optional() }))
+    .optional(),
+});
 
-  // SEO
-  metaTitle?: string;
-  metaDescription?: string;
-  keywords?: string;
-
-  // Status
-  isVerified?: boolean;
-};
+type FormValues = z.infer<typeof formSchema>;
 
 export default function CreateForm() {
-  const t = useTranslations("Farms");
-  const { toast } = useToast();
   const router = useRouter();
-
   const [activeTab, setActiveTab] = useState("basic");
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    description: "",
-    farmType: "MIXED_FARM",
+
+  // Set up the form with default values
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      farmType: "MIXED_FARM",
+      farmingSystem: "",
+      // All other fields will default to undefined
+    },
   });
-  const [uploadedMediaIds, setUploadedMediaIds] = useState<string[]>([]);
-  const [primaryMediaId, setPrimaryMediaId] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Create farm mutation
-  const createFarm = api.farm.create.useMutation({
-    onSuccess: (data) => {
-      toast({
-        title: t("create.successTitle"),
-        description: t("create.successDescription"),
-      });
+  const { mutate: createFarm, isLoading } =
+    api.profile.agriculture.farms.create.useMutation({
+      onSuccess: (data) => {
+        toast.success("फार्म सफलतापूर्वक सिर्जना गरियो");
 
-      // Reset form or redirect
-      if (data?.id) {
-        router.push(
-          `/dashboard/digital-profile/institutions/agricultural/farms/${data.slug}`,
-        );
-      }
-    },
-    onError: (error) => {
-      toast({
-        title: t("create.errorTitle"),
-        description: error.message || t("create.errorDescription"),
-        variant: "destructive",
-      });
-      setIsSubmitting(false);
-    },
-  });
+        // Redirect to farm detail page
+        if (data?.id) {
+          router.push(
+            `/dashboard/digital-profile/institutions/agricultural/farms/${data.slug}`,
+          );
+        }
+      },
+      onError: (error) => {
+        toast.error(`त्रुटि: ${error.message || "फार्म सिर्जना गर्न सकिएन"}`);
+      },
+    });
 
-  // Media association mutation
-  const associateMedia = api.media.associateMediaWithEntity.useMutation();
-
-  const updateFormData = useCallback((field: keyof FormData, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  }, []);
-
-  const updateMapData = useCallback(
-    (mapData: {
-      locationPoint?: { type: "Point"; coordinates: [number, number] };
-      farmBoundary?: {
-        type: "Polygon";
-        coordinates: Array<Array<[number, number]>>;
-      };
-    }) => {
-      setFormData((prev) => ({ ...prev, ...mapData }));
-    },
-    [],
-  );
-
-  const handleSubmit = async () => {
-    if (!formData.name || !formData.farmType) {
-      toast({
-        title: t("create.validationErrorTitle"),
-        description: t("create.validationErrorDescription"),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Submit form data
-      const response = await createFarm.mutateAsync(formData);
-
-      // If we have media to associate
-      if (response?.id && uploadedMediaIds.length > 0) {
-        // Associate uploaded media with the new entity
-        await Promise.all(
-          uploadedMediaIds.map((mediaId) =>
-            associateMedia.mutateAsync({
-              mediaId,
-              entityId: response.id,
-              entityType: "FARM",
-              isPrimary: mediaId === primaryMediaId,
-            }),
-          ),
-        );
-      }
-    } catch (error) {
-      // Error is handled by the mutation callbacks
-      console.error("Error submitting form:", error);
-    }
+  // Handle form submission
+  const onSubmit = (values: FormValues) => {
+    createFarm(values);
   };
 
-  const handleMediaUpload = (mediaIds: string[]) => {
-    setUploadedMediaIds(mediaIds);
-
-    // Set first image as primary if none selected yet
-    if (mediaIds.length > 0 && !primaryMediaId) {
-      setPrimaryMediaId(mediaIds[0]);
+  // Handle geometry selection from map
+  const handleGeometrySelect = (
+    locationPoint?: { type: "Point"; coordinates: [number, number] },
+    farmBoundary?: {
+      type: "Polygon";
+      coordinates: Array<Array<[number, number]>>;
+    },
+  ) => {
+    if (locationPoint) {
+      form.setValue("locationPoint", locationPoint);
     }
-  };
-
-  const handlePrimaryMediaChange = (mediaId: string) => {
-    setPrimaryMediaId(mediaId);
+    if (farmBoundary) {
+      form.setValue("farmBoundary", farmBoundary);
+    }
   };
 
   return (
-    <div className="space-y-6">
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="space-y-4"
-      >
-        <TabsList className="w-full flex justify-start flex-wrap">
-          <TabsTrigger value="basic">{t("create.tabs.basic")}</TabsTrigger>
-          <TabsTrigger value="location">
-            {t("create.tabs.location")}
-          </TabsTrigger>
-          <TabsTrigger value="crops">
-            {t("create.tabs.cropsLivestock")}
-          </TabsTrigger>
-          <TabsTrigger value="farmer">{t("create.tabs.farmer")}</TabsTrigger>
-          <TabsTrigger value="infrastructure">
-            {t("create.tabs.infrastructure")}
-          </TabsTrigger>
-          <TabsTrigger value="practices">
-            {t("create.tabs.practices")}
-          </TabsTrigger>
-          <TabsTrigger value="economics">
-            {t("create.tabs.economics")}
-          </TabsTrigger>
-          <TabsTrigger value="media">{t("create.tabs.media")}</TabsTrigger>
+    <Card className="p-6">
+      <Tabs defaultValue="basic" value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid grid-cols-7 mb-6">
+          <TabsTrigger value="basic">आधारभूत विवरण</TabsTrigger>
+          <TabsTrigger value="location">स्थान विवरण</TabsTrigger>
+          <TabsTrigger value="crops">बाली र पशुधन</TabsTrigger>
+          <TabsTrigger value="farmer">किसान विवरण</TabsTrigger>
+          <TabsTrigger value="infrastructure">पूर्वाधार विवरण</TabsTrigger>
+          <TabsTrigger value="practices">व्यवस्थापन अभ्यास</TabsTrigger>
+          <TabsTrigger value="economics">आर्थिक विवरण</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="basic" className="space-y-4">
-          <BasicFarmDetails
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        </TabsContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <TabsContent value="basic">
+              <BasicFarmDetails form={form} />
 
-        <TabsContent value="location" className="space-y-4">
-          <FarmLocationMap
-            formData={formData}
-            updateMapData={updateMapData}
-            updateFormData={updateFormData}
-          />
-        </TabsContent>
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.back()}
+                >
+                  रद्द गर्नुहोस्
+                </Button>
+                <Button type="button" onClick={() => setActiveTab("location")}>
+                  अर्को
+                </Button>
+              </div>
+            </TabsContent>
 
-        <TabsContent value="crops" className="space-y-4">
-          <CropsAndLivestockDetails
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        </TabsContent>
+            <TabsContent value="location">
+              <FarmLocationMap
+                onGeometrySelect={handleGeometrySelect}
+                initialLocationPoint={form.watch("locationPoint")}
+                initialFarmBoundary={form.watch("farmBoundary")}
+              />
 
-        <TabsContent value="farmer" className="space-y-4">
-          <FarmerDetails formData={formData} updateFormData={updateFormData} />
-        </TabsContent>
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("basic")}
+                >
+                  पछाडि
+                </Button>
+                <Button type="button" onClick={() => setActiveTab("crops")}>
+                  अर्को
+                </Button>
+              </div>
+            </TabsContent>
 
-        <TabsContent value="infrastructure" className="space-y-4">
-          <FarmInfrastructureDetails
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        </TabsContent>
+            <TabsContent value="crops">
+              <CropsAndLivestockDetails form={form} />
 
-        <TabsContent value="practices" className="space-y-4">
-          <ManagementPractices
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        </TabsContent>
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("location")}
+                >
+                  पछाडि
+                </Button>
+                <Button type="button" onClick={() => setActiveTab("farmer")}>
+                  अर्को
+                </Button>
+              </div>
+            </TabsContent>
 
-        <TabsContent value="economics" className="space-y-4">
-          <EconomicsDetails
-            formData={formData}
-            updateFormData={updateFormData}
-          />
-        </TabsContent>
+            <TabsContent value="farmer">
+              <FarmerDetails form={form} />
 
-        <TabsContent value="media" className="space-y-4">
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">{t("create.media.title")}</h3>
-            <MediaUploader
-              entityType="FARM"
-              onMediaChange={handleMediaUpload}
-              onPrimaryChange={handlePrimaryMediaChange}
-              selectedMediaIds={uploadedMediaIds}
-              primaryMediaId={primaryMediaId}
-            />
-          </div>
-        </TabsContent>
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("crops")}
+                >
+                  पछाडि
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setActiveTab("infrastructure")}
+                >
+                  अर्को
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="infrastructure">
+              <FarmInfrastructureDetails form={form} />
+
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("farmer")}
+                >
+                  पछाडि
+                </Button>
+                <Button type="button" onClick={() => setActiveTab("practices")}>
+                  अर्को
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="practices">
+              <ManagementPractices form={form} />
+
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("infrastructure")}
+                >
+                  पछाडि
+                </Button>
+                <Button type="button" onClick={() => setActiveTab("economics")}>
+                  अर्को
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="economics">
+              <EconomicsDetails form={form} />
+
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setActiveTab("practices")}
+                >
+                  पछाडि
+                </Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading && (
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  सेव गर्नुहोस्
+                </Button>
+              </div>
+            </TabsContent>
+          </form>
+        </Form>
       </Tabs>
-
-      <div className="flex justify-end space-x-4">
-        <Button
-          variant="outline"
-          onClick={() => router.back()}
-          disabled={isSubmitting}
-        >
-          {t("create.cancelButton")}
-        </Button>
-        <Button onClick={handleSubmit} disabled={isSubmitting}>
-          {isSubmitting && (
-            <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          {t("create.submitButton")}
-        </Button>
-      </div>
-    </div>
+    </Card>
   );
 }

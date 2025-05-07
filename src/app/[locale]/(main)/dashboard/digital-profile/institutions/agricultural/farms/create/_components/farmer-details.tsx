@@ -1,9 +1,16 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { UseFormReturn } from "react-hook-form";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -12,164 +19,173 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface FormData {
-  ownerName?: string;
-  ownerContact?: string;
-  farmerType?: string;
-  farmerEducation?: string;
-  farmerExperienceYears?: number;
-  hasCooperativeMembership?: boolean;
-  cooperativeName?: string;
-  [key: string]: any;
-}
+const farmerTypes = [
+  { value: "COMMERCIAL", label: "व्यावसायिक किसान" },
+  { value: "SUBSISTENCE", label: "निर्वाहमुखी किसान" },
+  { value: "PART_TIME", label: "अंशकालिक किसान" },
+  { value: "CONTRACT", label: "करार किसान" },
+  { value: "COOPERATIVE_MEMBER", label: "सहकारी सदस्य" },
+  { value: "OTHER", label: "अन्य" },
+];
+
+const educationLevels = [
+  { value: "NONE", label: "औपचारिक शिक्षा छैन" },
+  { value: "PRIMARY", label: "प्राथमिक" },
+  { value: "SECONDARY", label: "माध्यमिक" },
+  { value: "HIGHER_SECONDARY", label: "उच्च माध्यमिक" },
+  { value: "BACHELOR", label: "स्नातक" },
+  { value: "MASTER", label: "स्नातकोत्तर वा माथि" },
+  { value: "VOCATIONAL", label: "व्यावसायिक तालिम" },
+];
 
 interface FarmerDetailsProps {
-  formData: FormData;
-  updateFormData: (field: keyof FormData, value: any) => void;
+  form: UseFormReturn<any>;
 }
 
-export default function FarmerDetails({
-  formData,
-  updateFormData,
-}: FarmerDetailsProps) {
-  const t = useTranslations("Farms");
-
+export function FarmerDetails({ form }: FarmerDetailsProps) {
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">{t("create.farmer.title")}</h3>
-        <p className="text-sm text-muted-foreground">
-          {t("create.farmer.description")}
-        </p>
-      </div>
+      <div className="text-lg font-medium">किसान विवरण</div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="ownerName">{t("create.farmer.ownerName")}</Label>
-          <Input
-            id="ownerName"
-            value={formData.ownerName || ""}
-            onChange={(e) => updateFormData("ownerName", e.target.value)}
-            placeholder={t("create.farmer.ownerNamePlaceholder")}
-            className="mt-1"
-          />
-        </div>
-        <div>
-          <Label htmlFor="ownerContact">
-            {t("create.farmer.ownerContact")}
-          </Label>
-          <Input
-            id="ownerContact"
-            value={formData.ownerContact || ""}
-            onChange={(e) => updateFormData("ownerContact", e.target.value)}
-            placeholder={t("create.farmer.ownerContactPlaceholder")}
-            className="mt-1"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="farmerType">{t("create.farmer.farmerType")}</Label>
-          <Input
-            id="farmerType"
-            value={formData.farmerType || ""}
-            onChange={(e) => updateFormData("farmerType", e.target.value)}
-            placeholder={t("create.farmer.farmerTypePlaceholder")}
-            className="mt-1"
-          />
-          <p className="text-xs text-muted-foreground mt-1">
-            {t("create.farmer.farmerTypeHelp")}
-          </p>
-        </div>
-        <div>
-          <Label htmlFor="farmerEducation">
-            {t("create.farmer.farmerEducation")}
-          </Label>
-          <Select
-            value={formData.farmerEducation || ""}
-            onValueChange={(value) => updateFormData("farmerEducation", value)}
-          >
-            <SelectTrigger id="farmerEducation" className="mt-1">
-              <SelectValue
-                placeholder={t("create.farmer.farmerEducationPlaceholder")}
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="NONE">{t("education.NONE")}</SelectItem>
-              <SelectItem value="PRIMARY">{t("education.PRIMARY")}</SelectItem>
-              <SelectItem value="SECONDARY">
-                {t("education.SECONDARY")}
-              </SelectItem>
-              <SelectItem value="HIGHER_SECONDARY">
-                {t("education.HIGHER_SECONDARY")}
-              </SelectItem>
-              <SelectItem value="BACHELORS">
-                {t("education.BACHELORS")}
-              </SelectItem>
-              <SelectItem value="MASTERS">{t("education.MASTERS")}</SelectItem>
-              <SelectItem value="PHD">{t("education.PHD")}</SelectItem>
-              <SelectItem value="VOCATIONAL">
-                {t("education.VOCATIONAL")}
-              </SelectItem>
-              <SelectItem value="OTHER">{t("education.OTHER")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="farmerExperienceYears">
-            {t("create.farmer.farmerExperienceYears")}
-          </Label>
-          <Input
-            id="farmerExperienceYears"
-            type="number"
-            min="0"
-            value={formData.farmerExperienceYears || ""}
-            onChange={(e) =>
-              updateFormData(
-                "farmerExperienceYears",
-                parseInt(e.target.value) || null,
-              )
-            }
-            placeholder={t("create.farmer.farmerExperienceYearsPlaceholder")}
-            className="mt-1"
-          />
-        </div>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="hasCooperativeMembership"
-              checked={formData.hasCooperativeMembership || false}
-              onCheckedChange={(checked) =>
-                updateFormData("hasCooperativeMembership", checked)
-              }
-            />
-            <Label htmlFor="hasCooperativeMembership">
-              {t("create.farmer.hasCooperativeMembership")}
-            </Label>
-          </div>
-
-          {formData.hasCooperativeMembership && (
-            <div>
-              <Label htmlFor="cooperativeName">
-                {t("create.farmer.cooperativeName")}
-              </Label>
-              <Input
-                id="cooperativeName"
-                value={formData.cooperativeName || ""}
-                onChange={(e) =>
-                  updateFormData("cooperativeName", e.target.value)
-                }
-                placeholder={t("create.farmer.cooperativeNamePlaceholder")}
-                className="mt-1"
-              />
-            </div>
+        <FormField
+          control={form.control}
+          name="ownerName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>मालिक/किसानको नाम</FormLabel>
+              <FormControl>
+                <Input placeholder="मालिक/किसानको नाम" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
+        />
+
+        <FormField
+          control={form.control}
+          name="ownerContact"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>सम्पर्क नम्बर</FormLabel>
+              <FormControl>
+                <Input placeholder="सम्पर्क नम्बर" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="farmerType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>किसानको प्रकार</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="किसानको प्रकार छान्नुहोस्" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {farmerTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="farmerEducation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>शैक्षिक योग्यता</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="शैक्षिक योग्यता छान्नुहोस्" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {educationLevels.map((level) => (
+                    <SelectItem key={level.value} value={level.value}>
+                      {level.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="farmerExperienceYears"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>अनुभव (वर्षमा)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="कृषि क्षेत्रमा अनुभव वर्ष"
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <FormField
+        control={form.control}
+        name="hasCooperativeMembership"
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+            <FormControl>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            </FormControl>
+            <div className="space-y-1 leading-none">
+              <FormLabel>सहकारी सदस्यता</FormLabel>
+              <FormDescription>
+                किसानले कुनै सहकारीको सदस्यता लिएको छ?
+              </FormDescription>
+            </div>
+          </FormItem>
+        )}
+      />
+
+      {form.watch("hasCooperativeMembership") && (
+        <FormField
+          control={form.control}
+          name="cooperativeName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>सहकारी संस्थाको नाम</FormLabel>
+              <FormControl>
+                <Input placeholder="सहकारी संस्थाको नाम" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </div>
   );
 }

@@ -1,50 +1,33 @@
 "use client";
 
-import { getTranslations } from "next-intl/server";
-import { Metadata } from "next";
-import { Heading } from "@/components/ui/heading";
-import { Card } from "@/components/ui/card";
-import DashboardBreadcrumb from "@/components/dashboard/breadcrumb";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
 import CreateForm from "./_components/create-form";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Farms");
-
-  return {
-    title: t("create.pageTitle"),
-    description: t("create.pageDescription"),
-  };
-}
-
-export default async function CreateFarmPage() {
-  const t = await getTranslations("Farms");
+export default function CreateAgricZonePage() {
+  const router = useRouter();
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <DashboardBreadcrumb
-        items={[
-          {
-            label: t("title"),
-            href: "/dashboard/digital-profile/institutions/agricultural/farms",
-          },
-          {
-            label: t("create.title"),
-            href: "/dashboard/digital-profile/institutions/agricultural/farms/create",
-            active: true,
-          },
-        ]}
-      />
-
-      <div className="flex items-center justify-between">
-        <Heading
-          title={t("create.title")}
-          description={t("create.description")}
-        />
-      </div>
-
-      <Card className="p-6">
+    <ContentLayout
+      title="नयाँ कृषि क्षेत्र थप्नुहोस्"
+      backHref="/dashboard/digital-profile/institutions/agricultural/agric-zones"
+      actions={
+        <Button
+          variant="outline"
+          onClick={() =>
+            router.push(
+              "/dashboard/digital-profile/institutions/agricultural/agric-zones",
+            )
+          }
+        >
+          फिर्ता जानुहोस्
+        </Button>
+      }
+    >
+      <div className="grid gap-8">
         <CreateForm />
-      </Card>
-    </div>
+      </div>
+    </ContentLayout>
   );
 }

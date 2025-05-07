@@ -3,13 +3,13 @@ import { demographicsRouter } from "./demographics";
 import { localAreasRouter } from "./local-areas";
 import { economicsRouter } from "./economics";
 import { transportationRouter } from "./transportation";
-import { agricZoneRouter } from "./agricultural/agricZones/agricZone.router";
+import { agriculturalRouter } from "./agricultural";
 
 export const profileRouter = createTRPCRouter({
   demographics: demographicsRouter,
   economics: economicsRouter,
   localAreas: localAreasRouter,
   transportation: transportationRouter,
-  agricZones: agricZoneRouter,
+  agriculture: agriculturalRouter,
   // Add other profile-related routers here in the future
 });

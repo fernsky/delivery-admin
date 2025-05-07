@@ -1,329 +1,342 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { UseFormReturn } from "react-hook-form";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-
-interface FormData {
-  // Sustainability and practices
-  usesChemicalFertilizer?: boolean;
-  usesPesticides?: boolean;
-  usesOrganicMethods?: boolean;
-  composting?: boolean;
-  soilConservationPractices?: string;
-  rainwaterHarvesting?: boolean;
-  manureManagement?: string;
-  hasCertifications?: boolean;
-  certificationDetails?: string;
-
-  // Technical support and training
-  receivesExtensionServices?: boolean;
-  extensionServiceProvider?: string;
-  trainingReceived?: string;
-  technicalSupportNeeds?: string;
-
-  // Challenges and opportunities
-  majorChallenges?: string;
-  disasterVulnerabilities?: string;
-  growthOpportunities?: string;
-  futureExpansionPlans?: string;
-  [key: string]: any;
-}
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ManagementPracticesProps {
-  formData: FormData;
-  updateFormData: (field: keyof FormData, value: any) => void;
+  form: UseFormReturn<any>;
 }
 
-export default function ManagementPractices({
-  formData,
-  updateFormData,
-}: ManagementPracticesProps) {
-  const t = useTranslations("Farms");
-
+export function ManagementPractices({ form }: ManagementPracticesProps) {
   return (
-    <div className="space-y-8">
-      {/* Sustainability Practices Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">
-          {t("create.practices.sustainabilityTitle")}
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          {t("create.practices.sustainabilityDescription")}
-        </p>
+    <div className="space-y-6">
+      <div className="text-lg font-medium">कृषि उत्पादन प्रक्रिया</div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="usesChemicalFertilizer"
-                checked={formData.usesChemicalFertilizer || false}
-                onCheckedChange={(checked) =>
-                  updateFormData("usesChemicalFertilizer", checked)
-                }
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          control={form.control}
+          name="usesChemicalFertilizer"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>रासायनिक मल</FormLabel>
+                <FormDescription>रासायनिक मलको प्रयोग गरिन्छ?</FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="usesPesticides"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>विषादीहरू</FormLabel>
+                <FormDescription>
+                  किटनाशक विषादीहरूको प्रयोग गरिन्छ?
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          control={form.control}
+          name="usesOrganicMethods"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>अर्गानिक विधि</FormLabel>
+                <FormDescription>
+                  प्राङ्गारिक खेती विधिहरू प्रयोग गरिन्छ?
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="composting"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>कम्पोस्टिङ</FormLabel>
+                <FormDescription>
+                  जैविक पदार्थबाट कम्पोस्ट मल बनाइन्छ?
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <FormField
+        control={form.control}
+        name="soilConservationPractices"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>माटो संरक्षण अभ्यासहरू</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="माटो संरक्षणका लागि गरिने कार्यहरू"
+                {...field}
               />
-              <Label htmlFor="usesChemicalFertilizer">
-                {t("create.practices.usesChemicalFertilizer")}
-              </Label>
-            </div>
+            </FormControl>
+            <FormDescription>
+              उदाहरण: स्थानान्तरण खेती, छापो, मल्चिंग, गह्रा निर्माण, आदि
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="usesPesticides"
-                checked={formData.usesPesticides || false}
-                onCheckedChange={(checked) =>
-                  updateFormData("usesPesticides", checked)
-                }
-              />
-              <Label htmlFor="usesPesticides">
-                {t("create.practices.usesPesticides")}
-              </Label>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          control={form.control}
+          name="rainwaterHarvesting"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>वर्षाको पानी संकलन</FormLabel>
+                <FormDescription>वर्षाको पानी संकलन गरिन्छ?</FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="usesOrganicMethods"
-                checked={formData.usesOrganicMethods || false}
-                onCheckedChange={(checked) =>
-                  updateFormData("usesOrganicMethods", checked)
-                }
-              />
-              <Label htmlFor="usesOrganicMethods">
-                {t("create.practices.usesOrganicMethods")}
-              </Label>
-            </div>
-          </div>
+        <FormField
+          control={form.control}
+          name="manureManagement"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>मलमूत्र व्यवस्थापन</FormLabel>
+              <FormControl>
+                <Input placeholder="मलमूत्र व्यवस्थापन विधिहरू" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="composting"
-                checked={formData.composting || false}
-                onCheckedChange={(checked) =>
-                  updateFormData("composting", checked)
-                }
-              />
-              <Label htmlFor="composting">
-                {t("create.practices.composting")}
-              </Label>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          control={form.control}
+          name="hasCertifications"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>प्रमाणपत्र/प्रमाणीकरण</FormLabel>
+                <FormDescription>
+                  कुनै कृषि प्रमाणपत्र वा प्रमाणीकरण छ?
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="rainwaterHarvesting"
-                checked={formData.rainwaterHarvesting || false}
-                onCheckedChange={(checked) =>
-                  updateFormData("rainwaterHarvesting", checked)
-                }
-              />
-              <Label htmlFor="rainwaterHarvesting">
-                {t("create.practices.rainwaterHarvesting")}
-              </Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="hasCertifications"
-                checked={formData.hasCertifications || false}
-                onCheckedChange={(checked) =>
-                  updateFormData("hasCertifications", checked)
-                }
-              />
-              <Label htmlFor="hasCertifications">
-                {t("create.practices.hasCertifications")}
-              </Label>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <Label htmlFor="soilConservationPractices">
-            {t("create.practices.soilConservationPractices")}
-          </Label>
-          <Input
-            id="soilConservationPractices"
-            value={formData.soilConservationPractices || ""}
-            onChange={(e) =>
-              updateFormData("soilConservationPractices", e.target.value)
-            }
-            placeholder={t(
-              "create.practices.soilConservationPracticesPlaceholder",
+        {form.watch("hasCertifications") && (
+          <FormField
+            control={form.control}
+            name="certificationDetails"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>प्रमाणीकरण विवरण</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="प्रमाणपत्र वा प्रमाणीकरण विवरण"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-            className="mt-1"
           />
-        </div>
-
-        <div>
-          <Label htmlFor="manureManagement">
-            {t("create.practices.manureManagement")}
-          </Label>
-          <Input
-            id="manureManagement"
-            value={formData.manureManagement || ""}
-            onChange={(e) => updateFormData("manureManagement", e.target.value)}
-            placeholder={t("create.practices.manureManagementPlaceholder")}
-            className="mt-1"
-          />
-        </div>
-
-        {formData.hasCertifications && (
-          <div>
-            <Label htmlFor="certificationDetails">
-              {t("create.practices.certificationDetails")}
-            </Label>
-            <Textarea
-              id="certificationDetails"
-              value={formData.certificationDetails || ""}
-              onChange={(e) =>
-                updateFormData("certificationDetails", e.target.value)
-              }
-              placeholder={t(
-                "create.practices.certificationDetailsPlaceholder",
-              )}
-              className="mt-1"
-            />
-          </div>
         )}
       </div>
 
-      {/* Technical Support Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">
-          {t("create.practices.technicalSupportTitle")}
-        </h3>
+      <div className="text-lg font-medium pt-4">प्राविधिक सहयोग र तालिम</div>
 
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="receivesExtensionServices"
-            checked={formData.receivesExtensionServices || false}
-            onCheckedChange={(checked) =>
-              updateFormData("receivesExtensionServices", checked)
-            }
-          />
-          <Label htmlFor="receivesExtensionServices">
-            {t("create.practices.receivesExtensionServices")}
-          </Label>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          control={form.control}
+          name="receivesExtensionServices"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>प्राविधिक सेवा</FormLabel>
+                <FormDescription>
+                  कृषि प्राविधिक सेवा प्राप्त गर्छ?
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
 
-        {formData.receivesExtensionServices && (
-          <div>
-            <Label htmlFor="extensionServiceProvider">
-              {t("create.practices.extensionServiceProvider")}
-            </Label>
-            <Input
-              id="extensionServiceProvider"
-              value={formData.extensionServiceProvider || ""}
-              onChange={(e) =>
-                updateFormData("extensionServiceProvider", e.target.value)
-              }
-              placeholder={t(
-                "create.practices.extensionServiceProviderPlaceholder",
-              )}
-              className="mt-1"
-            />
-          </div>
-        )}
-
-        <div>
-          <Label htmlFor="trainingReceived">
-            {t("create.practices.trainingReceived")}
-          </Label>
-          <Textarea
-            id="trainingReceived"
-            value={formData.trainingReceived || ""}
-            onChange={(e) => updateFormData("trainingReceived", e.target.value)}
-            placeholder={t("create.practices.trainingReceivedPlaceholder")}
-            className="mt-1"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="technicalSupportNeeds">
-            {t("create.practices.technicalSupportNeeds")}
-          </Label>
-          <Textarea
-            id="technicalSupportNeeds"
-            value={formData.technicalSupportNeeds || ""}
-            onChange={(e) =>
-              updateFormData("technicalSupportNeeds", e.target.value)
-            }
-            placeholder={t("create.practices.technicalSupportNeedsPlaceholder")}
-            className="mt-1"
-          />
-        </div>
-      </div>
-
-      {/* Challenges and Opportunities Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">
-          {t("create.practices.challengesTitle")}
-        </h3>
-
-        <div>
-          <Label htmlFor="majorChallenges">
-            {t("create.practices.majorChallenges")}
-          </Label>
-          <Textarea
-            id="majorChallenges"
-            value={formData.majorChallenges || ""}
-            onChange={(e) => updateFormData("majorChallenges", e.target.value)}
-            placeholder={t("create.practices.majorChallengesPlaceholder")}
-            className="mt-1"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="disasterVulnerabilities">
-            {t("create.practices.disasterVulnerabilities")}
-          </Label>
-          <Input
-            id="disasterVulnerabilities"
-            value={formData.disasterVulnerabilities || ""}
-            onChange={(e) =>
-              updateFormData("disasterVulnerabilities", e.target.value)
-            }
-            placeholder={t(
-              "create.practices.disasterVulnerabilitiesPlaceholder",
+        {form.watch("receivesExtensionServices") && (
+          <FormField
+            control={form.control}
+            name="extensionServiceProvider"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>सेवा प्रदायक</FormLabel>
+                <FormControl>
+                  <Input placeholder="कृषि प्राविधिक सेवा प्रदायक" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-            className="mt-1"
           />
-          <p className="text-sm text-muted-foreground mt-1">
-            {t("create.practices.disasterVulnerabilitiesHelp")}
-          </p>
-        </div>
-
-        <div>
-          <Label htmlFor="growthOpportunities">
-            {t("create.practices.growthOpportunities")}
-          </Label>
-          <Textarea
-            id="growthOpportunities"
-            value={formData.growthOpportunities || ""}
-            onChange={(e) =>
-              updateFormData("growthOpportunities", e.target.value)
-            }
-            placeholder={t("create.practices.growthOpportunitiesPlaceholder")}
-            className="mt-1"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="futureExpansionPlans">
-            {t("create.practices.futureExpansionPlans")}
-          </Label>
-          <Textarea
-            id="futureExpansionPlans"
-            value={formData.futureExpansionPlans || ""}
-            onChange={(e) =>
-              updateFormData("futureExpansionPlans", e.target.value)
-            }
-            placeholder={t("create.practices.futureExpansionPlansPlaceholder")}
-            className="mt-1"
-          />
-        </div>
+        )}
       </div>
+
+      <FormField
+        control={form.control}
+        name="trainingReceived"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>प्राप्त तालिमहरू</FormLabel>
+            <FormControl>
+              <Textarea placeholder="प्राप्त तालिमहरूको विवरण" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="technicalSupportNeeds"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>प्राविधिक सहयोग आवश्यकता</FormLabel>
+            <FormControl>
+              <Textarea placeholder="आवश्यक प्राविधिक सहयोग" {...field} />
+            </FormControl>
+            <FormDescription>
+              फार्मको लागि कस्तो प्राविधिक सहयोग आवश्यक छ?
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <div className="text-lg font-medium pt-4">समस्या र अवसरहरू</div>
+
+      <FormField
+        control={form.control}
+        name="majorChallenges"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>प्रमुख समस्याहरू</FormLabel>
+            <FormControl>
+              <Textarea placeholder="फार्मको प्रमुख समस्याहरू" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="disasterVulnerabilities"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>प्राकृतिक प्रकोप जोखिमहरू</FormLabel>
+            <FormControl>
+              <Textarea placeholder="प्राकृतिक प्रकोप जोखिमहरू" {...field} />
+            </FormControl>
+            <FormDescription>
+              बाढी, पहिरो, सुख्खा, आगलागी जस्ता जोखिमहरू
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="growthOpportunities"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>विकासका अवसरहरू</FormLabel>
+            <FormControl>
+              <Textarea placeholder="विकासका अवसरहरू" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="futureExpansionPlans"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>भविष्यको विस्तार योजनाहरू</FormLabel>
+            <FormControl>
+              <Textarea placeholder="भविष्यको विस्तार योजनाहरू" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 }

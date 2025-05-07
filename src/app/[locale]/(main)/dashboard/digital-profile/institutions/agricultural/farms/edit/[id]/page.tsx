@@ -16,39 +16,42 @@ export default function EditFarmPage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState<"general" | "media">("general");
 
   // Fetch farm data by ID
-  const { data: farm, isLoading } = api.farm.getById.useQuery(params.id, {
-    retry: false,
-    enabled: !!params.id,
-    onError: () => {
-      router.push("/dashboard/digital-profile/institutions/agricultural/farms");
-      toast.error("Farm not found");
-    },
-  });
+  const { data: farm, isLoading } =
+    api.profile.agriculture.farms.getById.useQuery(params.id, {
+      retry: false,
+      enabled: !!params.id,
+      onError: () => {
+        router.push(
+          "/dashboard/digital-profile/institutions/agricultural/farms",
+        );
+        toast.error("फार्म फेला परेन");
+      },
+    });
 
-  // Get farm type label
+  // Get farm type label in Nepali
   const getFarmTypeLabel = (type: string) => {
     const types = {
-      CROP_FARM: "Crop Farm",
-      LIVESTOCK_FARM: "Livestock Farm",
-      MIXED_FARM: "Mixed Farm",
-      POULTRY_FARM: "Poultry Farm",
-      DAIRY_FARM: "Dairy Farm",
-      AQUACULTURE_FARM: "Aquaculture Farm",
-      HORTICULTURE_FARM: "Horticulture Farm",
-      APICULTURE_FARM: "Apiculture Farm",
-      SERICULTURE_FARM: "Sericulture Farm",
-      ORGANIC_FARM: "Organic Farm",
-      COMMERCIAL_FARM: "Commercial Farm",
-      SUBSISTENCE_FARM: "Subsistence Farm",
-      AGROFORESTRY: "Agroforestry",
-      OTHER: "Other",
+      CROP_FARM: "बाली फार्म",
+      LIVESTOCK_FARM: "पशुपन्छी फार्म",
+      MIXED_FARM: "मिश्रित फार्म",
+      POULTRY_FARM: "कुखुरा फार्म",
+      DAIRY_FARM: "डेरी फार्म",
+      AQUACULTURE_FARM: "मत्स्य पालन फार्म",
+      HORTICULTURE_FARM: "बागवानी फार्म",
+      APICULTURE_FARM: "मौरीपालन फार्म",
+      SERICULTURE_FARM: "रेशम खेती फार्म",
+      ORGANIC_FARM: "जैविक फार्म",
+      COMMERCIAL_FARM: "व्यावसायिक फार्म",
+      SUBSISTENCE_FARM: "निर्वाहमुखी फार्म",
+      AGROFORESTRY: "कृषिवन फार्म",
+      OTHER: "अन्य",
     };
     return types[type as keyof typeof types] || type;
   };
 
   if (isLoading) {
     return (
-      <ContentLayout title="Loading farm...">
+      <ContentLayout title="फार्म लोड गर्दै...">
         <div className="flex justify-center items-center h-64">
           <Loader className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -58,10 +61,10 @@ export default function EditFarmPage({ params }: { params: { id: string } }) {
 
   if (!farm) {
     return (
-      <ContentLayout title="Farm not found">
+      <ContentLayout title="फार्म फेला परेन">
         <div className="flex justify-center items-center h-64">
           <div className="text-center space-y-4">
-            <p>The requested farm could not be found</p>
+            <p>माग गरिएको फार्म फेला परेन</p>
             <Button
               variant="outline"
               onClick={() =>
@@ -71,7 +74,7 @@ export default function EditFarmPage({ params }: { params: { id: string } }) {
               }
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
-              Go back
+              फिर्ता जानुहोस्
             </Button>
           </div>
         </div>
@@ -81,7 +84,7 @@ export default function EditFarmPage({ params }: { params: { id: string } }) {
 
   return (
     <ContentLayout
-      title={`Edit ${farm.name}`}
+      title={`${farm.name} सम्पादन गर्नुहोस्`}
       subtitle={getFarmTypeLabel(farm.farmType)}
       backHref={`/dashboard/digital-profile/institutions/agricultural/farms/${farm.id}`}
     >
@@ -91,10 +94,10 @@ export default function EditFarmPage({ params }: { params: { id: string } }) {
       >
         <TabsList className="w-full sm:w-auto">
           <TabsTrigger value="general" className="flex-1 sm:flex-none">
-            Basic Information
+            आधारभूत जानकारी
           </TabsTrigger>
           <TabsTrigger value="media" className="flex-1 sm:flex-none">
-            Photos
+            फोटोहरू
           </TabsTrigger>
         </TabsList>
 

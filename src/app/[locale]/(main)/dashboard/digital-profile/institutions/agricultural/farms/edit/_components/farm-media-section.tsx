@@ -87,7 +87,7 @@ export function FarmMediaSection({
     onSuccess: (data) => {
       // Check if this media already exists in our state to prevent duplicates
       if (!processedMediaIds.has(data.id)) {
-        toast.success("Media added successfully");
+        toast.success("मिडिया सफलतापूर्वक थपियो");
 
         // Add to processed media IDs
         setProcessedMediaIds((prev) => new Set(prev).add(data.id));
@@ -112,29 +112,29 @@ export function FarmMediaSection({
       }
     },
     onError: (error: any) => {
-      toast.error(`Failed to add media: ${error.message}`);
+      toast.error(`मिडिया थप्न असफल: ${error.message}`);
     },
   });
 
   // Set media as primary mutation
   const { mutate: setPrimaryMedia } = api.common.media.setPrimary.useMutation({
     onSuccess: () => {
-      toast.success("Primary media updated");
+      toast.success("प्राथमिक मिडिया अपडेट गरियो");
       router.refresh();
     },
     onError: (error) => {
-      toast.error(`Failed to update primary media: ${error.message}`);
+      toast.error(`प्राथमिक मिडिया अपडेट गर्न असफल: ${error.message}`);
     },
   });
 
   // Delete media mutation
   const { mutate: deleteMedia } = api.common.media.delete.useMutation({
     onSuccess: () => {
-      toast.success("Media removed");
+      toast.success("मिडिया हटाइयो");
       router.refresh();
     },
     onError: (error) => {
-      toast.error(`Failed to delete media: ${error.message}`);
+      toast.error(`मिडिया हटाउन असफल: ${error.message}`);
     },
   });
 
@@ -191,8 +191,10 @@ export function FarmMediaSection({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Farm Photos</CardTitle>
-        <CardDescription>Upload or manage photos for this farm</CardDescription>
+        <CardTitle>फार्मको फोटोहरू</CardTitle>
+        <CardDescription>
+          फार्मको फोटोहरू अपलोड वा व्यवस्थापन गर्नुहोस्
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <FileUploader
@@ -202,20 +204,20 @@ export function FarmMediaSection({
           entityType="FARM"
           onUploadComplete={handleFileUploadComplete}
           onUploadError={(error) =>
-            toast.error(`Upload error: ${error.message}`)
+            toast.error(`अपलोड त्रुटि: ${error.message}`)
           }
         />
 
         {loadingUrls && (
-          <p className="text-sm text-muted-foreground">Loading photos...</p>
+          <p className="text-sm text-muted-foreground">फोटोहरू लोड हुँदैछ...</p>
         )}
 
         {mediaFiles.length === 0 && !loadingUrls && (
           <div className="text-center py-12 text-muted-foreground mt-6">
             <Sprout className="h-20 w-20 mx-auto opacity-10 mb-4" />
-            <p>No photos found</p>
+            <p>कुनै फोटो फेला परेन</p>
             <p className="text-sm mt-2">
-              Please use the upload button above to add photos
+              कृपया माथिको अपलोड बटन प्रयोग गरेर फोटोहरू थप्नुहोस्
             </p>
           </div>
         )}
@@ -249,7 +251,7 @@ export function FarmMediaSection({
                         size="sm"
                         onClick={() => handleSetFilePrimary(file.id)}
                       >
-                        Set as primary
+                        प्राथमिक
                       </Button>
                     )}
                     <Button
@@ -264,7 +266,7 @@ export function FarmMediaSection({
 
                 {file.isPrimary && (
                   <Badge className="absolute top-2 right-2" variant="secondary">
-                    Primary
+                    प्राथमिक
                   </Badge>
                 )}
               </div>

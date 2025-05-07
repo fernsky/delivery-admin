@@ -19,7 +19,7 @@ interface SEOFieldsProps {
 export function SEOFields({ form }: SEOFieldsProps) {
   return (
     <div className="space-y-6">
-      <div className="text-lg font-medium">SEO Information</div>
+      <div className="text-lg font-medium">SEO जानकारी</div>
       <FormField
         control={form.control}
         name="metaTitle"
@@ -30,7 +30,7 @@ export function SEOFields({ form }: SEOFieldsProps) {
               <Input {...field} placeholder="Meta title" />
             </FormControl>
             <FormDescription>
-              Title that appears in search engine results and browser tabs
+              खोज इन्जिनको नतिजा र ब्राउजरको ट्याबमा देखिने शीर्षक
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -47,8 +47,7 @@ export function SEOFields({ form }: SEOFieldsProps) {
               <Textarea {...field} placeholder="Meta description" rows={3} />
             </FormControl>
             <FormDescription>
-              Brief description that appears in search engine results (150-160
-              characters)
+              खोज इन्जिनको नतिजामा देखिने छोटो विवरण (१५०-१६० अक्षरहरू)
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -65,7 +64,7 @@ export function SEOFields({ form }: SEOFieldsProps) {
               <Input {...field} placeholder="Keywords separated by commas" />
             </FormControl>
             <FormDescription>
-              Important keywords for search engines (separated by commas)
+              खोज इन्जिनको लागि महत्वपूर्ण शब्दहरू (अल्पविराम द्वारा छुट्याइएको)
             </FormDescription>
             <FormMessage />
           </FormItem>
