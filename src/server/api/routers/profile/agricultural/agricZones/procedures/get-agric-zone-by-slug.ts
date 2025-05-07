@@ -103,7 +103,7 @@ export const getAgricZoneBySlug = publicProcedure
         .where(
           and(
             eq(entityMedia.entityId, processedZone.id),
-            eq(entityMedia.entityType, "AGRIC_ZONE"),
+            eq(entityMedia.entityType, "AGRIC_ZONE" as any),
           ),
         )
         .orderBy(entityMedia.isPrimary, entityMedia.displayOrder);

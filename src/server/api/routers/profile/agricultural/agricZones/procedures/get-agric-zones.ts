@@ -238,7 +238,7 @@ export const getAllAgricZones = publicProcedure
           .where(
             and(
               inArray(entityMedia.entityId, zoneIds),
-              eq(entityMedia.entityType, "AGRIC_ZONE"),
+              eq(entityMedia.entityType, "AGRIC_ZONE" as any),
               eq(entityMedia.isPrimary, true),
             ),
           );

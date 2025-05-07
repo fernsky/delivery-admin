@@ -31,7 +31,7 @@ export const deleteAgricZone = protectedProcedure
         .where(
           and(
             eq(entityMedia.entityId, input),
-            eq(entityMedia.entityType, "AGRIC_ZONE"),
+            eq(entityMedia.entityType, "AGRIC_ZONE" as any),
           ),
         );
 
