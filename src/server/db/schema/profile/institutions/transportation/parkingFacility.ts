@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
+import { drainageSystemEnum } from "./common";
 import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define parking facility type enum
@@ -31,14 +32,6 @@ export const parkingConditionEnum = pgEnum("parking_condition", [
   "POOR",
   "VERY_POOR",
   "UNDER_CONSTRUCTION",
-]);
-
-// Define drainage system enum, reused from road
-export const drainageSystemEnum = pgEnum("drainage_system", [
-  "PROPER",
-  "PARTIAL",
-  "NONE",
-  "BLOCKED",
 ]);
 
 // ParkingFacility table

@@ -11,6 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
+import { ownershipTypeEnum } from "./common";
 import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define fish farm type enum
@@ -28,17 +29,6 @@ export const fishFarmTypeEnum = pgEnum("fish_farm_type", [
   "RESEARCH_FACILITY",
   "MIXED",
   "OTHER",
-]);
-
-// Define ownership type enum
-export const ownershipTypeEnum = pgEnum("fish_farm_ownership_type", [
-  "PRIVATE",
-  "GOVERNMENT",
-  "COMMUNITY",
-  "COOPERATIVE",
-  "PUBLIC_PRIVATE_PARTNERSHIP",
-  "NGO_MANAGED",
-  "MIXED",
 ]);
 
 // Define water source enum

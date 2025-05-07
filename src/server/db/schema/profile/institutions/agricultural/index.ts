@@ -1,3 +1,4 @@
+export * from "./common";
 export * from "./agricZones";
 export * from "./grasslands";
 export * from "./grazingAreas";

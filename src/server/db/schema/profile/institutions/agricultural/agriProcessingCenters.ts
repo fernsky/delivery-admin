@@ -11,6 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
+import { ownershipTypeEnum } from "./common";
 import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define center type enum
@@ -45,17 +46,6 @@ export const processingLevelEnum = pgEnum("processing_level", [
   "MINIMAL_PROCESSING",
   "COMPREHENSIVE_PROCESSING",
   "NOT_APPLICABLE",
-]);
-
-// Define ownership type enum
-export const ownershipTypeEnum = pgEnum("ownership_type", [
-  "GOVERNMENT",
-  "PRIVATE",
-  "COOPERATIVE",
-  "COMMUNITY",
-  "PUBLIC_PRIVATE_PARTNERSHIP",
-  "NGO_MANAGED",
-  "MIXED",
 ]);
 
 // Agricultural Processing Center table

@@ -224,8 +224,8 @@ export type NewHighway = typeof highway.$inferInsert;
 export type LandUse = typeof landUse.$inferSelect;
 export type NewLandUse = typeof landUse.$inferInsert;
 
-export type Road = typeof roads.$inferSelect;
-export type NewRoad = typeof roads.$inferInsert;
+// export type Road = typeof roads.$inferSelect;
+// export type NewRoad = typeof roads.$inferInsert;
 
 export type Slope = typeof slope.$inferSelect;
 export type NewSlope = typeof slope.$inferInsert;
