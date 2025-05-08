@@ -184,6 +184,11 @@ const menuConfig: Menu[] = [
         label: "ऋणको प्रयोग",
         roles: ["admin", "superadmin"],
       },
+          {
+        href: "/dashboard/digital-profile/economics/ward-wise-trained-population",
+        label: "तालिम प्राप्त जनसंख्या",
+        roles: ["admin", "superadmin"],
+      },
     ],
   },
 

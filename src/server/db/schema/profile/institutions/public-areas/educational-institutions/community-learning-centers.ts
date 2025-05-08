@@ -13,8 +13,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
-import { generateSlug } from "@/server/utils/slug-helpers";
-import { buildingConditionEnum, facilityStatusEnum } from "../../../schools";
+import { facilityStatusEnum } from "./schools";
+import { buildingConditionEnum } from "../government-offices/municipality-offices";
 
 // Define community learning center type enum
 export const clcTypeEnum = pgEnum("clc_type", [
