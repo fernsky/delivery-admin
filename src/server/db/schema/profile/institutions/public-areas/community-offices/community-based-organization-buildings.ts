@@ -20,7 +20,7 @@ import {
   accessibilityLevelEnum,
 } from "../../common";
 import {
-  constructionMaterialEnum,
+  buildingConstructionMaterialEnum,
   managementTypeEnum,
 } from "./community-buildings";
 
@@ -128,7 +128,9 @@ export const communityBasedOrganizationBuilding = pgTable(
     totalAreaSqm: decimal("total_area_sq_m", { precision: 10, scale: 2 }),
     buildingCondition: buildingConditionEnum("building_condition"),
     constructionYear: integer("construction_year"),
-    constructionMaterial: constructionMaterialEnum("construction_material"),
+    constructionMaterial: buildingConstructionMaterialEnum(
+      "construction_material",
+    ),
     lastRenovatedYear: integer("last_renovated_year"),
     totalFloors: integer("total_floors"),
     totalRooms: integer("total_rooms"),

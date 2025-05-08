@@ -14,13 +14,15 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
-import { buildingConditionEnum } from "../government-offices/municipality-offices";
 import {
-  constructionMaterialEnum,
+  buildingConstructionMaterialEnum,
   managementTypeEnum,
-  usageFrequencyEnum,
-  accessibilityLevelEnum,
 } from "./community-buildings";
+import {
+  accessibilityLevelEnum,
+  buildingConditionEnum,
+  usageFrequencyEnum,
+} from "../../common";
 
 // Define women's group building type enum
 export const womensGroupBuildingTypeEnum = pgEnum(
@@ -105,7 +107,9 @@ export const womensGroupBuilding = pgTable("womens_group_building", {
   totalAreaSqm: decimal("total_area_sq_m", { precision: 10, scale: 2 }),
   buildingCondition: buildingConditionEnum("building_condition"),
   constructionYear: integer("construction_year"),
-  constructionMaterial: constructionMaterialEnum("construction_material"),
+  constructionMaterial: buildingConstructionMaterialEnum(
+    "construction_material",
+  ),
   lastRenovatedYear: integer("last_renovated_year"),
   totalFloors: integer("total_floors"),
   totalRooms: integer("total_rooms"),
