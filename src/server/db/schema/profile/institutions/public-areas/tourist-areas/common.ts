@@ -43,15 +43,6 @@ export const tourismSeasonEnum = pgEnum("tourism_season", [
   "SPECIFIC_MONTHS",
 ]);
 
-export const accessibilityLevelEnum = pgEnum("accessibility_level", [
-  "EASILY_ACCESSIBLE",
-  "MODERATELY_ACCESSIBLE",
-  "DIFFICULT_ACCESS",
-  "CHALLENGING_ACCESS",
-  "RESTRICTED_ACCESS",
-  "ACCESSIBLE_FOR_DISABLED",
-]);
-
 export const maintenanceStatusEnum = pgEnum("maintenance_status", [
   "EXCELLENT",
   "GOOD",

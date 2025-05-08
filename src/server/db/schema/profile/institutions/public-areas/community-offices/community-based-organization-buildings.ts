@@ -14,12 +14,14 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
-import { buildingConditionEnum } from "../government-offices/municipality-offices";
+import {
+  buildingConditionEnum,
+  usageFrequencyEnum,
+  accessibilityLevelEnum,
+} from "../../common";
 import {
   constructionMaterialEnum,
   managementTypeEnum,
-  usageFrequencyEnum,
-  accessibilityLevelEnum,
 } from "./community-buildings";
 
 // Define CBO building type enum

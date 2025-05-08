@@ -40,15 +40,18 @@ export const healthPostConditionEnum = pgEnum("health_post_condition", [
 ]);
 
 // Define service availability enum
-export const serviceAvailabilityEnum = pgEnum("service_availability", [
-  "DAILY",
-  "WEEKDAYS_ONLY",
-  "SPECIFIC_DAYS",
-  "EMERGENCY_ONLY",
-  "SEASONAL",
-  "LIMITED_HOURS",
-  "TWENTY_FOUR_HOURS",
-]);
+export const healthPostServiceAvailabilityEnum = pgEnum(
+  "service_availability",
+  [
+    "DAILY",
+    "WEEKDAYS_ONLY",
+    "SPECIFIC_DAYS",
+    "EMERGENCY_ONLY",
+    "SEASONAL",
+    "LIMITED_HOURS",
+    "TWENTY_FOUR_HOURS",
+  ],
+);
 
 // Define management type enum
 export const healthPostManagementEnum = pgEnum("health_post_management", [
@@ -99,7 +102,9 @@ export const healthPost = pgTable("health_post", {
   parentFacilityId: varchar("parent_facility_id", { length: 36 }), // Linked to district hospital or PHC
   catchmentPopulation: integer("catchment_population"),
   catchmentAreaDescription: text("catchment_area_description"),
-  serviceAvailability: serviceAvailabilityEnum("service_availability"),
+  serviceAvailability: healthPostServiceAvailabilityEnum(
+    "service_availability",
+  ),
 
   // Leadership and management
   inChargeTitle: text("in_charge_title"), // e.g., "Health Assistant"

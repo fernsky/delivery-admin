@@ -76,7 +76,7 @@ export const automationLevelEnum = pgEnum("automation_level", [
 ]);
 
 // Define usage frequency enum
-export const usageFrequencyEnum = pgEnum("usage_frequency", [
+export const libraryUsageFrequencyEnum = pgEnum("usage_frequency", [
   "VERY_HIGH", // > 100 users daily
   "HIGH", // 50-100 users daily
   "MODERATE", // 20-50 users daily
@@ -299,7 +299,7 @@ export const library = pgTable("library", {
   averageDailyVisitorsCount: integer("average_daily_visitors_count"),
   peakHourVisitorsCount: integer("peak_hour_visitors_count"),
   annualVisitorsCount: integer("annual_visitors_count"),
-  usageFrequency: usageFrequencyEnum("usage_frequency"),
+  usageFrequency: libraryUsageFrequencyEnum("usage_frequency"),
   userSatisfactionLevel: text("user_satisfaction_level"),
   collectionUsageRate: decimal("collection_usage_rate", {
     precision: 5,

@@ -14,7 +14,11 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
-import { buildingConditionEnum } from "../government-offices/municipality-offices";
+import {
+  buildingConditionEnum,
+  usageFrequencyEnum,
+  accessibilityLevelEnum,
+} from "../../common";
 
 // Define community building type enum
 export const communityBuildingTypeEnum = pgEnum("community_building_type", [
@@ -41,27 +45,6 @@ export const managementTypeEnum = pgEnum("management_type", [
   "USER_COMMITTEE_MANAGED",
   "JOINT_MANAGEMENT",
   "OTHER",
-]);
-
-// Define usage frequency enum
-export const usageFrequencyEnum = pgEnum("usage_frequency", [
-  "DAILY",
-  "SEVERAL_TIMES_WEEKLY",
-  "WEEKLY",
-  "MONTHLY",
-  "OCCASIONALLY",
-  "SEASONALLY",
-  "RARELY",
-  "NOT_IN_USE",
-]);
-
-// Define accessibility level enum
-export const accessibilityLevelEnum = pgEnum("accessibility_level", [
-  "HIGHLY_ACCESSIBLE",
-  "MODERATELY_ACCESSIBLE",
-  "LIMITED_ACCESSIBILITY",
-  "POORLY_ACCESSIBLE",
-  "NOT_ACCESSIBLE",
 ]);
 
 // Define construction material enum
