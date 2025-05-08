@@ -13,12 +13,9 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
-import {
-  mineOperationalStatusEnum,
-  ownershipTypeEnum,
-  environmentalImpactLevelEnum,
-  safetyRecordEnum,
-} from "./metal-mines";
+import { mineOperationalStatusEnum, safetyRecordEnum } from "./metal-mines";
+import { ownershipTypeEnum } from "../agricultural";
+import { environmentalImpactLevelEnum } from "../common";
 
 // Define quarry material type enum
 export const quarryMaterialTypeEnum = pgEnum("quarry_material_type", [

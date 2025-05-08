@@ -1,4 +1,4 @@
-import { pgTable } from "../../../../../schema/basic";
+import { pgTable } from "../../../../schema/basic";
 import {
   integer,
   timestamp,
@@ -12,8 +12,9 @@ import {
   date,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { geometry } from "../../../../../geographical";
+import { geometry } from "../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
+import { establishmentStatusEnum } from "./furniture-industry";
 
 // Define textile industry type enum
 export const textileIndustryTypeEnum = pgEnum("textile_industry_type", [
