@@ -1,5 +1,3 @@
-export * from "./industries";
-export * from "./traditional-workshops";
 export * from "./mills";
 export * from "./brick-industry";
 export * from "./furniture-industry";
@@ -7,3 +5,5 @@ export * from "./dairy-industry";
 export * from "./textile-industry";
 export * from "./research-centers";
 export * from "./government-announced-industrial-sectors";
+export * from "./traditional-workshops";
+export * from "./industries";
