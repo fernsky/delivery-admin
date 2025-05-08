@@ -79,7 +79,7 @@ export const emergencyServiceLevelEnum = pgEnum("emergency_service_level", [
 ]);
 
 // Define accreditation status enum
-export const accreditationStatusEnum = pgEnum("accreditation_status", [
+const accreditationStatusEnum = pgEnum("accreditation_status", [
   "FULLY_ACCREDITED",
   "PARTIALLY_ACCREDITED",
   "IN_PROCESS",

@@ -71,16 +71,19 @@ export const floodRiskLevelEnum = pgEnum("flood_risk_level", [
 ]);
 
 // Define conservation status enum
-export const conservationStatusEnum = pgEnum("conservation_status", [
-  "PROTECTED",
-  "CONSERVATION_AREA",
-  "MANAGED",
-  "UNPROTECTED",
-  "THREATENED",
-  "CRITICAL",
-  "RESTORED",
-  "UNKNOWN",
-]);
+export const waterBodyConservationStatusEnum = pgEnum(
+  "water_body_conservation_status",
+  [
+    "PROTECTED",
+    "CONSERVATION_AREA",
+    "MANAGED",
+    "UNPROTECTED",
+    "THREATENED",
+    "CRITICAL",
+    "RESTORED",
+    "UNKNOWN",
+  ],
+);
 
 // River table
 export const river = pgTable("river", {
@@ -178,7 +181,7 @@ export const river = pgTable("river", {
     precision: 6,
     scale: 2,
   }),
-  conservationStatus: conservationStatusEnum("conservation_status"),
+  conservationStatus: waterBodyConservationStatusEnum("conservation_status"),
   conservationEfforts: text("conservation_efforts"),
   conservedByOrganization: text("conserved_by_organization"),
   restorationProjects: text("restoration_projects"),

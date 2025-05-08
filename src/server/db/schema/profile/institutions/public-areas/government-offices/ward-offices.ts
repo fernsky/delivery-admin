@@ -14,8 +14,8 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
+import { buildingConditionEnum } from "../../common";
 import {
-  buildingConditionEnum,
   digitalInfrastructureLevelEnum,
   servicePerformanceEnum,
 } from "./municipality-offices";

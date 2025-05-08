@@ -1,4 +1,5 @@
 import { pgEnum } from "drizzle-orm/pg-core";
+import { accessibilityLevelEnum } from "../../common";
 
 // Common enums for tourist attractions
 export const attractionOwnershipEnum = pgEnum("attraction_ownership", [
@@ -43,15 +44,6 @@ export const tourismSeasonEnum = pgEnum("tourism_season", [
   "SPECIFIC_MONTHS",
 ]);
 
-export const accessibilityLevelEnum = pgEnum("accessibility_level", [
-  "EASILY_ACCESSIBLE",
-  "MODERATELY_ACCESSIBLE",
-  "DIFFICULT_ACCESS",
-  "CHALLENGING_ACCESS",
-  "RESTRICTED_ACCESS",
-  "ACCESSIBLE_FOR_DISABLED",
-]);
-
 export const maintenanceStatusEnum = pgEnum("maintenance_status", [
   "EXCELLENT",
   "GOOD",
@@ -86,6 +78,8 @@ export const visitorExperienceLevelEnum = pgEnum("visitor_experience_level", [
   "BELOW_AVERAGE",
   "POOR",
 ]);
+
+export { accessibilityLevelEnum } from "../../common";
 
 // Export the slug generation helper for use in procedures
 export { generateSlug } from "@/server/utils/slug-helpers";

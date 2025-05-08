@@ -47,7 +47,7 @@ export const facilityAdequacyEnum = pgEnum("facility_adequacy", [
 ]);
 
 // Define service availability enum
-export const serviceAvailabilityEnum = pgEnum("service_availability", [
+export const bhuServiceAvailabilityEnum = pgEnum("service_availability", [
   "ALWAYS_AVAILABLE",
   "REGULARLY_AVAILABLE",
   "OCCASIONALLY_AVAILABLE",
@@ -56,7 +56,7 @@ export const serviceAvailabilityEnum = pgEnum("service_availability", [
 ]);
 
 // Define water source type enum
-export const waterSourceTypeEnum = pgEnum("water_source_type", [
+const waterSourceTypeEnum = pgEnum("water_source_type", [
   "PIPED_WATER",
   "TUBE_WELL",
   "PROTECTED_WELL",
@@ -329,7 +329,7 @@ export const basicHealthUnit = pgTable("basic_health_unit", {
   catchmentArea: geometry("catchment_area", { type: "MultiPolygon" }),
 
   // Status and metadata
-  serviceStatus: serviceAvailabilityEnum("service_status").default(
+  serviceStatus: bhuServiceAvailabilityEnum("service_status").default(
     "REGULARLY_AVAILABLE",
   ),
   isActive: boolean("is_active").default(true),

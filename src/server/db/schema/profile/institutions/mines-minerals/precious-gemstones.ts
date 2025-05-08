@@ -16,10 +16,10 @@ import { generateSlug } from "@/server/utils/slug-helpers";
 import {
   mineOperationalStatusEnum,
   miningMethodEnum,
-  ownershipTypeEnum,
-  environmentalImpactLevelEnum,
   safetyRecordEnum,
 } from "./metal-mines";
+import { ownershipTypeEnum } from "../agricultural";
+import { environmentalImpactLevelEnum } from "../common";
 
 // Define gemstone type enum
 export const gemstoneTypeEnum = pgEnum("gemstone_type", [

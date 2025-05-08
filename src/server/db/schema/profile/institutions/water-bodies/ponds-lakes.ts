@@ -16,7 +16,7 @@ import { generateSlug } from "@/server/utils/slug-helpers";
 import {
   waterQualityStatusEnum,
   pollutionLevelEnum,
-  conservationStatusEnum,
+  waterBodyConservationStatusEnum,
 } from "./rivers";
 
 // Define pond/lake type enum
@@ -168,7 +168,7 @@ export const pondLake = pgTable("pond_lake", {
   invasiveSpecies: text("invasive_species"),
   microbialDiversity: text("microbial_diversity"),
   shorelineVegetation: text("shoreline_vegetation"),
-  conservationStatus: conservationStatusEnum("conservation_status"),
+  conservationStatus: waterBodyConservationStatusEnum("conservation_status"),
   conservationEfforts: text("conservation_efforts"),
   conservedByOrganization: text("conserved_by_organization"),
   restorationProjects: text("restoration_projects"),

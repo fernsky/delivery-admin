@@ -13,6 +13,7 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
+import { environmentalImpactLevelEnum } from "../common";
 
 // Define landfill site type enum
 export const landfillSiteTypeEnum = pgEnum("landfill_site_type", [
@@ -61,12 +62,6 @@ export const operationFrequencyEnum = pgEnum("operation_frequency", [
   "ON_DEMAND",
   "IRREGULAR",
 ]);
-
-// Define environmental impact level enum
-export const environmentalImpactLevelEnum = pgEnum(
-  "environmental_impact_level",
-  ["HIGH", "MODERATE", "LOW", "MINIMAL", "UNKNOWN", "MONITORED"],
-);
 
 // Define liner type enum
 export const linerTypeEnum = pgEnum("liner_type", [

@@ -60,7 +60,7 @@ export const serviceAvailabilityEnum = pgEnum("service_availability", [
 ]);
 
 // Define water source enum
-export const waterSourceEnum = pgEnum("water_source", [
+export const phcWaterSourceEnum = pgEnum("phc_water_source", [
   "PIPED_WATER",
   "WELL",
   "PROTECTED_SPRING",
@@ -174,7 +174,7 @@ export const primaryHealthCenter = pgTable("primary_health_center", {
   powerBackupType: text("power_backup_type"), // E.g., "Generator", "Solar", "Inverter"
   powerAvailabilityHoursPerDay: integer("power_availability_hours_per_day"),
   hasWaterSupply: boolean("has_water_supply").default(true),
-  waterSource: waterSourceEnum("water_source"),
+  waterSource: phcWaterSourceEnum("water_source"),
   waterAvailability: serviceAvailabilityEnum("water_availability"),
   hasHandwashingStations: boolean("has_handwashing_stations").default(false),
   handwashingStationCount: integer("handwashing_station_count"),

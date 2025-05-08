@@ -14,10 +14,9 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
-import {
-  buildingConditionEnum,
-  digitalInfrastructureLevelEnum,
-} from "./municipality-offices";
+import { buildingConditionEnum } from "../../common";
+
+import { digitalInfrastructureLevelEnum } from "./municipality-offices";
 
 // Define survey office type enum
 export const surveyOfficeTypeEnum = pgEnum("survey_office_type", [
@@ -32,7 +31,7 @@ export const surveyOfficeTypeEnum = pgEnum("survey_office_type", [
 ]);
 
 // Define service capacity enum
-export const serviceCapacityEnum = pgEnum("service_capacity", [
+const serviceCapacityEnum = pgEnum("service_capacity", [
   "HIGH",
   "MEDIUM",
   "LOW",
@@ -40,7 +39,7 @@ export const serviceCapacityEnum = pgEnum("service_capacity", [
 ]);
 
 // Define equipment condition enum
-export const equipmentConditionEnum = pgEnum("equipment_condition", [
+const equipmentConditionEnum = pgEnum("equipment_condition", [
   "EXCELLENT",
   "GOOD",
   "FAIR",
@@ -59,7 +58,7 @@ export const accuracyLevelEnum = pgEnum("accuracy_level", [
 ]);
 
 // Define service efficiency enum
-export const serviceEfficiencyEnum = pgEnum("service_efficiency", [
+const serviceEfficiencyEnum = pgEnum("service_efficiency", [
   "EXCELLENT",
   "GOOD",
   "SATISFACTORY",

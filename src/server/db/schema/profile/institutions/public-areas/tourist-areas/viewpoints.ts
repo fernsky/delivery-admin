@@ -42,14 +42,17 @@ export const viewQualityEnum = pgEnum("view_quality", [
 ]);
 
 // Define accessibility level enum
-export const accessibilityLevelEnum = pgEnum("accessibility_level", [
-  "VERY_EASY",
-  "EASY",
-  "MODERATE",
-  "DIFFICULT",
-  "VERY_DIFFICULT",
-  "SEASONAL_ACCESS",
-]);
+export const viewPointAccessibilityLevelEnum = pgEnum(
+  "view_point_accessibility_level",
+  [
+    "VERY_EASY",
+    "EASY",
+    "MODERATE",
+    "DIFFICULT",
+    "VERY_DIFFICULT",
+    "SEASONAL_ACCESS",
+  ],
+);
 
 // Define development status enum
 export const developmentStatusEnum = pgEnum("development_status", [
@@ -100,7 +103,7 @@ export const viewpoint = pgTable("viewpoint", {
   weatherConsiderations: text("weather_considerations"),
 
   // Access information
-  accessibilityLevel: accessibilityLevelEnum("accessibility_level"),
+  accessibilityLevel: viewPointAccessibilityLevelEnum("accessibility_level"),
   hikingTimeMinutes: integer("hiking_time_minutes"),
   trailCondition: text("trail_condition"),
   trailLength: decimal("trail_length_km", { precision: 6, scale: 2 }),

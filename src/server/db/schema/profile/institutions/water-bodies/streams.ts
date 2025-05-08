@@ -17,7 +17,7 @@ import {
   waterQualityStatusEnum,
   pollutionLevelEnum,
   floodRiskLevelEnum,
-  conservationStatusEnum,
+  waterBodyConservationStatusEnum,
 } from "./rivers";
 
 // Define stream type enum
@@ -102,7 +102,7 @@ export const stream = pgTable("stream", {
     precision: 6,
     scale: 2,
   }),
-  conservationStatus: conservationStatusEnum("conservation_status"),
+  conservationStatus: waterBodyConservationStatusEnum("conservation_status"),
   conservationEfforts: text("conservation_efforts"),
   conservedByOrganization: text("conserved_by_organization"),
   restorationProjects: text("restoration_projects"),

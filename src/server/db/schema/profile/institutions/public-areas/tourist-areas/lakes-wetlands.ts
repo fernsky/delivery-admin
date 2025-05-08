@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
+import { waterQualityEnum } from "../../common";
 import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define lake/wetland type enum
@@ -30,7 +31,7 @@ export const lakeWetlandTypeEnum = pgEnum("lake_wetland_type", [
 ]);
 
 // Define water source enum
-export const waterSourceEnum = pgEnum("water_source", [
+export const wetlandWaterSourceEnum = pgEnum("wetland_water_source", [
   "RIVER_FED",
   "SPRING_FED",
   "RAIN_FED",
@@ -53,17 +54,6 @@ export const conservationStatusEnum = pgEnum("conservation_status", [
   "UNPROTECTED",
   "THREATENED",
   "ENDANGERED",
-]);
-
-// Define water quality enum
-export const waterQualityEnum = pgEnum("water_quality", [
-  "EXCELLENT",
-  "GOOD",
-  "FAIR",
-  "POOR",
-  "VERY_POOR",
-  "VARIABLE",
-  "UNKNOWN",
 ]);
 
 // Define tourism potential enum
@@ -101,7 +91,7 @@ export const lakeWetland = pgTable("lake_wetland", {
   averageDepthM: decimal("average_depth_m", { precision: 6, scale: 2 }),
   shorelineKm: decimal("shoreline_km", { precision: 6, scale: 2 }),
   elevationM: decimal("elevation_m", { precision: 6, scale: 1 }),
-  waterSource: waterSourceEnum("water_source"),
+  waterSource: wetlandWaterSourceEnum("water_source"),
   waterColor: text("water_color"),
   waterQuality: waterQualityEnum("water_quality"),
   waterQualityDetails: text("water_quality_details"),

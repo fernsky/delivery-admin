@@ -14,6 +14,7 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
+import { buildingConditionEnum } from "../../common";
 
 // Define municipality classification enum
 export const municipalityClassificationEnum = pgEnum(
@@ -25,18 +26,6 @@ export const municipalityClassificationEnum = pgEnum(
     "RURAL_MUNICIPALITY",
   ],
 );
-
-// Define building condition enum
-export const buildingConditionEnum = pgEnum("building_condition", [
-  "EXCELLENT",
-  "GOOD",
-  "FAIR",
-  "NEEDS_MAINTENANCE",
-  "POOR",
-  "UNDER_CONSTRUCTION",
-  "UNDER_RENOVATION",
-  "TEMPORARY",
-]);
 
 // Define office digital infrastructure level
 export const digitalInfrastructureLevelEnum = pgEnum(

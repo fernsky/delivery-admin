@@ -62,7 +62,7 @@ export const clinicBuildingConditionEnum = pgEnum("clinic_building_condition", [
 ]);
 
 // Define service availability enum
-export const serviceAvailabilityEnum = pgEnum("service_availability", [
+export const clinicServiceAvailabilityEnum = pgEnum("service_availability", [
   "ALWAYS_AVAILABLE",
   "REGULAR_HOURS",
   "SCHEDULED_DAYS",

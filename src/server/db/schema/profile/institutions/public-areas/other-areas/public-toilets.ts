@@ -14,26 +14,7 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
-
-// Define building condition enum
-export const buildingConditionEnum = pgEnum("building_condition", [
-  "EXCELLENT",
-  "GOOD",
-  "FAIR",
-  "POOR",
-  "CRITICAL",
-  "UNDER_CONSTRUCTION",
-  "UNDER_RENOVATION",
-  "ABANDONED",
-]);
-
-// Define accessibility level enum
-export const accessibilityLevelEnum = pgEnum("accessibility_level", [
-  "FULLY_ACCESSIBLE",
-  "PARTIALLY_ACCESSIBLE",
-  "NOT_ACCESSIBLE",
-  "UNDER_MODIFICATION_FOR_ACCESSIBILITY",
-]);
+import { buildingConditionEnum, accessibilityLevelEnum } from "../../common";
 
 // Define public toilet type enum
 export const publicToiletTypeEnum = pgEnum("public_toilet_type", [

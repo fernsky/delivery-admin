@@ -192,16 +192,16 @@ export type NewMunicipalityBoundary =
 export type Health = typeof health.$inferSelect;
 export type NewHealth = typeof health.$inferInsert;
 
-export type MunicipalityOffice = typeof municipalityOffices.$inferSelect;
-export type NewMunicipalityOffice = typeof municipalityOffices.$inferInsert;
+// export type MunicipalityOffice = typeof municipalityOffices.$inferSelect;
+// export type NewMunicipalityOffice = typeof municipalityOffices.$inferInsert;
 
 export type PhysicalInfrastructure =
   typeof physicalInfrastructures.$inferSelect;
 export type NewPhysicalInfrastructure =
   typeof physicalInfrastructures.$inferInsert;
 
-export type School = typeof schools.$inferSelect;
-export type NewSchool = typeof schools.$inferInsert;
+// export type School = typeof schools.$inferSelect;
+// export type NewSchool = typeof schools.$inferInsert;
 
 export type TouristPlace = typeof touristPlaces.$inferSelect;
 export type NewTouristPlace = typeof touristPlaces.$inferInsert;
@@ -209,8 +209,8 @@ export type NewTouristPlace = typeof touristPlaces.$inferInsert;
 export type WardBoundary = typeof wardBoundaries.$inferSelect;
 export type NewWardBoundary = typeof wardBoundaries.$inferInsert;
 
-export type WardOffice = typeof wardOffices.$inferSelect;
-export type NewWardOffice = typeof wardOffices.$inferInsert;
+// export type WardOffice = typeof wardOffices.$inferSelect;
+// export type NewWardOffice = typeof wardOffices.$inferInsert;
 
 export type Aspect = typeof aspect.$inferSelect;
 export type NewAspect = typeof aspect.$inferInsert;
@@ -230,8 +230,8 @@ export type NewLandUse = typeof landUse.$inferInsert;
 export type Slope = typeof slope.$inferSelect;
 export type NewSlope = typeof slope.$inferInsert;
 
-export type Spring = typeof springs.$inferSelect;
-export type NewSpring = typeof springs.$inferInsert;
+// export type Spring = typeof springs.$inferSelect;
+// export type NewSpring = typeof springs.$inferInsert;
 
 export type Village = typeof villages.$inferSelect;
 export type NewVillage = typeof villages.$inferInsert;
