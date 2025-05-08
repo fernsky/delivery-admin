@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
+import { waterQualityEnum } from "../common";
 import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define drinking water source type enum
@@ -41,16 +42,6 @@ export const protectionStatusEnum = pgEnum("protection_status", [
   "MINIMAL_PROTECTION",
   "NO_PROTECTION",
   "UNDER_DEVELOPMENT",
-]);
-
-// Define water quality enum
-export const waterQualityEnum = pgEnum("water_quality", [
-  "EXCELLENT",
-  "GOOD",
-  "FAIR",
-  "POOR",
-  "CONTAMINATED",
-  "UNTESTED",
 ]);
 
 // Define water source reliability enum

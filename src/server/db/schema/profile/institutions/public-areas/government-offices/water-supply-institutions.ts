@@ -13,6 +13,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
+import { waterQualityEnum } from "../../common";
 import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define water supply institution type enum
@@ -62,16 +63,6 @@ export const distributionSystemEnum = pgEnum("distribution_system", [
   "PUBLIC_TAPS",
   "DIRECT_CONNECTION",
   "OTHER",
-]);
-
-// Define water quality enum
-export const waterQualityEnum = pgEnum("water_quality", [
-  "EXCELLENT",
-  "GOOD",
-  "ACCEPTABLE",
-  "POOR",
-  "VERY_POOR",
-  "UNTESTED",
 ]);
 
 // Define service regularity enum

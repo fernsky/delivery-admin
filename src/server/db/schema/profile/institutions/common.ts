@@ -32,3 +32,13 @@ export const usageFrequencyEnum = pgEnum("usage_frequency", [
   "RARELY",
   "NOT_IN_USE",
 ]);
+
+// Define water quality enum
+export const waterQualityEnum = pgEnum("water_quality", [
+  "EXCELLENT",
+  "GOOD",
+  "ACCEPTABLE",
+  "POOR",
+  "VERY_POOR",
+  "UNTESTED",
+]);

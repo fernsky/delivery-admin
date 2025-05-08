@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
+import { waterQualityEnum } from "../common";
 import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define spring type enum
@@ -39,16 +40,6 @@ export const springFlowConsistencyEnum = pgEnum("spring_flow_consistency", [
   "EPHEMERAL", // Flows only after rainfall
   "VARIABLE", // Flow varies significantly
   "UNKNOWN",
-]);
-
-// Define water quality enum
-export const waterQualityEnum = pgEnum("water_quality", [
-  "EXCELLENT",
-  "GOOD",
-  "FAIR",
-  "POOR",
-  "VERY_POOR",
-  "UNTESTED",
 ]);
 
 // Define current status enum

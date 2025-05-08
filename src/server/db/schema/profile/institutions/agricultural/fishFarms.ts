@@ -32,7 +32,7 @@ export const fishFarmTypeEnum = pgEnum("fish_farm_type", [
 ]);
 
 // Define water source enum
-export const waterSourceEnum = pgEnum("water_source_type", [
+export const fishFarmWaterSourceEnum = pgEnum("fish_water_source_type", [
   "RIVER",
   "STREAM",
   "SPRING",
@@ -115,7 +115,7 @@ export const fishFarm = pgTable("fish_farm", {
     precision: 12,
     scale: 2,
   }),
-  waterSource: waterSourceEnum("water_source"),
+  waterSource: fishFarmWaterSourceEnum("water_source"),
   waterSourceDetails: text("water_source_details"),
   waterAvailabilityIssues: text("water_availability_issues"),
   hasWaterQualityMonitoring: boolean("has_water_quality_monitoring").default(
