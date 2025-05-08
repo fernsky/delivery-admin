@@ -8,6 +8,10 @@ import { wardWiseAnnualIncomeSustenanceRouter } from "./ward-wise-annual-income-
 import { wardWiseHouseholdsOnLoanRouter } from "./ward-wise-households-on-loan.procedure";
 import { wardWiseHouseholdsLoanUseRouter } from "./ward-wise-households-loan-use.procedure";
 import {wardWiseTrainedPopulationRouter} from "./ward-wise-trained-population.procedure"
+import { wardWiseMajorSkillsRouter } from "./ward-wise-major-skills.procedure";
+import {exportedProductsRouter} from "./exported-products.procedure"
+import { importedProductsRouter } from "./imported-products.procedure";
+import { wardWiseHouseholdLandPossessionsRouter } from "./ward-wise-household-land-possessions.procedure";
 
 export const economicsRouter = createTRPCRouter({
   wardAgeGenderWiseEconomicallyActivePopulation: wardAgeGenderWiseEconomicallyActivePopulationRouter,
@@ -19,6 +23,10 @@ export const economicsRouter = createTRPCRouter({
   wardWiseHouseholdsOnLoan: wardWiseHouseholdsOnLoanRouter,
   wardWiseHouseholdsLoanUse: wardWiseHouseholdsLoanUseRouter,
   wardWiseTrainedPopulation: wardWiseTrainedPopulationRouter,
+  wardWiseMajorSkills: wardWiseMajorSkillsRouter,
+  importedProducts: importedProductsRouter,
+  exportedProducts: exportedProductsRouter,
+  wardWiseHouseholdLandPossessions: wardWiseHouseholdLandPossessionsRouter
 });
 
 

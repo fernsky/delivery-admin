@@ -189,6 +189,26 @@ const menuConfig: Menu[] = [
         label: "तालिम प्राप्त जनसंख्या",
         roles: ["admin", "superadmin"],
       },
+           {
+        href: "/dashboard/digital-profile/economics/ward-wise-major-skills",
+        label: "प्रमुख सीप",
+        roles: ["admin", "superadmin"],
+      },
+        {
+        href: "/dashboard/digital-profile/economics/imported-products",
+        label: "आयातित उत्पादनहरू",
+        roles: ["admin", "superadmin"],
+      },
+        {
+        href: "/dashboard/digital-profile/economics/exported-products",
+        label: "निर्यातित उत्पादनहरू",
+        roles: ["admin", "superadmin"],
+      },
+        {
+        href: "/dashboard/digital-profile/economics/ward-wise-household-land-possessions",
+        label: "घरधुरी जग्गा स्वामित्व विवरण",
+        roles: ["admin", "superadmin"],
+      },
     ],
   },
 
