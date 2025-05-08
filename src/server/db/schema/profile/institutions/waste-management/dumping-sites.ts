@@ -1,4 +1,4 @@
-import { pgTable } from "../../../../../schema/basic";
+import { pgTable } from "../../../../schema/basic";
 import {
   integer,
   timestamp,
@@ -11,7 +11,7 @@ import {
   date,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { geometry } from "../../../../../geographical";
+import { geometry } from "../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
 import {
   wasteTypeEnum,

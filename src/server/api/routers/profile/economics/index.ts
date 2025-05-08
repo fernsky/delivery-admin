@@ -7,6 +7,7 @@ import { wardWiseRemittanceExpensesRouter } from "./ward-wise-remittance-expense
 import { wardWiseAnnualIncomeSustenanceRouter } from "./ward-wise-annual-income-sustenance.procedure";
 import { wardWiseHouseholdsOnLoanRouter } from "./ward-wise-households-on-loan.procedure";
 import { wardWiseHouseholdsLoanUseRouter } from "./ward-wise-households-loan-use.procedure";
+import {wardWiseTrainedPopulationRouter} from "./ward-wise-trained-population.procedure"
 
 export const economicsRouter = createTRPCRouter({
   wardAgeGenderWiseEconomicallyActivePopulation: wardAgeGenderWiseEconomicallyActivePopulationRouter,
@@ -17,5 +18,7 @@ export const economicsRouter = createTRPCRouter({
   wardWiseAnnualIncomeSustenance: wardWiseAnnualIncomeSustenanceRouter,
   wardWiseHouseholdsOnLoan: wardWiseHouseholdsOnLoanRouter,
   wardWiseHouseholdsLoanUse: wardWiseHouseholdsLoanUseRouter,
+  wardWiseTrainedPopulation: wardWiseTrainedPopulationRouter,
 });
+
 
