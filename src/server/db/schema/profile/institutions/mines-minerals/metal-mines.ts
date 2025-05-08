@@ -13,6 +13,7 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
+import { environmentalImpactLevelEnum } from "../common";
 
 // Define metal type enum
 export const metalTypeEnum = pgEnum("metal_type", [
@@ -77,7 +78,7 @@ export const oreGradeEnum = pgEnum("ore_grade", [
 ]);
 
 // Define ownership type enum
-export const ownershipTypeEnum = pgEnum("ownership_type", [
+export const mineOwnershipTypeEnum = pgEnum("ownership_type", [
   "GOVERNMENT",
   "PRIVATE",
   "PUBLIC_PRIVATE_PARTNERSHIP",
@@ -87,12 +88,6 @@ export const ownershipTypeEnum = pgEnum("ownership_type", [
   "COMMUNITY_OWNED",
   "OTHER",
 ]);
-
-// Define environmental impact level enum
-export const environmentalImpactLevelEnum = pgEnum(
-  "environmental_impact_level",
-  ["HIGH", "MEDIUM", "LOW", "NEGLIGIBLE", "UNKNOWN"],
-);
 
 // Define safety record enum
 export const safetyRecordEnum = pgEnum("safety_record", [
@@ -128,7 +123,7 @@ export const metalMine = pgTable("metal_mine", {
   oreGrade: oreGradeEnum("ore_grade"),
 
   // Ownership and management
-  ownershipType: ownershipTypeEnum("ownership_type").notNull(),
+  ownershipType: mineOwnershipTypeEnum("ownership_type").notNull(),
   ownerOrganization: text("owner_organization"),
   operatorOrganization: text("operator_organization"),
   licenseNumber: varchar("license_number", { length: 50 }),

@@ -16,7 +16,7 @@ import { waterQualityEnum } from "../common";
 import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define drinking water source type enum
-export const waterSourceTypeEnum = pgEnum("water_source_type", [
+export const drikingWaterSourceTypeEnum = pgEnum("drinking_water_source_type", [
   "SPRING",
   "STREAM",
   "RIVER",
@@ -36,13 +36,16 @@ export const waterSourceTypeEnum = pgEnum("water_source_type", [
 ]);
 
 // Define water source protection status enum
-export const protectionStatusEnum = pgEnum("protection_status", [
-  "FULLY_PROTECTED",
-  "PARTIALLY_PROTECTED",
-  "MINIMAL_PROTECTION",
-  "NO_PROTECTION",
-  "UNDER_DEVELOPMENT",
-]);
+export const waterSourceProtectionStatusEnum = pgEnum(
+  "water_source_protection_status",
+  [
+    "FULLY_PROTECTED",
+    "PARTIALLY_PROTECTED",
+    "MINIMAL_PROTECTION",
+    "NO_PROTECTION",
+    "UNDER_DEVELOPMENT",
+  ],
+);
 
 // Define water source reliability enum
 export const sourceReliabilityEnum = pgEnum("source_reliability", [
@@ -92,7 +95,7 @@ export const drinkingWaterSource = pgTable("drinking_water_source", {
   name: text("name").notNull(),
   slug: text("slug").notNull(), // For SEO-friendly URLs
   description: text("description"),
-  sourceType: waterSourceTypeEnum("source_type").notNull(),
+  sourceType: drikingWaterSourceTypeEnum("source_type").notNull(),
 
   // Location details
   wardNumber: integer("ward_number"),
@@ -149,7 +152,7 @@ export const drinkingWaterSource = pgTable("drinking_water_source", {
   treatmentSystemCondition: text("treatment_system_condition"),
 
   // Protection and conservation
-  protectionStatus: protectionStatusEnum("protection_status"),
+  protectionStatus: waterSourceProtectionStatusEnum("protection_status"),
   protectionMeasures: text("protection_measures"),
   hasSourceFencing: boolean("has_source_fencing").default(false),
   hasVegetationBuffer: boolean("has_vegetation_buffer").default(false),

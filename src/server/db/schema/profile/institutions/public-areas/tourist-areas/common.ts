@@ -1,4 +1,5 @@
 import { pgEnum } from "drizzle-orm/pg-core";
+import { accessibilityLevelEnum } from "../../common";
 
 // Common enums for tourist attractions
 export const attractionOwnershipEnum = pgEnum("attraction_ownership", [
@@ -77,6 +78,8 @@ export const visitorExperienceLevelEnum = pgEnum("visitor_experience_level", [
   "BELOW_AVERAGE",
   "POOR",
 ]);
+
+export { accessibilityLevelEnum } from "../../common";
 
 // Export the slug generation helper for use in procedures
 export { generateSlug } from "@/server/utils/slug-helpers";

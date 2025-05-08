@@ -48,18 +48,21 @@ export const managementTypeEnum = pgEnum("management_type", [
 ]);
 
 // Define construction material enum
-export const constructionMaterialEnum = pgEnum("construction_material", [
-  "CONCRETE",
-  "BRICK_AND_CEMENT",
-  "STONE_AND_CEMENT",
-  "WOOD_AND_CEMENT",
-  "MUD_AND_STONE",
-  "MUD_AND_WOOD",
-  "BAMBOO",
-  "PREFABRICATED",
-  "MIXED",
-  "OTHER",
-]);
+export const buildingConstructionMaterialEnum = pgEnum(
+  "building_construction_material",
+  [
+    "CONCRETE",
+    "BRICK_AND_CEMENT",
+    "STONE_AND_CEMENT",
+    "WOOD_AND_CEMENT",
+    "MUD_AND_STONE",
+    "MUD_AND_WOOD",
+    "BAMBOO",
+    "PREFABRICATED",
+    "MIXED",
+    "OTHER",
+  ],
+);
 
 // Community Building table
 export const communityBuilding = pgTable("community_building", {
@@ -87,7 +90,9 @@ export const communityBuilding = pgTable("community_building", {
   totalAreaSqm: decimal("total_area_sq_m", { precision: 10, scale: 2 }),
   buildingCondition: buildingConditionEnum("building_condition"),
   constructionYear: integer("construction_year"),
-  constructionMaterial: constructionMaterialEnum("construction_material"),
+  constructionMaterial: buildingConstructionMaterialEnum(
+    "construction_material",
+  ),
   lastRenovatedYear: integer("last_renovated_year"),
   totalFloors: integer("total_floors"),
   totalRooms: integer("total_rooms"),

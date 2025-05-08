@@ -11,3 +11,4 @@ export * from "./water-bodies";
 export * from "./drinking-water";
 export * from "./waste-management";
 export * from "./mines-minerals";
+export * from "./common";

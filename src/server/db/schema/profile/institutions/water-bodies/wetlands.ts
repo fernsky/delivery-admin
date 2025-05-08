@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../geographical";
+import { waterBodyConservationStatusEnum } from "./rivers";
 import { generateSlug } from "@/server/utils/slug-helpers";
 
 // Define wetland type enum based on Ramsar classification
@@ -41,20 +42,6 @@ export const wetlandSeasonalityEnum = pgEnum("wetland_seasonality", [
   "INTERMITTENT", // Water presence varies irregularly
   "EPHEMERAL", // Water present briefly after precipitation
   "FLUCTUATING", // Water levels vary significantly
-  "UNKNOWN",
-]);
-
-// Define conservation status enum
-export const conservationStatusEnum = pgEnum("conservation_status", [
-  "PROTECTED",
-  "CONSERVATION_AREA",
-  "RAMSAR_SITE",
-  "LOCALLY_CONSERVED",
-  "UNPROTECTED",
-  "DEGRADED",
-  "THREATENED",
-  "RESTORED",
-  "UNDER_RESTORATION",
   "UNKNOWN",
 ]);
 
@@ -139,7 +126,7 @@ export const wetland = pgTable("wetland", {
   biodiversityAssessmentBy: text("biodiversity_assessment_by"),
 
   // Conservation status and management
-  conservationStatus: conservationStatusEnum("conservation_status"),
+  conservationStatus: waterBodyConservationStatusEnum("conservation_status"),
   protectionYear: integer("protection_year"),
   protectionLegalStatus: text("protection_legal_status"),
   managedBy: text("managed_by"),

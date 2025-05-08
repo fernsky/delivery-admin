@@ -32,7 +32,7 @@ export const leaseholdForestTypeEnum = pgEnum("leasehold_forest_type", [
 ]);
 
 // Define terrain type enum
-export const terrainTypeEnum = pgEnum("terrain_type", [
+export const forestTerrainTypeEnum = pgEnum("forest_terrain_type", [
   "PLAIN",
   "HILL",
   "MOUNTAIN",
@@ -106,7 +106,7 @@ export const leaseholdForest = pgTable("leasehold_forest", {
   boundaryLength: decimal("boundary_length", { precision: 10, scale: 2 }), // in KM
   elevationRangeMin: integer("elevation_range_min"), // in meters
   elevationRangeMax: integer("elevation_range_max"), // in meters
-  terrainType: terrainTypeEnum("terrain_type"),
+  terrainType: forestTerrainTypeEnum("terrain_type"),
   slopePercentage: decimal("slope_percentage", { precision: 5, scale: 2 }),
   soilType: text("soil_type"),
   majorWatershed: text("major_watershed"),

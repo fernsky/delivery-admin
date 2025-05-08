@@ -7,4 +7,3 @@ export * from "./natural-pastures";
 export * from "./protected-areas";
 export * from "./hunting-conservation-areas";
 export * from "./buffer-zones";
-export * from "./common";

@@ -42,3 +42,9 @@ export const waterQualityEnum = pgEnum("water_quality", [
   "VERY_POOR",
   "UNTESTED",
 ]);
+
+// Define environmental impact level enum
+export const environmentalImpactLevelEnum = pgEnum(
+  "environmental_impact_level",
+  ["HIGH", "MODERATE", "LOW", "MINIMAL", "UNKNOWN", "MONITORED"],
+);

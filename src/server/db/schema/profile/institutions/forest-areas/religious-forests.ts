@@ -26,12 +26,10 @@ import {
 } from "./common";
 
 // Define religious significance enum
-export const religiousSignificanceEnum = pgEnum("religious_significance", [
-  "EXTREMELY_HIGH",
-  "HIGH",
-  "MODERATE",
-  "LOW",
-]);
+export const forestReligiousSignificanceEnum = pgEnum(
+  "forest_religious_significance",
+  ["EXTREMELY_HIGH", "HIGH", "MODERATE", "LOW"],
+);
 
 // Define religious forest type enum
 export const religiousForestTypeEnum = pgEnum("religious_forest_type", [
@@ -63,7 +61,9 @@ export const religiousForest = pgTable("religious_forest", {
     "religious_forest_type",
   ).notNull(),
   associatedReligion: text("associated_religion"), // Hinduism, Buddhism, etc.
-  religiousSignificance: religiousSignificanceEnum("religious_significance"),
+  religiousSignificance: forestReligiousSignificanceEnum(
+    "religious_significance",
+  ),
   religiousSignificanceDetails: text("religious_significance_details"),
   associatedDeity: text("associated_deity"),
   religiousPractices: text("religious_practices"),

@@ -230,8 +230,8 @@ export type NewLandUse = typeof landUse.$inferInsert;
 export type Slope = typeof slope.$inferSelect;
 export type NewSlope = typeof slope.$inferInsert;
 
-export type Spring = typeof springs.$inferSelect;
-export type NewSpring = typeof springs.$inferInsert;
+// export type Spring = typeof springs.$inferSelect;
+// export type NewSpring = typeof springs.$inferInsert;
 
 export type Village = typeof villages.$inferSelect;
 export type NewVillage = typeof villages.$inferInsert;

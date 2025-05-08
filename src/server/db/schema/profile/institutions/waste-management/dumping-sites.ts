@@ -1,4 +1,4 @@
-import { pgTable } from "../../../../../schema/basic";
+import { pgTable } from "../../../../schema/basic";
 import {
   integer,
   timestamp,
@@ -11,13 +11,10 @@ import {
   date,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { geometry } from "../../../../../geographical";
+import { geometry } from "../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
-import {
-  wasteTypeEnum,
-  environmentalImpactLevelEnum,
-  operationFrequencyEnum,
-} from "./landfill-sites";
+import { wasteTypeEnum, operationFrequencyEnum } from "./landfill-sites";
+import { environmentalImpactLevelEnum } from "../common";
 
 // Define dumping site type enum
 export const dumpingSiteTypeEnum = pgEnum("dumping_site_type", [
@@ -57,7 +54,7 @@ export const siteManagementLevelEnum = pgEnum("site_management_level", [
 ]);
 
 // Define ownership type enum
-export const ownershipTypeEnum = pgEnum("ownership_type", [
+export const wasteMgmtOwnershipTypeEnum = pgEnum("wate_mgmt_ownership_type", [
   "MUNICIPAL",
   "WARD_LEVEL",
   "PRIVATE",
@@ -87,7 +84,7 @@ export const dumpingSite = pgTable("dumping_site", {
 
   // Basic information
   startedYear: integer("started_year"),
-  ownershipType: ownershipTypeEnum("ownership_type").notNull(),
+  ownershipType: wasteMgmtOwnershipTypeEnum("ownership_type").notNull(),
   operatorName: text("operator_name"), // Entity operating the site
   hasLegalPermission: boolean("has_legal_permission").default(false),
   permissionDetails: text("permission_details"),
