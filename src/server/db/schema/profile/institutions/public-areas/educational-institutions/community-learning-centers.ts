@@ -14,7 +14,7 @@ import {
 import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
 import { facilityStatusEnum } from "./schools";
-import { buildingConditionEnum } from "../government-offices/municipality-offices";
+import { buildingConditionEnum } from "../../common";
 
 // Define community learning center type enum
 export const clcTypeEnum = pgEnum("clc_type", [

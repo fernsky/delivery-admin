@@ -15,10 +15,10 @@ import { sql } from "drizzle-orm";
 import { geometry } from "../../../../../geographical";
 import { generateSlug } from "@/server/utils/slug-helpers";
 import {
-  buildingConditionEnum,
   digitalInfrastructureLevelEnum,
   servicePerformanceEnum,
 } from "./municipality-offices";
+import { buildingConditionEnum } from "../../common";
 
 // Define administrative office type enum
 export const administrativeOfficeTypeEnum = pgEnum(
