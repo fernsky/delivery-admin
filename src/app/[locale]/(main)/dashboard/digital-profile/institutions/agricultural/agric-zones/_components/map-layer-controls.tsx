@@ -15,7 +15,7 @@ import {
 import { useState } from "react";
 
 export function MapLayerControls() {
-  const { showPoints, showPolygons, togglePoints, togglePolygons } =
+  const { showPoints, showPolygons, setShowPoints, setShowPolygons } =
     useMapLayersStore();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -48,7 +48,7 @@ export function MapLayerControls() {
               <Switch
                 id="show-points"
                 checked={showPoints}
-                onCheckedChange={togglePoints}
+                onCheckedChange={setShowPoints}
               />
               <Label htmlFor="show-points" className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
@@ -60,7 +60,7 @@ export function MapLayerControls() {
               <Switch
                 id="show-polygons"
                 checked={showPolygons}
-                onCheckedChange={togglePolygons}
+                onCheckedChange={setShowPolygons}
               />
               <Label
                 htmlFor="show-polygons"

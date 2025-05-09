@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Edit, Trash2, Eye, Image, CircleParking } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Pagination } from "./pagination";
+import { Pagination } from "../../../../../../../../../components/digital-profile/pagination";
 
 interface ParkingFacilityItem {
   id: string;

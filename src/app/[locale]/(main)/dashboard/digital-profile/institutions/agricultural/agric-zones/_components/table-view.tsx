@@ -20,7 +20,7 @@ import {
   Database,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Pagination } from "./pagination";
+import { Pagination } from "@/components/digital-profile";
 
 interface AgricZoneItem {
   id: string;

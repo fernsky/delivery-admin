@@ -19,7 +19,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { TableView } from "./_components/table-view";
 import { GridView } from "./_components/grid-view";
 import { MapView } from "./_components/map-view";
-import { ViewSelector } from "./_components/view-selector";
+import { ViewSelector } from "@/components/digital-profile";
 import {
   AlertDialog,
   AlertDialogAction,

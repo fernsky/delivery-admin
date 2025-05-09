@@ -9,7 +9,7 @@ import { useMapLayersStore } from "@/store/map-layers-store";
 
 export function MapLayerControls() {
   const { isStreetView, toggleView } = useMapViewStore();
-  const { showPoints, showPolygons, togglePoints, togglePolygons } =
+  const { showPoints, showPolygons, setShowPoints, setShowPolygons } =
     useMapLayersStore();
 
   const handleViewToggle = () => {
@@ -57,7 +57,7 @@ export function MapLayerControls() {
             <Switch
               id="show-points"
               checked={showPoints}
-              onCheckedChange={togglePoints}
+              onCheckedChange={setShowPoints}
             />
             <Label
               htmlFor="show-points"
@@ -72,7 +72,7 @@ export function MapLayerControls() {
             <Switch
               id="show-polygons"
               checked={showPolygons}
-              onCheckedChange={togglePolygons}
+              onCheckedChange={setShowPolygons}
             />
             <Label
               htmlFor="show-polygons"
