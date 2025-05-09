@@ -60,7 +60,9 @@ export function TableView({
 
   const handleViewLocation = (locationId: string, slug?: string) => {
     // Navigate to location detail page using ID
-    router.push(`/digital-profile/institutions/local-areas/${locationId}`);
+    router.push(
+      `/dashboard/digital-profile/institutions/local-areas/${locationId}`,
+    );
   };
 
   return (

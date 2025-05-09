@@ -54,7 +54,9 @@ export function GridView({
 
   const handleViewLocation = (locationId: string) => {
     // Navigate to location detail page using ID
-    router.push(`/digital-profile/institutions/local-areas/${locationId}`);
+    router.push(
+      `/dashboard/digital-profile/institutions/local-areas/${locationId}`,
+    );
   };
 
   if (locations.length === 0) {

@@ -112,9 +112,12 @@ export default function LocalAreasPage() {
     const url = queryString ? `?${queryString}` : "";
 
     // Replace the URL to avoid adding to history stack
-    router.replace(`/digital-profile/institutions/local-areas${url}`, {
-      scroll: false,
-    });
+    router.replace(
+      `/dashboard/digital-profile/institutions/local-areas${url}`,
+      {
+        scroll: false,
+      },
+    );
   }, [
     debouncedSearchTerm,
     currentType,

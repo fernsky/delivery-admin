@@ -84,7 +84,7 @@ export default function EditParkingFacilityPage({
     <ContentLayout
       title={`${facility.name} सम्पादन गर्नुहोस्`}
       subtitle={getParkingFacilityTypeLabel(facility.type)}
-      backHref={`/digital-profile/institutions/transportation/parking-facilities/${facility.id}`}
+      backHref={`/dashboard/digital-profile/institutions/transportation/parking-facilities/${facility.id}`}
     >
       <Tabs
         value={activeTab}

@@ -55,7 +55,9 @@ export function GridView({
 
   const handleViewRoad = (roadId: string) => {
     // Navigate to road detail page using ID
-    router.push(`/digital-profile/institutions/transportation/roads/${roadId}`);
+    router.push(
+      `/dashboard/digital-profile/institutions/transportation/roads/${roadId}`,
+    );
   };
 
   const getRoadConditionLabel = (condition?: string) => {
