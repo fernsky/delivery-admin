@@ -440,8 +440,8 @@ export function FishFarmEditForm({ fishFarm }: FishFarmEditFormProps) {
   });
 
   // Update fish farm mutation
-  const { mutate: updateFishFarm, isLoading } = api.fishFarm.update.useMutation(
-    {
+  const { mutate: updateFishFarm, isLoading } =
+    api.profile.agriculture.fishFarms.update.useMutation({
       onSuccess: () => {
         toast.success("Fish farm updated successfully");
         router.push(
@@ -451,8 +451,7 @@ export function FishFarmEditForm({ fishFarm }: FishFarmEditFormProps) {
       onError: (error) => {
         toast.error(`Failed to update fish farm: ${error.message}`);
       },
-    },
-  );
+    });
 
   // Handle form submission
   const onSubmit = (values: FormValues) => {

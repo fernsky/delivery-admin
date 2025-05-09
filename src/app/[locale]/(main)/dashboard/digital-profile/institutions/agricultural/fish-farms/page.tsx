@@ -70,19 +70,20 @@ export default function FishFarmsPage() {
   const [isVerified, setIsVerified] = useState<boolean | undefined>(undefined);
 
   // Fetch fish farms with filters
-  const { data, isLoading, isError, refetch } = api.fishFarm.getAll.useQuery({
-    page: currentPage,
-    pageSize: 12,
-    searchTerm: searchTerm,
-    farmType: currentType !== "all" ? currentType : undefined,
-    waterSource: waterSourceFilter !== "all" ? waterSourceFilter : undefined,
-    isVerified: isVerified,
-    viewType: currentView,
-  });
+  const { data, isLoading, isError, refetch } =
+    api.profile.agriculture.fishFarms.getAll.useQuery({
+      page: currentPage,
+      pageSize: 12,
+      searchTerm: searchTerm,
+      farmType: currentType !== "all" ? currentType : undefined,
+      waterSource: waterSourceFilter !== "all" ? waterSourceFilter : undefined,
+      isVerified: isVerified,
+      viewType: currentView,
+    });
 
   // Delete fish farm mutation
   const { mutate: deleteFishFarm, isLoading: isDeleting } =
-    api.fishFarm.delete.useMutation({
+    api.profile.agriculture.fishFarms.delete.useMutation({
       onSuccess: () => {
         toast.success("माछा फार्म सफलतापूर्वक हटाइयो");
         refetch();

@@ -20,9 +20,8 @@ export default function EditFishFarmPage({
   const [activeTab, setActiveTab] = useState<"general" | "media">("general");
 
   // Fetch fish farm data by ID
-  const { data: fishFarm, isLoading } = api.fishFarm.getById.useQuery(
-    params.id,
-    {
+  const { data: fishFarm, isLoading } =
+    api.profile.agriculture.fishFarms.getById.useQuery(params.id, {
       retry: false,
       enabled: !!params.id,
       onError: () => {
@@ -31,8 +30,7 @@ export default function EditFishFarmPage({
         );
         toast.error("Fish farm not found");
       },
-    },
-  );
+    });
 
   // Get fish farm type label
   const getFishFarmTypeLabel = (type: string) => {

@@ -31,9 +31,8 @@ export default function ViewFishFarmPage({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Fetch fish farm data by ID
-  const { data: fishFarm, isLoading } = api.fishFarm.getById.useQuery(
-    params.id,
-    {
+  const { data: fishFarm, isLoading } =
+    api.profile.agriculture.fishFarms.getById.useQuery(params.id, {
       retry: false,
       enabled: !!params.id,
       onError: () => {
@@ -42,12 +41,11 @@ export default function ViewFishFarmPage({
         );
         toast.error("माछा फार्म फेला परेन");
       },
-    },
-  );
+    });
 
   // Delete mutation
   const { mutate: deleteFishFarm, isLoading: isDeleting } =
-    api.fishFarm.delete.useMutation({
+    api.profile.agriculture.fishFarms.delete.useMutation({
       onSuccess: () => {
         toast.success("माछा फार्म सफलतापूर्वक हटाइयो");
         router.push(

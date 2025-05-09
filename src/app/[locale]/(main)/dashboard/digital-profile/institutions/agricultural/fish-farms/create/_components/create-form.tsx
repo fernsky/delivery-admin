@@ -184,7 +184,7 @@ export default function CreateForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Create fish farm mutation
-  const createFishFarm = api.fishFarm.create.useMutation({
+  const createFishFarm = api.profile.agriculture.fishFarms.create.useMutation({
     onSuccess: (data) => {
       toast({
         title: t("create.successTitle"),
