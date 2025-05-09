@@ -30,30 +30,18 @@ const formSchema = z.object({
   farmingSystem: z.string().optional(),
 
   // Location details
-  wardNumber: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
+  wardNumber: z.number().int().positive().optional(),
   location: z.string().optional(),
   address: z.string().optional(),
 
   // Land details
-  totalAreaInHectares: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  cultivatedAreaInHectares: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
+  totalAreaInHectares: z.number().positive().optional(),
+  cultivatedAreaInHectares: z.number().positive().optional(),
   landOwnership: z.string().optional(),
   soilType: z.string().optional(),
   irrigationType: z.string().optional(),
   irrigationSourceDetails: z.string().optional(),
-  irrigatedAreaInHectares: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
+  irrigatedAreaInHectares: z.number().positive().optional(),
 
   // Crops
   mainCrops: z.string().optional(),
@@ -62,58 +50,25 @@ const formSchema = z.object({
   cropRotationDetails: z.string().optional(),
   intercropping: z.boolean().optional(),
   croppingSeasons: z.string().optional(),
-  annualCropYieldMT: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
+  annualCropYieldMT: z.number().positive().optional(),
   recordedYearCrops: z.string().optional(),
 
   // Livestock
   hasLivestock: z.boolean().optional(),
   livestockTypes: z.string().optional(),
-  cattleCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  buffaloCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  goatCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  sheepCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  pigCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  poultryCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  otherLivestockCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
+  cattleCount: z.number().int().nonnegative().optional(),
+  buffaloCount: z.number().int().nonnegative().optional(),
+  goatCount: z.number().int().nonnegative().optional(),
+  sheepCount: z.number().int().nonnegative().optional(),
+  pigCount: z.number().int().nonnegative().optional(),
+  poultryCount: z.number().int().nonnegative().optional(),
+  otherLivestockCount: z.number().int().nonnegative().optional(),
   otherLivestockDetails: z.string().optional(),
   livestockHousingType: z.string().optional(),
   livestockManagementDetails: z.string().optional(),
-  annualMilkProductionLiters: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  annualEggProduction: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  annualMeatProductionKg: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
+  annualMilkProductionLiters: z.number().nonnegative().optional(),
+  annualEggProduction: z.number().nonnegative().optional(),
+  annualMeatProductionKg: z.number().nonnegative().optional(),
   recordedYearLivestock: z.string().optional(),
 
   // Farmer details
@@ -121,30 +76,15 @@ const formSchema = z.object({
   ownerContact: z.string().optional(),
   farmerType: z.string().optional(),
   farmerEducation: z.string().optional(),
-  farmerExperienceYears: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
+  farmerExperienceYears: z.number().int().nonnegative().optional(),
   hasCooperativeMembership: z.boolean().optional(),
   cooperativeName: z.string().optional(),
 
   // Labor and economics
-  familyLaborCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  hiredLaborCount: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  annualInvestmentNPR: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
-  annualIncomeNPR: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
+  familyLaborCount: z.number().int().nonnegative().optional(),
+  hiredLaborCount: z.number().int().nonnegative().optional(),
+  annualInvestmentNPR: z.number().nonnegative().optional(),
+  annualIncomeNPR: z.number().nonnegative().optional(),
   profitableOperation: z.boolean().optional(),
   marketAccessDetails: z.string().optional(),
   majorBuyerTypes: z.string().optional(),
@@ -152,10 +92,7 @@ const formSchema = z.object({
   // Infrastructure
   hasFarmHouse: z.boolean().optional(),
   hasStorage: z.boolean().optional(),
-  storageCapacityMT: z
-    .string()
-    .transform((val) => Number(val) || undefined)
-    .optional(),
+  storageCapacityMT: z.number().nonnegative().optional(),
   hasFarmEquipment: z.boolean().optional(),
   equipmentDetails: z.string().optional(),
   hasElectricity: z.boolean().optional(),
@@ -243,18 +180,18 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
       farmingSystem: farm.farmingSystem || undefined,
 
       // Location details
-      wardNumber: farm.wardNumber?.toString() || "",
+      wardNumber: farm.wardNumber || undefined,
       location: farm.location || "",
       address: farm.address || "",
 
       // Land details
-      totalAreaInHectares: farm.totalAreaInHectares?.toString() || "",
-      cultivatedAreaInHectares: farm.cultivatedAreaInHectares?.toString() || "",
+      totalAreaInHectares: farm.totalAreaInHectares || undefined,
+      cultivatedAreaInHectares: farm.cultivatedAreaInHectares || undefined,
       landOwnership: farm.landOwnership || undefined,
       soilType: farm.soilType || undefined,
       irrigationType: farm.irrigationType || undefined,
       irrigationSourceDetails: farm.irrigationSourceDetails || "",
-      irrigatedAreaInHectares: farm.irrigatedAreaInHectares?.toString() || "",
+      irrigatedAreaInHectares: farm.irrigatedAreaInHectares || undefined,
 
       // Crops
       mainCrops: farm.mainCrops || "",
@@ -263,26 +200,25 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
       cropRotationDetails: farm.cropRotationDetails || "",
       intercropping: farm.intercropping || false,
       croppingSeasons: farm.croppingSeasons || "",
-      annualCropYieldMT: farm.annualCropYieldMT?.toString() || "",
-      recordedYearCrops: farm.recordedYearCrops || "",
+      annualCropYieldMT: farm.annualCropYieldMT || undefined,
+      recordedYearCrops: farm.recordedYearCrops || undefined,
 
       // Livestock
       hasLivestock: farm.hasLivestock || false,
       livestockTypes: farm.livestockTypes || "",
-      cattleCount: farm.cattleCount?.toString() || "",
-      buffaloCount: farm.buffaloCount?.toString() || "",
-      goatCount: farm.goatCount?.toString() || "",
-      sheepCount: farm.sheepCount?.toString() || "",
-      pigCount: farm.pigCount?.toString() || "",
-      poultryCount: farm.poultryCount?.toString() || "",
-      otherLivestockCount: farm.otherLivestockCount?.toString() || "",
+      cattleCount: farm.cattleCount || undefined,
+      buffaloCount: farm.buffaloCount || undefined,
+      goatCount: farm.goatCount || undefined,
+      sheepCount: farm.sheepCount || undefined,
+      pigCount: farm.pigCount || undefined,
+      poultryCount: farm.poultryCount || undefined,
+      otherLivestockCount: farm.otherLivestockCount || undefined,
       otherLivestockDetails: farm.otherLivestockDetails || "",
       livestockHousingType: farm.livestockHousingType || undefined,
       livestockManagementDetails: farm.livestockManagementDetails || "",
-      annualMilkProductionLiters:
-        farm.annualMilkProductionLiters?.toString() || "",
-      annualEggProduction: farm.annualEggProduction?.toString() || "",
-      annualMeatProductionKg: farm.annualMeatProductionKg?.toString() || "",
+      annualMilkProductionLiters: farm.annualMilkProductionLiters || undefined,
+      annualEggProduction: farm.annualEggProduction || undefined,
+      annualMeatProductionKg: farm.annualMeatProductionKg || undefined,
       recordedYearLivestock: farm.recordedYearLivestock || "",
 
       // Farmer details
@@ -290,15 +226,15 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
       ownerContact: farm.ownerContact || "",
       farmerType: farm.farmerType || "",
       farmerEducation: farm.farmerEducation || undefined,
-      farmerExperienceYears: farm.farmerExperienceYears?.toString() || "",
+      farmerExperienceYears: farm.farmerExperienceYears || undefined,
       hasCooperativeMembership: farm.hasCooperativeMembership || false,
       cooperativeName: farm.cooperativeName || "",
 
       // Labor and economics
-      familyLaborCount: farm.familyLaborCount?.toString() || "",
-      hiredLaborCount: farm.hiredLaborCount?.toString() || "",
-      annualInvestmentNPR: farm.annualInvestmentNPR?.toString() || "",
-      annualIncomeNPR: farm.annualIncomeNPR?.toString() || "",
+      familyLaborCount: farm.familyLaborCount || undefined,
+      hiredLaborCount: farm.hiredLaborCount || undefined,
+      annualInvestmentNPR: farm.annualInvestmentNPR || undefined,
+      annualIncomeNPR: farm.annualIncomeNPR || undefined,
       profitableOperation: farm.profitableOperation || false,
       marketAccessDetails: farm.marketAccessDetails || "",
       majorBuyerTypes: farm.majorBuyerTypes || "",
@@ -306,7 +242,7 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
       // Infrastructure
       hasFarmHouse: farm.hasFarmHouse || false,
       hasStorage: farm.hasStorage || false,
-      storageCapacityMT: farm.storageCapacityMT?.toString() || "",
+      storageCapacityMT: farm.storageCapacityMT || undefined,
       hasFarmEquipment: farm.hasFarmEquipment || false,
       equipmentDetails: farm.equipmentDetails || "",
       hasElectricity: farm.hasElectricity || false,
@@ -372,63 +308,7 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
 
   // Handle form submission
   const onSubmit = (values: FormValues) => {
-    updateFarm({
-      ...values,
-      // Convert string number fields to actual numbers
-      wardNumber: values.wardNumber ? Number(values.wardNumber) : undefined,
-      totalAreaInHectares: values.totalAreaInHectares
-        ? Number(values.totalAreaInHectares)
-        : undefined,
-      cultivatedAreaInHectares: values.cultivatedAreaInHectares
-        ? Number(values.cultivatedAreaInHectares)
-        : undefined,
-      irrigatedAreaInHectares: values.irrigatedAreaInHectares
-        ? Number(values.irrigatedAreaInHectares)
-        : undefined,
-      annualCropYieldMT: values.annualCropYieldMT
-        ? Number(values.annualCropYieldMT)
-        : undefined,
-      cattleCount: values.cattleCount ? Number(values.cattleCount) : undefined,
-      buffaloCount: values.buffaloCount
-        ? Number(values.buffaloCount)
-        : undefined,
-      goatCount: values.goatCount ? Number(values.goatCount) : undefined,
-      sheepCount: values.sheepCount ? Number(values.sheepCount) : undefined,
-      pigCount: values.pigCount ? Number(values.pigCount) : undefined,
-      poultryCount: values.poultryCount
-        ? Number(values.poultryCount)
-        : undefined,
-      otherLivestockCount: values.otherLivestockCount
-        ? Number(values.otherLivestockCount)
-        : undefined,
-      annualMilkProductionLiters: values.annualMilkProductionLiters
-        ? Number(values.annualMilkProductionLiters)
-        : undefined,
-      annualEggProduction: values.annualEggProduction
-        ? Number(values.annualEggProduction)
-        : undefined,
-      annualMeatProductionKg: values.annualMeatProductionKg
-        ? Number(values.annualMeatProductionKg)
-        : undefined,
-      farmerExperienceYears: values.farmerExperienceYears
-        ? Number(values.farmerExperienceYears)
-        : undefined,
-      familyLaborCount: values.familyLaborCount
-        ? Number(values.familyLaborCount)
-        : undefined,
-      hiredLaborCount: values.hiredLaborCount
-        ? Number(values.hiredLaborCount)
-        : undefined,
-      annualInvestmentNPR: values.annualInvestmentNPR
-        ? Number(values.annualInvestmentNPR)
-        : undefined,
-      annualIncomeNPR: values.annualIncomeNPR
-        ? Number(values.annualIncomeNPR)
-        : undefined,
-      storageCapacityMT: values.storageCapacityMT
-        ? Number(values.storageCapacityMT)
-        : undefined,
-    });
+    updateFarm(values);
   };
 
   // Handle geometry selection from map
