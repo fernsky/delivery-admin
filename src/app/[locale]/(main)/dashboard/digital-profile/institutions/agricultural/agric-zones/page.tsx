@@ -60,7 +60,7 @@ export default function AgricZonesPage() {
 
   // Fetch agricultural zones with filters
   const { data, isLoading, isError, refetch } =
-    api.profile.agricZones.getAll.useQuery({
+    api.profile.agriculture.agricZones.getAll.useQuery({
       page: currentPage,
       pageSize: 12,
       searchTerm: searchTerm,
@@ -71,7 +71,7 @@ export default function AgricZonesPage() {
 
   // Delete agricultural zone mutation
   const { mutate: deleteZone, isLoading: isDeleting } =
-    api.profile.agricZones.delete.useMutation({
+    api.profile.agriculture.agricZones.delete.useMutation({
       onSuccess: () => {
         toast.success("कृषि क्षेत्र सफलतापूर्वक हटाइयो");
         refetch();

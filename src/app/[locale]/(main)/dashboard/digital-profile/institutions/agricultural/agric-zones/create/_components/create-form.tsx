@@ -137,7 +137,7 @@ export function CreateAgricZoneForm() {
 
   // Create agricultural zone mutation
   const { mutate: createAgricZone, isLoading } =
-    api.profile.agricZones.create.useMutation({
+    api.profile.agriculture.agricZones.create.useMutation({
       onSuccess: (data) => {
         toast.success("कृषि क्षेत्र सफलतापूर्वक सिर्जना गरियो");
         router.push(

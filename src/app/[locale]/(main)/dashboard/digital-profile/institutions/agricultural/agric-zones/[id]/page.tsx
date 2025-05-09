@@ -32,7 +32,7 @@ export default function ViewAgricZonePage({
 
   // Fetch agricultural zone data by ID
   const { data: agricZone, isLoading } =
-    api.profile.agricZones.getById.useQuery(params.id, {
+    api.profile.agriculture.agricZones.getById.useQuery(params.id, {
       retry: false,
       enabled: !!params.id,
       onError: () => {
@@ -45,7 +45,7 @@ export default function ViewAgricZonePage({
 
   // Delete mutation
   const { mutate: deleteAgricZone, isLoading: isDeleting } =
-    api.profile.agricZones.delete.useMutation({
+    api.profile.agriculture.agricZones.delete.useMutation({
       onSuccess: () => {
         toast.success("कृषि क्षेत्र सफलतापूर्वक हटाइयो");
         router.push(

@@ -2,14 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  CalendarIcon,
-  InfoIcon,
-  MapPin,
-  Check,
-  X,
-  PlantIcon,
-} from "lucide-react";
+import { CalendarIcon, InfoIcon, MapPin, Check, X, Leaf } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
 interface AgricZoneDetailsProps {

@@ -21,7 +21,7 @@ export default function EditAgricZonePage({
 
   // Fetch agricultural zone data by ID
   const { data: agricZone, isLoading } =
-    api.profile.agricZones.getById.useQuery(params.id, {
+    api.profile.agriculture.agricZones.getById.useQuery(params.id, {
       retry: false,
       enabled: !!params.id,
       onError: () => {
