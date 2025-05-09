@@ -156,7 +156,10 @@ export const updateLocation = protectedProcedure
         .update(location)
         .set(updateData)
         .where(eq(location.id, input.id))
-        .returning();
+        .returning({
+          id: location.id,
+          slug: location.slug,
+        });
 
       return {
         success: true,
