@@ -14,6 +14,7 @@ import {
   Paperclip,
   Home,
   PersonStanding,
+  Wheat,
   BarChart3, // For demographic summary icon
   LineChart, // Add this import for the ward time series icon
   Building, // For institutions icon
@@ -169,12 +170,12 @@ const menuConfig: Menu[] = [
         label: "रिमिटेन्स र खर्च",
         roles: ["admin", "superadmin"],
       },
-       {
+      {
         href: "/dashboard/digital-profile/economics/ward-wise-annual-income-sustenance",
         label: "वार्षिक आय अनुसार खाद्य सुरक्षा",
         roles: ["admin", "superadmin"],
       },
-       {
+      {
         href: "/dashboard/digital-profile/economics/ward-wise-households-on-loan",
         label: "ऋण लिएका घरधुरी",
         roles: ["admin", "superadmin"],
@@ -184,27 +185,27 @@ const menuConfig: Menu[] = [
         label: "ऋणको प्रयोग",
         roles: ["admin", "superadmin"],
       },
-          {
+      {
         href: "/dashboard/digital-profile/economics/ward-wise-trained-population",
         label: "तालिम प्राप्त जनसंख्या",
         roles: ["admin", "superadmin"],
       },
-           {
+      {
         href: "/dashboard/digital-profile/economics/ward-wise-major-skills",
         label: "प्रमुख सीप",
         roles: ["admin", "superadmin"],
       },
-        {
+      {
         href: "/dashboard/digital-profile/economics/imported-products",
         label: "आयातित उत्पादनहरू",
         roles: ["admin", "superadmin"],
       },
-        {
+      {
         href: "/dashboard/digital-profile/economics/exported-products",
         label: "निर्यातित उत्पादनहरू",
         roles: ["admin", "superadmin"],
       },
-        {
+      {
         href: "/dashboard/digital-profile/economics/ward-wise-household-land-possessions",
         label: "घरधुरी जग्गा स्वामित्व विवरण",
         roles: ["admin", "superadmin"],
@@ -212,20 +213,61 @@ const menuConfig: Menu[] = [
     ],
   },
 
-  // New Institutions menu with submenus
+  // Agricultural menu with submenus
   {
     href: "#",
-    label: "संस्थागत",
-    icon: Building,
+    label: "कृषिगत क्षेत्र",
+    icon: Wheat,
     roles: ["admin", "superadmin"],
     submenus: [
-      // Local Areas submenu
       {
-        href: "/dashboard/digital-profile/institutions/local-areas",
-        label: "स्थानीय क्षेत्रहरू",
+        href: "/dashboard/digital-profile/institutions/agricultural/agric-zones",
+        label: "कृषि क्षेत्रहरू",
         roles: ["admin", "superadmin"],
       },
-      // Transportation submenu - with sub-sections
+      {
+        href: "/dashboard/digital-profile/institutions/agricultural/farms",
+        label: "फार्महरू",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/dashboard/digital-profile/institutions/agricultural/fish-farms",
+        label: "माछा फार्महरू",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/dashboard/digital-profile/institutions/agricultural/grasslands",
+        label: "चरन क्षेत्रहरू",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/dashboard/digital-profile/institutions/agricultural/grazing-areas",
+        label: "चरन खर्क क्षेत्रहरू",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/dashboard/digital-profile/institutions/agricultural/processing-centers",
+        label: "प्रशोधन केन्द्रहरू",
+        roles: ["admin", "superadmin"],
+      },
+    ],
+  },
+
+  // Local Areas menu
+  {
+    href: "/dashboard/digital-profile/institutions/local-areas",
+    label: "स्थानीय क्षेत्रहरू",
+    icon: MapPin,
+    roles: ["admin", "superadmin"],
+  },
+
+  // Transportation menu with submenus
+  {
+    href: "#",
+    label: "यातायात",
+    icon: Route,
+    roles: ["admin", "superadmin"],
+    submenus: [
       {
         href: "/dashboard/digital-profile/institutions/transportation/roads",
         label: "सडकहरू",
@@ -239,6 +281,31 @@ const menuConfig: Menu[] = [
       {
         href: "/dashboard/digital-profile/institutions/transportation/public-transports",
         label: "सार्वजनिक यातायात",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/dashboard/digital-profile/institutions/transportation/petrol-pumps",
+        label: "पेट्रोल पम्पहरू",
+        roles: ["admin", "superadmin"],
+      },
+    ],
+  },
+
+  // Cultural menu with submenus
+  {
+    href: "#",
+    label: "सांस्कृतिक",
+    icon: Building,
+    roles: ["admin", "superadmin"],
+    submenus: [
+      {
+        href: "/dashboard/digital-profile/institutions/cultural/religious-places",
+        label: "धार्मिक स्थलहरू",
+        roles: ["admin", "superadmin"],
+      },
+      {
+        href: "/dashboard/digital-profile/institutions/cultural/historical-sites",
+        label: "ऐतिहासिक स्थलहरू",
         roles: ["admin", "superadmin"],
       },
     ],
