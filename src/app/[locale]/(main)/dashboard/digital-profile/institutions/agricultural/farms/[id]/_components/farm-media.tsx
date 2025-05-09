@@ -9,7 +9,7 @@ import Image from "next/image";
 interface MediaFile {
   id: string;
   fileName: string;
-  url: string;
+  url: string | null;
   title: string | null;
   description: string | null;
   mimeType: string | null;

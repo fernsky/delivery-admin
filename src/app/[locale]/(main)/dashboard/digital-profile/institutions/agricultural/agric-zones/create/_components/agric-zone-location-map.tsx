@@ -174,7 +174,8 @@ export function AgricZoneLocationMap({
   }, [isStreetView]);
 
   // Start drawing location point
-  const startDrawingPoint = () => {
+  const startDrawingPoint = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!mapRef.current) return;
 
     // Clear previous point
@@ -252,7 +253,8 @@ export function AgricZoneLocationMap({
   };
 
   // Start drawing area polygon
-  const startDrawingPolygon = () => {
+  const startDrawingPolygon = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!mapRef.current) return;
 
     // Clear previous polygon
@@ -402,7 +404,8 @@ export function AgricZoneLocationMap({
   };
 
   // Clear all geometries
-  const clearAll = () => {
+  const clearAll = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     pointSourceRef.current.clear();
     polygonSourceRef.current.clear();
 
@@ -424,7 +427,8 @@ export function AgricZoneLocationMap({
   };
 
   // Reset map view
-  const resetView = () => {
+  const resetView = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (viewRef.current) {
       viewRef.current.animate({
         rotation: 0,
@@ -440,7 +444,7 @@ export function AgricZoneLocationMap({
           <Button
             variant={isPointDrawing ? "default" : "outline"}
             size="sm"
-            onClick={startDrawingPoint}
+            onClick={(e) => startDrawingPoint(e)}
           >
             स्थान थप्नुहोस्
           </Button>
@@ -448,12 +452,19 @@ export function AgricZoneLocationMap({
           <Button
             variant={isPolygonDrawing ? "default" : "outline"}
             size="sm"
-            onClick={startDrawingPolygon}
+            onClick={(e) => startDrawingPolygon(e)}
           >
             क्षेत्र सीमा थप्नुहोस्
           </Button>
 
-          <Button variant="outline" size="sm" onClick={() => toggleView()}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleView();
+            }}
+          >
             <MapIcon className="h-4 w-4 mr-1" />
             {isStreetView ? "उपग्रह दृश्य" : "सडक दृश्य"}
           </Button>
@@ -465,7 +476,7 @@ export function AgricZoneLocationMap({
                   variant="outline"
                   size="sm"
                   className="h-8 w-8 p-0"
-                  onClick={resetView}
+                  onClick={(e) => resetView(e)}
                 >
                   <RotateCcw className="h-4 w-4" />
                 </Button>
@@ -477,7 +488,7 @@ export function AgricZoneLocationMap({
           </TooltipProvider>
         </div>
 
-        <Button variant="outline" size="sm" onClick={clearAll}>
+        <Button variant="outline" size="sm" onClick={(e) => clearAll(e)}>
           सबै हटाउनुहोस्
         </Button>
       </div>

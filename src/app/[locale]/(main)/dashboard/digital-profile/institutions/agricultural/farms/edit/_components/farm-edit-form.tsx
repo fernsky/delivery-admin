@@ -219,7 +219,7 @@ export function FarmEditForm({ farm }: FarmEditFormProps) {
       annualMilkProductionLiters: farm.annualMilkProductionLiters || undefined,
       annualEggProduction: farm.annualEggProduction || undefined,
       annualMeatProductionKg: farm.annualMeatProductionKg || undefined,
-      recordedYearLivestock: farm.recordedYearLivestock || "",
+      recordedYearLivestock: farm.recordedYearLivestock || undefined,
 
       // Farmer details
       ownerName: farm.ownerName || "",
