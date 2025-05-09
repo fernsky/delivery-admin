@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, Eye, Tractor, Milk, Leaf } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Pagination } from "./pagination";
+import { Pagination } from "@/components/digital-profile";
 import { Check, X } from "lucide-react";
 
 interface FarmItem {

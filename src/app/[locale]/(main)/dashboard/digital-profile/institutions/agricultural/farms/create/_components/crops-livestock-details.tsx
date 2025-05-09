@@ -66,11 +66,13 @@ interface CropsAndLivestockDetailsProps {
   form: UseFormReturn<any>;
 }
 
-export function CropsAndLivestockDetails({ form }: CropsAndLivestockDetailsProps) {
+export function CropsAndLivestockDetails({
+  form,
+}: CropsAndLivestockDetailsProps) {
   // Generate last 10 years for dropdown
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
-  
+
   return (
     <div className="space-y-8">
       {/* Land Details Section */}

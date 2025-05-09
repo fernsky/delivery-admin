@@ -8,11 +8,11 @@ import {
   MapPin,
   Check,
   X,
-  Seedling,
   Tractor,
   Users,
   Home,
   Leaf,
+  Bean,
   Droplets,
   LandPlot,
   Tally4,
@@ -312,7 +312,7 @@ export function FarmDetails({ farm }: FarmDetailsProps) {
           {/* Crop Details */}
           <div className="space-y-3 pt-4 border-t">
             <div className="flex items-center gap-2">
-              <Seedling className="h-5 w-5 text-primary" />
+              <Bean className="h-5 w-5 text-primary" />
               <h3 className="text-base font-medium">बाली विवरण</h3>
             </div>
 

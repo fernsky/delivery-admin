@@ -27,18 +27,21 @@ export default function ViewFarmPage({ params }: { params: { id: string } }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Fetch farm data by ID
-  const { data: farm, isLoading } = api.farm.getById.useQuery(params.id, {
-    retry: false,
-    enabled: !!params.id,
-    onError: () => {
-      router.push("/dashboard/digital-profile/institutions/agricultural/farms");
-      toast.error("फार्म फेला परेन");
-    },
-  });
+  const { data: farm, isLoading } =
+    api.profile.agriculture.farms.getById.useQuery(params.id, {
+      retry: false,
+      enabled: !!params.id,
+      onError: () => {
+        router.push(
+          "/dashboard/digital-profile/institutions/agricultural/farms",
+        );
+        toast.error("फार्म फेला परेन");
+      },
+    });
 
   // Delete mutation
   const { mutate: deleteFarm, isLoading: isDeleting } =
-    api.farm.delete.useMutation({
+    api.profile.agriculture.farms.delete.useMutation({
       onSuccess: () => {
         toast.success("फार्म सफलतापूर्वक हटाइयो");
         router.push(

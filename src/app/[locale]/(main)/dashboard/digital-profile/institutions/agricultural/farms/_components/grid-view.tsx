@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Edit, Trash2, Eye, Tractor, Milk, Leaf, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Pagination } from "./pagination";
+import { Pagination } from "@/components/digital-profile";
 
 interface FarmItem {
   id: string;

@@ -21,7 +21,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { TableView } from "./_components/table-view";
 import { GridView } from "./_components/grid-view";
 import { MapView } from "./_components/map-view";
-import { ViewSelector } from "./_components/view-selector";
+import { ViewSelector } from "@/components/digital-profile";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -70,19 +70,20 @@ export default function FarmsPage() {
   const [isVerified, setIsVerified] = useState<boolean | undefined>(undefined);
 
   // Fetch farms with filters
-  const { data, isLoading, isError, refetch } = api.farm.getAll.useQuery({
-    page: currentPage,
-    pageSize: 12,
-    searchTerm: searchTerm,
-    farmType: currentType !== "all" ? currentType : undefined,
-    hasLivestock: hasLivestock,
-    isVerified: isVerified,
-    viewType: currentView,
-  });
+  const { data, isLoading, isError, refetch } =
+    api.profile.agriculture.farms.getAll.useQuery({
+      page: currentPage,
+      pageSize: 12,
+      searchTerm: searchTerm,
+      farmType: currentType !== "all" ? currentType : undefined,
+      hasLivestock: hasLivestock,
+      isVerified: isVerified,
+      viewType: currentView,
+    });
 
   // Delete farm mutation
   const { mutate: deleteFarm, isLoading: isDeleting } =
-    api.farm.delete.useMutation({
+    api.profile.agriculture.farms.delete.useMutation({
       onSuccess: () => {
         toast.success("फार्म सफलतापूर्वक हटाइयो");
         refetch();
