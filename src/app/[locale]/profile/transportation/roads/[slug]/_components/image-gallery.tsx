@@ -11,11 +11,20 @@ interface ImageGalleryProps {
     url: string;
     title?: string;
     description?: string;
+    fileName?: string;
+    mimeType?: string;
   }[];
   alt: string;
+  roadName: string;
+  roadType: string;
 }
 
-export function ImageGallery({ images, alt }: ImageGalleryProps) {
+export function ImageGallery({
+  images,
+  alt,
+  roadName,
+  roadType,
+}: ImageGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -63,13 +72,40 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
 
   if (images.length === 0) return null;
 
+  // Generate descriptive alt text for SEO
+  const getImageAlt = (image: (typeof images)[0], index: number) => {
+    if (image.title) return image.title;
+    return `${roadName} ${roadType} तस्वीर ${index + 1} - ${alt}`;
+  };
+
+  // Generate rich captions for SEO
+  const getCaption = (image: (typeof images)[0]) => {
+    if (image.title && image.description)
+      return `${image.title} - ${image.description}`;
+    if (image.title) return image.title;
+    if (image.description) return image.description;
+    return `${roadName} ${roadType} तस्वीर`;
+  };
+
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6"
+      itemScope
+      itemType="http://schema.org/ImageGallery"
+    >
+      <meta itemProp="about" content={roadName} />
+      <meta
+        itemProp="description"
+        content={`${roadName} ${roadType} सडकका तस्वीरहरू`}
+      />
+
       {/* Main featured image */}
-      <div
+      <figure
         className="relative aspect-[16/9] rounded-lg overflow-hidden bg-black/5 group"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        itemScope
+        itemType="http://schema.org/ImageObject"
       >
         <div
           className={`absolute inset-0 flex items-center justify-center transition-opacity ${isLoaded ? "opacity-0" : "opacity-100"}`}
@@ -79,12 +115,27 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
 
         <Image
           src={images[currentIndex].url}
-          alt={images[currentIndex].title || alt}
+          alt={getImageAlt(images[currentIndex], currentIndex)}
           fill
           className={`object-contain transition-opacity ${isLoaded ? "opacity-100" : "opacity-0"}`}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           priority
           onLoad={() => setIsLoaded(true)}
+          itemProp="contentUrl"
+        />
+        <meta
+          itemProp="name"
+          content={
+            images[currentIndex].title ||
+            `${roadName} तस्वीर ${currentIndex + 1}`
+          }
+        />
+        <meta
+          itemProp="description"
+          content={
+            images[currentIndex].description ||
+            `${roadName} ${roadType} सडकको तस्वीर`
+          }
         />
 
         {/* Navigation controls */}
@@ -125,9 +176,12 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           <ZoomIn className="h-5 w-5" />
         </Button>
 
-        {/* Caption if available */}
+        {/* Caption if available - Enhanced for SEO */}
         {(images[currentIndex].title || images[currentIndex].description) && (
-          <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 transform translate-y-full group-hover:translate-y-0 transition-transform">
+          <figcaption
+            className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3 transform translate-y-full group-hover:translate-y-0 transition-transform"
+            itemProp="caption"
+          >
             {images[currentIndex].title && (
               <p className="font-medium">{images[currentIndex].title}</p>
             )}
@@ -136,9 +190,9 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                 {images[currentIndex].description}
               </p>
             )}
-          </div>
+          </figcaption>
         )}
-      </div>
+      </figure>
 
       {/* Thumbnail gallery */}
       {images.length > 1 && (
@@ -156,7 +210,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
             >
               <Image
                 src={image.url}
-                alt={image.title || `तस्वीर ${index + 1}`}
+                alt={getImageAlt(image, index)}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 20vw, 10vw"
@@ -177,7 +231,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           <div className="relative h-[90vh] flex items-center justify-center">
             <Image
               src={images[currentIndex].url}
-              alt={images[currentIndex].title || alt}
+              alt={getImageAlt(images[currentIndex], currentIndex)}
               fill
               className="object-contain"
               sizes="95vw"
@@ -219,7 +273,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
               {currentIndex + 1} / {images.length}
             </div>
 
-            {/* Caption if available */}
+            {/* Caption with enhanced metadata */}
             {(images[currentIndex].title ||
               images[currentIndex].description) && (
               <div className="absolute bottom-14 left-0 right-0 mx-auto max-w-3xl text-center bg-black/70 text-white p-3 rounded-md">
