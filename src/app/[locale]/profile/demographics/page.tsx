@@ -107,16 +107,16 @@ export default async function DemographicsPage() {
         <section>
           <div className="relative rounded-lg overflow-hidden mb-8">
             <Image
-              src="/images/demographics-hero.jpg"
+              src="/images/demographics-hero.svg"
               width={1200}
               height={400}
               alt="जनसांख्यिकी तथ्याङ्क"
-              className="w-full h-[250px] object-cover"
+              className="w-full h-[250px] object-cover object-center"
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 flex items-center">
               <div className="p-6 text-white">
-                <h1 className="text-3xl font-bold mb-2">
+                <h1 className="text-3xl font-bold mb-2 text-white">
                   जनसांख्यिकी तथ्याङ्क
                 </h1>
                 <p className="text-lg opacity-90 max-w-xl">

@@ -34,15 +34,19 @@ const navItems = [
     items: [
       {
         title: "जनसंख्या सारांश",
-        href: "/profile/demographics/summary",
+        href: "/profile/demographics/ward-wise-summary",
       },
       {
         title: "वडा अनुसार जनसंख्या",
-        href: "/profile/demographics/ward-wise-demographic-summary",
+        href: "/profile/demographics/ward-age-wise-population",
       },
       {
         title: "जात/जनजाति अनुसार जनसंख्या",
         href: "/profile/demographics/ward-wise-caste-population",
+      },
+      {
+        title: "घरमुलीको लिङ्ग अनुसार घरधुरी",
+        href: "/profile/demographics/ward-wise-househead-gender",
       },
       {
         title: "मातृभाषा अनुसार जनसंख्या",
