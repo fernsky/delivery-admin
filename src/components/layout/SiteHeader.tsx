@@ -6,7 +6,7 @@ import { Download, Book, FileText, Search, Users } from "lucide-react";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
-      <div className="container flex h-14 items-center">
+      <div className="container px-4 sm:px-6 max-w-7xl mx-auto flex h-14 items-center">
         <div className="flex flex-1 items-center justify-between">
           <div className="flex items-center space-x-6">
             <Link href="/" className="flex items-center space-x-2 shrink-0">
@@ -14,7 +14,7 @@ export function SiteHeader() {
                 तथ्याङ्क पोर्टल
               </span>
             </Link>
-            <nav className="hidden md:flex items-center space-x-6">
+            <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
               <Link
                 href="/profile"
                 className="text-sm font-medium transition-colors hover:text-primary flex items-center gap-1"
@@ -38,13 +38,13 @@ export function SiteHeader() {
               </Link>
             </nav>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="hidden md:flex relative rounded-md">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <input
                 type="search"
                 placeholder="खोज्नुहोस्..."
-                className="pl-8 h-9 md:w-[200px] lg:w-[300px] rounded-md border border-input bg-transparent text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
+                className="pl-8 h-9 md:w-[180px] lg:w-[280px] rounded-md border border-input bg-transparent text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
               />
             </div>
 
