@@ -32,14 +32,16 @@ export const getAllWardAgeGenderWiseMarriedAge = publicProcedure
 
         let conditions = [];
 
-        if (input?.wardId) {
+        if (input?.wardNumber) {
           conditions.push(
-            eq(wardAgeGenderWiseMarriedAge.wardId, input.wardId),
+            eq(wardAgeGenderWiseMarriedAge.wardNumber, input.wardNumber),
           );
         }
 
         if (input?.ageGroup) {
-          conditions.push(eq(wardAgeGenderWiseMarriedAge.ageGroup, input.ageGroup));
+          conditions.push(
+            eq(wardAgeGenderWiseMarriedAge.ageGroup, input.ageGroup),
+          );
         }
 
         if (input?.gender) {
@@ -50,9 +52,9 @@ export const getAllWardAgeGenderWiseMarriedAge = publicProcedure
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward ID, age group, and gender
+        // Sort by ward number, age group, and gender
         data = await queryWithFilters.orderBy(
-          wardAgeGenderWiseMarriedAge.wardId,
+          wardAgeGenderWiseMarriedAge.wardNumber,
           wardAgeGenderWiseMarriedAge.ageGroup,
           wardAgeGenderWiseMarriedAge.gender,
         );
@@ -66,7 +68,6 @@ export const getAllWardAgeGenderWiseMarriedAge = publicProcedure
         const acmeSql = sql`
           SELECT 
             id,
-            ward_number::text as ward_id,
             ward_number,
             age_group,
             gender,
@@ -77,36 +78,38 @@ export const getAllWardAgeGenderWiseMarriedAge = publicProcedure
             ward_number, age_group, gender
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
-        
+
         if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
           // Transform ACME data to match expected schema
-          data = acmeResult.map(row => ({
+          data = acmeResult.map((row) => ({
             id: row.id,
-            wardId: row.ward_id,
             wardNumber: parseInt(String(row.ward_number)),
             ageGroup: row.age_group,
             gender: row.gender,
-            population: parseInt(String(row.population || '0'))
+            population: parseInt(String(row.population || "0")),
           }));
-          
+
           // Apply filters if needed
-          if (input?.wardId) {
-            data = data.filter(item => item.wardId === input.wardId);
+          if (input?.wardNumber) {
+            data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
-          
+
           if (input?.ageGroup) {
-            data = data.filter(item => item.ageGroup === input.ageGroup);
+            data = data.filter((item) => item.ageGroup === input.ageGroup);
           }
 
           if (input?.gender) {
-            data = data.filter(item => item.gender === input.gender);
+            data = data.filter((item) => item.gender === input.gender);
           }
         }
       }
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward-age-gender-wise married age data:", error);
+      console.error(
+        "Error fetching ward-age-gender-wise married age data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -116,15 +119,15 @@ export const getAllWardAgeGenderWiseMarriedAge = publicProcedure
 
 // Get data for a specific ward
 export const getWardAgeGenderWiseMarriedAgeByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
       .from(wardAgeGenderWiseMarriedAge)
-      .where(eq(wardAgeGenderWiseMarriedAge.wardId, input.wardId))
+      .where(eq(wardAgeGenderWiseMarriedAge.wardNumber, input.wardNumber))
       .orderBy(
         wardAgeGenderWiseMarriedAge.ageGroup,
-        wardAgeGenderWiseMarriedAge.gender
+        wardAgeGenderWiseMarriedAge.gender,
       );
 
     return data;
@@ -149,9 +152,9 @@ export const createWardAgeGenderWiseMarriedAge = protectedProcedure
       .from(wardAgeGenderWiseMarriedAge)
       .where(
         and(
-          eq(wardAgeGenderWiseMarriedAge.wardId, input.wardId),
+          eq(wardAgeGenderWiseMarriedAge.wardNumber, input.wardNumber),
           eq(wardAgeGenderWiseMarriedAge.ageGroup, input.ageGroup),
-          eq(wardAgeGenderWiseMarriedAge.gender, input.gender)
+          eq(wardAgeGenderWiseMarriedAge.gender, input.gender),
         ),
       )
       .limit(1);
@@ -159,14 +162,14 @@ export const createWardAgeGenderWiseMarriedAge = protectedProcedure
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward ID ${input.wardId}, age group ${input.ageGroup}, and gender ${input.gender} already exists`,
+        message: `Data for Ward Number ${input.wardNumber}, age group ${input.ageGroup}, and gender ${input.gender} already exists`,
       });
     }
 
     // Create new record
     await ctx.db.insert(wardAgeGenderWiseMarriedAge).values({
       id: input.id || uuidv4(),
-      wardId: input.wardId,
+      wardNumber: input.wardNumber,
       ageGroup: input.ageGroup,
       gender: input.gender,
       population: input.population,
@@ -213,7 +216,7 @@ export const updateWardAgeGenderWiseMarriedAge = protectedProcedure
     await ctx.db
       .update(wardAgeGenderWiseMarriedAge)
       .set({
-        wardId: input.wardId,
+        wardNumber: input.wardNumber,
         ageGroup: input.ageGroup,
         gender: input.gender,
         population: input.population,

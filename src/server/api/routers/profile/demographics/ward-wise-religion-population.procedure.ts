@@ -31,23 +31,25 @@ export const getAllWardWiseReligionPopulation = publicProcedure
 
         let conditions = [];
 
-        if (input?.wardId) {
+        if (input?.wardNumber) {
           conditions.push(
-            eq(wardWiseReligionPopulation.wardId, input.wardId),
+            eq(wardWiseReligionPopulation.wardNumber, input.wardNumber),
           );
         }
 
         if (input?.religionType) {
-          conditions.push(eq(wardWiseReligionPopulation.religionType, input.religionType));
+          conditions.push(
+            eq(wardWiseReligionPopulation.religionType, input.religionType),
+          );
         }
 
         const queryWithFilters = conditions.length
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward ID and religion type
+        // Sort by ward number and religion type
         data = await queryWithFilters.orderBy(
-          wardWiseReligionPopulation.wardId,
+          wardWiseReligionPopulation.wardNumber,
           wardWiseReligionPopulation.religionType,
         );
       } catch (err) {
@@ -60,41 +62,48 @@ export const getAllWardWiseReligionPopulation = publicProcedure
         const acmeSql = sql`
           SELECT 
             id,
-            ward_number::text as ward_id,
             ward_number,
             religion_type,
-            population
+            population,
+            updated_at,
+            created_at
           FROM 
             acme_ward_wise_religion_population
           ORDER BY 
             ward_number, religion_type
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
-        
+
         if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
           // Transform ACME data to match expected schema
-          data = acmeResult.map(row => ({
+          data = acmeResult.map((row) => ({
             id: row.id,
-            wardId: row.ward_id,
             wardNumber: parseInt(String(row.ward_number)),
             religionType: row.religion_type,
-            population: parseInt(String(row.population || '0'))
+            population: parseInt(String(row.population || "0")),
+            updatedAt: row.updated_at,
+            createdAt: row.created_at,
           }));
-          
+
           // Apply filters if needed
-          if (input?.wardId) {
-            data = data.filter(item => item.wardId === input.wardId);
+          if (input?.wardNumber) {
+            data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
-          
+
           if (input?.religionType) {
-            data = data.filter(item => item.religionType === input.religionType);
+            data = data.filter(
+              (item) => item.religionType === input.religionType,
+            );
           }
         }
       }
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward-wise religion population data:", error);
+      console.error(
+        "Error fetching ward-wise religion population data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -104,12 +113,12 @@ export const getAllWardWiseReligionPopulation = publicProcedure
 
 // Get data for a specific ward
 export const getWardWiseReligionPopulationByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
       .from(wardWiseReligionPopulation)
-      .where(eq(wardWiseReligionPopulation.wardId, input.wardId))
+      .where(eq(wardWiseReligionPopulation.wardNumber, input.wardNumber))
       .orderBy(wardWiseReligionPopulation.religionType);
 
     return data;
@@ -134,7 +143,7 @@ export const createWardWiseReligionPopulation = protectedProcedure
       .from(wardWiseReligionPopulation)
       .where(
         and(
-          eq(wardWiseReligionPopulation.wardId, input.wardId),
+          eq(wardWiseReligionPopulation.wardNumber, input.wardNumber),
           eq(wardWiseReligionPopulation.religionType, input.religionType),
         ),
       )
@@ -143,14 +152,14 @@ export const createWardWiseReligionPopulation = protectedProcedure
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward ID ${input.wardId} and religion ${input.religionType} already exists`,
+        message: `Data for Ward Number ${input.wardNumber} and religion ${input.religionType} already exists`,
       });
     }
 
     // Create new record
     await ctx.db.insert(wardWiseReligionPopulation).values({
       id: input.id || uuidv4(),
-      wardId: input.wardId,
+      wardNumber: input.wardNumber,
       religionType: input.religionType,
       population: input.population,
     });
@@ -196,7 +205,7 @@ export const updateWardWiseReligionPopulation = protectedProcedure
     await ctx.db
       .update(wardWiseReligionPopulation)
       .set({
-        wardId: input.wardId,
+        wardNumber: input.wardNumber,
         religionType: input.religionType,
         population: input.population,
       })

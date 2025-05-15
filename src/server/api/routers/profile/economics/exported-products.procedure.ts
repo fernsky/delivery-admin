@@ -20,12 +20,16 @@ export const getAllExportedProducts = publicProcedure
   .query(async ({ ctx, input }) => {
     try {
       await ctx.db.execute(sql`SET client_encoding = 'UTF8'`);
-      
-      const data = await ctx.db.select()
+
+      const data = await ctx.db
+        .select()
         .from(exportedProducts)
         .where(
-          input?.id ? eq(exportedProducts.id, input.id) : 
-          input?.productName ? eq(exportedProducts.productName, input.productName) : undefined
+          input?.id
+            ? eq(exportedProducts.id, input.id)
+            : input?.productName
+              ? eq(exportedProducts.productName, input.productName)
+              : undefined,
         )
         .orderBy(exportedProducts.productName);
       return data;
@@ -109,7 +113,7 @@ export const getExportedProductsSummary = publicProcedure.query(
         SELECT 
           COUNT(*) as total_exported_products
         FROM 
-          exported_products
+          acme_exported_products
       `;
       const summaryData = await ctx.db.execute(summarySql);
       return summaryData[0] || { total_exported_products: 0 };
@@ -120,7 +124,7 @@ export const getExportedProductsSummary = publicProcedure.query(
         message: "Failed to retrieve exported products summary",
       });
     }
-  }
+  },
 );
 
 // Export the router with all procedures

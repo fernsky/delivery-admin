@@ -1,203 +1,155 @@
--- Create the enums if they don't exist
-DO $$ BEGIN
-    CREATE TYPE age_group AS ENUM (
-        'AGE_BELOW_15',
-        'AGE_15_19',
-        'AGE_20_24', 
-        'AGE_25_29', 
-        'AGE_30_34', 
-        'AGE_35_39',
-        'AGE_40_44', 
-        'AGE_45_49', 
-        'AGE_50_54', 
-        'AGE_55_59', 
-        'AGE_60_64', 
-        'AGE_65_69', 
-        'AGE_70_74', 
-        'AGE_75_AND_ABOVE'
-    );
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
-    CREATE TYPE marital_status AS ENUM (
-        'UNMARRIED', 
-        'ONE_MARRIAGE',
-        'MULTI_MARRIAGE',
-        'REMARRIAGE',
-        'WIDOWED',
-        'DIVORCED',
-        'SEPARATED',
-        'NOT_STATED'
-    );
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
--- Create the ward_wise_marital_status table
-CREATE TABLE IF NOT EXISTS ward_wise_marital_status (
-    id VARCHAR(36) PRIMARY KEY,
-    ward_id VARCHAR(36) NOT NULL,
-    age_group age_group NOT NULL,
-    marital_status marital_status NOT NULL,
-    population INTEGER NOT NULL,
-    male_population INTEGER,
-    female_population INTEGER,
-    other_population INTEGER,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(ward_id, age_group, marital_status)
-);
-
--- Insert dummy data
--- First, ensure we have ward_wise_demographic_summary entries
-DO $$ 
-DECLARE
-    ward1_id VARCHAR := '12345678-1234-1234-1234-123456789001';
-    ward2_id VARCHAR := '12345678-1234-1234-1234-123456789002';
-    ward3_id VARCHAR := '12345678-1234-1234-1234-123456789003';
-    ward4_id VARCHAR := '12345678-1234-1234-1234-123456789004';
-    ward5_id VARCHAR := '12345678-1234-1234-1234-123456789005';
+-- Check if acme_ward_wise_marital_status table exists, if not create it
+DO $$
 BEGIN
-    -- Check if the wards already exist
-    IF NOT EXISTS (SELECT 1 FROM ward_wise_demographic_summary WHERE id = ward1_id) THEN
-        INSERT INTO ward_wise_demographic_summary (id, ward_number, ward_name, total_population)
-        VALUES 
-            (ward1_id, 1, 'वडा १', 4112),
-            (ward2_id, 2, 'वडा २', 10544),
-            (ward3_id, 3, 'वडा ३', 8481),
-            (ward4_id, 4, 'वडा ४', 7147),
-            (ward5_id, 5, 'वडा ५', 7522);
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_tables WHERE tablename = 'acme_ward_wise_marital_status'
+    ) THEN
+        CREATE TABLE acme_ward_wise_marital_status (
+            id VARCHAR(36) PRIMARY KEY,
+            ward_number INTEGER NOT NULL,
+            age_group VARCHAR(100) NOT NULL,
+            marital_status VARCHAR(100) NOT NULL,
+            population INTEGER NOT NULL,
+            male_population INTEGER,
+            female_population INTEGER,
+            other_population INTEGER,
+            updated_at TIMESTAMP DEFAULT NOW(),
+            created_at TIMESTAMP DEFAULT NOW()
+        );
     END IF;
-END $$;
+END
+$$;
 
--- Clear existing entries if needed for clean testing
--- DELETE FROM ward_wise_marital_status;
+-- Insert seed data if table is empty
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM acme_ward_wise_marital_status) THEN
+        INSERT INTO acme_ward_wise_marital_status (
+            id, ward_number, age_group, marital_status, population, male_population, female_population, other_population
+        )
+        VALUES
+        -- Ward 1, AGE_BELOW_15
+        (gen_random_uuid(), 1, 'AGE_BELOW_15', 'SINGLE', 980, 510, 470, 0),
+        (gen_random_uuid(), 1, 'AGE_BELOW_15', 'MARRIED', 5, 1, 4, 0),
+        (gen_random_uuid(), 1, 'AGE_BELOW_15', 'NOT_STATED', 2, 1, 1, 0),
 
--- Insert marital status data for different wards and age groups
-INSERT INTO ward_wise_marital_status (id, ward_id, age_group, marital_status, population, male_population, female_population, other_population)
-VALUES
-    -- Ward 1, AGE_BELOW_15
-    ('11111111-0001-4000-a000-000000000001', '12345678-1234-1234-1234-123456789001', 'AGE_BELOW_15', 'UNMARRIED', 980, 510, 470, 0),
-    ('11111111-0001-4000-a000-000000000002', '12345678-1234-1234-1234-123456789001', 'AGE_BELOW_15', 'ONE_MARRIAGE', 5, 1, 4, 0),
-    ('11111111-0001-4000-a000-000000000003', '12345678-1234-1234-1234-123456789001', 'AGE_BELOW_15', 'NOT_STATED', 2, 1, 1, 0),
+        -- Ward 1, AGE_15_19
+        (gen_random_uuid(), 1, 'AGE_15_19', 'SINGLE', 248, 130, 118, 0),
+        (gen_random_uuid(), 1, 'AGE_15_19', 'MARRIED', 98, 38, 60, 0),
+        (gen_random_uuid(), 1, 'AGE_15_19', 'SEPARATED', 3, 2, 1, 0),
 
-    -- Ward 1, AGE_15_19
-    ('11111111-0001-4000-a000-000000000004', '12345678-1234-1234-1234-123456789001', 'AGE_15_19', 'UNMARRIED', 248, 130, 118, 0),
-    ('11111111-0001-4000-a000-000000000005', '12345678-1234-1234-1234-123456789001', 'AGE_15_19', 'ONE_MARRIAGE', 98, 38, 60, 0),
-    ('11111111-0001-4000-a000-000000000006', '12345678-1234-1234-1234-123456789001', 'AGE_15_19', 'MULTI_MARRIAGE', 3, 2, 1, 0),
+        -- Ward 1, AGE_20_24
+        (gen_random_uuid(), 1, 'AGE_20_24', 'SINGLE', 165, 91, 74, 0),
+        (gen_random_uuid(), 1, 'AGE_20_24', 'MARRIED', 192, 82, 110, 0),
+        (gen_random_uuid(), 1, 'AGE_20_24', 'SEPARATED', 7, 5, 2, 0),
+        (gen_random_uuid(), 1, 'AGE_20_24', 'DIVORCED', 3, 1, 2, 0),
 
-    -- Ward 1, AGE_20_24
-    ('11111111-0001-4000-a000-000000000007', '12345678-1234-1234-1234-123456789001', 'AGE_20_24', 'UNMARRIED', 165, 91, 74, 0),
-    ('11111111-0001-4000-a000-000000000008', '12345678-1234-1234-1234-123456789001', 'AGE_20_24', 'ONE_MARRIAGE', 192, 82, 110, 0),
-    ('11111111-0001-4000-a000-000000000009', '12345678-1234-1234-1234-123456789001', 'AGE_20_24', 'MULTI_MARRIAGE', 7, 5, 2, 0),
-    ('11111111-0001-4000-a000-000000000010', '12345678-1234-1234-1234-123456789001', 'AGE_20_24', 'DIVORCED', 3, 1, 2, 0),
+        -- Ward 1, AGE_25_29
+        (gen_random_uuid(), 1, 'AGE_25_29', 'SINGLE', 90, 52, 38, 0),
+        (gen_random_uuid(), 1, 'AGE_25_29', 'MARRIED', 250, 118, 132, 0),
+        (gen_random_uuid(), 1, 'AGE_25_29', 'SEPARATED', 15, 10, 5, 0),
+        (gen_random_uuid(), 1, 'AGE_25_29', 'DIVORCED', 5, 2, 3, 0),
+        (gen_random_uuid(), 1, 'AGE_25_29', 'WIDOWED', 2, 0, 2, 0),
 
-    -- Ward 1, AGE_25_29
-    ('11111111-0001-4000-a000-000000000011', '12345678-1234-1234-1234-123456789001', 'AGE_25_29', 'UNMARRIED', 90, 52, 38, 0),
-    ('11111111-0001-4000-a000-000000000012', '12345678-1234-1234-1234-123456789001', 'AGE_25_29', 'ONE_MARRIAGE', 250, 118, 132, 0),
-    ('11111111-0001-4000-a000-000000000013', '12345678-1234-1234-1234-123456789001', 'AGE_25_29', 'MULTI_MARRIAGE', 15, 10, 5, 0),
-    ('11111111-0001-4000-a000-000000000014', '12345678-1234-1234-1234-123456789001', 'AGE_25_29', 'DIVORCED', 5, 2, 3, 0),
-    ('11111111-0001-4000-a000-000000000015', '12345678-1234-1234-1234-123456789001', 'AGE_25_29', 'WIDOWED', 2, 0, 2, 0),
+        -- Ward 1, AGE_30_34
+        (gen_random_uuid(), 1, 'AGE_30_34', 'SINGLE', 62, 40, 22, 0),
+        (gen_random_uuid(), 1, 'AGE_30_34', 'MARRIED', 275, 130, 145, 0),
+        (gen_random_uuid(), 1, 'AGE_30_34', 'SEPARATED', 23, 16, 7, 0),
+        (gen_random_uuid(), 1, 'AGE_30_34', 'DIVORCED', 8, 3, 5, 0),
+        (gen_random_uuid(), 1, 'AGE_30_34', 'WIDOWED', 5, 1, 4, 0),
+        (gen_random_uuid(), 1, 'AGE_30_34', 'SEPARATED', 3, 1, 2, 0),
 
-    -- Ward 1, AGE_30_34
-    ('11111111-0001-4000-a000-000000000016', '12345678-1234-1234-1234-123456789001', 'AGE_30_34', 'UNMARRIED', 62, 40, 22, 0),
-    ('11111111-0001-4000-a000-000000000017', '12345678-1234-1234-1234-123456789001', 'AGE_30_34', 'ONE_MARRIAGE', 275, 130, 145, 0),
-    ('11111111-0001-4000-a000-000000000018', '12345678-1234-1234-1234-123456789001', 'AGE_30_34', 'MULTI_MARRIAGE', 23, 16, 7, 0),
-    ('11111111-0001-4000-a000-000000000019', '12345678-1234-1234-1234-123456789001', 'AGE_30_34', 'DIVORCED', 8, 3, 5, 0),
-    ('11111111-0001-4000-a000-000000000020', '12345678-1234-1234-1234-123456789001', 'AGE_30_34', 'WIDOWED', 5, 1, 4, 0),
-    ('11111111-0001-4000-a000-000000000021', '12345678-1234-1234-1234-123456789001', 'AGE_30_34', 'SEPARATED', 3, 1, 2, 0),
+        -- Ward 1, Middle Ages (35-59)
+        (gen_random_uuid(), 1, 'AGE_35_39', 'SINGLE', 45, 28, 17, 0),
+        (gen_random_uuid(), 1, 'AGE_35_39', 'MARRIED', 265, 145, 120, 0),
+        (gen_random_uuid(), 1, 'AGE_35_39', 'SEPARATED', 35, 22, 13, 0),
+        (gen_random_uuid(), 1, 'AGE_35_39', 'WIDOWED', 10, 2, 8, 0),
+        (gen_random_uuid(), 1, 'AGE_35_39', 'DIVORCED', 12, 5, 7, 0),
 
-    -- Ward 1, Middle Ages (35-59)
-    ('11111111-0001-4000-a000-000000000022', '12345678-1234-1234-1234-123456789001', 'AGE_35_39', 'UNMARRIED', 45, 28, 17, 0),
-    ('11111111-0001-4000-a000-000000000023', '12345678-1234-1234-1234-123456789001', 'AGE_35_39', 'ONE_MARRIAGE', 265, 145, 120, 0),
-    ('11111111-0001-4000-a000-000000000024', '12345678-1234-1234-1234-123456789001', 'AGE_35_39', 'MULTI_MARRIAGE', 35, 22, 13, 0),
-    ('11111111-0001-4000-a000-000000000025', '12345678-1234-1234-1234-123456789001', 'AGE_35_39', 'WIDOWED', 10, 2, 8, 0),
-    ('11111111-0001-4000-a000-000000000026', '12345678-1234-1234-1234-123456789001', 'AGE_35_39', 'DIVORCED', 12, 5, 7, 0),
+        -- Ward 1, Older Ages (60+)
+        (gen_random_uuid(), 1, 'AGE_60_64', 'SINGLE', 12, 7, 5, 0),
+        (gen_random_uuid(), 1, 'AGE_60_64', 'MARRIED', 110, 65, 45, 0),
+        (gen_random_uuid(), 1, 'AGE_60_64', 'WIDOWED', 28, 6, 22, 0),
+        
+        (gen_random_uuid(), 1, 'AGE_75_AND_ABOVE', 'MARRIED', 65, 40, 25, 0),
+        (gen_random_uuid(), 1, 'AGE_75_AND_ABOVE', 'WIDOWED', 45, 10, 35, 0),
 
-    -- Ward 1, Older Ages (60+)
-    ('11111111-0001-4000-a000-000000000027', '12345678-1234-1234-1234-123456789001', 'AGE_60_64', 'UNMARRIED', 12, 7, 5, 0),
-    ('11111111-0001-4000-a000-000000000028', '12345678-1234-1234-1234-123456789001', 'AGE_60_64', 'ONE_MARRIAGE', 110, 65, 45, 0),
-    ('11111111-0001-4000-a000-000000000029', '12345678-1234-1234-1234-123456789001', 'AGE_60_64', 'WIDOWED', 28, 6, 22, 0),
-    
-    ('11111111-0001-4000-a000-000000000030', '12345678-1234-1234-1234-123456789001', 'AGE_75_AND_ABOVE', 'ONE_MARRIAGE', 65, 40, 25, 0),
-    ('11111111-0001-4000-a000-000000000031', '12345678-1234-1234-1234-123456789001', 'AGE_75_AND_ABOVE', 'WIDOWED', 45, 10, 35, 0),
+        -- Ward 2, AGE_BELOW_15
+        (gen_random_uuid(), 2, 'AGE_BELOW_15', 'SINGLE', 1250, 640, 605, 5),
+        (gen_random_uuid(), 2, 'AGE_BELOW_15', 'MARRIED', 8, 2, 6, 0),
 
-    -- Ward 2, AGE_BELOW_15
-    ('22222222-0001-4000-a000-000000000001', '12345678-1234-1234-1234-123456789002', 'AGE_BELOW_15', 'UNMARRIED', 1250, 640, 605, 5),
-    ('22222222-0001-4000-a000-000000000002', '12345678-1234-1234-1234-123456789002', 'AGE_BELOW_15', 'ONE_MARRIAGE', 8, 2, 6, 0),
+        -- Ward 2, AGE_15_19
+        (gen_random_uuid(), 2, 'AGE_15_19', 'SINGLE', 605, 320, 285, 0),
+        (gen_random_uuid(), 2, 'AGE_15_19', 'MARRIED', 120, 42, 78, 0),
+        (gen_random_uuid(), 2, 'AGE_15_19', 'SEPARATED', 5, 3, 2, 0),
 
-    -- Ward 2, AGE_15_19
-    ('22222222-0001-4000-a000-000000000003', '12345678-1234-1234-1234-123456789002', 'AGE_15_19', 'UNMARRIED', 605, 320, 285, 0),
-    ('22222222-0001-4000-a000-000000000004', '12345678-1234-1234-1234-123456789002', 'AGE_15_19', 'ONE_MARRIAGE', 120, 42, 78, 0),
-    ('22222222-0001-4000-a000-000000000005', '12345678-1234-1234-1234-123456789002', 'AGE_15_19', 'MULTI_MARRIAGE', 5, 3, 2, 0),
+        -- Ward 2, AGE_20_24
+        (gen_random_uuid(), 2, 'AGE_20_24', 'SINGLE', 398, 245, 153, 0),
+        (gen_random_uuid(), 2, 'AGE_20_24', 'MARRIED', 470, 195, 275, 0),
+        (gen_random_uuid(), 2, 'AGE_20_24', 'SEPARATED', 15, 10, 5, 0),
+        (gen_random_uuid(), 2, 'AGE_20_24', 'DIVORCED', 8, 2, 6, 0),
+        (gen_random_uuid(), 2, 'AGE_20_24', 'WIDOWED', 5, 3, 2, 0),
 
-    -- Ward 2, AGE_20_24
-    ('22222222-0001-4000-a000-000000000006', '12345678-1234-1234-1234-123456789002', 'AGE_20_24', 'UNMARRIED', 398, 245, 153, 0),
-    ('22222222-0001-4000-a000-000000000007', '12345678-1234-1234-1234-123456789002', 'AGE_20_24', 'ONE_MARRIAGE', 470, 195, 275, 0),
-    ('22222222-0001-4000-a000-000000000008', '12345678-1234-1234-1234-123456789002', 'AGE_20_24', 'MULTI_MARRIAGE', 15, 10, 5, 0),
-    ('22222222-0001-4000-a000-000000000009', '12345678-1234-1234-1234-123456789002', 'AGE_20_24', 'DIVORCED', 8, 2, 6, 0),
-    ('22222222-0001-4000-a000-000000000010', '12345678-1234-1234-1234-123456789002', 'AGE_20_24', 'REMARRIAGE', 5, 3, 2, 0),
+        -- Ward 2, AGE_25_29 & AGE_30_34 combined
+        (gen_random_uuid(), 2, 'AGE_25_29', 'SINGLE', 275, 175, 100, 0),
+        (gen_random_uuid(), 2, 'AGE_25_29', 'MARRIED', 630, 290, 340, 0),
+        (gen_random_uuid(), 2, 'AGE_25_29', 'SEPARATED', 42, 32, 10, 0),
+        (gen_random_uuid(), 2, 'AGE_25_29', 'DIVORCED', 18, 8, 10, 0),
+        (gen_random_uuid(), 2, 'AGE_25_29', 'WIDOWED', 10, 2, 8, 0),
 
-    -- Ward 2, AGE_25_29 & AGE_30_34 combined
-    ('22222222-0001-4000-a000-000000000011', '12345678-1234-1234-1234-123456789002', 'AGE_25_29', 'UNMARRIED', 275, 175, 100, 0),
-    ('22222222-0001-4000-a000-000000000012', '12345678-1234-1234-1234-123456789002', 'AGE_25_29', 'ONE_MARRIAGE', 630, 290, 340, 0),
-    ('22222222-0001-4000-a000-000000000013', '12345678-1234-1234-1234-123456789002', 'AGE_25_29', 'MULTI_MARRIAGE', 42, 32, 10, 0),
-    ('22222222-0001-4000-a000-000000000014', '12345678-1234-1234-1234-123456789002', 'AGE_25_29', 'REMARRIAGE', 15, 10, 5, 0),
-    ('22222222-0001-4000-a000-000000000015', '12345678-1234-1234-1234-123456789002', 'AGE_25_29', 'DIVORCED', 18, 8, 10, 0),
-    ('22222222-0001-4000-a000-000000000016', '12345678-1234-1234-1234-123456789002', 'AGE_25_29', 'WIDOWED', 10, 2, 8, 0),
+        (gen_random_uuid(), 2, 'AGE_30_34', 'SINGLE', 185, 120, 65, 0),
+        (gen_random_uuid(), 2, 'AGE_30_34', 'MARRIED', 710, 340, 370, 0),
+        (gen_random_uuid(), 2, 'AGE_30_34', 'SEPARATED', 55, 37, 18, 0),
+        (gen_random_uuid(), 2, 'AGE_30_34', 'DIVORCED', 20, 8, 12, 0),
+        (gen_random_uuid(), 2, 'AGE_30_34', 'SEPARATED', 10, 4, 6, 0),
+        (gen_random_uuid(), 2, 'AGE_30_34', 'WIDOWED', 15, 4, 11, 0),
 
-    ('22222222-0001-4000-a000-000000000017', '12345678-1234-1234-1234-123456789002', 'AGE_30_34', 'UNMARRIED', 185, 120, 65, 0),
-    ('22222222-0001-4000-a000-000000000018', '12345678-1234-1234-1234-123456789002', 'AGE_30_34', 'ONE_MARRIAGE', 710, 340, 370, 0),
-    ('22222222-0001-4000-a000-000000000019', '12345678-1234-1234-1234-123456789002', 'AGE_30_34', 'MULTI_MARRIAGE', 55, 37, 18, 0),
-    ('22222222-0001-4000-a000-000000000020', '12345678-1234-1234-1234-123456789002', 'AGE_30_34', 'DIVORCED', 20, 8, 12, 0),
-    ('22222222-0001-4000-a000-000000000021', '12345678-1234-1234-1234-123456789002', 'AGE_30_34', 'SEPARATED', 10, 4, 6, 0),
-    ('22222222-0001-4000-a000-000000000022', '12345678-1234-1234-1234-123456789002', 'AGE_30_34', 'WIDOWED', 15, 4, 11, 0),
-
-    -- Ward 3, selected age groups
-    ('33333333-0001-4000-a000-000000000001', '12345678-1234-1234-1234-123456789003', 'AGE_BELOW_15', 'UNMARRIED', 915, 470, 445, 0),
-    ('33333333-0001-4000-a000-000000000002', '12345678-1234-1234-1234-123456789003', 'AGE_BELOW_15', 'ONE_MARRIAGE', 3, 1, 2, 0),
-    
-    ('33333333-0001-4000-a000-000000000003', '12345678-1234-1234-1234-123456789003', 'AGE_15_19', 'UNMARRIED', 545, 280, 265, 0),
-    ('33333333-0001-4000-a000-000000000004', '12345678-1234-1234-1234-123456789003', 'AGE_15_19', 'ONE_MARRIAGE', 135, 50, 85, 0),
-    ('33333333-0001-4000-a000-000000000005', '12345678-1234-1234-1234-123456789003', 'AGE_15_19', 'MULTI_MARRIAGE', 4, 2, 2, 0),
-    
-    ('33333333-0001-4000-a000-000000000006', '12345678-1234-1234-1234-123456789003', 'AGE_20_24', 'UNMARRIED', 365, 210, 155, 0),
-    ('33333333-0001-4000-a000-000000000007', '12345678-1234-1234-1234-123456789003', 'AGE_20_24', 'ONE_MARRIAGE', 390, 160, 230, 0),
-    ('33333333-0001-4000-a000-000000000008', '12345678-1234-1234-1234-123456789003', 'AGE_20_24', 'MULTI_MARRIAGE', 12, 8, 4, 0),
-    
-    -- Ward 4, selected age groups with more gender diversity
-    ('44444444-0001-4000-a000-000000000001', '12345678-1234-1234-1234-123456789004', 'AGE_15_19', 'UNMARRIED', 510, 260, 248, 2),
-    ('44444444-0001-4000-a000-000000000002', '12345678-1234-1234-1234-123456789004', 'AGE_15_19', 'ONE_MARRIAGE', 142, 58, 84, 0),
-    
-    ('44444444-0001-4000-a000-000000000003', '12345678-1234-1234-1234-123456789004', 'AGE_20_24', 'UNMARRIED', 330, 180, 148, 2),
-    ('44444444-0001-4000-a000-000000000004', '12345678-1234-1234-1234-123456789004', 'AGE_20_24', 'ONE_MARRIAGE', 415, 180, 235, 0),
-    ('44444444-0001-4000-a000-000000000005', '12345678-1234-1234-1234-123456789004', 'AGE_20_24', 'MULTI_MARRIAGE', 18, 12, 6, 0),
-    ('44444444-0001-4000-a000-000000000006', '12345678-1234-1234-1234-123456789004', 'AGE_20_24', 'REMARRIAGE', 8, 5, 3, 0),
-    
-    ('44444444-0001-4000-a000-000000000007', '12345678-1234-1234-1234-123456789004', 'AGE_25_29', 'UNMARRIED', 245, 152, 92, 1),
-    ('44444444-0001-4000-a000-000000000008', '12345678-1234-1234-1234-123456789004', 'AGE_25_29', 'ONE_MARRIAGE', 580, 270, 310, 0),
-    ('44444444-0001-4000-a000-000000000009', '12345678-1234-1234-1234-123456789004', 'AGE_25_29', 'MULTI_MARRIAGE', 38, 28, 10, 0),
-    
-    -- Ward 5, older age groups
-    ('55555555-0001-4000-a000-000000000001', '12345678-1234-1234-1234-123456789005', 'AGE_40_44', 'UNMARRIED', 35, 22, 13, 0),
-    ('55555555-0001-4000-a000-000000000002', '12345678-1234-1234-1234-123456789005', 'AGE_40_44', 'ONE_MARRIAGE', 390, 210, 180, 0),
-    ('55555555-0001-4000-a000-000000000003', '12345678-1234-1234-1234-123456789005', 'AGE_40_44', 'MULTI_MARRIAGE', 45, 35, 10, 0),
-    ('55555555-0001-4000-a000-000000000004', '12345678-1234-1234-1234-123456789005', 'AGE_40_44', 'WIDOWED', 18, 4, 14, 0),
-    ('55555555-0001-4000-a000-000000000005', '12345678-1234-1234-1234-123456789005', 'AGE_40_44', 'DIVORCED', 12, 5, 7, 0),
-    
-    ('55555555-0001-4000-a000-000000000006', '12345678-1234-1234-1234-123456789005', 'AGE_50_54', 'UNMARRIED', 22, 15, 7, 0),
-    ('55555555-0001-4000-a000-000000000007', '12345678-1234-1234-1234-123456789005', 'AGE_50_54', 'ONE_MARRIAGE', 285, 168, 117, 0),
-    ('55555555-0001-4000-a000-000000000008', '12345678-1234-1234-1234-123456789005', 'AGE_50_54', 'MULTI_MARRIAGE', 42, 30, 12, 0),
-    ('55555555-0001-4000-a000-000000000009', '12345678-1234-1234-1234-123456789005', 'AGE_50_54', 'WIDOWED', 36, 8, 28, 0),
-    
-    ('55555555-0001-4000-a000-000000000010', '12345678-1234-1234-1234-123456789005', 'AGE_65_69', 'UNMARRIED', 10, 6, 4, 0),
-    ('55555555-0001-4000-a000-000000000011', '12345678-1234-1234-1234-123456789005', 'AGE_65_69', 'ONE_MARRIAGE', 160, 90, 70, 0),
-    ('55555555-0001-4000-a000-000000000012', '12345678-1234-1234-1234-123456789005', 'AGE_65_69', 'MULTI_MARRIAGE', 25, 20, 5, 0),
-    ('55555555-0001-4000-a000-000000000013', '12345678-1234-1234-1234-123456789005', 'AGE_65_69', 'WIDOWED', 68, 16, 52, 0),
-    
-    ('55555555-0001-4000-a000-000000000014', '12345678-1234-1234-1234-123456789005', 'AGE_75_AND_ABOVE', 'UNMARRIED', 5, 3, 2, 0),
-    ('55555555-0001-4000-a000-000000000015', '12345678-1234-1234-1234-123456789005', 'AGE_75_AND_ABOVE', 'ONE_MARRIAGE', 102, 70, 32, 0),
-    ('55555555-0001-4000-a000-000000000016', '12345678-1234-1234-1234-123456789005', 'AGE_75_AND_ABOVE', 'MULTI_MARRIAGE', 18, 15, 3, 0),
-    ('55555555-0001-4000-a000-000000000017', '12345678-1234-1234-1234-123456789005', 'AGE_75_AND_ABOVE', 'WIDOWED', 95, 28, 67, 0);
+        -- Ward 3, selected age groups
+        (gen_random_uuid(), 3, 'AGE_BELOW_15', 'SINGLE', 915, 470, 445, 0),
+        (gen_random_uuid(), 3, 'AGE_BELOW_15', 'MARRIED', 3, 1, 2, 0),
+        
+        (gen_random_uuid(), 3, 'AGE_15_19', 'SINGLE', 545, 280, 265, 0),
+        (gen_random_uuid(), 3, 'AGE_15_19', 'MARRIED', 135, 50, 85, 0),
+        (gen_random_uuid(), 3, 'AGE_15_19', 'SEPARATED', 4, 2, 2, 0),
+        
+        (gen_random_uuid(), 3, 'AGE_20_24', 'SINGLE', 365, 210, 155, 0),
+        (gen_random_uuid(), 3, 'AGE_20_24', 'MARRIED', 390, 160, 230, 0),
+        (gen_random_uuid(), 3, 'AGE_20_24', 'SEPARATED', 12, 8, 4, 0),
+        
+        -- Ward 4, selected age groups with more gender diversity
+        (gen_random_uuid(), 4, 'AGE_15_19', 'SINGLE', 510, 260, 248, 2),
+        (gen_random_uuid(), 4, 'AGE_15_19', 'MARRIED', 142, 58, 84, 0),
+        
+        (gen_random_uuid(), 4, 'AGE_20_24', 'SINGLE', 330, 180, 148, 2),
+        (gen_random_uuid(), 4, 'AGE_20_24', 'MARRIED', 415, 180, 235, 0),
+        (gen_random_uuid(), 4, 'AGE_20_24', 'SEPARATED', 18, 12, 6, 0),
+        (gen_random_uuid(), 4, 'AGE_20_24', 'DIVORCED', 8, 5, 3, 0),
+        
+        (gen_random_uuid(), 4, 'AGE_25_29', 'SINGLE', 245, 152, 92, 1),
+        (gen_random_uuid(), 4, 'AGE_25_29', 'MARRIED', 580, 270, 310, 0),
+        (gen_random_uuid(), 4, 'AGE_25_29', 'SEPARATED', 38, 28, 10, 0),
+        
+        -- Ward 5, older age groups
+        (gen_random_uuid(), 5, 'AGE_40_44', 'SINGLE', 35, 22, 13, 0),
+        (gen_random_uuid(), 5, 'AGE_40_44', 'MARRIED', 390, 210, 180, 0),
+        (gen_random_uuid(), 5, 'AGE_40_44', 'SEPARATED', 45, 35, 10, 0),
+        (gen_random_uuid(), 5, 'AGE_40_44', 'WIDOWED', 18, 4, 14, 0),
+        (gen_random_uuid(), 5, 'AGE_40_44', 'DIVORCED', 12, 5, 7, 0),
+        
+        (gen_random_uuid(), 5, 'AGE_50_54', 'SINGLE', 22, 15, 7, 0),
+        (gen_random_uuid(), 5, 'AGE_50_54', 'MARRIED', 285, 168, 117, 0),
+        (gen_random_uuid(), 5, 'AGE_50_54', 'SEPARATED', 42, 30, 12, 0),
+        (gen_random_uuid(), 5, 'AGE_50_54', 'WIDOWED', 36, 8, 28, 0),
+        
+        (gen_random_uuid(), 5, 'AGE_65_69', 'SINGLE', 10, 6, 4, 0),
+        (gen_random_uuid(), 5, 'AGE_65_69', 'MARRIED', 160, 90, 70, 0),
+        (gen_random_uuid(), 5, 'AGE_65_69', 'SEPARATED', 25, 20, 5, 0),
+        (gen_random_uuid(), 5, 'AGE_65_69', 'WIDOWED', 68, 16, 52, 0),
+        
+        (gen_random_uuid(), 5, 'AGE_75_AND_ABOVE', 'SINGLE', 5, 3, 2, 0),
+        (gen_random_uuid(), 5, 'AGE_75_AND_ABOVE', 'MARRIED', 102, 70, 32, 0),
+        (gen_random_uuid(), 5, 'AGE_75_AND_ABOVE', 'SEPARATED', 18, 15, 3, 0),
+        (gen_random_uuid(), 5, 'AGE_75_AND_ABOVE', 'WIDOWED', 95, 28, 67, 0);
+    END IF;
+END
+$$;

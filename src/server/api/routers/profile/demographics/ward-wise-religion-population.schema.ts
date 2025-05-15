@@ -19,14 +19,14 @@ export type ReligionType = z.infer<typeof ReligionTypeEnum>;
 // Schema for ward-wise religion population data
 export const wardWiseReligionPopulationSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string(),
+  wardNumber: z.number().int().positive(),
   religionType: ReligionTypeEnum,
   population: z.number().int().nonnegative(),
 });
 
 // Schema for filtering ward-wise religion population data
 export const wardWiseReligionPopulationFilterSchema = z.object({
-  wardId: z.string().optional(),
+  wardNumber: z.number().int().positive().optional(),
   religionType: ReligionTypeEnum.optional(),
 });
 

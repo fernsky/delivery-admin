@@ -3,10 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { 
-  wardWiseHouseholdLandPossessions,
-  acmeWardWiseHouseholdLandPossessions 
-} from "@/server/db/schema/profile/economics/ward-wise-household-land-possessions";
+import { wardWiseHouseholdLandPossessions } from "@/server/db/schema/profile/economics/ward-wise-household-land-possessions";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
   wardWiseHouseholdLandPossessionsBaseSchema,
@@ -28,74 +25,32 @@ export const getAllWardWiseHouseholdLandPossessions = publicProcedure
       // Set UTF-8 encoding explicitly before running query
       await ctx.db.execute(sql`SET client_encoding = 'UTF8'`);
 
-      // First try querying the main schema table
-      let data: any[];
-      try {
-        // Build query with conditions
-        const baseQuery = ctx.db.select().from(wardWiseHouseholdLandPossessions);
+      // Build query with conditions
+      const baseQuery = ctx.db.select().from(wardWiseHouseholdLandPossessions);
 
-        let conditions = [];
+      let conditions = [];
 
-        if (input?.wardId) {
-          conditions.push(
-            eq(wardWiseHouseholdLandPossessions.wardId, input.wardId),
-          );
-        }
-
-        if (input?.wardNumber) {
-          conditions.push(eq(wardWiseHouseholdLandPossessions.wardNumber, input.wardNumber));
-        }
-
-        const queryWithFilters = conditions.length
-          ? baseQuery.where(and(...conditions))
-          : baseQuery;
-
-        // Sort by ward ID
-        data = await queryWithFilters.orderBy(
-          wardWiseHouseholdLandPossessions.wardId
+      if (input?.wardNumber) {
+        conditions.push(
+          eq(wardWiseHouseholdLandPossessions.wardNumber, input.wardNumber),
         );
-      } catch (err) {
-        console.log("Failed to query main schema, trying ACME table:", err);
-        data = [];
       }
 
-      // If no data from main schema, try the ACME table
-      if (!data || data.length === 0) {
-        const acmeSql = sql`
-          SELECT 
-            id,
-            ward_number,
-            households
-          FROM 
-            acme_ward_wise_household_land_possessions
-          ORDER BY 
-            ward_number
-        `;
-        const acmeResult = await ctx.db.execute(acmeSql);
-        
-        if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
-          // Transform ACME data to match expected schema
-          data = acmeResult.map(row => ({
-            id: row.id,
-            wardId: String(row.ward_number),
-            wardNumber: parseInt(String(row.ward_number)),
-            households: parseInt(String(row.households || '0'))
-          }));
-          
-          // Apply filters if needed
-          if (input?.wardId) {
-            data = data.filter(item => item.wardId === input.wardId);
-          }
-          
-          if (input?.wardNumber) {
-            data = data.filter(item => item.wardNumber === input.wardNumber);
-          }
-        }
-      }
+      const queryWithFilters = conditions.length
+        ? baseQuery.where(and(...conditions))
+        : baseQuery;
+
+      // Sort by ward number
+      const data = await queryWithFilters.orderBy(
+        wardWiseHouseholdLandPossessions.wardNumber,
+      );
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward-wise household land possessions data:", error);
+      console.error(
+        "Error fetching ward-wise household land possessions data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -105,12 +60,12 @@ export const getAllWardWiseHouseholdLandPossessions = publicProcedure
 
 // Get data for a specific ward
 export const getWardWiseHouseholdLandPossessionsByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number().int().nonnegative() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
       .from(wardWiseHouseholdLandPossessions)
-      .where(eq(wardWiseHouseholdLandPossessions.wardId, input.wardId));
+      .where(eq(wardWiseHouseholdLandPossessions.wardNumber, input.wardNumber));
 
     return data;
   });
@@ -132,20 +87,19 @@ export const createWardWiseHouseholdLandPossessions = protectedProcedure
     const existing = await ctx.db
       .select({ id: wardWiseHouseholdLandPossessions.id })
       .from(wardWiseHouseholdLandPossessions)
-      .where(eq(wardWiseHouseholdLandPossessions.wardId, input.wardId))
+      .where(eq(wardWiseHouseholdLandPossessions.wardNumber, input.wardNumber))
       .limit(1);
 
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward ID ${input.wardId} already exists`,
+        message: `Data for Ward Number ${input.wardNumber} already exists`,
       });
     }
 
     // Create new record
     await ctx.db.insert(wardWiseHouseholdLandPossessions).values({
       id: uuidv4(),
-      wardId: input.wardId,
       wardNumber: input.wardNumber,
       households: input.households,
     });
@@ -169,14 +123,13 @@ export const batchAddWardWiseHouseholdLandPossessions = protectedProcedure
     try {
       // Insert all records in a batch
       for (const item of input.data) {
-        // Creating a wardId from palika and ward number
-        const wardId = `${input.palika}-${item.wardNumber}`;
-        
         // Check if entry already exists for this ward
         const existing = await ctx.db
           .select({ id: wardWiseHouseholdLandPossessions.id })
           .from(wardWiseHouseholdLandPossessions)
-          .where(eq(wardWiseHouseholdLandPossessions.wardId, wardId))
+          .where(
+            eq(wardWiseHouseholdLandPossessions.wardNumber, item.wardNumber),
+          )
           .limit(1);
 
         if (existing.length > 0) {
@@ -184,12 +137,13 @@ export const batchAddWardWiseHouseholdLandPossessions = protectedProcedure
           await ctx.db
             .update(wardWiseHouseholdLandPossessions)
             .set({ households: item.households })
-            .where(eq(wardWiseHouseholdLandPossessions.wardId, wardId));
+            .where(
+              eq(wardWiseHouseholdLandPossessions.wardNumber, item.wardNumber),
+            );
         } else {
           // Create new record
           await ctx.db.insert(wardWiseHouseholdLandPossessions).values({
             id: uuidv4(),
-            wardId: wardId,
             wardNumber: item.wardNumber,
             households: item.households,
           });
@@ -201,7 +155,8 @@ export const batchAddWardWiseHouseholdLandPossessions = protectedProcedure
       console.error("Error in batch add:", error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to batch add ward-wise household land possessions data",
+        message:
+          "Failed to batch add ward-wise household land possessions data",
       });
     }
   });
@@ -238,6 +193,7 @@ export const updateWardWiseHouseholdLandPossessions = protectedProcedure
       .update(wardWiseHouseholdLandPossessions)
       .set({
         households: input.households,
+        updatedAt: new Date(),
       })
       .where(eq(wardWiseHouseholdLandPossessions.id, input.id));
 
@@ -282,10 +238,14 @@ export const getWardWiseHouseholdLandPossessionsSummary = publicProcedure.query(
 
       return summaryData[0] || { total_households: 0, total_wards: 0 };
     } catch (error) {
-      console.error("Error in getWardWiseHouseholdLandPossessionsSummary:", error);
+      console.error(
+        "Error in getWardWiseHouseholdLandPossessionsSummary:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to retrieve ward-wise household land possessions summary",
+        message:
+          "Failed to retrieve ward-wise household land possessions summary",
       });
     }
   },

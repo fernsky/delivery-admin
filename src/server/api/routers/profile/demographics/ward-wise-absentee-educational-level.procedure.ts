@@ -4,7 +4,6 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import { wardWiseAbsenteeEducationalLevel } from "@/server/db/schema/profile/demographics/ward-wise-absentee-educational-level";
-import { wardWiseDemographicSummary } from "@/server/db/schema/profile/demographics/ward-wise-demographic-summary";
 import { eq, and, desc, sql, inArray } from "drizzle-orm";
 import {
   wardWiseAbsenteeEducationalLevelSchema,
@@ -24,49 +23,92 @@ export const getAllWardWiseAbsenteeEducationalLevel = publicProcedure
       // Set UTF-8 encoding explicitly before running query
       await ctx.db.execute(sql`SET client_encoding = 'UTF8'`);
 
-      // Build query with conditions
-      const baseQuery = ctx.db
-        .select({
-          id: wardWiseAbsenteeEducationalLevel.id,
-          wardId: wardWiseAbsenteeEducationalLevel.wardId,
-          wardNumber: wardWiseDemographicSummary.wardNumber,
-          educationalLevel: wardWiseAbsenteeEducationalLevel.educationalLevel,
-          population: wardWiseAbsenteeEducationalLevel.population,
-          createdAt: wardWiseAbsenteeEducationalLevel.createdAt,
-          updatedAt: wardWiseAbsenteeEducationalLevel.updatedAt,
-        })
-        .from(wardWiseAbsenteeEducationalLevel)
-        .leftJoin(
-          wardWiseDemographicSummary, 
-          eq(wardWiseAbsenteeEducationalLevel.wardId, wardWiseDemographicSummary.id)
-        );
+      // First try querying the main schema table
+      let data: any[];
+      try {
+        // Build query with conditions
+        const baseQuery = ctx.db
+          .select()
+          .from(wardWiseAbsenteeEducationalLevel);
 
-      let conditions = [];
+        let conditions = [];
 
-      if (input?.wardId) {
-        conditions.push(
-          eq(wardWiseAbsenteeEducationalLevel.wardId, input.wardId),
+        if (input?.wardNumber) {
+          conditions.push(
+            eq(wardWiseAbsenteeEducationalLevel.wardNumber, input.wardNumber),
+          );
+        }
+
+        if (input?.educationalLevel) {
+          conditions.push(
+            eq(
+              wardWiseAbsenteeEducationalLevel.educationalLevel,
+              input.educationalLevel,
+            ),
+          );
+        }
+
+        const queryWithFilters = conditions.length
+          ? baseQuery.where(and(...conditions))
+          : baseQuery;
+
+        // Sort by ward number and educational level
+        data = await queryWithFilters.orderBy(
+          wardWiseAbsenteeEducationalLevel.wardNumber,
+          wardWiseAbsenteeEducationalLevel.educationalLevel,
         );
+      } catch (err) {
+        console.log("Failed to query main schema, trying ACME table:", err);
+        data = [];
       }
 
-      if (input?.educationalLevel) {
-        conditions.push(
-          eq(wardWiseAbsenteeEducationalLevel.educationalLevel, input.educationalLevel),
-        );
+      // If no data from main schema, try the ACME table
+      if (!data || data.length === 0) {
+        const acmeSql = sql`
+          SELECT 
+            id,
+            ward_number,
+            educational_level,
+            population,
+            updated_at,
+            created_at
+          FROM 
+            acme_ward_wise_absentee_educational_level
+          ORDER BY 
+            ward_number, educational_level
+        `;
+        const acmeResult = await ctx.db.execute(acmeSql);
+
+        if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
+          // Transform ACME data to match expected schema
+          data = acmeResult.map((row) => ({
+            id: row.id,
+            wardNumber: parseInt(String(row.ward_number)),
+            educationalLevel: row.educational_level,
+            population: parseInt(String(row.population || "0")),
+            updatedAt: row.updated_at,
+            createdAt: row.created_at,
+          }));
+
+          // Apply filters if needed
+          if (input?.wardNumber) {
+            data = data.filter((item) => item.wardNumber === input.wardNumber);
+          }
+
+          if (input?.educationalLevel) {
+            data = data.filter(
+              (item) => item.educationalLevel === input.educationalLevel,
+            );
+          }
+        }
       }
-
-      const queryWithFilters = conditions.length
-        ? baseQuery.where(and(...conditions))
-        : baseQuery;
-
-      // Sort by educational level
-      const data = await queryWithFilters.orderBy(
-        wardWiseAbsenteeEducationalLevel.educationalLevel,
-      );
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward-wise absentee educational level data:", error);
+      console.error(
+        "Error fetching ward-wise absentee educational level data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -76,18 +118,23 @@ export const getAllWardWiseAbsenteeEducationalLevel = publicProcedure
 
 // Get ward-wise absentee educational level data for a specific ward
 export const getWardWiseAbsenteeEducationalLevelByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
     try {
       const data = await ctx.db
         .select()
         .from(wardWiseAbsenteeEducationalLevel)
-        .where(eq(wardWiseAbsenteeEducationalLevel.wardId, input.wardId))
+        .where(
+          eq(wardWiseAbsenteeEducationalLevel.wardNumber, input.wardNumber),
+        )
         .orderBy(wardWiseAbsenteeEducationalLevel.educationalLevel);
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward absentee educational level data:", error);
+      console.error(
+        "Error fetching ward absentee educational level data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve ward absentee educational level data",
@@ -103,21 +150,8 @@ export const createWardWiseAbsenteeEducationalLevel = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Only administrators can create ward absentee educational level data",
-      });
-    }
-
-    // Check if the ward exists
-    const ward = await ctx.db
-      .select({ id: wardWiseDemographicSummary.id })
-      .from(wardWiseDemographicSummary)
-      .where(eq(wardWiseDemographicSummary.id, input.wardId))
-      .limit(1);
-
-    if (ward.length === 0) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Referenced ward does not exist",
+        message:
+          "Only administrators can create ward absentee educational level data",
       });
     }
 
@@ -125,28 +159,35 @@ export const createWardWiseAbsenteeEducationalLevel = protectedProcedure
     const existing = await ctx.db
       .select({ id: wardWiseAbsenteeEducationalLevel.id })
       .from(wardWiseAbsenteeEducationalLevel)
-      .where(and(
-        eq(wardWiseAbsenteeEducationalLevel.wardId, input.wardId),
-        eq(wardWiseAbsenteeEducationalLevel.educationalLevel, input.educationalLevel)
-      ))
+      .where(
+        and(
+          eq(wardWiseAbsenteeEducationalLevel.wardNumber, input.wardNumber),
+          eq(
+            wardWiseAbsenteeEducationalLevel.educationalLevel,
+            input.educationalLevel,
+          ),
+        ),
+      )
       .limit(1);
 
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for this ward and educational level already exists`,
+        message: `Data for Ward Number ${input.wardNumber} and educational level ${input.educationalLevel} already exists`,
       });
     }
 
     const recordToInsert = {
       id: input.id || uuidv4(),
-      wardId: input.wardId,
+      wardNumber: input.wardNumber,
       educationalLevel: input.educationalLevel,
       population: input.population,
     };
 
     // Create new record
-    await ctx.db.insert(wardWiseAbsenteeEducationalLevel).values(recordToInsert);
+    await ctx.db
+      .insert(wardWiseAbsenteeEducationalLevel)
+      .values(recordToInsert);
 
     return { success: true, id: recordToInsert.id };
   });
@@ -159,41 +200,35 @@ export const bulkCreateWardWiseAbsenteeEducationalLevel = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Only administrators can create ward absentee educational level data",
-      });
-    }
-
-    // Check if the ward exists
-    const ward = await ctx.db
-      .select({ id: wardWiseDemographicSummary.id })
-      .from(wardWiseDemographicSummary)
-      .where(eq(wardWiseDemographicSummary.id, input.wardId))
-      .limit(1);
-
-    if (ward.length === 0) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Referenced ward does not exist",
+        message:
+          "Only administrators can create ward absentee educational level data",
       });
     }
 
     // Extract educational levels from input
     const educationalLevels = input.educationalLevels.map(
-      (item) => item.educationalLevel
+      (item) => item.educationalLevel,
     );
 
     // Check if any entries for this ward and educational levels already exist
     const existing = await ctx.db
-      .select({ educationalLevel: wardWiseAbsenteeEducationalLevel.educationalLevel })
+      .select({
+        educationalLevel: wardWiseAbsenteeEducationalLevel.educationalLevel,
+      })
       .from(wardWiseAbsenteeEducationalLevel)
-      .where(and(
-        eq(wardWiseAbsenteeEducationalLevel.wardId, input.wardId),
-        inArray(wardWiseAbsenteeEducationalLevel.educationalLevel, educationalLevels)
-      ));
+      .where(
+        and(
+          eq(wardWiseAbsenteeEducationalLevel.wardNumber, input.wardNumber),
+          inArray(
+            wardWiseAbsenteeEducationalLevel.educationalLevel,
+            educationalLevels,
+          ),
+        ),
+      );
 
     // If duplicates found, prevent the operation
     if (existing.length > 0) {
-      const duplicates = existing.map(e => e.educationalLevel).join(', ');
+      const duplicates = existing.map((e) => e.educationalLevel).join(", ");
       throw new TRPCError({
         code: "CONFLICT",
         message: `Data already exists for these educational levels: ${duplicates}`,
@@ -203,13 +238,15 @@ export const bulkCreateWardWiseAbsenteeEducationalLevel = protectedProcedure
     // Prepare records for bulk insertion
     const recordsToInsert = input.educationalLevels.map((item) => ({
       id: uuidv4(),
-      wardId: input.wardId,
+      wardNumber: input.wardNumber,
       educationalLevel: item.educationalLevel,
       population: item.population,
     }));
 
     // Insert all records
-    await ctx.db.insert(wardWiseAbsenteeEducationalLevel).values(recordsToInsert);
+    await ctx.db
+      .insert(wardWiseAbsenteeEducationalLevel)
+      .values(recordsToInsert);
 
     return { success: true, count: recordsToInsert.length };
   });
@@ -222,7 +259,8 @@ export const updateWardWiseAbsenteeEducationalLevel = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Only administrators can update ward absentee educational level data",
+        message:
+          "Only administrators can update ward absentee educational level data",
       });
     }
 
@@ -252,11 +290,16 @@ export const updateWardWiseAbsenteeEducationalLevel = protectedProcedure
       const potentialDuplicate = await ctx.db
         .select({ id: wardWiseAbsenteeEducationalLevel.id })
         .from(wardWiseAbsenteeEducationalLevel)
-        .where(and(
-          eq(wardWiseAbsenteeEducationalLevel.wardId, input.wardId),
-          eq(wardWiseAbsenteeEducationalLevel.educationalLevel, input.educationalLevel),
-          sql`${wardWiseAbsenteeEducationalLevel.id} != ${input.id}`
-        ))
+        .where(
+          and(
+            eq(wardWiseAbsenteeEducationalLevel.wardNumber, input.wardNumber),
+            eq(
+              wardWiseAbsenteeEducationalLevel.educationalLevel,
+              input.educationalLevel,
+            ),
+            sql`${wardWiseAbsenteeEducationalLevel.id} != ${input.id}`,
+          ),
+        )
         .limit(1);
 
       if (potentialDuplicate.length > 0) {
@@ -269,7 +312,7 @@ export const updateWardWiseAbsenteeEducationalLevel = protectedProcedure
 
     // Prepare update data
     const updateData = {
-      wardId: input.wardId,
+      wardNumber: input.wardNumber,
       educationalLevel: input.educationalLevel,
       population: input.population,
     };
@@ -291,7 +334,8 @@ export const deleteWardWiseAbsenteeEducationalLevel = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Only administrators can delete ward absentee educational level data",
+        message:
+          "Only administrators can delete ward absentee educational level data",
       });
     }
 

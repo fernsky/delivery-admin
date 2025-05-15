@@ -3,9 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { 
-  wardWiseMajorOccupation 
-} from "@/server/db/schema/profile/economics/ward-wise-major-occupation";
+import { wardWiseMajorOccupation } from "@/server/db/schema/profile/economics/ward-wise-major-occupation";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
   wardWiseMajorOccupationSchema,
@@ -33,23 +31,25 @@ export const getAllWardWiseMajorOccupation = publicProcedure
 
         let conditions = [];
 
-        if (input?.wardId) {
+        if (input?.wardNumber !== undefined) {
           conditions.push(
-            eq(wardWiseMajorOccupation.wardId, input.wardId),
+            eq(wardWiseMajorOccupation.wardNumber, input.wardNumber),
           );
         }
 
         if (input?.occupation) {
-          conditions.push(eq(wardWiseMajorOccupation.occupation, input.occupation));
+          conditions.push(
+            eq(wardWiseMajorOccupation.occupation, input.occupation),
+          );
         }
 
         const queryWithFilters = conditions.length
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward ID and occupation
+        // Sort by ward number and occupation
         data = await queryWithFilters.orderBy(
-          wardWiseMajorOccupation.wardId,
+          wardWiseMajorOccupation.wardNumber,
           wardWiseMajorOccupation.occupation,
         );
       } catch (err) {
@@ -62,7 +62,6 @@ export const getAllWardWiseMajorOccupation = publicProcedure
         const acmeSql = sql`
           SELECT 
             id,
-            ward_number::text as ward_id,
             ward_number,
             occupation,
             population
@@ -72,24 +71,23 @@ export const getAllWardWiseMajorOccupation = publicProcedure
             ward_number, occupation
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
-        
+
         if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
           // Transform ACME data to match expected schema
-          data = acmeResult.map(row => ({
+          data = acmeResult.map((row) => ({
             id: row.id,
-            wardId: row.ward_id,
             wardNumber: parseInt(String(row.ward_number)),
             occupation: row.occupation,
-            population: parseInt(String(row.population || '0'))
+            population: parseInt(String(row.population || "0")),
           }));
-          
+
           // Apply filters if needed
-          if (input?.wardId) {
-            data = data.filter(item => item.wardId === input.wardId);
+          if (input?.wardNumber !== undefined) {
+            data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
-          
+
           if (input?.occupation) {
-            data = data.filter(item => item.occupation === input.occupation);
+            data = data.filter((item) => item.occupation === input.occupation);
           }
         }
       }
@@ -106,15 +104,13 @@ export const getAllWardWiseMajorOccupation = publicProcedure
 
 // Get data for a specific ward
 export const getWardWiseMajorOccupationByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number().int() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
       .from(wardWiseMajorOccupation)
-      .where(eq(wardWiseMajorOccupation.wardId, input.wardId))
-      .orderBy(
-        wardWiseMajorOccupation.occupation
-      );
+      .where(eq(wardWiseMajorOccupation.wardNumber, input.wardNumber))
+      .orderBy(wardWiseMajorOccupation.occupation);
 
     return data;
   });
@@ -138,8 +134,8 @@ export const createWardWiseMajorOccupation = protectedProcedure
       .from(wardWiseMajorOccupation)
       .where(
         and(
-          eq(wardWiseMajorOccupation.wardId, input.wardId),
-          eq(wardWiseMajorOccupation.occupation, input.occupation)
+          eq(wardWiseMajorOccupation.wardNumber, input.wardNumber),
+          eq(wardWiseMajorOccupation.occupation, input.occupation),
         ),
       )
       .limit(1);
@@ -147,14 +143,14 @@ export const createWardWiseMajorOccupation = protectedProcedure
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward ID ${input.wardId} and occupation ${input.occupation} already exists`,
+        message: `Data for Ward Number ${input.wardNumber} and occupation ${input.occupation} already exists`,
       });
     }
 
     // Create new record
     await ctx.db.insert(wardWiseMajorOccupation).values({
       id: input.id || uuidv4(),
-      wardId: input.wardId,
+      wardNumber: input.wardNumber,
       occupation: input.occupation,
       population: input.population,
     });
@@ -200,7 +196,7 @@ export const updateWardWiseMajorOccupation = protectedProcedure
     await ctx.db
       .update(wardWiseMajorOccupation)
       .set({
-        wardId: input.wardId,
+        wardNumber: input.wardNumber,
         occupation: input.occupation,
         population: input.population,
       })

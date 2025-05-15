@@ -31,12 +31,6 @@ export const getAllWardTimeWiseHouseholdChores = publicProcedure
 
         let conditions = [];
 
-        if (input?.wardId) {
-          conditions.push(
-            eq(wardTimeWiseHouseholdChores.wardId, input.wardId),
-          );
-        }
-
         if (input?.wardNumber) {
           conditions.push(
             eq(wardTimeWiseHouseholdChores.wardNumber, input.wardNumber),
@@ -47,10 +41,10 @@ export const getAllWardTimeWiseHouseholdChores = publicProcedure
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward ID, time spent
+        // Sort by ward number, time spent
         data = await queryWithFilters.orderBy(
-          wardTimeWiseHouseholdChores.wardId,
-          wardTimeWiseHouseholdChores.timeSpent
+          wardTimeWiseHouseholdChores.wardNumber,
+          wardTimeWiseHouseholdChores.timeSpent,
         );
       } catch (err) {
         console.log("Failed to query main schema, trying ACME table:", err);
@@ -62,7 +56,6 @@ export const getAllWardTimeWiseHouseholdChores = publicProcedure
         const acmeSql = sql`
           SELECT 
             id,
-            ward_number::text as ward_id,
             ward_number,
             time_spent,
             population
@@ -72,31 +65,29 @@ export const getAllWardTimeWiseHouseholdChores = publicProcedure
             ward_number, time_spent
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
-        
+
         if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
           // Transform ACME data to match expected schema
-          data = acmeResult.map(row => ({
+          data = acmeResult.map((row) => ({
             id: row.id,
-            wardId: row.ward_id,
             wardNumber: parseInt(String(row.ward_number)),
             timeSpent: row.time_spent,
-            population: parseInt(String(row.population || '0'))
+            population: parseInt(String(row.population || "0")),
           }));
-          
+
           // Apply filters if needed
-          if (input?.wardId) {
-            data = data.filter(item => item.wardId === input.wardId);
-          }
-          
           if (input?.wardNumber) {
-            data = data.filter(item => item.wardNumber === input.wardNumber);
+            data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
         }
       }
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward time-wise household chores data:", error);
+      console.error(
+        "Error fetching ward time-wise household chores data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -106,15 +97,13 @@ export const getAllWardTimeWiseHouseholdChores = publicProcedure
 
 // Get data for a specific ward
 export const getWardTimeWiseHouseholdChoresByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
       .from(wardTimeWiseHouseholdChores)
-      .where(eq(wardTimeWiseHouseholdChores.wardId, input.wardId))
-      .orderBy(
-        wardTimeWiseHouseholdChores.timeSpent
-      );
+      .where(eq(wardTimeWiseHouseholdChores.wardNumber, input.wardNumber))
+      .orderBy(wardTimeWiseHouseholdChores.timeSpent);
 
     return data;
   });
@@ -135,13 +124,12 @@ export const addWardTimeWiseHouseholdChores = protectedProcedure
     // Delete existing data for the ward before adding new data
     await ctx.db
       .delete(wardTimeWiseHouseholdChores)
-      .where(eq(wardTimeWiseHouseholdChores.wardId, input.wardId));
+      .where(eq(wardTimeWiseHouseholdChores.wardNumber, input.wardNumber));
 
     // Insert new data
     for (const item of input.data) {
       await ctx.db.insert(wardTimeWiseHouseholdChores).values({
         id: uuidv4(),
-        wardId: input.wardId,
         wardNumber: input.wardNumber,
         timeSpent: item.timeSpent,
         population: item.population,
@@ -166,18 +154,14 @@ export const batchAddWardTimeWiseHouseholdChores = protectedProcedure
 
     // Process each ward data entry
     for (const item of input.data) {
-      // Generate a ward ID based on palika and ward number
-      const wardId = `${input.palika}-${item.wardNumber}`;
-
       // Delete existing data for this ward
       await ctx.db
         .delete(wardTimeWiseHouseholdChores)
-        .where(eq(wardTimeWiseHouseholdChores.wardId, wardId));
+        .where(eq(wardTimeWiseHouseholdChores.wardNumber, item.wardNumber));
 
       // Insert new data
       await ctx.db.insert(wardTimeWiseHouseholdChores).values({
         id: uuidv4(),
-        wardId: wardId,
         wardNumber: item.wardNumber,
         timeSpent: item.timeSpent,
         population: item.population,
@@ -189,7 +173,7 @@ export const batchAddWardTimeWiseHouseholdChores = protectedProcedure
 
 // Delete ward time-wise household chores data for a specific ward
 export const deleteWardTimeWiseHouseholdChores = protectedProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
@@ -203,7 +187,7 @@ export const deleteWardTimeWiseHouseholdChores = protectedProcedure
     // Delete all data for the ward
     await ctx.db
       .delete(wardTimeWiseHouseholdChores)
-      .where(eq(wardTimeWiseHouseholdChores.wardId, input.wardId));
+      .where(eq(wardTimeWiseHouseholdChores.wardNumber, input.wardNumber));
 
     return { success: true };
   });

@@ -7,25 +7,22 @@ export const wardWiseHouseholdLandPossessionsBaseSchema = z.object({
 
 // Schema for adding ward wise household land possessions
 export const addWardWiseHouseholdLandPossessionsSchema = z.object({
-  wardId: z.string(),
-  wardNumber: z.number().int().nonnegative().optional(),
+  wardNumber: z.number().int().nonnegative(),
   households: z.number().int().nonnegative(),
 });
 
 // Schema for getting ward wise household land possessions
 export const getWardWiseHouseholdLandPossessionsSchema = z.object({
-  wardId: z.string().optional(),
   wardNumber: z.number().int().nonnegative().optional(),
 });
 
 // Schema for batch adding ward wise household land possessions
 export const batchAddWardWiseHouseholdLandPossessionsSchema = z.object({
-  palika: z.string(),
   data: z.array(
     z.object({
       wardNumber: z.number().int().nonnegative(),
       households: z.number().int().nonnegative(),
-    })
+    }),
   ),
 });
 

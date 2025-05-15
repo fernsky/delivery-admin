@@ -31,12 +31,6 @@ export const getAllWardWiseHouseholdIncomeSource = publicProcedure
 
         let conditions = [];
 
-        if (input?.wardId) {
-          conditions.push(
-            eq(wardWiseHouseholdIncomeSource.wardId, input.wardId),
-          );
-        }
-
         if (input?.wardNumber) {
           conditions.push(
             eq(wardWiseHouseholdIncomeSource.wardNumber, input.wardNumber),
@@ -47,10 +41,10 @@ export const getAllWardWiseHouseholdIncomeSource = publicProcedure
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward ID, income source
+        // Sort by ward number, income source
         data = await queryWithFilters.orderBy(
-          wardWiseHouseholdIncomeSource.wardId,
-          wardWiseHouseholdIncomeSource.incomeSource
+          wardWiseHouseholdIncomeSource.wardNumber,
+          wardWiseHouseholdIncomeSource.incomeSource,
         );
       } catch (err) {
         console.log("Failed to query main schema, trying ACME table:", err);
@@ -62,7 +56,6 @@ export const getAllWardWiseHouseholdIncomeSource = publicProcedure
         const acmeSql = sql`
           SELECT 
             id,
-            ward_number::text as ward_id,
             ward_number,
             income_source,
             households
@@ -72,31 +65,29 @@ export const getAllWardWiseHouseholdIncomeSource = publicProcedure
             ward_number, income_source
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
-        
+
         if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
           // Transform ACME data to match expected schema
-          data = acmeResult.map(row => ({
+          data = acmeResult.map((row) => ({
             id: row.id,
-            wardId: row.ward_id,
             wardNumber: parseInt(String(row.ward_number)),
             incomeSource: row.income_source,
-            households: parseInt(String(row.households || '0'))
+            households: parseInt(String(row.households || "0")),
           }));
-          
+
           // Apply filters if needed
-          if (input?.wardId) {
-            data = data.filter(item => item.wardId === input.wardId);
-          }
-          
           if (input?.wardNumber) {
-            data = data.filter(item => item.wardNumber === input.wardNumber);
+            data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
         }
       }
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward wise household income source data:", error);
+      console.error(
+        "Error fetching ward wise household income source data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -106,15 +97,13 @@ export const getAllWardWiseHouseholdIncomeSource = publicProcedure
 
 // Get data for a specific ward
 export const getWardWiseHouseholdIncomeSourceByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
       .from(wardWiseHouseholdIncomeSource)
-      .where(eq(wardWiseHouseholdIncomeSource.wardId, input.wardId))
-      .orderBy(
-        wardWiseHouseholdIncomeSource.incomeSource
-      );
+      .where(eq(wardWiseHouseholdIncomeSource.wardNumber, input.wardNumber))
+      .orderBy(wardWiseHouseholdIncomeSource.incomeSource);
 
     return data;
   });
@@ -135,13 +124,12 @@ export const addWardWiseHouseholdIncomeSource = protectedProcedure
     // Delete existing data for the ward before adding new data
     await ctx.db
       .delete(wardWiseHouseholdIncomeSource)
-      .where(eq(wardWiseHouseholdIncomeSource.wardId, input.wardId));
+      .where(eq(wardWiseHouseholdIncomeSource.wardNumber, input.wardNumber));
 
     // Insert new data
     for (const item of input.data) {
       await ctx.db.insert(wardWiseHouseholdIncomeSource).values({
         id: uuidv4(),
-        wardId: input.wardId,
         wardNumber: input.wardNumber,
         incomeSource: item.incomeSource,
         households: item.households,
@@ -166,18 +154,14 @@ export const batchAddWardWiseHouseholdIncomeSource = protectedProcedure
 
     // Process each ward data entry
     for (const item of input.data) {
-      // Generate a ward ID based on palika and ward number
-      const wardId = `${input.palika}-${item.wardNumber}`;
-
       // Delete existing data for this ward
       await ctx.db
         .delete(wardWiseHouseholdIncomeSource)
-        .where(eq(wardWiseHouseholdIncomeSource.wardId, wardId));
+        .where(eq(wardWiseHouseholdIncomeSource.wardNumber, item.wardNumber));
 
       // Insert new data
       await ctx.db.insert(wardWiseHouseholdIncomeSource).values({
         id: uuidv4(),
-        wardId: wardId,
         wardNumber: item.wardNumber,
         incomeSource: item.incomeSource,
         households: item.households,
@@ -189,7 +173,7 @@ export const batchAddWardWiseHouseholdIncomeSource = protectedProcedure
 
 // Delete ward wise household income source data for a specific ward
 export const deleteWardWiseHouseholdIncomeSource = protectedProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
@@ -203,7 +187,7 @@ export const deleteWardWiseHouseholdIncomeSource = protectedProcedure
     // Delete all data for the ward
     await ctx.db
       .delete(wardWiseHouseholdIncomeSource)
-      .where(eq(wardWiseHouseholdIncomeSource.wardId, input.wardId));
+      .where(eq(wardWiseHouseholdIncomeSource.wardNumber, input.wardNumber));
 
     return { success: true };
   });

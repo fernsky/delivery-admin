@@ -23,7 +23,7 @@ export const wardTimeWiseHouseholdChores = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     wardNumber: integer("ward_number").notNull(),
-    timeSpent: text("time_spent").notNull(), // Using the enum values
+    timeSpent: timeSpentEnum("time_spent").notNull(), // Using the enum type instead of text
     population: integer("population").notNull().default(0),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),

@@ -27,25 +27,23 @@ export const wardTimeWiseHouseholdChoresBaseSchema = z.object({
 
 // Schema for adding ward time wise household chores
 export const addWardTimeWiseHouseholdChoresSchema = z.object({
-  wardId: z.string(),
-  wardNumber: z.number().optional(),
+  wardNumber: z.number(),
   data: z.array(wardTimeWiseHouseholdChoresBaseSchema),
 });
 
 // Schema for getting ward time wise household chores
 export const getWardTimeWiseHouseholdChoresSchema = z.object({
-  wardId: z.string().optional(),
   wardNumber: z.number().optional(),
 });
 
 // Schema for batch adding ward time wise household chores
 export const batchAddWardTimeWiseHouseholdChoresSchema = z.object({
-  palika: z.string(),
+  palika: z.string(), // Kept for reference but not used in DB operations
   data: z.array(
     z.object({
       wardNumber: z.number(),
       timeSpent: TimeSpentEnum,
       population: z.number(),
-    })
+    }),
   ),
 });

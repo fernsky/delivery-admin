@@ -1,118 +1,99 @@
 --DUMMY DATA
--- Create the enums if they don't exist
-DO $$ BEGIN
-    CREATE TYPE married_age_group AS ENUM (
-        'AGE_BELOW_15', 
-        'AGE_15_19', 
-        'AGE_20_24', 
-        'AGE_25_29', 
-        'AGE_30_34', 
-        'AGE_35_39', 
-        'AGE_40_AND_ABOVE'
-    );
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
-    CREATE TYPE gender AS ENUM (
-        'MALE', 
-        'FEMALE', 
-        'OTHER'
-    );
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
--- Create the empty acme_ward_age_gender_wise_married_age table
-CREATE TABLE IF NOT EXISTS acme_ward_age_gender_wise_married_age (
-    id VARCHAR(36) PRIMARY KEY,
-    ward_id VARCHAR(36),
-    age_group married_age_group NOT NULL,
-    gender gender NOT NULL,
-    population INTEGER NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(ward_id, age_group, gender)
-);
-
--- Insert dummy data
--- First, ensure we have ward_wise_demographic_summary entries
-DO $$ 
-DECLARE
-    ward1_id VARCHAR := '12345678-1234-1234-1234-123456789001';
-    ward2_id VARCHAR := '12345678-1234-1234-1234-123456789002';
-    ward3_id VARCHAR := '12345678-1234-1234-1234-123456789003';
+-- Check if acme_ward_age_gender_wise_married_age table exists, if not create it
+DO $$
 BEGIN
-    -- Check if the wards already exist
-    IF NOT EXISTS (SELECT 1 FROM ward_wise_demographic_summary WHERE id = ward1_id) THEN
-        INSERT INTO ward_wise_demographic_summary (id, ward_number, total_population, total_families)
-        VALUES 
-            (ward1_id, 1, 5000, 1200);
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_tables WHERE tablename = 'acme_ward_age_gender_wise_married_age'
+    ) THEN
+        CREATE TABLE acme_ward_age_gender_wise_married_age (
+            id VARCHAR(36) PRIMARY KEY,
+            ward_number INTEGER NOT NULL,
+            age_group VARCHAR(100) NOT NULL,
+            gender VARCHAR(100) NOT NULL,
+            population INTEGER NOT NULL,
+            updated_at TIMESTAMP DEFAULT NOW(),
+            created_at TIMESTAMP DEFAULT NOW()
+        );
     END IF;
+END
+$$;
 
-    IF NOT EXISTS (SELECT 1 FROM ward_wise_demographic_summary WHERE id = ward2_id) THEN
-        INSERT INTO ward_wise_demographic_summary (id, ward_number, total_population, total_families)
-        VALUES 
-            (ward2_id, 2, 4500, 1100);
+-- Insert seed data if table is empty
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM acme_ward_age_gender_wise_married_age) THEN
+        INSERT INTO acme_ward_age_gender_wise_married_age (
+            id, ward_number, age_group, gender, population
+        )
+        VALUES
+        -- Ward 1 data
+        (gen_random_uuid(), 1, 'AGE_BELOW_15', 'MALE', 120),
+        (gen_random_uuid(), 1, 'AGE_BELOW_15', 'FEMALE', 110),
+        (gen_random_uuid(), 1, 'AGE_BELOW_15', 'OTHER', 10),
+        (gen_random_uuid(), 1, 'AGE_15_19', 'MALE', 180),
+        (gen_random_uuid(), 1, 'AGE_15_19', 'FEMALE', 190),
+        (gen_random_uuid(), 1, 'AGE_20_24', 'MALE', 210),
+        (gen_random_uuid(), 1, 'AGE_20_24', 'FEMALE', 230),
+        (gen_random_uuid(), 1, 'AGE_25_29', 'MALE', 280),
+        (gen_random_uuid(), 1, 'AGE_25_29', 'FEMALE', 290),
+        (gen_random_uuid(), 1, 'AGE_30_34', 'MALE', 240),
+        (gen_random_uuid(), 1, 'AGE_30_34', 'FEMALE', 250),
+        (gen_random_uuid(), 1, 'AGE_35_39', 'MALE', 180),
+        (gen_random_uuid(), 1, 'AGE_35_39', 'FEMALE', 170),
+        (gen_random_uuid(), 1, 'AGE_40_AND_ABOVE', 'MALE', 150),
+        (gen_random_uuid(), 1, 'AGE_40_AND_ABOVE', 'FEMALE', 140),
+        
+        -- Ward 2 data
+        (gen_random_uuid(), 2, 'AGE_BELOW_15', 'MALE', 100),
+        (gen_random_uuid(), 2, 'AGE_BELOW_15', 'FEMALE', 105),
+        (gen_random_uuid(), 2, 'AGE_15_19', 'MALE', 165),
+        (gen_random_uuid(), 2, 'AGE_15_19', 'FEMALE', 175),
+        (gen_random_uuid(), 2, 'AGE_20_24', 'MALE', 195),
+        (gen_random_uuid(), 2, 'AGE_20_24', 'FEMALE', 205),
+        (gen_random_uuid(), 2, 'AGE_25_29', 'MALE', 235),
+        (gen_random_uuid(), 2, 'AGE_25_29', 'FEMALE', 245),
+        (gen_random_uuid(), 2, 'AGE_30_34', 'MALE', 215),
+        (gen_random_uuid(), 2, 'AGE_30_34', 'FEMALE', 225),
+        (gen_random_uuid(), 2, 'AGE_35_39', 'MALE', 155),
+        (gen_random_uuid(), 2, 'AGE_35_39', 'FEMALE', 145),
+        (gen_random_uuid(), 2, 'AGE_40_AND_ABOVE', 'MALE', 135),
+        (gen_random_uuid(), 2, 'AGE_40_AND_ABOVE', 'FEMALE', 125),
+        
+        -- Ward 3 data
+        (gen_random_uuid(), 3, 'AGE_BELOW_15', 'MALE', 90),
+        (gen_random_uuid(), 3, 'AGE_BELOW_15', 'FEMALE', 95),
+        (gen_random_uuid(), 3, 'AGE_15_19', 'MALE', 140),
+        (gen_random_uuid(), 3, 'AGE_15_19', 'FEMALE', 150),
+        (gen_random_uuid(), 3, 'AGE_20_24', 'MALE', 180),
+        (gen_random_uuid(), 3, 'AGE_20_24', 'FEMALE', 190),
+        (gen_random_uuid(), 3, 'AGE_20_24', 'OTHER', 15),
+        (gen_random_uuid(), 3, 'AGE_25_29', 'MALE', 200),
+        (gen_random_uuid(), 3, 'AGE_25_29', 'FEMALE', 210),
+        (gen_random_uuid(), 3, 'AGE_30_34', 'MALE', 170),
+        (gen_random_uuid(), 3, 'AGE_30_34', 'FEMALE', 180),
+        (gen_random_uuid(), 3, 'AGE_35_39', 'MALE', 130),
+        (gen_random_uuid(), 3, 'AGE_35_39', 'FEMALE', 120),
+        (gen_random_uuid(), 3, 'AGE_40_AND_ABOVE', 'MALE', 110),
+        (gen_random_uuid(), 3, 'AGE_40_AND_ABOVE', 'FEMALE', 100),
+        
+        -- Additional wards (4-8) for more comprehensive data
+        (gen_random_uuid(), 4, 'AGE_BELOW_15', 'MALE', 85),
+        (gen_random_uuid(), 4, 'AGE_BELOW_15', 'FEMALE', 92),
+        (gen_random_uuid(), 4, 'AGE_15_19', 'MALE', 145),
+        (gen_random_uuid(), 4, 'AGE_15_19', 'FEMALE', 158),
+        (gen_random_uuid(), 4, 'AGE_20_24', 'MALE', 188),
+        (gen_random_uuid(), 4, 'AGE_20_24', 'FEMALE', 198),
+        (gen_random_uuid(), 4, 'AGE_25_29', 'MALE', 217),
+        (gen_random_uuid(), 4, 'AGE_25_29', 'FEMALE', 228),
+        
+        (gen_random_uuid(), 5, 'AGE_BELOW_15', 'MALE', 78),
+        (gen_random_uuid(), 5, 'AGE_BELOW_15', 'FEMALE', 82),
+        (gen_random_uuid(), 5, 'AGE_15_19', 'MALE', 132),
+        (gen_random_uuid(), 5, 'AGE_15_19', 'FEMALE', 142),
+        (gen_random_uuid(), 5, 'AGE_20_24', 'MALE', 175),
+        (gen_random_uuid(), 5, 'AGE_20_24', 'FEMALE', 185),
+        (gen_random_uuid(), 5, 'AGE_25_29', 'MALE', 205),
+        (gen_random_uuid(), 5, 'AGE_25_29', 'FEMALE', 213);
     END IF;
-
-    IF NOT EXISTS (SELECT 1 FROM ward_wise_demographic_summary WHERE id = ward3_id) THEN
-        INSERT INTO ward_wise_demographic_summary (id, ward_number, total_population, total_families)
-        VALUES 
-            (ward3_id, 3, 3800, 950);
-    END IF;
-END $$;
-
--- Now, insert dummy data for acme_ward_age_gender_wise_married_age with explicit insert values
-INSERT INTO acme_ward_age_gender_wise_married_age (id, ward_id, age_group, population, gender)
-VALUES 
-    -- Ward 1 data
-    ('d8a7c328-1234-5678-9abc-def012345601', '12345678-1234-1234-1234-123456789001', 'AGE_BELOW_15', 120, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345602', '12345678-1234-1234-1234-123456789001', 'AGE_BELOW_15', 110, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345603', '12345678-1234-1234-1234-123456789001', 'AGE_15_19', 180, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345604', '12345678-1234-1234-1234-123456789001', 'AGE_15_19', 190, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345605', '12345678-1234-1234-1234-123456789001', 'AGE_20_24', 210, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345606', '12345678-1234-1234-1234-123456789001', 'AGE_20_24', 230, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345607', '12345678-1234-1234-1234-123456789001', 'AGE_25_29', 280, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345608', '12345678-1234-1234-1234-123456789001', 'AGE_25_29', 290, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345609', '12345678-1234-1234-1234-123456789001', 'AGE_30_34', 240, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345610', '12345678-1234-1234-1234-123456789001', 'AGE_30_34', 250, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345611', '12345678-1234-1234-1234-123456789001', 'AGE_35_39', 180, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345612', '12345678-1234-1234-1234-123456789001', 'AGE_35_39', 170, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345613', '12345678-1234-1234-1234-123456789001', 'AGE_40_AND_ABOVE', 150, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345614', '12345678-1234-1234-1234-123456789001', 'AGE_40_AND_ABOVE', 140, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345615', '12345678-1234-1234-1234-123456789001', 'AGE_BELOW_15', 10, 'OTHER'),
-    
-    -- Ward 2 data
-    ('d8a7c328-1234-5678-9abc-def012345616', '12345678-1234-1234-1234-123456789002', 'AGE_BELOW_15', 100, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345617', '12345678-1234-1234-1234-123456789002', 'AGE_BELOW_15', 105, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345618', '12345678-1234-1234-1234-123456789002', 'AGE_15_19', 165, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345619', '12345678-1234-1234-1234-123456789002', 'AGE_15_19', 175, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345620', '12345678-1234-1234-1234-123456789002', 'AGE_20_24', 195, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345621', '12345678-1234-1234-1234-123456789002', 'AGE_20_24', 205, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345622', '12345678-1234-1234-1234-123456789002', 'AGE_25_29', 235, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345623', '12345678-1234-1234-1234-123456789002', 'AGE_25_29', 245, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345624', '12345678-1234-1234-1234-123456789002', 'AGE_30_34', 215, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345625', '12345678-1234-1234-1234-123456789002', 'AGE_30_34', 225, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345626', '12345678-1234-1234-1234-123456789002', 'AGE_35_39', 155, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345627', '12345678-1234-1234-1234-123456789002', 'AGE_35_39', 145, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345628', '12345678-1234-1234-1234-123456789002', 'AGE_40_AND_ABOVE', 135, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345629', '12345678-1234-1234-1234-123456789002', 'AGE_40_AND_ABOVE', 125, 'FEMALE'),
-    
-    -- Ward 3 data
-    ('d8a7c328-1234-5678-9abc-def012345630', '12345678-1234-1234-1234-123456789003', 'AGE_BELOW_15', 90, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345631', '12345678-1234-1234-1234-123456789003', 'AGE_BELOW_15', 95, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345632', '12345678-1234-1234-1234-123456789003', 'AGE_15_19', 140, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345633', '12345678-1234-1234-1234-123456789003', 'AGE_15_19', 150, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345634', '12345678-1234-1234-1234-123456789003', 'AGE_20_24', 180, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345635', '12345678-1234-1234-1234-123456789003', 'AGE_20_24', 190, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345636', '12345678-1234-1234-1234-123456789003', 'AGE_25_29', 200, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345637', '12345678-1234-1234-1234-123456789003', 'AGE_25_29', 210, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345638', '12345678-1234-1234-1234-123456789003', 'AGE_30_34', 170, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345639', '12345678-1234-1234-1234-123456789003', 'AGE_30_34', 180, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345640', '12345678-1234-1234-1234-123456789003', 'AGE_35_39', 130, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345641', '12345678-1234-1234-1234-123456789003', 'AGE_35_39', 120, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345642', '12345678-1234-1234-1234-123456789003', 'AGE_40_AND_ABOVE', 110, 'MALE'),
-    ('d8a7c328-1234-5678-9abc-def012345643', '12345678-1234-1234-1234-123456789003', 'AGE_40_AND_ABOVE', 100, 'FEMALE'),
-    ('d8a7c328-1234-5678-9abc-def012345644', '12345678-1234-1234-1234-123456789003', 'AGE_20_24', 15, 'OTHER');
+END
+$$;

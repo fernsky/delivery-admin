@@ -4,39 +4,47 @@ import { educationalLevelEnum } from "@/server/db/schema/profile/demographics/wa
 // Schema for ward-wise absentee educational level data
 export const wardWiseAbsenteeEducationalLevelSchema = z.object({
   id: z.string().optional(),
-  
-  // Ward identification - reference to demographic summary
-  wardId: z.string(),
-  
+
+  // Ward number
+  wardNumber: z.number().int().positive(),
+
   // Educational level category
   educationalLevel: z.enum(educationalLevelEnum.enumValues),
-  
+
   // Population statistics
   population: z.number().int().nonnegative(),
 });
 
 // Schema for filtering ward-wise absentee educational level data
 export const wardWiseAbsenteeEducationalLevelFilterSchema = z.object({
-  wardId: z.string().optional(),
+  wardNumber: z.number().int().positive().optional(),
   educationalLevel: z.enum(educationalLevelEnum.enumValues).optional(),
 });
 
 // Schema for creating multiple entries at once (bulk creation)
 export const bulkWardWiseAbsenteeEducationalLevelSchema = z.object({
-  wardId: z.string(),
+  wardNumber: z.number().int().positive(),
   educationalLevels: z.array(
     z.object({
       educationalLevel: z.enum(educationalLevelEnum.enumValues),
       population: z.number().int().nonnegative(),
-    })
+    }),
   ),
 });
 
 // Use the same schema for updates
-export const updateWardWiseAbsenteeEducationalLevelSchema = wardWiseAbsenteeEducationalLevelSchema;
+export const updateWardWiseAbsenteeEducationalLevelSchema =
+  wardWiseAbsenteeEducationalLevelSchema;
 
 // Export TypeScript types for use in the application
-export type WardWiseAbsenteeEducationalLevelData = z.infer<typeof wardWiseAbsenteeEducationalLevelSchema>;
-export type UpdateWardWiseAbsenteeEducationalLevelData = WardWiseAbsenteeEducationalLevelData;
-export type WardWiseAbsenteeEducationalLevelFilter = z.infer<typeof wardWiseAbsenteeEducationalLevelFilterSchema>;
-export type BulkWardWiseAbsenteeEducationalLevelData = z.infer<typeof bulkWardWiseAbsenteeEducationalLevelSchema>;
+export type WardWiseAbsenteeEducationalLevelData = z.infer<
+  typeof wardWiseAbsenteeEducationalLevelSchema
+>;
+export type UpdateWardWiseAbsenteeEducationalLevelData =
+  WardWiseAbsenteeEducationalLevelData;
+export type WardWiseAbsenteeEducationalLevelFilter = z.infer<
+  typeof wardWiseAbsenteeEducationalLevelFilterSchema
+>;
+export type BulkWardWiseAbsenteeEducationalLevelData = z.infer<
+  typeof bulkWardWiseAbsenteeEducationalLevelSchema
+>;

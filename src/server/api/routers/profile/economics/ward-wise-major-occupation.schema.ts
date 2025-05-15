@@ -13,26 +13,31 @@ export const OccupationTypeEnum = z.enum([
   "OTHER_UNEMPLOYMENT",
   "INDUSTRY",
   "ANIMAL_HUSBANDRY",
-  "OTHER_SELF_EMPLOYMENT"
+  "OTHER_SELF_EMPLOYMENT",
 ]);
 export type OccupationType = z.infer<typeof OccupationTypeEnum>;
 
 // Schema for ward-wise major occupation data
 export const wardWiseMajorOccupationSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string(),
+  wardNumber: z.number().int().nonnegative(),
   occupation: OccupationTypeEnum,
   population: z.number().int().nonnegative(),
 });
 
 // Schema for filtering ward-wise major occupation data
 export const wardWiseMajorOccupationFilterSchema = z.object({
-  wardId: z.string().optional(),
+  wardNumber: z.number().int().nonnegative().optional(),
   occupation: OccupationTypeEnum.optional(),
 });
 
-export const updateWardWiseMajorOccupationSchema = wardWiseMajorOccupationSchema;
+export const updateWardWiseMajorOccupationSchema =
+  wardWiseMajorOccupationSchema;
 
-export type WardWiseMajorOccupationData = z.infer<typeof wardWiseMajorOccupationSchema>;
+export type WardWiseMajorOccupationData = z.infer<
+  typeof wardWiseMajorOccupationSchema
+>;
 export type UpdateWardWiseMajorOccupationData = WardWiseMajorOccupationData;
-export type WardWiseMajorOccupationFilter = z.infer<typeof wardWiseMajorOccupationFilterSchema>;
+export type WardWiseMajorOccupationFilter = z.infer<
+  typeof wardWiseMajorOccupationFilterSchema
+>;

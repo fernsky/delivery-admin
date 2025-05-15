@@ -8,22 +8,18 @@ export const MarriedAgeGroupEnum = z.enum([
   "AGE_25_29",
   "AGE_30_34",
   "AGE_35_39",
-  "AGE_40_AND_ABOVE"
+  "AGE_40_AND_ABOVE",
 ]);
 export type MarriedAgeGroup = z.infer<typeof MarriedAgeGroupEnum>;
 
 // Define the gender enum
-export const GenderEnum = z.enum([
-  "MALE",
-  "FEMALE",
-  "OTHER"
-]);
+export const GenderEnum = z.enum(["MALE", "FEMALE", "OTHER"]);
 export type Gender = z.infer<typeof GenderEnum>;
 
 // Schema for ward-age-gender-wise married age data
 export const wardAgeGenderWiseMarriedAgeSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string(),
+  wardNumber: z.number().int().positive(),
   ageGroup: MarriedAgeGroupEnum,
   gender: GenderEnum,
   population: z.number().int().nonnegative(),
@@ -31,7 +27,7 @@ export const wardAgeGenderWiseMarriedAgeSchema = z.object({
 
 // Schema for filtering ward-age-gender-wise married age data
 export const wardAgeGenderWiseMarriedAgeFilterSchema = z.object({
-  wardId: z.string().optional(),
+  wardNumber: z.number().int().positive().optional(),
   ageGroup: MarriedAgeGroupEnum.optional(),
   gender: GenderEnum.optional(),
 });
@@ -42,7 +38,8 @@ export const updateWardAgeGenderWiseMarriedAgeSchema =
 export type WardAgeGenderWiseMarriedAgeData = z.infer<
   typeof wardAgeGenderWiseMarriedAgeSchema
 >;
-export type UpdateWardAgeGenderWiseMarriedAgeData = WardAgeGenderWiseMarriedAgeData;
+export type UpdateWardAgeGenderWiseMarriedAgeData =
+  WardAgeGenderWiseMarriedAgeData;
 export type WardAgeGenderWiseMarriedAgeFilter = z.infer<
   typeof wardAgeGenderWiseMarriedAgeFilterSchema
 >;

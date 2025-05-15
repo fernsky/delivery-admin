@@ -31,12 +31,6 @@ export const getAllWardWiseAnnualIncomeSustenance = publicProcedure
 
         let conditions = [];
 
-        if (input?.wardId) {
-          conditions.push(
-            eq(wardWiseAnnualIncomeSustenance.wardId, input.wardId),
-          );
-        }
-
         if (input?.wardNumber) {
           conditions.push(
             eq(wardWiseAnnualIncomeSustenance.wardNumber, input.wardNumber),
@@ -47,10 +41,10 @@ export const getAllWardWiseAnnualIncomeSustenance = publicProcedure
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward ID, months sustained
+        // Sort by ward number, months sustained
         data = await queryWithFilters.orderBy(
-          wardWiseAnnualIncomeSustenance.wardId,
-          wardWiseAnnualIncomeSustenance.monthsSustained
+          wardWiseAnnualIncomeSustenance.wardNumber,
+          wardWiseAnnualIncomeSustenance.monthsSustained,
         );
       } catch (err) {
         console.log("Failed to query main schema, trying ACME table:", err);
@@ -62,7 +56,6 @@ export const getAllWardWiseAnnualIncomeSustenance = publicProcedure
         const acmeSql = sql`
           SELECT 
             id,
-            ward_number::text as ward_id,
             ward_number,
             months_sustained,
             households
@@ -72,31 +65,29 @@ export const getAllWardWiseAnnualIncomeSustenance = publicProcedure
             ward_number, months_sustained
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
-        
+
         if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
           // Transform ACME data to match expected schema
-          data = acmeResult.map(row => ({
+          data = acmeResult.map((row) => ({
             id: row.id,
-            wardId: row.ward_id,
             wardNumber: parseInt(String(row.ward_number)),
             monthsSustained: row.months_sustained,
-            households: parseInt(String(row.households || '0'))
+            households: parseInt(String(row.households || "0")),
           }));
-          
+
           // Apply filters if needed
-          if (input?.wardId) {
-            data = data.filter(item => item.wardId === input.wardId);
-          }
-          
           if (input?.wardNumber) {
-            data = data.filter(item => item.wardNumber === input.wardNumber);
+            data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
         }
       }
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward wise annual income sustenance data:", error);
+      console.error(
+        "Error fetching ward wise annual income sustenance data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -104,19 +95,71 @@ export const getAllWardWiseAnnualIncomeSustenance = publicProcedure
     }
   });
 
-// Get data for a specific ward
+// Get ward wise annual income sustenance data for a specific ward
 export const getWardWiseAnnualIncomeSustenanceByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
-    const data = await ctx.db
-      .select()
-      .from(wardWiseAnnualIncomeSustenance)
-      .where(eq(wardWiseAnnualIncomeSustenance.wardId, input.wardId))
-      .orderBy(
-        wardWiseAnnualIncomeSustenance.monthsSustained
-      );
+    try {
+      // Set UTF-8 encoding explicitly before running query
+      await ctx.db.execute(sql`SET client_encoding = 'UTF8'`);
 
-    return data;
+      // First try querying the main schema table
+      let data: any[];
+      try {
+        data = await ctx.db
+          .select()
+          .from(wardWiseAnnualIncomeSustenance)
+          .where(
+            eq(wardWiseAnnualIncomeSustenance.wardNumber, input.wardNumber),
+          )
+          .orderBy(wardWiseAnnualIncomeSustenance.monthsSustained);
+      } catch (err) {
+        console.log(
+          `Failed to query main schema for ward ${input.wardNumber}:`,
+          err,
+        );
+        data = [];
+      }
+
+      // If no data from main schema, try the ACME table
+      if (!data || data.length === 0) {
+        const acmeSql = sql`
+          SELECT 
+            id,
+            ward_number,
+            months_sustained,
+            households
+          FROM 
+            acme_ward_wise_annual_income_sustenance
+          WHERE
+            ward_number = ${input.wardNumber}
+          ORDER BY 
+            months_sustained
+        `;
+        const acmeResult = await ctx.db.execute(acmeSql);
+
+        if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
+          // Transform ACME data to match expected schema
+          data = acmeResult.map((row) => ({
+            id: row.id,
+            wardNumber: parseInt(String(row.ward_number)),
+            monthsSustained: row.months_sustained,
+            households: parseInt(String(row.households || "0")),
+          }));
+        }
+      }
+
+      return data;
+    } catch (error) {
+      console.error(
+        `Error fetching ward ${input.wardNumber} annual income sustenance data:`,
+        error,
+      );
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to retrieve data for the specified ward",
+      });
+    }
   });
 
 // Add ward wise annual income sustenance data
@@ -135,13 +178,12 @@ export const addWardWiseAnnualIncomeSustenance = protectedProcedure
     // Delete existing data for the ward before adding new data
     await ctx.db
       .delete(wardWiseAnnualIncomeSustenance)
-      .where(eq(wardWiseAnnualIncomeSustenance.wardId, input.wardId));
+      .where(eq(wardWiseAnnualIncomeSustenance.wardNumber, input.wardNumber));
 
     // Insert new data
     for (const item of input.data) {
       await ctx.db.insert(wardWiseAnnualIncomeSustenance).values({
         id: uuidv4(),
-        wardId: input.wardId,
         wardNumber: input.wardNumber,
         monthsSustained: item.monthsSustained,
         households: item.households,
@@ -166,18 +208,14 @@ export const batchAddWardWiseAnnualIncomeSustenance = protectedProcedure
 
     // Process each ward data entry
     for (const item of input.data) {
-      // Generate a ward ID based on palika and ward number
-      const wardId = `${input.palika}-${item.wardNumber}`;
-
       // Delete existing data for this ward
       await ctx.db
         .delete(wardWiseAnnualIncomeSustenance)
-        .where(eq(wardWiseAnnualIncomeSustenance.wardId, wardId));
+        .where(eq(wardWiseAnnualIncomeSustenance.wardNumber, item.wardNumber));
 
       // Insert new data
       await ctx.db.insert(wardWiseAnnualIncomeSustenance).values({
         id: uuidv4(),
-        wardId: wardId,
         wardNumber: item.wardNumber,
         monthsSustained: item.monthsSustained,
         households: item.households,
@@ -189,7 +227,7 @@ export const batchAddWardWiseAnnualIncomeSustenance = protectedProcedure
 
 // Delete ward wise annual income sustenance data for a specific ward
 export const deleteWardWiseAnnualIncomeSustenance = protectedProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
@@ -203,7 +241,7 @@ export const deleteWardWiseAnnualIncomeSustenance = protectedProcedure
     // Delete all data for the ward
     await ctx.db
       .delete(wardWiseAnnualIncomeSustenance)
-      .where(eq(wardWiseAnnualIncomeSustenance.wardId, input.wardId));
+      .where(eq(wardWiseAnnualIncomeSustenance.wardNumber, input.wardNumber));
 
     return { success: true };
   });
@@ -229,10 +267,14 @@ export const getWardWiseAnnualIncomeSustenanceSummary = publicProcedure.query(
 
       return summaryData;
     } catch (error) {
-      console.error("Error in getWardWiseAnnualIncomeSustenanceSummary:", error);
+      console.error(
+        "Error in getWardWiseAnnualIncomeSustenanceSummary:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to retrieve ward wise annual income sustenance summary",
+        message:
+          "Failed to retrieve ward wise annual income sustenance summary",
       });
     }
   },

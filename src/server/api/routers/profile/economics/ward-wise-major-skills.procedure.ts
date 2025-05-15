@@ -3,10 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { 
-  wardWiseMajorSkills,
-  acmeWardWiseMajorSkills 
-} from "@/server/db/schema/profile/economics/ward-wise-major-skills";
+import { wardWiseMajorSkills } from "@/server/db/schema/profile/economics/ward-wise-major-skills";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
   wardWiseMajorSkillsSchema,
@@ -34,12 +31,6 @@ export const getAllWardWiseMajorSkills = publicProcedure
 
         let conditions = [];
 
-        if (input?.wardId) {
-          conditions.push(
-            eq(wardWiseMajorSkills.wardId, input.wardId),
-          );
-        }
-
         if (input?.wardNumber) {
           conditions.push(eq(wardWiseMajorSkills.wardNumber, input.wardNumber));
         }
@@ -52,10 +43,10 @@ export const getAllWardWiseMajorSkills = publicProcedure
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward ID and skill
+        // Sort by ward number and skill
         data = await queryWithFilters.orderBy(
-          wardWiseMajorSkills.wardId,
-          wardWiseMajorSkills.skill
+          wardWiseMajorSkills.wardNumber,
+          wardWiseMajorSkills.skill,
         );
       } catch (err) {
         console.log("Failed to query main schema, trying ACME table:", err);
@@ -76,28 +67,23 @@ export const getAllWardWiseMajorSkills = publicProcedure
             ward_number, skill
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
-        
+
         if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
           // Transform ACME data to match expected schema
-          data = acmeResult.map(row => ({
+          data = acmeResult.map((row) => ({
             id: row.id,
-            wardId: String(row.ward_number),
             wardNumber: parseInt(String(row.ward_number)),
             skill: row.skill,
-            population: parseInt(String(row.population || '0'))
+            population: parseInt(String(row.population || "0")),
           }));
-          
+
           // Apply filters if needed
-          if (input?.wardId) {
-            data = data.filter(item => item.wardId === input.wardId);
-          }
-          
           if (input?.wardNumber) {
-            data = data.filter(item => item.wardNumber === input.wardNumber);
+            data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
 
           if (input?.skill) {
-            data = data.filter(item => item.skill === input.skill);
+            data = data.filter((item) => item.skill === input.skill);
           }
         }
       }
@@ -114,12 +100,12 @@ export const getAllWardWiseMajorSkills = publicProcedure
 
 // Get data for a specific ward
 export const getWardWiseMajorSkillsByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
       .from(wardWiseMajorSkills)
-      .where(eq(wardWiseMajorSkills.wardId, input.wardId));
+      .where(eq(wardWiseMajorSkills.wardNumber, input.wardNumber));
 
     return data;
   });
@@ -132,8 +118,7 @@ export const createWardWiseMajorSkills = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can create ward-wise major skills data",
+        message: "Only administrators can create ward-wise major skills data",
       });
     }
 
@@ -143,23 +128,22 @@ export const createWardWiseMajorSkills = protectedProcedure
       .from(wardWiseMajorSkills)
       .where(
         and(
-          eq(wardWiseMajorSkills.wardId, input.wardId),
-          eq(wardWiseMajorSkills.skill, input.skill)
-        )
+          eq(wardWiseMajorSkills.wardNumber, input.wardNumber),
+          eq(wardWiseMajorSkills.skill, input.skill),
+        ),
       )
       .limit(1);
 
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward ID ${input.wardId} and skill ${input.skill} already exists`,
+        message: `Data for Ward Number ${input.wardNumber} and skill ${input.skill} already exists`,
       });
     }
 
     // Create new record
     await ctx.db.insert(wardWiseMajorSkills).values({
       id: input.id || uuidv4(),
-      wardId: input.wardId,
       wardNumber: input.wardNumber,
       skill: input.skill,
       population: input.population,
@@ -176,8 +160,7 @@ export const updateWardWiseMajorSkills = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can update ward-wise major skills data",
+        message: "Only administrators can update ward-wise major skills data",
       });
     }
 
@@ -206,7 +189,6 @@ export const updateWardWiseMajorSkills = protectedProcedure
     await ctx.db
       .update(wardWiseMajorSkills)
       .set({
-        wardId: input.wardId,
         wardNumber: input.wardNumber,
         skill: input.skill,
         population: input.population,
@@ -224,8 +206,7 @@ export const deleteWardWiseMajorSkills = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can delete ward-wise major skills data",
+        message: "Only administrators can delete ward-wise major skills data",
       });
     }
 

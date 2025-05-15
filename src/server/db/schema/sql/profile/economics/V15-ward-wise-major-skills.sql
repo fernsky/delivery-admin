@@ -1,0 +1,178 @@
+-- Check if acme_ward_wise_major_skills table exists, if not create it
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_tables WHERE tablename = 'acme_ward_wise_major_skills'
+    ) THEN
+        CREATE TABLE acme_ward_wise_major_skills (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            ward_number INTEGER NOT NULL,
+            skill TEXT NOT NULL,
+            population INTEGER NOT NULL DEFAULT 0 CHECK (population >= 0),
+            updated_at TIMESTAMP DEFAULT NOW(),
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+    END IF;
+END
+$$;
+
+-- Insert seed data if table is empty
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM acme_ward_wise_major_skills) THEN
+        INSERT INTO acme_ward_wise_major_skills (
+            ward_number, skill, population
+        )
+        VALUES
+        -- Ward 1
+        (1, 'TEACHING_RELATED', 45),
+        (1, 'PHOTOGRAPHY_RELATED', 18),
+        (1, 'HANDICRAFT_RELATED', 32),
+        (1, 'MUSIC_DRAMA_RELATED', 25),
+        (1, 'STONEWORK_WOODWORK', 38),
+        (1, 'CARPENTERY_RELATED', 52),
+        (1, 'PLUMBING', 28),
+        (1, 'HUMAN_HEALTH_RELATED', 22),
+        (1, 'ANIMAL_HEALTH_RELATED', 15),
+        (1, 'ELECTRICITY_INSTALLMENT_RELATED', 35),
+        (1, 'HOTEL_RESTAURANT_RELATED', 42),
+        (1, 'AGRICULTURE_RELATED', 65),
+        (1, 'PRINTING_RELATED', 12),
+        (1, 'DRIVING_RELATED', 48),
+        (1, 'MECHANICS_RELATED', 30),
+        (1, 'FURNITURE_RELATED', 22),
+        (1, 'SHOEMAKING_RELATED', 10),
+        (1, 'SEWING_RELATED', 35),
+        (1, 'JWELLERY_MAKING_RELATED', 15),
+        (1, 'BEUATICIAN_RELATED', 28),
+        (1, 'SELF_PROTECTION_RELATED', 8),
+        (1, 'LAND_SURVEY_RELATED', 6),
+        (1, 'COMPUTER_SCIENCE_RELATED', 42),
+        (1, 'ENGINEERING_DESIGN_RELATED', 25),
+        (1, 'RADIO_TELEVISION_ELECTRICAL_REPAIR', 20),
+        (1, 'LITERARY_CREATION_RELATED', 12),
+        (1, 'OTHER', 18),
+        (1, 'NONE', 122),
+        
+        -- Ward 2
+        (2, 'TEACHING_RELATED', 52),
+        (2, 'PHOTOGRAPHY_RELATED', 22),
+        (2, 'HANDICRAFT_RELATED', 38),
+        (2, 'MUSIC_DRAMA_RELATED', 30),
+        (2, 'STONEWORK_WOODWORK', 45),
+        (2, 'CARPENTERY_RELATED', 58),
+        (2, 'PLUMBING', 32),
+        (2, 'HUMAN_HEALTH_RELATED', 28),
+        (2, 'ANIMAL_HEALTH_RELATED', 18),
+        (2, 'ELECTRICITY_INSTALLMENT_RELATED', 42),
+        (2, 'HOTEL_RESTAURANT_RELATED', 48),
+        (2, 'AGRICULTURE_RELATED', 75),
+        (2, 'PRINTING_RELATED', 15),
+        (2, 'DRIVING_RELATED', 55),
+        (2, 'MECHANICS_RELATED', 35),
+        (2, 'FURNITURE_RELATED', 28),
+        (2, 'SHOEMAKING_RELATED', 12),
+        (2, 'SEWING_RELATED', 40),
+        (2, 'JWELLERY_MAKING_RELATED', 18),
+        (2, 'BEUATICIAN_RELATED', 32),
+        (2, 'SELF_PROTECTION_RELATED', 10),
+        (2, 'LAND_SURVEY_RELATED', 8),
+        (2, 'COMPUTER_SCIENCE_RELATED', 48),
+        (2, 'ENGINEERING_DESIGN_RELATED', 30),
+        (2, 'RADIO_TELEVISION_ELECTRICAL_REPAIR', 25),
+        (2, 'LITERARY_CREATION_RELATED', 15),
+        (2, 'OTHER', 22),
+        (2, 'NONE', 135),
+        
+        -- Ward 3 (other wards follow similar pattern with varied numbers)
+        (3, 'TEACHING_RELATED', 40),
+        (3, 'PHOTOGRAPHY_RELATED', 15),
+        (3, 'HANDICRAFT_RELATED', 28),
+        (3, 'MUSIC_DRAMA_RELATED', 22),
+        (3, 'STONEWORK_WOODWORK', 35),
+        (3, 'CARPENTERY_RELATED', 48),
+        (3, 'PLUMBING', 25),
+        (3, 'HUMAN_HEALTH_RELATED', 18),
+        (3, 'ANIMAL_HEALTH_RELATED', 12),
+        (3, 'ELECTRICITY_INSTALLMENT_RELATED', 32),
+        (3, 'HOTEL_RESTAURANT_RELATED', 38),
+        (3, 'AGRICULTURE_RELATED', 60),
+        (3, 'PRINTING_RELATED', 10),
+        (3, 'DRIVING_RELATED', 42),
+        (3, 'MECHANICS_RELATED', 28),
+        (3, 'FURNITURE_RELATED', 20),
+        (3, 'SHOEMAKING_RELATED', 8),
+        (3, 'SEWING_RELATED', 32),
+        (3, 'JWELLERY_MAKING_RELATED', 12),
+        (3, 'BEUATICIAN_RELATED', 25),
+        (3, 'SELF_PROTECTION_RELATED', 6),
+        (3, 'LAND_SURVEY_RELATED', 5),
+        (3, 'COMPUTER_SCIENCE_RELATED', 38),
+        (3, 'ENGINEERING_DESIGN_RELATED', 22),
+        (3, 'RADIO_TELEVISION_ELECTRICAL_REPAIR', 18),
+        (3, 'LITERARY_CREATION_RELATED', 10),
+        (3, 'OTHER', 15),
+        (3, 'NONE', 110),
+        
+        -- Ward 4
+        (4, 'TEACHING_RELATED', 48),
+        (4, 'PHOTOGRAPHY_RELATED', 20),
+        (4, 'HANDICRAFT_RELATED', 35),
+        (4, 'MUSIC_DRAMA_RELATED', 27),
+        (4, 'STONEWORK_WOODWORK', 42),
+        (4, 'CARPENTERY_RELATED', 55),
+        (4, 'PLUMBING', 30),
+        (4, 'HUMAN_HEALTH_RELATED', 25),
+        (4, 'ANIMAL_HEALTH_RELATED', 16),
+        (4, 'ELECTRICITY_INSTALLMENT_RELATED', 38),
+        (4, 'HOTEL_RESTAURANT_RELATED', 45),
+        (4, 'AGRICULTURE_RELATED', 70),
+        (4, 'PRINTING_RELATED', 14),
+        (4, 'DRIVING_RELATED', 52),
+        (4, 'MECHANICS_RELATED', 32),
+        (4, 'FURNITURE_RELATED', 25),
+        (4, 'SHOEMAKING_RELATED', 11),
+        (4, 'SEWING_RELATED', 38),
+        (4, 'JWELLERY_MAKING_RELATED', 16),
+        (4, 'BEUATICIAN_RELATED', 30),
+        (4, 'SELF_PROTECTION_RELATED', 9),
+        (4, 'LAND_SURVEY_RELATED', 7),
+        (4, 'COMPUTER_SCIENCE_RELATED', 45),
+        (4, 'ENGINEERING_DESIGN_RELATED', 28),
+        (4, 'RADIO_TELEVISION_ELECTRICAL_REPAIR', 22),
+        (4, 'LITERARY_CREATION_RELATED', 14),
+        (4, 'OTHER', 20),
+        (4, 'NONE', 128),
+        
+        -- Ward 5
+        (5, 'TEACHING_RELATED', 42),
+        (5, 'PHOTOGRAPHY_RELATED', 17),
+        (5, 'HANDICRAFT_RELATED', 30),
+        (5, 'MUSIC_DRAMA_RELATED', 24),
+        (5, 'STONEWORK_WOODWORK', 40),
+        (5, 'CARPENTERY_RELATED', 50),
+        (5, 'PLUMBING', 26),
+        (5, 'HUMAN_HEALTH_RELATED', 20),
+        (5, 'ANIMAL_HEALTH_RELATED', 14),
+        (5, 'ELECTRICITY_INSTALLMENT_RELATED', 33),
+        (5, 'HOTEL_RESTAURANT_RELATED', 40),
+        (5, 'AGRICULTURE_RELATED', 62),
+        (5, 'PRINTING_RELATED', 11),
+        (5, 'DRIVING_RELATED', 45),
+        (5, 'MECHANICS_RELATED', 29),
+        (5, 'FURNITURE_RELATED', 21),
+        (5, 'SHOEMAKING_RELATED', 9),
+        (5, 'SEWING_RELATED', 34),
+        (5, 'JWELLERY_MAKING_RELATED', 13),
+        (5, 'BEUATICIAN_RELATED', 26),
+        (5, 'SELF_PROTECTION_RELATED', 7),
+        (5, 'LAND_SURVEY_RELATED', 5),
+        (5, 'COMPUTER_SCIENCE_RELATED', 40),
+        (5, 'ENGINEERING_DESIGN_RELATED', 24),
+        (5, 'RADIO_TELEVISION_ELECTRICAL_REPAIR', 19),
+        (5, 'LITERARY_CREATION_RELATED', 11),
+        (5, 'OTHER', 16),
+        (5, 'NONE', 115);
+    END IF;
+END
+$$;

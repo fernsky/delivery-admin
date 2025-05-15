@@ -132,14 +132,14 @@ export type LanguageType = z.infer<typeof LanguageTypeEnum>;
 // Schema for ward-wise mother tongue population data
 export const wardWiseMotherTonguePopulationSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string(),
+  wardNumber: z.number().int().positive(),
   languageType: LanguageTypeEnum,
   population: z.number().int().nonnegative(),
 });
 
 // Schema for filtering ward-wise mother tongue population data
 export const wardWiseMotherTonguePopulationFilterSchema = z.object({
-  wardId: z.string().optional(),
+  wardNumber: z.number().int().positive().optional(),
   languageType: LanguageTypeEnum.optional(),
 });
 
@@ -149,7 +149,8 @@ export const updateWardWiseMotherTonguePopulationSchema =
 export type WardWiseMotherTonguePopulationData = z.infer<
   typeof wardWiseMotherTonguePopulationSchema
 >;
-export type UpdateWardWiseMotherTonguePopulationData = WardWiseMotherTonguePopulationData;
+export type UpdateWardWiseMotherTonguePopulationData =
+  WardWiseMotherTonguePopulationData;
 export type WardWiseMotherTonguePopulationFilter = z.infer<
   typeof wardWiseMotherTonguePopulationFilterSchema
 >;

@@ -29,8 +29,8 @@ export const getAllAgeWiseMaritalStatus = publicProcedure
 
       let conditions = [];
 
-      if (input?.wardId) {
-        conditions.push(eq(wardWiseMaritalStatus.wardId, input.wardId));
+      if (input?.wardNumber) {
+        conditions.push(eq(wardWiseMaritalStatus.wardNumber, input.wardNumber));
       }
 
       if (input?.ageGroup) {
@@ -48,9 +48,9 @@ export const getAllAgeWiseMaritalStatus = publicProcedure
         ? baseQuery.where(and(...conditions))
         : baseQuery;
 
-      // Sort by ward ID, age group, and marital status
+      // Sort by ward number, age group, and marital status
       const data = await queryWithFilters.orderBy(
-        wardWiseMaritalStatus.wardId,
+        wardWiseMaritalStatus.wardNumber,
         wardWiseMaritalStatus.ageGroup,
         wardWiseMaritalStatus.maritalStatus,
       );
@@ -67,12 +67,12 @@ export const getAllAgeWiseMaritalStatus = publicProcedure
 
 // Get data for a specific ward
 export const getAgeWiseMaritalStatusByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number().int() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
       .from(wardWiseMaritalStatus)
-      .where(eq(wardWiseMaritalStatus.wardId, input.wardId))
+      .where(eq(wardWiseMaritalStatus.wardNumber, input.wardNumber))
       .orderBy(
         wardWiseMaritalStatus.ageGroup,
         wardWiseMaritalStatus.maritalStatus,
@@ -99,7 +99,7 @@ export const createAgeWiseMaritalStatus = protectedProcedure
       .from(wardWiseMaritalStatus)
       .where(
         and(
-          eq(wardWiseMaritalStatus.wardId, input.wardId),
+          eq(wardWiseMaritalStatus.wardNumber, input.wardNumber),
           eq(wardWiseMaritalStatus.ageGroup, input.ageGroup),
           eq(wardWiseMaritalStatus.maritalStatus, input.maritalStatus as any),
         ),
@@ -109,14 +109,14 @@ export const createAgeWiseMaritalStatus = protectedProcedure
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward ID ${input.wardId}, age group ${input.ageGroup}, and marital status ${input.maritalStatus} already exists`,
+        message: `Data for Ward Number ${input.wardNumber}, age group ${input.ageGroup}, and marital status ${input.maritalStatus} already exists`,
       });
     }
 
     // Create new record
     await ctx.db.insert(wardWiseMaritalStatus).values({
       id: input.id || uuidv4(),
-      wardId: input.wardId,
+      wardNumber: input.wardNumber,
       ageGroup: input.ageGroup,
       maritalStatus: input.maritalStatus as any,
       population: input.population,
@@ -165,7 +165,7 @@ export const updateAgeWiseMaritalStatus = protectedProcedure
     await ctx.db
       .update(wardWiseMaritalStatus)
       .set({
-        wardId: input.wardId,
+        wardNumber: input.wardNumber,
         ageGroup: input.ageGroup,
         maritalStatus: input.maritalStatus as any,
         population: input.population,

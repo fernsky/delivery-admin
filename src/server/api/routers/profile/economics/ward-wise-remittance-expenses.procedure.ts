@@ -3,9 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { 
-  wardWiseRemittanceExpenses 
-} from "@/server/db/schema/profile/economics/ward-wise-remittance-expenses";
+import { wardWiseRemittanceExpenses } from "@/server/db/schema/profile/economics/ward-wise-remittance-expenses";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
   wardWiseRemittanceExpensesSchema,
@@ -33,23 +31,28 @@ export const getAllWardWiseRemittanceExpenses = publicProcedure
 
         let conditions = [];
 
-        if (input?.wardId) {
+        if (input?.wardNumber) {
           conditions.push(
-            eq(wardWiseRemittanceExpenses.wardId, input.wardId),
+            eq(wardWiseRemittanceExpenses.wardNumber, input.wardNumber),
           );
         }
 
         if (input?.remittanceExpense) {
-          conditions.push(eq(wardWiseRemittanceExpenses.remittanceExpense, input.remittanceExpense));
+          conditions.push(
+            eq(
+              wardWiseRemittanceExpenses.remittanceExpense,
+              input.remittanceExpense,
+            ),
+          );
         }
 
         const queryWithFilters = conditions.length
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward ID and remittance expense type
+        // Sort by ward number and remittance expense type
         data = await queryWithFilters.orderBy(
-          wardWiseRemittanceExpenses.wardId,
+          wardWiseRemittanceExpenses.wardNumber,
           wardWiseRemittanceExpenses.remittanceExpense,
         );
       } catch (err) {
@@ -62,7 +65,6 @@ export const getAllWardWiseRemittanceExpenses = publicProcedure
         const acmeSql = sql`
           SELECT 
             id,
-            ward_number::text as ward_id,
             ward_number,
             remittance_expense,
             households
@@ -72,31 +74,35 @@ export const getAllWardWiseRemittanceExpenses = publicProcedure
             ward_number, remittance_expense
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
-        
+
         if (acmeResult && Array.isArray(acmeResult) && acmeResult.length > 0) {
           // Transform ACME data to match expected schema
-          data = acmeResult.map(row => ({
+          data = acmeResult.map((row) => ({
             id: row.id,
-            wardId: row.ward_id,
             wardNumber: parseInt(String(row.ward_number)),
             remittanceExpense: row.remittance_expense,
-            households: parseInt(String(row.households || '0'))
+            households: parseInt(String(row.households || "0")),
           }));
-          
+
           // Apply filters if needed
-          if (input?.wardId) {
-            data = data.filter(item => item.wardId === input.wardId);
+          if (input?.wardNumber) {
+            data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
-          
+
           if (input?.remittanceExpense) {
-            data = data.filter(item => item.remittanceExpense === input.remittanceExpense);
+            data = data.filter(
+              (item) => item.remittanceExpense === input.remittanceExpense,
+            );
           }
         }
       }
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward-wise remittance expenses data:", error);
+      console.error(
+        "Error fetching ward-wise remittance expenses data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -106,15 +112,13 @@ export const getAllWardWiseRemittanceExpenses = publicProcedure
 
 // Get data for a specific ward
 export const getWardWiseRemittanceExpensesByWard = publicProcedure
-  .input(z.object({ wardId: z.string() }))
+  .input(z.object({ wardNumber: z.number().int().positive() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
       .from(wardWiseRemittanceExpenses)
-      .where(eq(wardWiseRemittanceExpenses.wardId, input.wardId))
-      .orderBy(
-        wardWiseRemittanceExpenses.remittanceExpense
-      );
+      .where(eq(wardWiseRemittanceExpenses.wardNumber, input.wardNumber))
+      .orderBy(wardWiseRemittanceExpenses.remittanceExpense);
 
     return data;
   });
@@ -138,8 +142,11 @@ export const createWardWiseRemittanceExpenses = protectedProcedure
       .from(wardWiseRemittanceExpenses)
       .where(
         and(
-          eq(wardWiseRemittanceExpenses.wardId, input.wardId),
-          eq(wardWiseRemittanceExpenses.remittanceExpense, input.remittanceExpense)
+          eq(wardWiseRemittanceExpenses.wardNumber, input.wardNumber),
+          eq(
+            wardWiseRemittanceExpenses.remittanceExpense,
+            input.remittanceExpense,
+          ),
         ),
       )
       .limit(1);
@@ -147,14 +154,14 @@ export const createWardWiseRemittanceExpenses = protectedProcedure
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward ID ${input.wardId} and remittance expense ${input.remittanceExpense} already exists`,
+        message: `Data for Ward Number ${input.wardNumber} and remittance expense ${input.remittanceExpense} already exists`,
       });
     }
 
     // Create new record
     await ctx.db.insert(wardWiseRemittanceExpenses).values({
       id: input.id || uuidv4(),
-      wardId: input.wardId,
+      wardNumber: input.wardNumber,
       remittanceExpense: input.remittanceExpense,
       households: input.households,
     });
@@ -200,7 +207,7 @@ export const updateWardWiseRemittanceExpenses = protectedProcedure
     await ctx.db
       .update(wardWiseRemittanceExpenses)
       .set({
-        wardId: input.wardId,
+        wardNumber: input.wardNumber,
         remittanceExpense: input.remittanceExpense,
         households: input.households,
       })

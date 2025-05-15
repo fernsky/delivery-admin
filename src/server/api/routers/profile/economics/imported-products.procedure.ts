@@ -20,12 +20,16 @@ export const getAllImportedProducts = publicProcedure
   .query(async ({ ctx, input }) => {
     try {
       await ctx.db.execute(sql`SET client_encoding = 'UTF8'`);
-      
-      const data = await ctx.db.select()
+
+      const data = await ctx.db
+        .select()
         .from(importedProducts)
         .where(
-          input?.id ? eq(importedProducts.id, input.id) : 
-          input?.productName ? eq(importedProducts.productName, input.productName) : undefined
+          input?.id
+            ? eq(importedProducts.id, input.id)
+            : input?.productName
+              ? eq(importedProducts.productName, input.productName)
+              : undefined,
         )
         .orderBy(importedProducts.productName);
       return data;
@@ -109,7 +113,7 @@ export const getImportedProductsSummary = publicProcedure.query(
         SELECT 
           COUNT(*) as total_imported_products
         FROM 
-          imported_products
+          acme_imported_products
       `;
       const summaryData = await ctx.db.execute(summarySql);
       return summaryData[0] || { total_imported_products: 0 };
@@ -120,7 +124,7 @@ export const getImportedProductsSummary = publicProcedure.query(
         message: "Failed to retrieve imported products summary",
       });
     }
-  }
+  },
 );
 
 // Export the router with all procedures

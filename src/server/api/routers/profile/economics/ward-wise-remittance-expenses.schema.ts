@@ -15,26 +15,32 @@ export const RemittanceExpenseTypeEnum = z.enum([
   "GOODS_PURCHASE",
   "BUSINESS_INVESTMENT",
   "OTHER",
-  "UNKNOWN"
+  "UNKNOWN",
 ]);
 export type RemittanceExpenseType = z.infer<typeof RemittanceExpenseTypeEnum>;
 
 // Schema for ward-wise remittance expense data
 export const wardWiseRemittanceExpensesSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string(),
+  wardNumber: z.number().int().positive(),
   remittanceExpense: RemittanceExpenseTypeEnum,
   households: z.number().int().nonnegative(),
 });
 
 // Schema for filtering ward-wise remittance expense data
 export const wardWiseRemittanceExpensesFilterSchema = z.object({
-  wardId: z.string().optional(),
+  wardNumber: z.number().int().positive().optional(),
   remittanceExpense: RemittanceExpenseTypeEnum.optional(),
 });
 
-export const updateWardWiseRemittanceExpensesSchema = wardWiseRemittanceExpensesSchema;
+export const updateWardWiseRemittanceExpensesSchema =
+  wardWiseRemittanceExpensesSchema;
 
-export type WardWiseRemittanceExpensesData = z.infer<typeof wardWiseRemittanceExpensesSchema>;
-export type UpdateWardWiseRemittanceExpensesData = WardWiseRemittanceExpensesData;
-export type WardWiseRemittanceExpensesFilter = z.infer<typeof wardWiseRemittanceExpensesFilterSchema>;
+export type WardWiseRemittanceExpensesData = z.infer<
+  typeof wardWiseRemittanceExpensesSchema
+>;
+export type UpdateWardWiseRemittanceExpensesData =
+  WardWiseRemittanceExpensesData;
+export type WardWiseRemittanceExpensesFilter = z.infer<
+  typeof wardWiseRemittanceExpensesFilterSchema
+>;

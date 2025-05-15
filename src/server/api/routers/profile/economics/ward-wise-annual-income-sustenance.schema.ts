@@ -23,25 +23,23 @@ export const wardWiseAnnualIncomeSustenanceBaseSchema = z.object({
 
 // Schema for adding ward wise annual income sustenance
 export const addWardWiseAnnualIncomeSustenanceSchema = z.object({
-  wardId: z.string(),
-  wardNumber: z.number().optional(),
+  wardNumber: z.number(),
   data: z.array(wardWiseAnnualIncomeSustenanceBaseSchema),
 });
 
 // Schema for getting ward wise annual income sustenance
 export const getWardWiseAnnualIncomeSustenanceSchema = z.object({
-  wardId: z.string().optional(),
   wardNumber: z.number().optional(),
 });
 
 // Schema for batch adding ward wise annual income sustenance
 export const batchAddWardWiseAnnualIncomeSustenanceSchema = z.object({
-  palika: z.string(),
+  palika: z.string(), // Kept for reference but not used in DB operations
   data: z.array(
     z.object({
       wardNumber: z.number(),
       monthsSustained: MonthsSustainedEnum,
       households: z.number(),
-    })
+    }),
   ),
 });
