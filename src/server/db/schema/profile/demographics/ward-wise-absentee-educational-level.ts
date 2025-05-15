@@ -1,6 +1,5 @@
 import { pgTable } from "../../../schema/basic";
 import { integer, timestamp, varchar, pgEnum } from "drizzle-orm/pg-core";
-import { wardWiseDemographicSummary } from "./ward-wise-demographic-summary";
 
 // Define educational level type enum
 export const educationalLevelEnum = pgEnum("educational_level", [
@@ -27,26 +26,29 @@ export const educationalLevelEnum = pgEnum("educational_level", [
   "UNKNOWN",
 ]);
 
-export const wardWiseAbsenteeEducationalLevel = pgTable("ward_wise_absentee_educational_level", {
-  id: varchar("id", { length: 36 }).primaryKey(),
+export const wardWiseAbsenteeEducationalLevel = pgTable(
+  "ward_wise_absentee_educational_level",
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
 
-  // Reference to the ward entity through the demographic summary
-  wardId: varchar("ward_id", { length: 36 })
-    .notNull()
-    .references(() => wardWiseDemographicSummary.id),
-  
-  // Educational level category
-  educationalLevel: educationalLevelEnum("educational_level").notNull(),
-  
-  // Number of absentee people with this educational level in the ward
-  population: integer("population").notNull(),
+    // Reference to the ward entity through the demographic summary
+    wardNumber: integer("ward_number").notNull(),
 
-  // Metadata
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+    // Educational level category
+    educationalLevel: educationalLevelEnum("educational_level").notNull(),
 
-export type WardWiseAbsenteeEducationalLevel = typeof wardWiseAbsenteeEducationalLevel.$inferSelect;
-export type NewWardWiseAbsenteeEducationalLevel = typeof wardWiseAbsenteeEducationalLevel.$inferInsert;
+    // Number of absentee people with this educational level in the ward
+    population: integer("population").notNull(),
+
+    // Metadata
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+);
+
+export type WardWiseAbsenteeEducationalLevel =
+  typeof wardWiseAbsenteeEducationalLevel.$inferSelect;
+export type NewWardWiseAbsenteeEducationalLevel =
+  typeof wardWiseAbsenteeEducationalLevel.$inferInsert;

@@ -56,7 +56,7 @@ import {
   MaritalStatusEnum,
   getAgeGroupDisplayName,
   getMaritalStatusDisplayName,
-} from "@/server/api/routers/profile/demographics/age-wise-marital-status.schema";
+} from "@/server/api/routers/profile/demographics/ward-age-wise-marital-status.schema";
 
 type AgeWiseMaritalStatusData = {
   id: string;
@@ -92,10 +92,10 @@ export default function AgeWiseMaritalStatusTable({
 
   const utils = api.useContext();
   const deleteAgeWiseMaritalStatus =
-    api.profile.demographics.ageWiseMaritalStatus.delete.useMutation({
+    api.profile.demographics.wardAgeWiseMaritalStatus.delete.useMutation({
       onSuccess: () => {
         toast.success("डाटा सफलतापूर्वक मेटियो");
-        utils.profile.demographics.ageWiseMaritalStatus.getAll.invalidate();
+        utils.profile.demographics.wardAgeWiseMaritalStatus.getAll.invalidate();
       },
       onError: (err) => {
         toast.error(`त्रुटि: ${err.message}`);

@@ -1,10 +1,5 @@
 import { pgTable } from "../../../schema/basic";
-import {
-  integer,
-  timestamp,
-  varchar,
-  text,
-} from "drizzle-orm/pg-core";
+import { integer, timestamp, varchar, text } from "drizzle-orm/pg-core";
 import { CasteType, casteTypeValues } from "../../common/enums";
 
 export const wardWiseCastePopulation = pgTable("ward_wise_caste_population", {
@@ -14,7 +9,9 @@ export const wardWiseCastePopulation = pgTable("ward_wise_caste_population", {
   wardNumber: integer("ward_number").notNull(),
 
   // Caste or ethnic group - using the enum values
-  casteType: varchar("caste_type", { length: 100 }).$type<CasteType>().notNull(),
+  casteType: varchar("caste_type", { length: 100 })
+    .$type<CasteType>()
+    .notNull(),
 
   // Population count for this caste in the ward
   population: integer("population"),
@@ -26,5 +23,7 @@ export const wardWiseCastePopulation = pgTable("ward_wise_caste_population", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export type WardWiseCastePopulation = typeof wardWiseCastePopulation.$inferSelect;
-export type NewWardWiseCastePopulation = typeof wardWiseCastePopulation.$inferInsert;
+export type WardWiseCastePopulation =
+  typeof wardWiseCastePopulation.$inferSelect;
+export type NewWardWiseCastePopulation =
+  typeof wardWiseCastePopulation.$inferInsert;

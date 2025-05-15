@@ -21,7 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   getAgeGroupDisplayName,
   getMaritalStatusDisplayName,
-} from "@/server/api/routers/profile/demographics/age-wise-marital-status.schema";
+} from "@/server/api/routers/profile/demographics/ward-age-wise-marital-status.schema";
 
 interface WardWiseMaritalStatusData {
   id: string;

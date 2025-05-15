@@ -1,11 +1,5 @@
 import { pgTable } from "../../../schema/basic";
-import {
-  integer,
-  timestamp,
-  varchar,
-  pgEnum,
-} from "drizzle-orm/pg-core";
-import { wardWiseDemographicSummary } from "./ward-wise-demographic-summary";
+import { integer, timestamp, varchar, pgEnum } from "drizzle-orm/pg-core";
 
 // Define language type enum
 export const languageTypeEnum = pgEnum("language_type", [
@@ -135,26 +129,28 @@ export const languageTypeEnum = pgEnum("language_type", [
   "OTHER",
 ]);
 
-export const wardWiseMotherTonguePopulation = pgTable("ward_wise_mother_tongue_population", {
-  id: varchar("id", { length: 36 }).primaryKey(),
+export const wardWiseMotherTonguePopulation = pgTable(
+  "ward_wise_mother_tongue_population",
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
 
-  // Reference to the ward entity through the demographic summary
-  wardId: varchar("ward_id", { length: 36 })
-    .notNull()
-    .references(() => wardWiseDemographicSummary.id),
-  
-  // Language category 
-  languageType: languageTypeEnum("language_type").notNull(),
-  
-  // Number of people speaking the specified language in the ward
-  population: integer("population").notNull(),
+    wardNumber: integer("ward_number").notNull(),
 
-  // Metadata
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+    // Language category
+    languageType: languageTypeEnum("language_type").notNull(),
 
-export type WardWiseMotherTonguePopulation = typeof wardWiseMotherTonguePopulation.$inferSelect;
-export type NewWardWiseMotherTonguePopulation = typeof wardWiseMotherTonguePopulation.$inferInsert;
+    // Number of people speaking the specified language in the ward
+    population: integer("population").notNull(),
+
+    // Metadata
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+);
+
+export type WardWiseMotherTonguePopulation =
+  typeof wardWiseMotherTonguePopulation.$inferSelect;
+export type NewWardWiseMotherTonguePopulation =
+  typeof wardWiseMotherTonguePopulation.$inferInsert;

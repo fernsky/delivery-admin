@@ -1,6 +1,5 @@
 import { pgTable } from "../../../schema/basic";
 import { integer, timestamp, varchar, pgEnum } from "drizzle-orm/pg-core";
-import { wardWiseDemographicSummary } from "./ward-wise-demographic-summary";
 
 // Define absentee age group enum
 export const absenteeAgeGroupEnum = pgEnum("absentee_age_group", [
@@ -25,9 +24,7 @@ export const wardAgeGenderWiseAbsentee = pgTable(
     id: varchar("id", { length: 36 }).primaryKey(),
 
     // Reference to the ward entity through the demographic summary
-    wardId: varchar("ward_id", { length: 36 })
-      .notNull()
-      .references(() => wardWiseDemographicSummary.id),
+    wardNumber: integer("ward_number").notNull(),
 
     // Age group category of absentee
     ageGroup: absenteeAgeGroupEnum("age_group").notNull(),

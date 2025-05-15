@@ -1,11 +1,11 @@
-import { 
-  pgTable, 
-  varchar, 
-  uuid, 
-  integer, 
-  text, 
+import {
+  pgTable,
+  varchar,
+  uuid,
+  integer,
+  text,
   timestamp,
-  pgEnum 
+  pgEnum,
 } from "drizzle-orm/pg-core";
 
 // Enum for income source types
@@ -19,25 +19,19 @@ export const incomeSourceTypeEnum = pgEnum("income_source_type", [
   "OTHER",
 ]);
 
-export const wardWiseHouseholdIncomeSource = pgTable("ward_wise_household_income_source", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  wardId: text("ward_id").notNull(),
-  wardNumber: integer("ward_number"),
-  incomeSource: text("income_source").notNull(), // Using the enum values
-  households: integer("households").notNull().default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+export const wardWiseHouseholdIncomeSource = pgTable(
+  "ward_wise_household_income_source",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    wardNumber: integer("ward_number").notNull(),
+    incomeSource: text("income_source").notNull(), // Using the enum values
+    households: integer("households").notNull().default(0),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+);
 
-// Fallback ACME table for legacy data
-export const acmeWardWiseHouseholdIncomeSource = pgTable("acme_ward_wise_household_income_source", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  wardNumber: integer("ward_number").notNull(),
-  incomeSource: text("income_source").notNull(),
-  households: integer("households").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export type WardWiseHouseholdIncomeSource = typeof wardWiseHouseholdIncomeSource.$inferSelect;
-export type NewWardWiseHouseholdIncomeSource = typeof wardWiseHouseholdIncomeSource.$inferInsert;
+export type WardWiseHouseholdIncomeSource =
+  typeof wardWiseHouseholdIncomeSource.$inferSelect;
+export type NewWardWiseHouseholdIncomeSource =
+  typeof wardWiseHouseholdIncomeSource.$inferInsert;

@@ -24,7 +24,7 @@ export default function WardWiseMaritalStatusPage() {
     data: wardMaritalStatusData,
     isLoading,
     isError,
-  } = api.profile.demographics.ageWiseMaritalStatus.getAll.useQuery();
+  } = api.profile.demographics.wardAgeWiseMaritalStatus.getAll.useQuery();
 
   const handleEdit = (id: string) => {
     setEditId(id);

@@ -1,11 +1,5 @@
-import { pgTable } from "../../../schema/basic";
-import {
-  integer,
-  timestamp,
-  varchar,
-  pgEnum,
-} from "drizzle-orm/pg-core";
-import { wardWiseDemographicSummary } from "./ward-wise-demographic-summary";
+import { pgTable } from "../../basic";
+import { integer, timestamp, varchar, pgEnum } from "drizzle-orm/pg-core";
 
 // Define age group enum
 export const ageGroupEnum = pgEnum("age_group", [
@@ -27,7 +21,7 @@ export const ageGroupEnum = pgEnum("age_group", [
 
 // Define marital status enum
 export const maritalStatusEnum = pgEnum("marital_status", [
-  "SINGLE", 
+  "SINGLE",
   "MARRIED",
   "DIVORCED",
   "WIDOWED",
@@ -39,16 +33,14 @@ export const wardWiseMaritalStatus = pgTable("ward_wise_marital_status", {
   id: varchar("id", { length: 36 }).primaryKey(),
 
   // Reference to the ward entity through the demographic summary
-  wardId: varchar("ward_id", { length: 36 })
-    .notNull()
-    .references(() => wardWiseDemographicSummary.id),
-  
+  wardNumber: integer("ward_number").notNull(),
+
   // Age group
   ageGroup: ageGroupEnum("age_group").notNull(),
-  
+
   // Marital status
   maritalStatus: maritalStatusEnum("marital_status").notNull(),
-  
+
   // Population with this age group and marital status in the ward
   population: integer("population").notNull(),
 
@@ -65,4 +57,5 @@ export const wardWiseMaritalStatus = pgTable("ward_wise_marital_status", {
 });
 
 export type WardWiseMaritalStatus = typeof wardWiseMaritalStatus.$inferSelect;
-export type NewWardWiseMaritalStatus = typeof wardWiseMaritalStatus.$inferInsert;
+export type NewWardWiseMaritalStatus =
+  typeof wardWiseMaritalStatus.$inferInsert;

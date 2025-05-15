@@ -7,11 +7,11 @@ import { wardAgeWisePopulationRouter } from "./ward-age-wise-population.procedur
 import { wardWiseHouseHeadGenderRouter } from "./ward-wise-househead-gender.procedure";
 import { wardWiseMotherTonguePopulationRouter } from "./ward-wise-mother-tongue-population.procedure";
 import { wardWiseReligionPopulationRouter } from "./ward-wise-religion-population.procedure";
-import { ageWiseMaritalStatusRouter } from "./age-wise-marital-status.procedure";
+import { wardAgeWiseMaritalStatusRouter } from "./ward-age-wise-marital-status.procedure";
 import { wardAgeGenderWiseMarriedAgeRouter } from "./ward-age-gender-wise-married-age.procedure";
 import { wardAgeGenderWiseAbsenteeRouter } from "./ward-age-gender-wise-absentee.procedure";
 import { wardWiseAbsenteeEducationalLevelRouter } from "./ward-wise-absentee-educational-level.procedure";
-import {wardAgeGenderWiseEconomicallyActivePopulationRouter} from "../economics/ward-age-gender-wise-economically-active-population.procedure"
+import { wardAgeGenderWiseEconomicallyActivePopulationRouter } from "../economics/ward-age-gender-wise-economically-active-population.procedure";
 
 export const demographicsRouter = createTRPCRouter({
   summary: demographicSummaryRouter,
@@ -22,9 +22,10 @@ export const demographicsRouter = createTRPCRouter({
   wardWiseHouseHeadGender: wardWiseHouseHeadGenderRouter,
   wardWiseMotherTonguePopulation: wardWiseMotherTonguePopulationRouter,
   wardWiseReligionPopulation: wardWiseReligionPopulationRouter,
-  ageWiseMaritalStatus: ageWiseMaritalStatusRouter,  
-  wardAgeGenderWiseMarriedAge: wardAgeGenderWiseMarriedAgeRouter,  
+  wardAgeWiseMaritalStatus: wardAgeWiseMaritalStatusRouter,
+  wardAgeGenderWiseMarriedAge: wardAgeGenderWiseMarriedAgeRouter,
   wardAgeGenderWiseAbsentee: wardAgeGenderWiseAbsenteeRouter,
   wardWiseAbsenteeEducationalLevel: wardWiseAbsenteeEducationalLevelRouter,
-  wardAgeGenderWiseEconomicallyActivePopulation: wardAgeGenderWiseEconomicallyActivePopulationRouter,
+  wardAgeGenderWiseEconomicallyActivePopulation:
+    wardAgeGenderWiseEconomicallyActivePopulationRouter,
 });

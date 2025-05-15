@@ -1,4 +1,4 @@
-export * from "./age-wise-marital-status";
+export * from "./ward-age-wise-marital-status";
 export * from "./ward-age-gender-wise-absentee";
 export * from "./ward-age-gender-wise-married-age";
 export * from "./ward-time-series-population";

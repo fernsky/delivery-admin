@@ -29,7 +29,7 @@ import {
   MaritalStatusEnum,
   getAgeGroupDisplayName,
   getMaritalStatusDisplayName,
-} from "@/server/api/routers/profile/demographics/age-wise-marital-status.schema";
+} from "@/server/api/routers/profile/demographics/ward-age-wise-marital-status.schema";
 
 // Create a schema for the form
 const formSchema = z.object({
@@ -91,15 +91,18 @@ export default function AgeWiseMaritalStatusForm({
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
-    api.profile.demographics.ageWiseMaritalStatus.getAll.useQuery(undefined, {
-      enabled: !!editId,
-    });
+    api.profile.demographics.wardAgeWiseMaritalStatus.getAll.useQuery(
+      undefined,
+      {
+        enabled: !!editId,
+      },
+    );
 
   const createMutation =
-    api.profile.demographics.ageWiseMaritalStatus.create.useMutation({
+    api.profile.demographics.wardAgeWiseMaritalStatus.create.useMutation({
       onSuccess: () => {
         toast.success("नयाँ वैवाहिक स्थिति डाटा सफलतापूर्वक थपियो");
-        utils.profile.demographics.ageWiseMaritalStatus.getAll.invalidate();
+        utils.profile.demographics.wardAgeWiseMaritalStatus.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },
@@ -110,10 +113,10 @@ export default function AgeWiseMaritalStatusForm({
     });
 
   const updateMutation =
-    api.profile.demographics.ageWiseMaritalStatus.update.useMutation({
+    api.profile.demographics.wardAgeWiseMaritalStatus.update.useMutation({
       onSuccess: () => {
         toast.success("वैवाहिक स्थिति डाटा सफलतापूर्वक अपडेट गरियो");
-        utils.profile.demographics.ageWiseMaritalStatus.getAll.invalidate();
+        utils.profile.demographics.wardAgeWiseMaritalStatus.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },

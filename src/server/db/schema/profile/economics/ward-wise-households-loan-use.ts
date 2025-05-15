@@ -1,11 +1,11 @@
-import { 
-  pgTable, 
-  varchar, 
-  uuid, 
-  integer, 
-  text, 
+import {
+  pgTable,
+  varchar,
+  uuid,
+  integer,
+  text,
   timestamp,
-  pgEnum 
+  pgEnum,
 } from "drizzle-orm/pg-core";
 
 // Enum for loan use types
@@ -19,28 +19,22 @@ export const loanUseTypeEnum = pgEnum("loan_use_type", [
   "HOME_CONSTRUCTION",
   "VEHICLE_PURCHASE",
   "CEREMONY",
-  "OTHER"
+  "OTHER",
 ]);
 
-export const wardWiseHouseholdsLoanUse = pgTable("ward_wise_households_loan_use", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  wardId: text("ward_id").notNull(),
-  wardNumber: integer("ward_number"),
-  loanUse: text("loan_use").notNull(), // Using the enum values
-  households: integer("households").notNull().default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+export const wardWiseHouseholdsLoanUse = pgTable(
+  "ward_wise_households_loan_use",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    wardNumber: integer("ward_number").notNull(),
+    loanUse: text("loan_use").notNull(), // Using the enum values
+    households: integer("households").notNull().default(0),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+);
 
-// Fallback ACME table for legacy data
-export const acmeWardWiseHouseholdsLoanUse = pgTable("acme_ward_wise_households_loan_use", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  wardNumber: integer("ward_number").notNull(),
-  loanUse: text("loan_use").notNull(),
-  households: integer("households").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export type WardWiseHouseholdsLoanUse = typeof wardWiseHouseholdsLoanUse.$inferSelect;
-export type NewWardWiseHouseholdsLoanUse = typeof wardWiseHouseholdsLoanUse.$inferInsert;
+export type WardWiseHouseholdsLoanUse =
+  typeof wardWiseHouseholdsLoanUse.$inferSelect;
+export type NewWardWiseHouseholdsLoanUse =
+  typeof wardWiseHouseholdsLoanUse.$inferInsert;

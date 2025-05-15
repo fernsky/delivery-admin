@@ -1,11 +1,11 @@
-import { 
-  pgTable, 
-  varchar, 
-  uuid, 
-  integer, 
-  text, 
+import {
+  pgTable,
+  varchar,
+  uuid,
+  integer,
+  text,
   timestamp,
-  pgEnum 
+  pgEnum,
 } from "drizzle-orm/pg-core";
 
 // Enum for time spent categories
@@ -18,25 +18,19 @@ export const timeSpentEnum = pgEnum("time_spent", [
   "MORE_THAN_12_HOURS",
 ]);
 
-export const wardTimeWiseHouseholdChores = pgTable("ward_time_wise_household_chores", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  wardId: text("ward_id").notNull(),
-  wardNumber: integer("ward_number"),
-  timeSpent: text("time_spent").notNull(), // Using the enum values
-  population: integer("population").notNull().default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+export const wardTimeWiseHouseholdChores = pgTable(
+  "ward_time_wise_household_chores",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    wardNumber: integer("ward_number").notNull(),
+    timeSpent: text("time_spent").notNull(), // Using the enum values
+    population: integer("population").notNull().default(0),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+);
 
-// Fallback ACME table for legacy data
-export const acmeWardTimeWiseHouseholdChores = pgTable("acme_ward_time_wise_household_chores", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  wardNumber: integer("ward_number").notNull(),
-  timeSpent: text("time_spent").notNull(),
-  population: integer("population").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export type WardTimeWiseHouseholdChores = typeof wardTimeWiseHouseholdChores.$inferSelect;
-export type NewWardTimeWiseHouseholdChores = typeof wardTimeWiseHouseholdChores.$inferInsert;
+export type WardTimeWiseHouseholdChores =
+  typeof wardTimeWiseHouseholdChores.$inferSelect;
+export type NewWardTimeWiseHouseholdChores =
+  typeof wardTimeWiseHouseholdChores.$inferInsert;

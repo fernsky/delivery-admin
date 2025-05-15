@@ -3,7 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { wardWiseMaritalStatus } from "@/server/db/schema/profile/demographics/age-wise-marital-status";
+import { wardWiseMaritalStatus } from "@/server/db/schema/profile/demographics/ward-age-wise-marital-status";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
   ageWiseMaritalStatusSchema,
@@ -11,7 +11,7 @@ import {
   updateAgeWiseMaritalStatusSchema,
   AgeGroupEnum,
   MaritalStatusEnum,
-} from "./age-wise-marital-status.schema";
+} from "./ward-age-wise-marital-status.schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
@@ -229,7 +229,7 @@ export const getAgeWiseMaritalStatusSummary = publicProcedure.query(
 );
 
 // Export the router with all procedures
-export const ageWiseMaritalStatusRouter = createTRPCRouter({
+export const wardAgeWiseMaritalStatusRouter = createTRPCRouter({
   getAll: getAllAgeWiseMaritalStatus,
   getByWard: getAgeWiseMaritalStatusByWard,
   create: createAgeWiseMaritalStatus,
