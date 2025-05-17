@@ -245,7 +245,7 @@ export const getWardWiseReligionPopulationSummary = publicProcedure.query(
           religion_type, 
           SUM(population) as total_population
         FROM 
-          ward_wise_religion_population
+          acme_ward_wise_religion_population
         GROUP BY 
           religion_type
         ORDER BY 
