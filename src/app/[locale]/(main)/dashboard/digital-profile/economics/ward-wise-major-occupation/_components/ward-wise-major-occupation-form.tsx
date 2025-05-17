@@ -24,13 +24,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { OccupationTypeEnum } from "@/server/api/routers/profile/economics/ward-wise-major-occupation.schema";
 
-// Create a schema for the form
+// Create a schema for the form matching the backend schema
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
-  wardNumber: z.coerce.number().int().min(1).optional(),
-  occupation: z.string().min(1, "पेशा आवश्यक छ"),
+  wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
+  occupation: z.enum(OccupationTypeEnum.options),
   population: z.coerce.number().int().nonnegative(),
 });
 
@@ -50,13 +50,8 @@ export default function WardWiseMajorOccupationForm({
 
   // Get unique wards from existing data
   const uniqueWards = Array.from(
-    new Set(
-      existingData.map((item) => ({
-        id: item.wardId,
-        number: item.wardNumber || parseInt(item.wardId),
-      })),
-    ),
-  ).sort((a, b) => a.number - b.number);
+    new Set(existingData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
   // Get unique occupations from existing data for suggestions
   const uniqueOccupations = Array.from(
@@ -101,9 +96,8 @@ export default function WardWiseMajorOccupationForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
       wardNumber: undefined,
-      occupation: "",
+      occupation: undefined as any,
       population: 0,
     },
   });
@@ -115,9 +109,8 @@ export default function WardWiseMajorOccupationForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: recordToEdit.wardNumber || undefined,
-          occupation: recordToEdit.occupation,
+          wardNumber: recordToEdit.wardNumber,
+          occupation: recordToEdit.occupation as any,
           population: recordToEdit.population || 0,
         });
       }
@@ -131,29 +124,32 @@ export default function WardWiseMajorOccupationForm({
     if (!editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardId === values.wardId &&
-          item.occupation.toLowerCase() === values.occupation.toLowerCase(),
+          item.wardNumber === values.wardNumber &&
+          item.occupation === values.occupation,
       );
+
       if (duplicate) {
         toast.error(
-          `वडा ${values.wardNumber || values.wardId} को लागि "${values.occupation}" पेशाको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${values.wardNumber} को लागि "${formatOccupationName(values.occupation)}" पेशाको डाटा पहिले नै अवस्थित छ`,
         );
         setIsSubmitting(false);
         return;
       }
     }
 
-    // Cast occupation to the expected type for API
-    const dataToSubmit = {
-      ...values,
-      occupation: values.occupation as any, // Cast to any to resolve type incompatibility
-    };
-
     if (editId) {
-      updateMutation.mutate(dataToSubmit);
+      updateMutation.mutate(values);
     } else {
-      createMutation.mutate(dataToSubmit);
+      createMutation.mutate(values);
     }
+  };
+
+  // Helper function to format occupation enum values for display
+  const formatOccupationName = (occupationType: string) => {
+    return occupationType
+      .split("_")
+      .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
+      .join(" ");
   };
 
   if (editId && isLoadingEditData) {
@@ -168,55 +164,7 @@ export default function WardWiseMajorOccupationForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="wardId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>वडा</FormLabel>
-                <FormControl>
-                  <Select
-                    value={field.value}
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      // Update ward number if available
-                      const selectedWard = uniqueWards.find(
-                        (ward) => ward.id === value,
-                      );
-                      if (selectedWard) {
-                        form.setValue("wardNumber", selectedWard.number);
-                      }
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="वडा चयन गर्नुहोस्" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {uniqueWards.map((ward) => (
-                        <SelectItem key={ward.id} value={ward.id}>
-                          वडा {ward.number}
-                        </SelectItem>
-                      ))}
-                      {/* Allow adding new wards */}
-                      {Array.from({ length: 32 }, (_, i) => i + 1)
-                        .filter(
-                          (num) =>
-                            !uniqueWards.some((ward) => ward.number === num),
-                        )
-                        .map((num) => (
-                          <SelectItem key={`new-${num}`} value={num.toString()}>
-                            वडा {num} (नयाँ)
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+        <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
             name="wardNumber"
@@ -224,7 +172,31 @@ export default function WardWiseMajorOccupationForm({
               <FormItem>
                 <FormLabel>वडा नम्बर</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="1" {...field} />
+                  <Select
+                    value={field.value?.toString() || ""}
+                    onValueChange={(value) => {
+                      field.onChange(parseInt(value, 10));
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="वडा चयन गर्नुहोस्" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {uniqueWards.map((ward) => (
+                        <SelectItem key={ward} value={ward.toString()}>
+                          वडा {ward}
+                        </SelectItem>
+                      ))}
+                      {/* Allow adding new wards */}
+                      {Array.from({ length: 32 }, (_, i) => i + 1)
+                        .filter((num) => !uniqueWards.includes(num))
+                        .map((num) => (
+                          <SelectItem key={`new-${num}`} value={num.toString()}>
+                            वडा {num} (नयाँ)
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -244,17 +216,28 @@ export default function WardWiseMajorOccupationForm({
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
-                        <SelectValue placeholder="पेशा चयन वा हाल्नुहोस्" />
+                        <SelectValue placeholder="पेशा चयन गर्नुहोस्" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">
-                          नयाँ पेशा हाल्नुहोस्...
-                        </SelectItem>
-                        {uniqueOccupations.map((occupation) => (
-                          <SelectItem key={occupation} value={occupation}>
-                            {occupation}
+                        {OccupationTypeEnum.options.map((occupationType) => (
+                          <SelectItem
+                            key={occupationType}
+                            value={occupationType}
+                          >
+                            {formatOccupationName(occupationType)}
                           </SelectItem>
                         ))}
+                        {/* Display other occupation types from existing data that aren't in the enum */}
+                        {uniqueOccupations
+                          .filter(
+                            (occType) =>
+                              !OccupationTypeEnum.options.includes(occType),
+                          )
+                          .map((occType) => (
+                            <SelectItem key={occType} value={occType}>
+                              {formatOccupationName(occType)}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -262,25 +245,6 @@ export default function WardWiseMajorOccupationForm({
                 </FormItem>
               )}
             />
-
-            {form.watch("occupation") === "" && (
-              <FormField
-                control={form.control}
-                name="occupation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>नयाँ पेशा हाल्नुहोस्</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="उदाहरण: कृषि, व्यापार, सेवा, आदि"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
 
             <FormField
               control={form.control}

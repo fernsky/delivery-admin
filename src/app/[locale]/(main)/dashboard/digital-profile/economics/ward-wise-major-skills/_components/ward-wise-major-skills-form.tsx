@@ -26,11 +26,10 @@ import {
 } from "@/components/ui/select";
 import { skillTypeEnum } from "@/server/api/routers/profile/economics/ward-wise-major-skills.schema";
 
-// Create a schema for the form
+// Create a schema for the form matching the backend schema
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
-  wardNumber: z.coerce.number().int().min(1).optional(),
+  wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
   skill: z.enum(skillTypeEnum.options),
   population: z.coerce.number().int().nonnegative(),
 });
@@ -51,13 +50,8 @@ export default function WardWiseMajorSkillsForm({
 
   // Get unique wards from existing data
   const uniqueWards = Array.from(
-    new Set(
-      existingData.map((item) => ({
-        id: item.wardId,
-        number: item.wardNumber || parseInt(item.wardId),
-      })),
-    ),
-  ).sort((a, b) => a.number - b.number);
+    new Set(existingData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
@@ -97,7 +91,6 @@ export default function WardWiseMajorSkillsForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
       wardNumber: undefined,
       skill: undefined as any,
       population: 0,
@@ -111,8 +104,7 @@ export default function WardWiseMajorSkillsForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: recordToEdit.wardNumber || undefined,
+          wardNumber: recordToEdit.wardNumber,
           skill: recordToEdit.skill as any,
           population: recordToEdit.population || 0,
         });
@@ -126,11 +118,13 @@ export default function WardWiseMajorSkillsForm({
     // Check if a record already exists with this ward and skill (for new records)
     if (!editId) {
       const duplicate = existingData.find(
-        (item) => item.wardId === values.wardId && item.skill === values.skill,
+        (item) =>
+          item.wardNumber === values.wardNumber && item.skill === values.skill,
       );
+
       if (duplicate) {
         toast.error(
-          `वडा ${values.wardNumber || values.wardId} को लागि "${values.skill}" सीप प्रकारको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${values.wardNumber} को लागि "${formatSkillName(values.skill)}" सीप प्रकारको डाटा पहिले नै अवस्थित छ`,
         );
         setIsSubmitting(false);
         return;
@@ -164,55 +158,7 @@ export default function WardWiseMajorSkillsForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="wardId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>वडा</FormLabel>
-                <FormControl>
-                  <Select
-                    value={field.value}
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      // Update ward number if available
-                      const selectedWard = uniqueWards.find(
-                        (ward) => ward.id === value,
-                      );
-                      if (selectedWard) {
-                        form.setValue("wardNumber", selectedWard.number);
-                      }
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="वडा चयन गर्नुहोस्" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {uniqueWards.map((ward) => (
-                        <SelectItem key={ward.id} value={ward.id}>
-                          वडा {ward.number}
-                        </SelectItem>
-                      ))}
-                      {/* Allow adding new wards */}
-                      {Array.from({ length: 32 }, (_, i) => i + 1)
-                        .filter(
-                          (num) =>
-                            !uniqueWards.some((ward) => ward.number === num),
-                        )
-                        .map((num) => (
-                          <SelectItem key={`new-${num}`} value={num.toString()}>
-                            वडा {num} (नयाँ)
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+        <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
             name="wardNumber"
@@ -220,7 +166,31 @@ export default function WardWiseMajorSkillsForm({
               <FormItem>
                 <FormLabel>वडा नम्बर</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="1" {...field} />
+                  <Select
+                    value={field.value?.toString() || ""}
+                    onValueChange={(value) => {
+                      field.onChange(parseInt(value, 10));
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="वडा चयन गर्नुहोस्" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {uniqueWards.map((ward) => (
+                        <SelectItem key={ward} value={ward.toString()}>
+                          वडा {ward}
+                        </SelectItem>
+                      ))}
+                      {/* Allow adding new wards */}
+                      {Array.from({ length: 32 }, (_, i) => i + 1)
+                        .filter((num) => !uniqueWards.includes(num))
+                        .map((num) => (
+                          <SelectItem key={`new-${num}`} value={num.toString()}>
+                            वडा {num} (नयाँ)
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

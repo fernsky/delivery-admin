@@ -49,18 +49,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { ReligionTypeEnum } from "@/server/api/routers/profile/demographics/ward-wise-religion-population.schema";
+import {
+  ReligionTypeEnum,
+  type ReligionType,
+} from "@/server/api/routers/profile/demographics/ward-wise-religion-population.schema";
 
 type WardWiseReligionPopulationData = {
   id: string;
-  wardId: string;
-  wardNumber?: number;
-  wardName?: string | null;
-  religionType: string;
-  religionName: string;
-  population?: number | null;
+  wardNumber: number;
+  religionType: ReligionType;
+  population: number;
   percentage?: string | null;
 };
 
@@ -75,8 +74,10 @@ export default function WardWiseReligionPopulationTable({
 }: WardWiseReligionPopulationTableProps) {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [filterWard, setFilterWard] = useState<string>("all");
-  const [filterReligion, setFilterReligion] = useState<string>("all");
-  const [expandedWards, setExpandedWards] = useState<Record<string, boolean>>(
+  const [filterReligion, setFilterReligion] = useState<ReligionType | "all">(
+    "all",
+  );
+  const [expandedWards, setExpandedWards] = useState<Record<number, boolean>>(
     {},
   );
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
@@ -102,19 +103,8 @@ export default function WardWiseReligionPopulationTable({
 
   // Calculate unique wards and religions for filtering
   const uniqueWards = Array.from(
-    new Set(data.map((item) => item.wardId)),
-  ).sort();
-
-  // Get ward numbers for display
-  const wardIdToNumber = data.reduce(
-    (acc, item) => {
-      if (item.wardId && item.wardNumber) {
-        acc[item.wardId] = item.wardNumber;
-      }
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+    new Set(data.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
   // Calculate unique religions for filtering
   const uniqueReligions = Array.from(
@@ -124,31 +114,27 @@ export default function WardWiseReligionPopulationTable({
   // Filter the data
   const filteredData = data.filter((item) => {
     return (
-      (filterWard === "all" || item.wardId === filterWard) &&
+      (filterWard === "all" || item.wardNumber.toString() === filterWard) &&
       (filterReligion === "all" || item.religionType === filterReligion)
     );
   });
 
-  // Group data by ward ID
+  // Group data by ward number
   const groupedByWard = filteredData.reduce(
     (acc, item) => {
-      if (!acc[item.wardId]) {
-        acc[item.wardId] = {
-          wardId: item.wardId,
-          wardNumber: item.wardNumber || Number(item.wardId),
-          wardName: item.wardName,
+      if (!acc[item.wardNumber]) {
+        acc[item.wardNumber] = {
+          wardNumber: item.wardNumber,
           items: [],
         };
       }
-      acc[item.wardId].items.push(item);
+      acc[item.wardNumber].items.push(item);
       return acc;
     },
     {} as Record<
-      string,
+      number,
       {
-        wardId: string;
         wardNumber: number;
-        wardName?: string | null;
         items: WardWiseReligionPopulationData[];
       }
     >,
@@ -160,10 +146,10 @@ export default function WardWiseReligionPopulationTable({
   );
 
   // Toggle ward expansion
-  const toggleWardExpansion = (wardId: string) => {
+  const toggleWardExpansion = (wardNumber: number) => {
     setExpandedWards((prev) => ({
       ...prev,
-      [wardId]: !prev[wardId],
+      [wardNumber]: !prev[wardNumber],
     }));
   };
 
@@ -171,13 +157,32 @@ export default function WardWiseReligionPopulationTable({
   if (sortedWardGroups.length > 0 && Object.keys(expandedWards).length === 0) {
     const initialExpandedState = sortedWardGroups.reduce(
       (acc, ward) => {
-        acc[ward.wardId] = true; // Start with all wards expanded
+        acc[ward.wardNumber] = true; // Start with all wards expanded
         return acc;
       },
-      {} as Record<string, boolean>,
+      {} as Record<number, boolean>,
     );
     setExpandedWards(initialExpandedState);
   }
+
+  // Get religion name mapping
+  const getReligionDisplayName = (type: ReligionType) => {
+    const religionNames: Record<ReligionType, string> = {
+      HINDU: "हिन्दु",
+      BUDDHIST: "बौद्ध",
+      KIRANT: "किरात",
+      CHRISTIAN: "क्रिश्चियन",
+      ISLAM: "इस्लाम",
+      NATURE: "प्रकृति",
+      BON: "बोन",
+      JAIN: "जैन",
+      BAHAI: "बहाई",
+      SIKH: "सिख",
+      OTHER: "अन्य",
+    };
+
+    return religionNames[type] || type;
+  };
 
   return (
     <Card className="p-6">
@@ -225,9 +230,9 @@ export default function WardWiseReligionPopulationTable({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै वडाहरू</SelectItem>
-                  {uniqueWards.map((wardId) => (
-                    <SelectItem key={wardId} value={wardId}>
-                      वडा {wardIdToNumber[wardId] || wardId}
+                  {uniqueWards.map((wardNumber) => (
+                    <SelectItem key={wardNumber} value={wardNumber.toString()}>
+                      वडा {wardNumber}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -241,15 +246,20 @@ export default function WardWiseReligionPopulationTable({
               >
                 धर्म अनुसार फिल्टर:
               </label>
-              <Select value={filterReligion} onValueChange={setFilterReligion}>
+              <Select
+                value={filterReligion}
+                onValueChange={(value) =>
+                  setFilterReligion(value as ReligionType | "all")
+                }
+              >
                 <SelectTrigger className="w-full sm:w-[240px]">
                   <SelectValue placeholder="सबै धर्महरू" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै धर्महरू</SelectItem>
-                  {uniqueReligions.map((religion) => (
+                  {Object.values(ReligionTypeEnum.enum).map((religion) => (
                     <SelectItem key={religion} value={religion}>
-                      {religion}
+                      {getReligionDisplayName(religion as ReligionType)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -274,7 +284,7 @@ export default function WardWiseReligionPopulationTable({
             {viewMode === "list" ? (
               // Traditional list view
               sortedWardGroups.map((wardGroup) => {
-                const isExpanded = expandedWards[wardGroup.wardId] ?? true;
+                const isExpanded = expandedWards[wardGroup.wardNumber] ?? true;
                 const totalPopulation = wardGroup.items.reduce(
                   (sum, item) => sum + (item.population || 0),
                   0,
@@ -282,21 +292,18 @@ export default function WardWiseReligionPopulationTable({
 
                 return (
                   <div
-                    key={`ward-${wardGroup.wardId}`}
+                    key={`ward-${wardGroup.wardNumber}`}
                     className="border rounded-lg overflow-hidden"
                   >
                     <div
                       className="bg-muted/60 p-3 font-semibold flex items-center justify-between cursor-pointer hover:bg-muted/80"
-                      onClick={() => toggleWardExpansion(wardGroup.wardId)}
+                      onClick={() => toggleWardExpansion(wardGroup.wardNumber)}
                     >
                       <div className="flex items-center">
                         <span className="bg-primary/10 text-primary rounded-full w-8 h-8 flex items-center justify-center mr-2">
                           {wardGroup.wardNumber}
                         </span>
-                        <span>
-                          वडा नं. {wardGroup.wardNumber}
-                          {wardGroup.wardName ? ` - ${wardGroup.wardName}` : ""}
-                        </span>
+                        <span>वडा नं. {wardGroup.wardNumber}</span>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-sm font-normal text-muted-foreground hidden md:block">
@@ -336,7 +343,7 @@ export default function WardWiseReligionPopulationTable({
                                 className="hover:bg-muted/30"
                               >
                                 <TableCell className="max-w-[240px] truncate">
-                                  {item.religionType}
+                                  {getReligionDisplayName(item.religionType)}
                                 </TableCell>
                                 <TableCell className="text-right">
                                   {item.population?.toLocaleString() || "-"}
@@ -413,12 +420,12 @@ export default function WardWiseReligionPopulationTable({
                         वडा
                       </TableHead>
                       {/* Generate column headers for each religion */}
-                      {uniqueReligions.map((religion) => (
+                      {Object.values(ReligionTypeEnum.enum).map((religion) => (
                         <TableHead
                           key={religion}
                           className="text-center min-w-[150px]"
                         >
-                          {religion}
+                          {getReligionDisplayName(religion as ReligionType)}
                         </TableHead>
                       ))}
                       <TableHead className="text-right">कुल जनसंख्या</TableHead>
@@ -437,66 +444,72 @@ export default function WardWiseReligionPopulationTable({
                           map[item.religionType] = item;
                           return map;
                         },
-                        {} as Record<string, WardWiseReligionPopulationData>,
+                        {} as Record<
+                          ReligionType,
+                          WardWiseReligionPopulationData
+                        >,
                       );
 
                       return (
-                        <TableRow key={`grid-ward-${wardGroup.wardId}`}>
+                        <TableRow key={`grid-ward-${wardGroup.wardNumber}`}>
                           <TableCell className="font-medium sticky left-0 bg-white z-10">
                             <div className="flex items-center">
                               <Badge variant="outline" className="mr-2">
                                 {wardGroup.wardNumber}
                               </Badge>
-                              {wardGroup.wardName ||
-                                `वडा ${wardGroup.wardNumber}`}
+                              वडा {wardGroup.wardNumber}
                             </div>
                           </TableCell>
 
                           {/* Render cells for each religion */}
-                          {uniqueReligions.map((religion) => {
-                            const item = religionMap[religion];
-                            return (
-                              <TableCell
-                                key={`${wardGroup.wardId}-${religion}`}
-                                className="text-center"
-                              >
-                                {item ? (
-                                  <div className="flex flex-col space-y-1">
-                                    <span className="font-medium">
-                                      {item.population?.toLocaleString() || "-"}
-                                    </span>
-                                    {item.percentage && (
-                                      <span className="text-xs text-muted-foreground">
-                                        {item.percentage}%
+                          {Object.values(ReligionTypeEnum.enum).map(
+                            (religion) => {
+                              const item =
+                                religionMap[religion as ReligionType];
+                              return (
+                                <TableCell
+                                  key={`${wardGroup.wardNumber}-${religion}`}
+                                  className="text-center"
+                                >
+                                  {item ? (
+                                    <div className="flex flex-col space-y-1">
+                                      <span className="font-medium">
+                                        {item.population?.toLocaleString() ||
+                                          "-"}
                                       </span>
-                                    )}
-                                    {item && (
-                                      <div className="flex justify-center mt-1 space-x-1">
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          className="h-6 w-6 p-0"
-                                          onClick={() => onEdit(item.id)}
-                                        >
-                                          <Edit2 className="h-3 w-3" />
-                                        </Button>
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          className="h-6 w-6 p-0 text-destructive hover:text-destructive"
-                                          onClick={() => setDeleteId(item.id)}
-                                        >
-                                          <Trash2 className="h-3 w-3" />
-                                        </Button>
-                                      </div>
-                                    )}
-                                  </div>
-                                ) : (
-                                  "-"
-                                )}
-                              </TableCell>
-                            );
-                          })}
+                                      {item.percentage && (
+                                        <span className="text-xs text-muted-foreground">
+                                          {item.percentage}%
+                                        </span>
+                                      )}
+                                      {item && (
+                                        <div className="flex justify-center mt-1 space-x-1">
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 w-6 p-0"
+                                            onClick={() => onEdit(item.id)}
+                                          >
+                                            <Edit2 className="h-3 w-3" />
+                                          </Button>
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                                            onClick={() => setDeleteId(item.id)}
+                                          >
+                                            <Trash2 className="h-3 w-3" />
+                                          </Button>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    "-"
+                                  )}
+                                </TableCell>
+                              );
+                            },
+                          )}
 
                           {/* Total ward population */}
                           <TableCell className="text-right font-medium">
@@ -511,7 +524,7 @@ export default function WardWiseReligionPopulationTable({
                       <TableCell className="sticky left-0 bg-muted/20 z-10">
                         कुल जम्मा
                       </TableCell>
-                      {uniqueReligions.map((religion) => {
+                      {Object.values(ReligionTypeEnum.enum).map((religion) => {
                         const religionTotal = filteredData
                           .filter((item) => item.religionType === religion)
                           .reduce(

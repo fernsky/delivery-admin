@@ -52,10 +52,10 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
+// Updated type to match schema
 type WardWiseTrainedPopulationData = {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   trainedPopulation: number;
 };
 
@@ -98,42 +98,30 @@ export default function WardWiseTrainedPopulationTable({
 
   // Calculate unique wards for filtering
   const uniqueWards = Array.from(
-    new Set(data.map((item) => item.wardId)),
-  ).sort();
-
-  // Get ward numbers for display
-  const wardIdToNumber = data.reduce(
-    (acc, item) => {
-      if (item.wardId && item.wardNumber) {
-        acc[item.wardId] = item.wardNumber;
-      }
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+    new Set(data.map((item) => item.wardNumber.toString())),
+  ).sort((a, b) => parseInt(a) - parseInt(b));
 
   // Filter the data
   const filteredData = data.filter((item) => {
-    return filterWard === "all" || item.wardId === filterWard;
+    return filterWard === "all" || item.wardNumber.toString() === filterWard;
   });
 
-  // Group data by ward ID
+  // Group data by ward number
   const groupedByWard = filteredData.reduce(
     (acc, item) => {
-      if (!acc[item.wardId]) {
-        acc[item.wardId] = {
-          wardId: item.wardId,
-          wardNumber: item.wardNumber || Number(item.wardId),
+      const wardNumberStr = item.wardNumber.toString();
+      if (!acc[wardNumberStr]) {
+        acc[wardNumberStr] = {
+          wardNumber: item.wardNumber,
           trainedPopulation: 0,
         };
       }
-      acc[item.wardId].trainedPopulation = item.trainedPopulation || 0;
+      acc[wardNumberStr].trainedPopulation = item.trainedPopulation || 0;
       return acc;
     },
     {} as Record<
       string,
       {
-        wardId: string;
         wardNumber: number;
         trainedPopulation: number;
       }
@@ -146,10 +134,10 @@ export default function WardWiseTrainedPopulationTable({
   );
 
   // Toggle ward expansion
-  const toggleWardExpansion = (wardId: string) => {
+  const toggleWardExpansion = (wardNumber: number) => {
     setExpandedWards((prev) => ({
       ...prev,
-      [wardId]: !prev[wardId],
+      [wardNumber]: !prev[wardNumber],
     }));
   };
 
@@ -157,10 +145,10 @@ export default function WardWiseTrainedPopulationTable({
   if (sortedWardGroups.length > 0 && Object.keys(expandedWards).length === 0) {
     const initialExpandedState = sortedWardGroups.reduce(
       (acc, ward) => {
-        acc[ward.wardId] = true; // Start with all wards expanded
+        acc[ward.wardNumber] = true; // Start with all wards expanded
         return acc;
       },
-      {} as Record<string, boolean>,
+      {} as Record<number, boolean>,
     );
     setExpandedWards(initialExpandedState);
   }
@@ -217,9 +205,9 @@ export default function WardWiseTrainedPopulationTable({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै वडाहरू</SelectItem>
-                  {uniqueWards.map((wardId) => (
-                    <SelectItem key={wardId} value={wardId}>
-                      वडा {wardIdToNumber[wardId] || wardId}
+                  {uniqueWards.map((wardNumber) => (
+                    <SelectItem key={wardNumber} value={wardNumber}>
+                      वडा {wardNumber}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -257,7 +245,7 @@ export default function WardWiseTrainedPopulationTable({
                   <TableBody>
                     {sortedWardGroups.map((wardGroup) => (
                       <TableRow
-                        key={wardGroup.wardId}
+                        key={wardGroup.wardNumber}
                         className="hover:bg-muted/30"
                       >
                         <TableCell>
@@ -292,7 +280,8 @@ export default function WardWiseTrainedPopulationTable({
                               <DropdownMenuItem
                                 onClick={() => {
                                   const item = data.find(
-                                    (i) => i.wardId === wardGroup.wardId,
+                                    (i) =>
+                                      i.wardNumber === wardGroup.wardNumber,
                                   );
                                   if (item) {
                                     onEdit(item.id);
@@ -305,7 +294,8 @@ export default function WardWiseTrainedPopulationTable({
                               <DropdownMenuItem
                                 onClick={() => {
                                   const item = data.find(
-                                    (i) => i.wardId === wardGroup.wardId,
+                                    (i) =>
+                                      i.wardNumber === wardGroup.wardNumber,
                                   );
                                   if (item) {
                                     setDeleteId(item.id);
@@ -335,11 +325,13 @@ export default function WardWiseTrainedPopulationTable({
               // Grid view
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {sortedWardGroups.map((wardGroup) => {
-                  const item = data.find((i) => i.wardId === wardGroup.wardId);
+                  const item = data.find(
+                    (i) => i.wardNumber === wardGroup.wardNumber,
+                  );
 
                   return (
                     <Card
-                      key={wardGroup.wardId}
+                      key={wardGroup.wardNumber}
                       className="p-4 hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-center justify-between mb-4">

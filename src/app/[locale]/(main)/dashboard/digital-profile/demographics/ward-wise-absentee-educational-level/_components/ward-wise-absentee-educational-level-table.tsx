@@ -86,11 +86,8 @@ const getEducationalLevelDisplay = (level: string): string => {
 
 type WardWiseAbsenteeEducationalLevelData = {
   id: string;
-  wardId: string;
   wardNumber: number;
-  wardName?: string | null;
   educationalLevel: string;
-  educationalLevelDisplay: string;
   population: number;
 };
 
@@ -133,22 +130,26 @@ export default function WardWiseAbsenteeEducationalLevelTable({
     }
   };
 
+  // Add display names to the data
+  const enhancedData = data.map((item) => ({
+    ...item,
+    educationalLevelDisplay: getEducationalLevelDisplay(item.educationalLevel),
+  }));
+
   // Calculate unique wards and educational levels for filtering
   const uniqueWards = Array.from(
-    new Set(data.map((item) => item.wardNumber)),
+    new Set(enhancedData.map((item) => item.wardNumber)),
   ).sort((a, b) => a - b);
 
-  // Calculate unique educational levels for filtering
-  const uniqueEducationalLevels = Array.from(
-    new Set(data.map((item) => item.educationalLevelDisplay)),
-  ).sort();
+  // Get all available educational level values from enum
+  const allEducationalLevels = educationalLevelEnum.enumValues;
 
   // Filter the data
-  const filteredData = data.filter((item) => {
+  const filteredData = enhancedData.filter((item) => {
     return (
       (filterWard === "all" || item.wardNumber === parseInt(filterWard)) &&
       (filterEducationLevel === "all" ||
-        item.educationalLevelDisplay === filterEducationLevel)
+        item.educationalLevel === filterEducationLevel)
     );
   });
 
@@ -158,8 +159,6 @@ export default function WardWiseAbsenteeEducationalLevelTable({
       if (!acc[item.wardNumber]) {
         acc[item.wardNumber] = {
           wardNumber: item.wardNumber,
-          wardName: item.wardName,
-          wardId: item.wardId,
           items: [],
         };
       }
@@ -170,9 +169,9 @@ export default function WardWiseAbsenteeEducationalLevelTable({
       number,
       {
         wardNumber: number;
-        wardName?: string | null;
-        wardId: string;
-        items: WardWiseAbsenteeEducationalLevelData[];
+        items: (WardWiseAbsenteeEducationalLevelData & {
+          educationalLevelDisplay: string;
+        })[];
       }
     >,
   );
@@ -273,9 +272,9 @@ export default function WardWiseAbsenteeEducationalLevelTable({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै शैक्षिक स्तर</SelectItem>
-                  {uniqueEducationalLevels.map((level) => (
+                  {allEducationalLevels.map((level) => (
                     <SelectItem key={level} value={level}>
-                      {level}
+                      {getEducationalLevelDisplay(level)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -319,10 +318,7 @@ export default function WardWiseAbsenteeEducationalLevelTable({
                         <span className="bg-primary/10 text-primary rounded-full w-8 h-8 flex items-center justify-center mr-2">
                           {wardGroup.wardNumber}
                         </span>
-                        <span>
-                          वडा नं. {wardGroup.wardNumber}
-                          {wardGroup.wardName ? ` - ${wardGroup.wardName}` : ""}
-                        </span>
+                        <span>वडा नं. {wardGroup.wardNumber}</span>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-sm font-normal text-muted-foreground hidden md:block">
@@ -444,13 +440,13 @@ export default function WardWiseAbsenteeEducationalLevelTable({
                       <TableHead className="sticky left-0 bg-white z-10 w-24">
                         वडा
                       </TableHead>
-                      {/* Generate column headers for each educational level */}
-                      {uniqueEducationalLevels.map((level) => (
+                      {/* Generate column headers for relevant educational levels */}
+                      {allEducationalLevels.map((level) => (
                         <TableHead
                           key={level}
                           className="text-center min-w-[150px]"
                         >
-                          {level}
+                          {getEducationalLevelDisplay(level)}
                         </TableHead>
                       ))}
                       <TableHead className="text-right">कुल जनसंख्या</TableHead>
@@ -466,12 +462,14 @@ export default function WardWiseAbsenteeEducationalLevelTable({
                       // Create a mapping of educational level to item for this ward
                       const levelMap = wardGroup.items.reduce(
                         (map, item) => {
-                          map[item.educationalLevelDisplay] = item;
+                          map[item.educationalLevel] = item;
                           return map;
                         },
                         {} as Record<
                           string,
-                          WardWiseAbsenteeEducationalLevelData
+                          WardWiseAbsenteeEducationalLevelData & {
+                            educationalLevelDisplay: string;
+                          }
                         >,
                       );
 
@@ -482,13 +480,12 @@ export default function WardWiseAbsenteeEducationalLevelTable({
                               <Badge variant="outline" className="mr-2">
                                 {wardGroup.wardNumber}
                               </Badge>
-                              {wardGroup.wardName ||
-                                `वडा ${wardGroup.wardNumber}`}
+                              वडा {wardGroup.wardNumber}
                             </div>
                           </TableCell>
 
                           {/* Render cells for each educational level */}
-                          {uniqueEducationalLevels.map((level) => {
+                          {allEducationalLevels.map((level) => {
                             const item = levelMap[level];
                             return (
                               <TableCell
@@ -549,11 +546,9 @@ export default function WardWiseAbsenteeEducationalLevelTable({
                       <TableCell className="sticky left-0 bg-muted/20 z-10">
                         कुल जम्मा
                       </TableCell>
-                      {uniqueEducationalLevels.map((level) => {
+                      {allEducationalLevels.map((level) => {
                         const levelTotal = filteredData
-                          .filter(
-                            (item) => item.educationalLevelDisplay === level,
-                          )
+                          .filter((item) => item.educationalLevel === level)
                           .reduce((sum, item) => sum + item.population, 0);
 
                         return (

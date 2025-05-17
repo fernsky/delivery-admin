@@ -28,8 +28,7 @@ import {
 // Create a schema for the form
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
-  wardNumber: z.coerce.number().int().min(1).optional(),
+  wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
   trainedPopulation: z.coerce.number().int().nonnegative(),
 });
 
@@ -47,15 +46,10 @@ export default function WardWiseTrainedPopulationForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const utils = api.useContext();
 
-  // Get unique wards from existing data
-  const uniqueWards = Array.from(
-    new Set(
-      existingData.map((item) => ({
-        id: item.wardId,
-        number: item.wardNumber || parseInt(item.wardId),
-      })),
-    ),
-  ).sort((a, b) => a.number - b.number);
+  // Get unique ward numbers from existing data
+  const uniqueWardNumbers = Array.from(
+    new Set(existingData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
@@ -99,7 +93,6 @@ export default function WardWiseTrainedPopulationForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
       wardNumber: undefined,
       trainedPopulation: 0,
     },
@@ -112,8 +105,7 @@ export default function WardWiseTrainedPopulationForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: recordToEdit.wardNumber || undefined,
+          wardNumber: recordToEdit.wardNumber,
           trainedPopulation: recordToEdit.trainedPopulation || 0,
         });
       }
@@ -126,11 +118,11 @@ export default function WardWiseTrainedPopulationForm({
     // Check if a record already exists with this ward (for new records)
     if (!editId) {
       const duplicate = existingData.find(
-        (item) => item.wardId === values.wardId,
+        (item) => item.wardNumber === values.wardNumber,
       );
       if (duplicate) {
         toast.error(
-          `वडा ${values.wardNumber || values.wardId} को लागि तालिम प्राप्त जनसंख्या डाटा पहिले नै अवस्थित छ`,
+          `वडा ${values.wardNumber} को लागि तालिम प्राप्त जनसंख्या डाटा पहिले नै अवस्थित छ`,
         );
         setIsSubmitting(false);
         return;
@@ -156,55 +148,7 @@ export default function WardWiseTrainedPopulationForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="wardId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>वडा</FormLabel>
-                <FormControl>
-                  <Select
-                    value={field.value}
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      // Update ward number if available
-                      const selectedWard = uniqueWards.find(
-                        (ward) => ward.id === value,
-                      );
-                      if (selectedWard) {
-                        form.setValue("wardNumber", selectedWard.number);
-                      }
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="वडा चयन गर्नुहोस्" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {uniqueWards.map((ward) => (
-                        <SelectItem key={ward.id} value={ward.id}>
-                          वडा {ward.number}
-                        </SelectItem>
-                      ))}
-                      {/* Allow adding new wards */}
-                      {Array.from({ length: 32 }, (_, i) => i + 1)
-                        .filter(
-                          (num) =>
-                            !uniqueWards.some((ward) => ward.number === num),
-                        )
-                        .map((num) => (
-                          <SelectItem key={`new-${num}`} value={num.toString()}>
-                            वडा {num} (नयाँ)
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+        <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
             name="wardNumber"
@@ -212,7 +156,38 @@ export default function WardWiseTrainedPopulationForm({
               <FormItem>
                 <FormLabel>वडा नम्बर</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="1" {...field} />
+                  <Select
+                    value={field.value?.toString()}
+                    onValueChange={(value) => {
+                      field.onChange(parseInt(value, 10));
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="वडा नम्बर चयन गर्नुहोस्" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {/* Allow selecting from existing ward numbers */}
+                      {Array.from({ length: 32 }, (_, i) => i + 1)
+                        .filter(
+                          (num) =>
+                            !uniqueWardNumbers.includes(num) ||
+                            (editId && form.getValues().wardNumber === num),
+                        )
+                        .map((num) => (
+                          <SelectItem
+                            key={`ward-${num}`}
+                            value={num.toString()}
+                          >
+                            वडा {num}{" "}
+                            {uniqueWardNumbers.includes(num) &&
+                            editId &&
+                            form.getValues().wardNumber !== num
+                              ? "(पहिले नै अवस्थित)"
+                              : ""}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

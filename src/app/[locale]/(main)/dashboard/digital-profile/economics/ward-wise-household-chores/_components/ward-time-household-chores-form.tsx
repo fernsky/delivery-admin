@@ -32,10 +32,9 @@ import {
   timeSpentLabels,
 } from "@/server/api/routers/profile/economics/ward-time-wise-household-chores.schema";
 
-// Create a schema for the form
+// Create a schema for the form matching the backend schema
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
   wardNumber: z.coerce
     .number()
     .int()
@@ -68,30 +67,10 @@ export default function WardTimeHouseholdChoresForm({
   const utils = api.useContext();
   const timeSpentOptions = getTimeSpentOptions();
 
-  // Extract unique ward information from existing data
-  const uniqueWards = Array.from(
-    new Set(
-      existingData.map((item) => ({
-        id: item.wardId,
-        number: item.wardNumber || parseInt(item.wardId),
-      })),
-    ),
-  ).sort((a, b) => a.number - b.number);
-
-  // Get ward numbers that already exist
-  const existingWardNumbers = new Set(uniqueWards.map((ward) => ward.number));
-
-  // Setup ward options including existing and new wards
-  const wardOptions = [
-    ...uniqueWards,
-    // Add options for new wards (1-32) that don't exist yet
-    ...Array.from({ length: 32 }, (_, i) => i + 1)
-      .filter((num) => !existingWardNumbers.has(num))
-      .map((num) => ({
-        id: num.toString(),
-        number: num,
-      })),
-  ].sort((a, b) => a.number - b.number);
+  // Extract unique ward numbers from existing data
+  const uniqueWardNumbers = Array.from(
+    new Set(existingData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
@@ -122,7 +101,6 @@ export default function WardTimeHouseholdChoresForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
       wardNumber: undefined,
       timeSpent: "",
       population: 0,
@@ -130,7 +108,7 @@ export default function WardTimeHouseholdChoresForm({
   });
 
   // Watch for changes to check for duplicates
-  const watchWardId = form.watch("wardId");
+  const watchWardNumber = form.watch("wardNumber");
   const watchTimeSpent = form.watch("timeSpent");
 
   // Populate the form when editing
@@ -140,8 +118,7 @@ export default function WardTimeHouseholdChoresForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: recordToEdit.wardNumber || parseInt(recordToEdit.wardId),
+          wardNumber: recordToEdit.wardNumber,
           timeSpent: recordToEdit.timeSpent,
           population: recordToEdit.population || 0,
         });
@@ -153,24 +130,24 @@ export default function WardTimeHouseholdChoresForm({
   useEffect(() => {
     setDuplicateError(null);
 
-    if (watchWardId && watchTimeSpent && !editId) {
+    if (watchWardNumber && watchTimeSpent && !editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardId === watchWardId && item.timeSpent === watchTimeSpent,
+          item.wardNumber === watchWardNumber &&
+          item.timeSpent === watchTimeSpent,
       );
 
       if (duplicate) {
-        const wardNumber = duplicate.wardNumber || parseInt(watchWardId);
         const timeSpentLabel =
           timeSpentOptions.find((opt) => opt.value === watchTimeSpent)?.label ||
           watchTimeSpent;
 
         setDuplicateError(
-          `वडा ${wardNumber} को लागि "${timeSpentLabel}" समय श्रेणीको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${watchWardNumber} को लागि "${timeSpentLabel}" समय श्रेणीको डाटा पहिले नै अवस्थित छ`,
         );
       }
     }
-  }, [watchWardId, watchTimeSpent, existingData, editId, timeSpentOptions]);
+  }, [watchWardNumber, watchTimeSpent, existingData, editId, timeSpentOptions]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     // Don't submit if there's a duplicate error
@@ -186,12 +163,11 @@ export default function WardTimeHouseholdChoresForm({
     if (editId) {
       // Get all existing entries for this ward
       const wardData = existingData.filter(
-        (item) => item.wardId === values.wardId && item.id !== editId,
+        (item) => item.wardNumber === values.wardNumber && item.id !== editId,
       );
 
       // Create an array of all time spent categories for this ward
       const dataToSubmit = {
-        wardId: values.wardId,
         wardNumber: values.wardNumber,
         data: [
           ...wardData.map((item) => ({
@@ -209,7 +185,6 @@ export default function WardTimeHouseholdChoresForm({
     } else {
       // For new entries
       const dataToSubmit = {
-        wardId: values.wardId,
         wardNumber: values.wardNumber,
         data: [
           {
@@ -246,24 +221,17 @@ export default function WardTimeHouseholdChoresForm({
 
             <div className="bg-muted/40 p-4 rounded-lg">
               <h3 className="text-sm font-medium mb-3">वडा विवरण</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <FormField
                   control={form.control}
-                  name="wardId"
+                  name="wardNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>वडा</FormLabel>
+                      <FormLabel>वडा नम्बर</FormLabel>
                       <Select
-                        value={field.value}
+                        value={field.value?.toString() || ""}
                         onValueChange={(value) => {
-                          field.onChange(value);
-                          // Update ward number automatically
-                          const selectedWard = wardOptions.find(
-                            (ward) => ward.id === value,
-                          );
-                          if (selectedWard) {
-                            form.setValue("wardNumber", selectedWard.number);
-                          }
+                          field.onChange(parseInt(value, 10));
                         }}
                       >
                         <FormControl>
@@ -272,29 +240,22 @@ export default function WardTimeHouseholdChoresForm({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {wardOptions.map((ward) => (
-                            <SelectItem key={ward.id} value={ward.id}>
-                              वडा {ward.number}{" "}
-                              {!existingWardNumbers.has(ward.number) &&
-                                "(नयाँ)"}
-                            </SelectItem>
-                          ))}
+                          {/* Include both existing and new ward numbers (1-32) */}
+                          {Array.from({ length: 32 }, (_, i) => i + 1).map(
+                            (num) => (
+                              <SelectItem
+                                key={`ward-${num}`}
+                                value={num.toString()}
+                              >
+                                वडा {num}{" "}
+                                {uniqueWardNumbers.includes(num)
+                                  ? "(अवस्थित)"
+                                  : "(नयाँ)"}
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="wardNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>वडा नम्बर</FormLabel>
-                      <FormControl>
-                        <Input type="number" placeholder="1" {...field} />
-                      </FormControl>
                       <FormDescription>
                         वडा नम्बर १ देखि ३२ सम्म मात्र हुन सक्छ
                       </FormDescription>

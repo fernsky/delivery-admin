@@ -51,12 +51,12 @@ import {
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { type RemittanceExpenseType } from "@/server/api/routers/profile/economics/ward-wise-remittance-expenses.schema";
 
 type WardWiseRemittanceExpenseData = {
   id: string;
-  wardId: string;
-  wardNumber?: number;
-  remittanceExpense: string;
+  wardNumber: number;
+  remittanceExpense: RemittanceExpenseType;
   households: number;
   percentage?: number;
 };
@@ -101,19 +101,8 @@ export default function WardWiseRemittanceExpenseTable({
 
   // Calculate unique wards for filtering
   const uniqueWards = Array.from(
-    new Set(data.map((item) => item.wardId)),
-  ).sort();
-
-  // Get ward numbers for display
-  const wardIdToNumber = data.reduce(
-    (acc, item) => {
-      if (item.wardId && item.wardNumber) {
-        acc[item.wardId] = item.wardNumber;
-      }
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+    new Set(data.map((item) => String(item.wardNumber))),
+  ).sort((a, b) => parseInt(a) - parseInt(b));
 
   // Calculate unique expense types for filtering
   const uniqueExpenseTypes = Array.from(
@@ -123,31 +112,30 @@ export default function WardWiseRemittanceExpenseTable({
   // Filter the data
   const filteredData = data.filter((item) => {
     return (
-      (filterWard === "all" || item.wardId === filterWard) &&
+      (filterWard === "all" || String(item.wardNumber) === filterWard) &&
       (filterExpenseType === "all" ||
         item.remittanceExpense === filterExpenseType)
     );
   });
 
-  // Group data by ward ID
+  // Group data by ward number
   const groupedByWard = filteredData.reduce(
     (acc, item) => {
-      if (!acc[item.wardId]) {
-        acc[item.wardId] = {
-          wardId: item.wardId,
-          wardNumber: item.wardNumber || Number(item.wardId),
+      const wardKey = String(item.wardNumber);
+      if (!acc[wardKey]) {
+        acc[wardKey] = {
+          wardNumber: item.wardNumber,
           items: [],
           totalHouseholds: 0,
         };
       }
-      acc[item.wardId].items.push(item);
-      acc[item.wardId].totalHouseholds += item.households || 0;
+      acc[wardKey].items.push(item);
+      acc[wardKey].totalHouseholds += item.households || 0;
       return acc;
     },
     {} as Record<
       string,
       {
-        wardId: string;
         wardNumber: number;
         items: WardWiseRemittanceExpenseData[];
         totalHouseholds: number;
@@ -161,10 +149,11 @@ export default function WardWiseRemittanceExpenseTable({
   );
 
   // Toggle ward expansion
-  const toggleWardExpansion = (wardId: string) => {
+  const toggleWardExpansion = (wardNumber: number) => {
+    const wardKey = String(wardNumber);
     setExpandedWards((prev) => ({
       ...prev,
-      [wardId]: !prev[wardId],
+      [wardKey]: !prev[wardKey],
     }));
   };
 
@@ -172,7 +161,7 @@ export default function WardWiseRemittanceExpenseTable({
   if (sortedWardGroups.length > 0 && Object.keys(expandedWards).length === 0) {
     const initialExpandedState = sortedWardGroups.reduce(
       (acc, ward) => {
-        acc[ward.wardId] = true; // Start with all wards expanded
+        acc[String(ward.wardNumber)] = true; // Start with all wards expanded
         return acc;
       },
       {} as Record<string, boolean>,
@@ -226,9 +215,9 @@ export default function WardWiseRemittanceExpenseTable({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै वडाहरू</SelectItem>
-                  {uniqueWards.map((wardId) => (
-                    <SelectItem key={wardId} value={wardId}>
-                      वडा {wardIdToNumber[wardId] || wardId}
+                  {uniqueWards.map((ward) => (
+                    <SelectItem key={ward} value={ward}>
+                      वडा {ward}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -278,16 +267,17 @@ export default function WardWiseRemittanceExpenseTable({
             {viewMode === "list" ? (
               // Traditional list view
               sortedWardGroups.map((wardGroup) => {
-                const isExpanded = expandedWards[wardGroup.wardId] ?? true;
+                const wardKey = String(wardGroup.wardNumber);
+                const isExpanded = expandedWards[wardKey] ?? true;
 
                 return (
                   <div
-                    key={`ward-${wardGroup.wardId}`}
+                    key={`ward-${wardGroup.wardNumber}`}
                     className="border rounded-lg overflow-hidden"
                   >
                     <div
                       className="bg-muted/60 p-3 font-semibold flex items-center justify-between cursor-pointer hover:bg-muted/80"
-                      onClick={() => toggleWardExpansion(wardGroup.wardId)}
+                      onClick={() => toggleWardExpansion(wardGroup.wardNumber)}
                     >
                       <div className="flex items-center">
                         <span className="bg-primary/10 text-primary rounded-full w-8 h-8 flex items-center justify-center mr-2">
@@ -419,7 +409,7 @@ export default function WardWiseRemittanceExpenseTable({
                       {/* Generate column headers for each ward */}
                       {sortedWardGroups.map((wardGroup) => (
                         <TableHead
-                          key={wardGroup.wardId}
+                          key={wardGroup.wardNumber}
                           className="text-center min-w-[100px]"
                         >
                           वडा {wardGroup.wardNumber}
@@ -455,7 +445,7 @@ export default function WardWiseRemittanceExpenseTable({
 
                             return (
                               <TableCell
-                                key={`${wardGroup.wardId}-${expenseType}`}
+                                key={`${wardGroup.wardNumber}-${expenseType}`}
                                 className="text-center"
                               >
                                 {item ? (
@@ -517,7 +507,7 @@ export default function WardWiseRemittanceExpenseTable({
                       </TableCell>
                       {sortedWardGroups.map((wardGroup) => (
                         <TableCell
-                          key={`total-${wardGroup.wardId}`}
+                          key={`total-${wardGroup.wardNumber}`}
                           className="text-center"
                         >
                           {wardGroup.totalHouseholds > 0

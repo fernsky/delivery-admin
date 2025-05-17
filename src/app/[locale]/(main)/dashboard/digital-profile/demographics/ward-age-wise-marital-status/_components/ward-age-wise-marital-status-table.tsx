@@ -49,7 +49,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
   AgeGroupEnum,
@@ -60,16 +59,13 @@ import {
 
 type AgeWiseMaritalStatusData = {
   id: string;
-  wardId: string;
-  wardNumber?: number;
-  wardName?: string | null;
+  wardNumber: number;
   ageGroup: string;
   maritalStatus: string;
   population?: number | null;
   malePopulation?: number | null;
   femalePopulation?: number | null;
   otherPopulation?: number | null;
-  percentage?: string | null;
 };
 
 interface AgeWiseMaritalStatusTableProps {
@@ -85,7 +81,7 @@ export default function AgeWiseMaritalStatusTable({
   const [filterWard, setFilterWard] = useState<string>("all");
   const [filterAgeGroup, setFilterAgeGroup] = useState<string>("all");
   const [filterMaritalStatus, setFilterMaritalStatus] = useState<string>("all");
-  const [expandedWards, setExpandedWards] = useState<Record<string, boolean>>(
+  const [expandedWards, setExpandedWards] = useState<Record<number, boolean>>(
     {},
   );
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
@@ -109,77 +105,68 @@ export default function AgeWiseMaritalStatusTable({
     }
   };
 
-  // Calculate unique wards and ages for filtering
+  // Calculate unique wards for filtering
   const uniqueWards = Array.from(
-    new Set(data.map((item) => item.wardId)),
-  ).sort();
+    new Set(data.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
-  // Get ward numbers for display
-  const wardIdToNumber = data.reduce(
-    (acc, item) => {
-      if (item.wardId && item.wardNumber) {
-        acc[item.wardId] = item.wardNumber;
-      }
-      return acc;
-    },
-    {} as Record<string, number>,
+  // Get age group options for filtering
+  const ageGroupOptions = Object.values(AgeGroupEnum._def.values).map(
+    (value) => ({
+      value,
+      label: getAgeGroupDisplayName(value as any),
+    }),
   );
 
-  // Calculate unique age groups for filtering
-  const uniqueAgeGroups = Array.from(
-    new Set(data.map((item) => item.ageGroup)),
-  ).sort();
-
-  // Calculate unique marital statuses for filtering
-  const uniqueMaritalStatuses = Array.from(
-    new Set(data.map((item) => item.maritalStatus)),
-  ).sort();
+  // Get marital status options for filtering
+  const maritalStatusOptions = Object.values(MaritalStatusEnum._def.values).map(
+    (value) => ({
+      value,
+      label: getMaritalStatusDisplayName(value as any),
+    }),
+  );
 
   // Filter the data
   const filteredData = data.filter((item) => {
     return (
-      (filterWard === "all" || item.wardId === filterWard) &&
+      (filterWard === "all" || item.wardNumber === parseInt(filterWard)) &&
       (filterAgeGroup === "all" || item.ageGroup === filterAgeGroup) &&
       (filterMaritalStatus === "all" ||
         item.maritalStatus === filterMaritalStatus)
     );
   });
 
-  // Group data by ward ID
+  // Group data by ward number
   const groupedByWard = filteredData.reduce(
     (acc, item) => {
-      if (!acc[item.wardId]) {
-        acc[item.wardId] = {
-          wardId: item.wardId,
-          wardNumber: item.wardNumber || Number(item.wardId),
-          wardName: item.wardName,
+      if (!acc[item.wardNumber]) {
+        acc[item.wardNumber] = {
+          wardNumber: item.wardNumber,
           items: [],
         };
       }
-      acc[item.wardId].items.push(item);
+      acc[item.wardNumber].items.push(item);
       return acc;
     },
     {} as Record<
-      string,
+      number,
       {
-        wardId: string;
         wardNumber: number;
-        wardName?: string | null;
         items: AgeWiseMaritalStatusData[];
       }
     >,
   );
 
-  // Sort ward groups by ward number
+  // Sort ward groups
   const sortedWardGroups = Object.values(groupedByWard).sort(
     (a, b) => a.wardNumber - b.wardNumber,
   );
 
   // Toggle ward expansion
-  const toggleWardExpansion = (wardId: string) => {
+  const toggleWardExpansion = (wardNumber: number) => {
     setExpandedWards((prev) => ({
       ...prev,
-      [wardId]: !prev[wardId],
+      [wardNumber]: !prev[wardNumber],
     }));
   };
 
@@ -187,10 +174,10 @@ export default function AgeWiseMaritalStatusTable({
   if (sortedWardGroups.length > 0 && Object.keys(expandedWards).length === 0) {
     const initialExpandedState = sortedWardGroups.reduce(
       (acc, ward) => {
-        acc[ward.wardId] = true; // Start with all wards expanded
+        acc[ward.wardNumber] = true; // Start with all wards expanded
         return acc;
       },
-      {} as Record<string, boolean>,
+      {} as Record<number, boolean>,
     );
     setExpandedWards(initialExpandedState);
   }
@@ -241,9 +228,9 @@ export default function AgeWiseMaritalStatusTable({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै वडाहरू</SelectItem>
-                  {uniqueWards.map((wardId) => (
-                    <SelectItem key={wardId} value={wardId}>
-                      वडा {wardIdToNumber[wardId] || wardId}
+                  {uniqueWards.map((ward) => (
+                    <SelectItem key={ward} value={ward.toString()}>
+                      वडा {ward}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -258,14 +245,14 @@ export default function AgeWiseMaritalStatusTable({
                 उमेर समूह अनुसार फिल्टर:
               </label>
               <Select value={filterAgeGroup} onValueChange={setFilterAgeGroup}>
-                <SelectTrigger className="w-full sm:w-[240px]">
-                  <SelectValue placeholder="सबै उमेर समूहहरू" />
+                <SelectTrigger className="w-full sm:w-[200px]">
+                  <SelectValue placeholder="सबै उमेर समूह" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">सबै उमेर समूहहरू</SelectItem>
-                  {uniqueAgeGroups.map((ageGroup) => (
-                    <SelectItem key={ageGroup} value={ageGroup}>
-                      {getAgeGroupDisplayName(ageGroup as any)}
+                  <SelectItem value="all">सबै उमेर समूह</SelectItem>
+                  {ageGroupOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -283,14 +270,14 @@ export default function AgeWiseMaritalStatusTable({
                 value={filterMaritalStatus}
                 onValueChange={setFilterMaritalStatus}
               >
-                <SelectTrigger className="w-full sm:w-[240px]">
+                <SelectTrigger className="w-full sm:w-[220px]">
                   <SelectValue placeholder="सबै वैवाहिक स्थिति" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै वैवाहिक स्थिति</SelectItem>
-                  {uniqueMaritalStatuses.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {getMaritalStatusDisplayName(status as any)}
+                  {maritalStatusOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -315,7 +302,7 @@ export default function AgeWiseMaritalStatusTable({
             {viewMode === "list" ? (
               // Traditional list view
               sortedWardGroups.map((wardGroup) => {
-                const isExpanded = expandedWards[wardGroup.wardId] ?? true;
+                const isExpanded = expandedWards[wardGroup.wardNumber] ?? true;
                 const totalPopulation = wardGroup.items.reduce(
                   (sum, item) => sum + (item.population || 0),
                   0,
@@ -323,26 +310,23 @@ export default function AgeWiseMaritalStatusTable({
 
                 return (
                   <div
-                    key={`ward-${wardGroup.wardId}`}
+                    key={`ward-${wardGroup.wardNumber}`}
                     className="border rounded-lg overflow-hidden"
                   >
                     <div
                       className="bg-muted/60 p-3 font-semibold flex items-center justify-between cursor-pointer hover:bg-muted/80"
-                      onClick={() => toggleWardExpansion(wardGroup.wardId)}
+                      onClick={() => toggleWardExpansion(wardGroup.wardNumber)}
                     >
                       <div className="flex items-center">
                         <span className="bg-primary/10 text-primary rounded-full w-8 h-8 flex items-center justify-center mr-2">
                           {wardGroup.wardNumber}
                         </span>
-                        <span>
-                          वडा नं. {wardGroup.wardNumber}
-                          {wardGroup.wardName ? ` - ${wardGroup.wardName}` : ""}
-                        </span>
+                        <span>वडा नं. {wardGroup.wardNumber}</span>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-sm font-normal text-muted-foreground hidden md:block">
                           <span className="mr-4">
-                            जनसंख्या: {totalPopulation.toLocaleString()}
+                            जम्मा जनसंख्या: {totalPopulation.toLocaleString()}
                           </span>
                         </div>
                         {isExpanded ? (
@@ -365,16 +349,16 @@ export default function AgeWiseMaritalStatusTable({
                                 वैवाहिक स्थिति
                               </TableHead>
                               <TableHead className="text-right font-medium">
-                                जनसंख्या
+                                पुरुष जनसंख्या
                               </TableHead>
                               <TableHead className="text-right font-medium">
-                                पुरुष
+                                महिला जनसंख्या
                               </TableHead>
                               <TableHead className="text-right font-medium">
-                                महिला
+                                अन्य जनसंख्या
                               </TableHead>
                               <TableHead className="text-right font-medium">
-                                अन्य
+                                जम्मा जनसंख्या
                               </TableHead>
                               <TableHead className="w-10" />
                             </TableRow>
@@ -385,16 +369,13 @@ export default function AgeWiseMaritalStatusTable({
                                 key={item.id}
                                 className="hover:bg-muted/30"
                               >
-                                <TableCell className="max-w-[200px] truncate">
+                                <TableCell>
                                   {getAgeGroupDisplayName(item.ageGroup as any)}
                                 </TableCell>
-                                <TableCell className="max-w-[200px] truncate">
+                                <TableCell>
                                   {getMaritalStatusDisplayName(
                                     item.maritalStatus as any,
                                   )}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                  {item.population?.toLocaleString() || "-"}
                                 </TableCell>
                                 <TableCell className="text-right">
                                   {item.malePopulation?.toLocaleString() || "-"}
@@ -406,6 +387,9 @@ export default function AgeWiseMaritalStatusTable({
                                 <TableCell className="text-right">
                                   {item.otherPopulation?.toLocaleString() ||
                                     "-"}
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  {item.population?.toLocaleString() || "-"}
                                 </TableCell>
                                 <TableCell>
                                   <DropdownMenu>
@@ -448,38 +432,14 @@ export default function AgeWiseMaritalStatusTable({
                               </TableRow>
                             ))}
                             <TableRow className="bg-muted/10">
-                              <TableCell colSpan={2} className="font-medium">
+                              <TableCell
+                                colSpan={5}
+                                className="font-medium text-right"
+                              >
                                 जम्मा
                               </TableCell>
                               <TableCell className="text-right font-medium">
                                 {totalPopulation.toLocaleString()}
-                              </TableCell>
-                              <TableCell className="text-right font-medium">
-                                {wardGroup.items
-                                  .reduce(
-                                    (sum, item) =>
-                                      sum + (item.malePopulation || 0),
-                                    0,
-                                  )
-                                  .toLocaleString()}
-                              </TableCell>
-                              <TableCell className="text-right font-medium">
-                                {wardGroup.items
-                                  .reduce(
-                                    (sum, item) =>
-                                      sum + (item.femalePopulation || 0),
-                                    0,
-                                  )
-                                  .toLocaleString()}
-                              </TableCell>
-                              <TableCell className="text-right font-medium">
-                                {wardGroup.items
-                                  .reduce(
-                                    (sum, item) =>
-                                      sum + (item.otherPopulation || 0),
-                                    0,
-                                  )
-                                  .toLocaleString()}
                               </TableCell>
                               <TableCell />
                             </TableRow>
@@ -491,256 +451,179 @@ export default function AgeWiseMaritalStatusTable({
                 );
               })
             ) : (
-              // Grid view - Marital Status as columns
+              // Grid view - Age groups and marital status as rows/columns
               <div className="overflow-x-auto">
                 <Table className="min-w-max">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="sticky left-0 bg-white z-10 w-24">
-                        वडा / उमेर
+                      <TableHead className="sticky left-0 bg-white z-10">
+                        उमेर समूह / वैवाहिक स्थिति
                       </TableHead>
-                      {/* Generate column headers for each marital status */}
-                      {uniqueMaritalStatuses.map((status) => (
-                        <TableHead
-                          key={status}
-                          className="text-center min-w-[150px]"
-                        >
-                          {getMaritalStatusDisplayName(status as any)}
-                        </TableHead>
-                      ))}
-                      <TableHead className="text-right">कुल जनसंख्या</TableHead>
+                      {Object.values(MaritalStatusEnum._def.values).map(
+                        (status) => (
+                          <TableHead
+                            key={status}
+                            className="text-center min-w-[140px]"
+                          >
+                            {getMaritalStatusDisplayName(status as any)}
+                          </TableHead>
+                        ),
+                      )}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {/* Group by ward and age group */}
-                    {sortedWardGroups.map((wardGroup) => {
-                      // Group items by age group within this ward
-                      const ageGroups = wardGroup.items.reduce(
-                        (acc, item) => {
-                          const key = item.ageGroup;
-                          if (!acc[key]) {
-                            acc[key] = {
-                              ageGroup: item.ageGroup,
-                              items: [],
-                            };
-                          }
-                          acc[key].items.push(item);
-                          return acc;
-                        },
-                        {} as Record<
-                          string,
-                          {
-                            ageGroup: string;
-                            items: AgeWiseMaritalStatusData[];
-                          }
-                        >,
-                      );
+                    {filterWard !== "all"
+                      ? // Show age groups x marital status for a specific ward
+                        Object.values(AgeGroupEnum._def.values).map(
+                          (ageGroup) => {
+                            // Create a mapping of marital status to item for this age group
+                            const statusMap = filteredData
+                              .filter(
+                                (item) =>
+                                  item.wardNumber === parseInt(filterWard) &&
+                                  item.ageGroup === ageGroup,
+                              )
+                              .reduce(
+                                (map, item) => {
+                                  map[item.maritalStatus] = item;
+                                  return map;
+                                },
+                                {} as Record<string, AgeWiseMaritalStatusData>,
+                              );
 
-                      // Sort age groups
-                      const sortedAgeGroups = Object.values(ageGroups).sort(
-                        (a, b) => {
-                          const ageOrder = Object.values(AgeGroupEnum.Values);
-                          return (
-                            ageOrder.indexOf(a.ageGroup as any) -
-                            ageOrder.indexOf(b.ageGroup as any)
+                            return (
+                              <TableRow key={`grid-age-${ageGroup}`}>
+                                <TableCell className="font-medium sticky left-0 bg-white z-10">
+                                  {getAgeGroupDisplayName(ageGroup as any)}
+                                </TableCell>
+
+                                {/* Render cells for each marital status */}
+                                {Object.values(
+                                  MaritalStatusEnum._def.values,
+                                ).map((status) => {
+                                  const item = statusMap[status];
+                                  return (
+                                    <TableCell
+                                      key={`${ageGroup}-${status}`}
+                                      className="text-center"
+                                    >
+                                      {item ? (
+                                        <div className="flex flex-col space-y-1">
+                                          <span className="font-medium">
+                                            {item.population?.toLocaleString() ||
+                                              "-"}
+                                          </span>
+                                          <span className="text-xs text-muted-foreground">
+                                            पु: {item.malePopulation || 0} | म:{" "}
+                                            {item.femalePopulation || 0}
+                                          </span>
+                                          {item && (
+                                            <div className="flex justify-center mt-1 space-x-1">
+                                              <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-6 w-6 p-0"
+                                                onClick={() => onEdit(item.id)}
+                                              >
+                                                <Edit2 className="h-3 w-3" />
+                                              </Button>
+                                              <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                                                onClick={() =>
+                                                  setDeleteId(item.id)
+                                                }
+                                              >
+                                                <Trash2 className="h-3 w-3" />
+                                              </Button>
+                                            </div>
+                                          )}
+                                        </div>
+                                      ) : (
+                                        "-"
+                                      )}
+                                    </TableCell>
+                                  );
+                                })}
+                              </TableRow>
+                            );
+                          },
+                        )
+                      : // Show ward summary when all wards selected
+                        uniqueWards.map((ward) => {
+                          const wardData = filteredData.filter(
+                            (item) => item.wardNumber === ward,
                           );
-                        },
-                      );
 
-                      if (filterAgeGroup === "all") {
-                        // For each age group in this ward
-                        return sortedAgeGroups.map((ageGroupData) => {
-                          // Create mapping of marital status to data
-                          const statusMap = ageGroupData.items.reduce(
-                            (map, item) => {
-                              map[item.maritalStatus] = item;
-                              return map;
+                          // Group by marital status
+                          const maritalStatusTotals = Object.values(
+                            MaritalStatusEnum._def.values,
+                          ).reduce(
+                            (acc, status) => {
+                              acc[status] = wardData
+                                .filter((item) => item.maritalStatus === status)
+                                .reduce(
+                                  (sum, item) => sum + (item.population || 0),
+                                  0,
+                                );
+                              return acc;
                             },
-                            {} as Record<string, AgeWiseMaritalStatusData>,
+                            {} as Record<string, number>,
                           );
 
-                          // Calculate total for this age group
-                          const totalPopulation = ageGroupData.items.reduce(
+                          const wardTotal = wardData.reduce(
                             (sum, item) => sum + (item.population || 0),
                             0,
                           );
 
                           return (
-                            <TableRow
-                              key={`${wardGroup.wardId}-${ageGroupData.ageGroup}`}
-                            >
+                            <TableRow key={`grid-ward-${ward}`}>
                               <TableCell className="font-medium sticky left-0 bg-white z-10">
-                                <div>
+                                <div className="flex items-center">
                                   <Badge variant="outline" className="mr-2">
-                                    {wardGroup.wardNumber}
+                                    {ward}
                                   </Badge>
-                                  {getAgeGroupDisplayName(
-                                    ageGroupData.ageGroup as any,
-                                  )}
+                                  वडा {ward}
                                 </div>
                               </TableCell>
 
-                              {/* Render cells for each marital status */}
-                              {uniqueMaritalStatuses.map((status) => {
-                                const item = statusMap[status];
-                                return (
-                                  <TableCell
-                                    key={`${wardGroup.wardId}-${ageGroupData.ageGroup}-${status}`}
-                                    className="text-center"
-                                  >
-                                    {item ? (
-                                      <div className="flex flex-col space-y-1">
-                                        <span className="font-medium">
-                                          {item.population?.toLocaleString() ||
-                                            "-"}
-                                        </span>
-                                        {item && (
-                                          <div className="flex justify-center mt-1 space-x-1">
-                                            <Button
-                                              variant="ghost"
-                                              size="sm"
-                                              className="h-6 w-6 p-0"
-                                              onClick={() => onEdit(item.id)}
-                                            >
-                                              <Edit2 className="h-3 w-3" />
-                                            </Button>
-                                            <Button
-                                              variant="ghost"
-                                              size="sm"
-                                              className="h-6 w-6 p-0 text-destructive hover:text-destructive"
-                                              onClick={() =>
-                                                setDeleteId(item.id)
-                                              }
-                                            >
-                                              <Trash2 className="h-3 w-3" />
-                                            </Button>
-                                          </div>
-                                        )}
-                                      </div>
-                                    ) : (
-                                      "-"
-                                    )}
-                                  </TableCell>
-                                );
-                              })}
+                              {/* Show total for each marital status in this ward */}
+                              {Object.values(MaritalStatusEnum._def.values).map(
+                                (status) => {
+                                  const statusTotal =
+                                    maritalStatusTotals[status];
+                                  const percentage =
+                                    wardTotal > 0
+                                      ? Math.round(
+                                          (statusTotal / wardTotal) * 100,
+                                        )
+                                      : 0;
 
-                              <TableCell className="text-right font-medium">
-                                {totalPopulation.toLocaleString()}
-                              </TableCell>
+                                  return (
+                                    <TableCell
+                                      key={`${ward}-${status}`}
+                                      className="text-center"
+                                    >
+                                      {statusTotal > 0 ? (
+                                        <div>
+                                          <div className="font-medium">
+                                            {statusTotal.toLocaleString()}
+                                          </div>
+                                          <div className="text-xs text-muted-foreground">
+                                            {percentage}%
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        "-"
+                                      )}
+                                    </TableCell>
+                                  );
+                                },
+                              )}
                             </TableRow>
                           );
-                        });
-                      } else {
-                        // If filtering by age group, show only wards
-                        const totalPopulation = wardGroup.items.reduce(
-                          (sum, item) => sum + (item.population || 0),
-                          0,
-                        );
-
-                        // Create mapping of marital status to data for the filtered age group
-                        const statusMap = wardGroup.items.reduce(
-                          (map, item) => {
-                            map[item.maritalStatus] = item;
-                            return map;
-                          },
-                          {} as Record<string, AgeWiseMaritalStatusData>,
-                        );
-
-                        return (
-                          <TableRow key={`ward-${wardGroup.wardId}`}>
-                            <TableCell className="font-medium sticky left-0 bg-white z-10">
-                              <div>
-                                <Badge variant="outline" className="mr-2">
-                                  {wardGroup.wardNumber}
-                                </Badge>
-                                {wardGroup.wardName ||
-                                  `वडा ${wardGroup.wardNumber}`}
-                              </div>
-                            </TableCell>
-
-                            {/* Render cells for each marital status */}
-                            {uniqueMaritalStatuses.map((status) => {
-                              const item = statusMap[status];
-                              return (
-                                <TableCell
-                                  key={`${wardGroup.wardId}-${status}`}
-                                  className="text-center"
-                                >
-                                  {item ? (
-                                    <div className="flex flex-col space-y-1">
-                                      <span className="font-medium">
-                                        {item.population?.toLocaleString() ||
-                                          "-"}
-                                      </span>
-                                      {item && (
-                                        <div className="flex justify-center mt-1 space-x-1">
-                                          <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-6 w-6 p-0"
-                                            onClick={() => onEdit(item.id)}
-                                          >
-                                            <Edit2 className="h-3 w-3" />
-                                          </Button>
-                                          <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-6 w-6 p-0 text-destructive hover:text-destructive"
-                                            onClick={() => setDeleteId(item.id)}
-                                          >
-                                            <Trash2 className="h-3 w-3" />
-                                          </Button>
-                                        </div>
-                                      )}
-                                    </div>
-                                  ) : (
-                                    "-"
-                                  )}
-                                </TableCell>
-                              );
-                            })}
-
-                            <TableCell className="text-right font-medium">
-                              {totalPopulation.toLocaleString()}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      }
-                    })}
-
-                    {/* Summary row with totals by marital status */}
-                    <TableRow className="bg-muted/20 font-medium">
-                      <TableCell className="sticky left-0 bg-muted/20 z-10">
-                        कुल जम्मा
-                      </TableCell>
-                      {uniqueMaritalStatuses.map((status) => {
-                        const statusTotal = filteredData
-                          .filter((item) => item.maritalStatus === status)
-                          .reduce(
-                            (sum, item) => sum + (item.population || 0),
-                            0,
-                          );
-
-                        return (
-                          <TableCell
-                            key={`total-${status}`}
-                            className="text-center"
-                          >
-                            {statusTotal > 0
-                              ? statusTotal.toLocaleString()
-                              : "-"}
-                          </TableCell>
-                        );
-                      })}
-                      <TableCell className="text-right">
-                        {filteredData
-                          .reduce(
-                            (sum, item) => sum + (item.population || 0),
-                            0,
-                          )
-                          .toLocaleString()}
-                      </TableCell>
-                    </TableRow>
+                        })}
                   </TableBody>
                 </Table>
               </div>

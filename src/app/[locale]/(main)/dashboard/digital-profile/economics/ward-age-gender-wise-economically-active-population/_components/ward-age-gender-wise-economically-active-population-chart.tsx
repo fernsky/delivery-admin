@@ -22,8 +22,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface WardAgeGenderWiseEconomicallyActivePopulationData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   ageGroup: string;
   gender: string;
   population: number;
@@ -69,20 +68,9 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Get unique age groups and genders
@@ -99,7 +87,9 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationChart({
     let result = [...data];
 
     if (selectedWard !== "all") {
-      result = result.filter((item) => item.wardId === selectedWard);
+      result = result.filter(
+        (item) => item.wardNumber.toString() === selectedWard,
+      );
     }
 
     if (selectedGender !== "all") {
@@ -287,9 +277,9 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((wardId) => (
-                  <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                {uniqueWards.map((ward) => (
+                  <SelectItem key={ward} value={ward}>
+                    वडा {ward}
                   </SelectItem>
                 ))}
               </SelectContent>

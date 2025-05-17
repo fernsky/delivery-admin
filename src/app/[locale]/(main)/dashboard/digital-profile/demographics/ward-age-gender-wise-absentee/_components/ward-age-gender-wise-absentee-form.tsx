@@ -29,11 +29,10 @@ import {
   GenderEnum,
 } from "@/server/api/routers/profile/demographics/ward-age-gender-wise-absentee.schema";
 
-// Create a schema for the form
+// Create a schema for the form that matches the backend schema
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
-  wardNumber: z.coerce.number().int().min(1).optional(),
+  wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
   ageGroup: z.string().min(1, "उमेर समूह आवश्यक छ"),
   gender: z.string().min(1, "लिङ्ग आवश्यक छ"),
   population: z.coerce.number().int().nonnegative().optional(),
@@ -127,8 +126,7 @@ export default function WardAgeGenderWiseAbsenteeForm({
   const uniqueWards = Array.from(
     new Set(
       existingData.map((item) => ({
-        id: item.wardId,
-        number: item.wardNumber || parseInt(item.wardId),
+        number: item.wardNumber || 0,
       })),
     ),
   ).sort((a, b) => a.number - b.number);
@@ -178,11 +176,10 @@ export default function WardAgeGenderWiseAbsenteeForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
       wardNumber: undefined,
       ageGroup: "",
       gender: "",
-      population: undefined,
+      population: 0,
     },
   });
 
@@ -193,8 +190,7 @@ export default function WardAgeGenderWiseAbsenteeForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: recordToEdit.wardNumber || undefined,
+          wardNumber: recordToEdit.wardNumber,
           ageGroup: recordToEdit.ageGroup,
           gender: recordToEdit.gender,
           population: recordToEdit.population || 0,
@@ -210,13 +206,13 @@ export default function WardAgeGenderWiseAbsenteeForm({
     if (!editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardId === values.wardId &&
+          item.wardNumber === values.wardNumber &&
           item.ageGroup === values.ageGroup &&
           item.gender === values.gender,
       );
       if (duplicate) {
         toast.error(
-          `वडा ${values.wardNumber || values.wardId} को लागि ${values.ageGroup} उमेर समूह र ${values.gender} लिङ्गको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${values.wardNumber} को लागि ${values.ageGroup} उमेर समूह र ${values.gender} लिङ्गको डाटा पहिले नै अवस्थित छ`,
         );
         setIsSubmitting(false);
         return;
@@ -250,33 +246,27 @@ export default function WardAgeGenderWiseAbsenteeForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           <FormField
             control={form.control}
-            name="wardId"
+            name="wardNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>वडा</FormLabel>
+                <FormLabel>वडा नम्बर</FormLabel>
                 <FormControl>
                   <Select
-                    value={field.value}
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      // Update ward number if available
-                      const selectedWard = uniqueWards.find(
-                        (ward) => ward.id === value,
-                      );
-                      if (selectedWard) {
-                        form.setValue("wardNumber", selectedWard.number);
-                      }
-                    }}
+                    value={field.value?.toString() || ""}
+                    onValueChange={(value) => field.onChange(parseInt(value))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="वडा चयन गर्नुहोस्" />
                     </SelectTrigger>
                     <SelectContent>
                       {uniqueWards.map((ward) => (
-                        <SelectItem key={ward.id} value={ward.id}>
+                        <SelectItem
+                          key={ward.number}
+                          value={ward.number.toString()}
+                        >
                           वडा {ward.number}
                         </SelectItem>
                       ))}
@@ -293,20 +283,6 @@ export default function WardAgeGenderWiseAbsenteeForm({
                         ))}
                     </SelectContent>
                   </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="wardNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>वडा नम्बर</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

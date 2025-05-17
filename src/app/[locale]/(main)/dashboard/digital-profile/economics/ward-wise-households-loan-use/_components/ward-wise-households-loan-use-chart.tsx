@@ -23,8 +23,7 @@ import { loanUseLabels } from "@/server/api/routers/profile/economics/ward-wise-
 
 interface WardWiseHouseholdsLoanUseData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   loanUse: string;
   households: number;
 }
@@ -46,20 +45,9 @@ export default function WardWiseHouseholdsLoanUseChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Get unique loan uses
@@ -72,7 +60,7 @@ export default function WardWiseHouseholdsLoanUseChart({
     if (selectedWard === "all") {
       return data;
     }
-    return data.filter((item) => item.wardId === selectedWard);
+    return data.filter((item) => item.wardNumber.toString() === selectedWard);
   }, [data, selectedWard]);
 
   // Prepare bar chart data based on the chartView
@@ -80,16 +68,16 @@ export default function WardWiseHouseholdsLoanUseChart({
     if (chartView === "byWard") {
       // Group by ward
       return uniqueWards
-        .filter((wardId) => selectedWard === "all" || wardId === selectedWard)
-        .map((wardId) => {
+        .filter((ward) => selectedWard === "all" || ward === selectedWard)
+        .map((ward) => {
           const wardItems = filteredData.filter(
-            (item) => item.wardId === wardId,
+            (item) => item.wardNumber.toString() === ward,
           );
 
           // Create an object with ward as key and loan use households
           const dataPoint: Record<string, any> = {
-            ward: `वडा ${wardIdToNumber[wardId] || wardId}`,
-            wardId: wardId,
+            ward: `वडा ${ward}`,
+            wardNumber: parseInt(ward),
           };
 
           uniqueLoanUses.forEach((loanUse) => {
@@ -117,10 +105,9 @@ export default function WardWiseHouseholdsLoanUseChart({
         if (selectedWard !== "all") {
           // If a specific ward is selected, just show that ward
           const wardItem = loanUseItems.find(
-            (item) => item.wardId === selectedWard,
+            (item) => item.wardNumber.toString() === selectedWard,
           );
-          dataPoint[`वडा ${wardIdToNumber[selectedWard] || selectedWard}`] =
-            wardItem?.households || 0;
+          dataPoint[`वडा ${selectedWard}`] = wardItem?.households || 0;
         } else {
           // Otherwise show total across all wards
           dataPoint["कुल घरधुरी"] = loanUseItems.reduce(
@@ -132,14 +119,7 @@ export default function WardWiseHouseholdsLoanUseChart({
         return dataPoint;
       });
     }
-  }, [
-    filteredData,
-    uniqueLoanUses,
-    uniqueWards,
-    chartView,
-    selectedWard,
-    wardIdToNumber,
-  ]);
+  }, [filteredData, uniqueLoanUses, uniqueWards, chartView, selectedWard]);
 
   // Get chart keys based on the chartView
   const chartKeys = useMemo(() => {
@@ -147,19 +127,19 @@ export default function WardWiseHouseholdsLoanUseChart({
       return uniqueLoanUses.map((loanUse) => getLoanUseDisplayName(loanUse));
     } else {
       if (selectedWard !== "all") {
-        return [`वडा ${wardIdToNumber[selectedWard] || selectedWard}`];
+        return [`वडा ${selectedWard}`];
       } else {
         return ["कुल घरधुरी"];
       }
     }
-  }, [chartView, uniqueLoanUses, selectedWard, wardIdToNumber]);
+  }, [chartView, uniqueLoanUses, selectedWard]);
 
   // Prepare pie chart data
   const pieChartData = useMemo(() => {
     if (chartView === "byWard" && selectedWard !== "all") {
       // Create pie data for a specific ward showing loan use distribution
       const wardItems = filteredData.filter(
-        (item) => item.wardId === selectedWard,
+        (item) => item.wardNumber.toString() === selectedWard,
       );
 
       return uniqueLoanUses
@@ -237,9 +217,9 @@ export default function WardWiseHouseholdsLoanUseChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((wardId) => (
-                  <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                {uniqueWards.map((ward) => (
+                  <SelectItem key={ward} value={ward}>
+                    वडा {ward}
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -18,15 +18,16 @@ import {
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsivePie } from "@nivo/pie";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  ReligionTypeEnum,
+  type ReligionType,
+} from "@/server/api/routers/profile/demographics/ward-wise-religion-population.schema";
 
 interface WardWiseReligionPopulationData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
-  wardName?: string | null;
-  religionType: string;
-  religionName: string;
-  population?: number | null;
+  wardNumber: number;
+  religionType: ReligionType;
+  population: number;
   percentage?: string | null;
 }
 
@@ -42,20 +43,9 @@ export default function WardWiseReligionPopulationChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => Number(a) - Number(b));
   }, [data]);
 
   // Get unique religions
@@ -66,7 +56,7 @@ export default function WardWiseReligionPopulationChart({
   // Filter by selected ward
   const filteredData = useMemo(() => {
     if (selectedWard === "all") return data;
-    return data.filter((item) => item.wardId === selectedWard);
+    return data.filter((item) => item.wardNumber.toString() === selectedWard);
   }, [data, selectedWard]);
 
   // Group by ward and aggregate religions for bar chart
@@ -239,9 +229,9 @@ export default function WardWiseReligionPopulationChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((wardId) => (
-                  <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                {uniqueWards.map((wardNumber) => (
+                  <SelectItem key={wardNumber} value={wardNumber}>
+                    वडा {wardNumber}
                   </SelectItem>
                 ))}
               </SelectContent>

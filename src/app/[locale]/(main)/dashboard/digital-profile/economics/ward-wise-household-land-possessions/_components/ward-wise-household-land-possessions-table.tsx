@@ -53,8 +53,7 @@ import { Badge } from "@/components/ui/badge";
 
 type WardWiseHouseholdLandPossessionsData = {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   households: number;
 };
 
@@ -97,49 +96,16 @@ export default function WardWiseHouseholdLandPossessionsTable({
 
   // Calculate unique wards for filtering
   const uniqueWards = Array.from(
-    new Set(data.map((item) => item.wardId)),
-  ).sort();
-
-  // Get ward numbers for display
-  const wardIdToNumber = data.reduce(
-    (acc, item) => {
-      if (item.wardId && item.wardNumber) {
-        acc[item.wardId] = item.wardNumber;
-      }
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+    new Set(data.map((item) => item.wardNumber.toString())),
+  ).sort((a, b) => parseInt(a) - parseInt(b));
 
   // Filter the data
   const filteredData = data.filter((item) => {
-    return filterWard === "all" || item.wardId === filterWard;
+    return filterWard === "all" || item.wardNumber.toString() === filterWard;
   });
 
-  // Group data by ward ID
-  const groupedByWard = filteredData.reduce(
-    (acc, item) => {
-      if (!acc[item.wardId]) {
-        acc[item.wardId] = {
-          wardId: item.wardId,
-          wardNumber: item.wardNumber || Number(item.wardId),
-          item: item,
-        };
-      }
-      return acc;
-    },
-    {} as Record<
-      string,
-      {
-        wardId: string;
-        wardNumber: number;
-        item: WardWiseHouseholdLandPossessionsData;
-      }
-    >,
-  );
-
-  // Sort ward groups by ward number
-  const sortedWardGroups = Object.values(groupedByWard).sort(
+  // Sort data by ward number
+  const sortedData = [...filteredData].sort(
     (a, b) => a.wardNumber - b.wardNumber,
   );
 
@@ -189,9 +155,9 @@ export default function WardWiseHouseholdLandPossessionsTable({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै वडाहरू</SelectItem>
-                  {uniqueWards.map((wardId) => (
-                    <SelectItem key={wardId} value={wardId}>
-                      वडा {wardIdToNumber[wardId] || wardId}
+                  {uniqueWards.map((ward) => (
+                    <SelectItem key={ward} value={ward}>
+                      वडा {ward}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -201,7 +167,7 @@ export default function WardWiseHouseholdLandPossessionsTable({
         </div>
 
         {/* Table Section */}
-        {sortedWardGroups.length === 0 ? (
+        {sortedData.length === 0 ? (
           <div className="border rounded-lg p-8">
             <div className="flex flex-col items-center justify-center text-muted-foreground">
               <AlertTriangle className="h-8 w-8 mb-2 opacity-40" />
@@ -211,7 +177,7 @@ export default function WardWiseHouseholdLandPossessionsTable({
               </p>
             </div>
           </div>
-        ) : (
+        ) : viewMode === "list" ? (
           <div className="space-y-4">
             <Table>
               <TableHeader>
@@ -224,16 +190,16 @@ export default function WardWiseHouseholdLandPossessionsTable({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedWardGroups.map((wardGroup) => (
-                  <TableRow key={wardGroup.wardId}>
+                {sortedData.map((item) => (
+                  <TableRow key={item.id}>
                     <TableCell>
                       <div className="flex items-center space-x-2">
-                        <Badge variant="outline">{wardGroup.wardNumber}</Badge>
-                        <span>वडा नं. {wardGroup.wardNumber}</span>
+                        <Badge variant="outline">{item.wardNumber}</Badge>
+                        <span>वडा नं. {item.wardNumber}</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-right font-medium">
-                      {wardGroup.item.households.toLocaleString()}
+                      {item.households.toLocaleString()}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>
@@ -250,14 +216,12 @@ export default function WardWiseHouseholdLandPossessionsTable({
                         <DropdownMenuContent align="end" className="w-[160px]">
                           <DropdownMenuLabel>कार्यहरू</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => onEdit(wardGroup.item.id)}
-                          >
+                          <DropdownMenuItem onClick={() => onEdit(item.id)}>
                             <Edit2 className="mr-2 h-4 w-4" />
                             सम्पादन गर्नुहोस्
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => setDeleteId(wardGroup.item.id)}
+                            onClick={() => setDeleteId(item.id)}
                             className="text-destructive focus:text-destructive"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
@@ -268,15 +232,66 @@ export default function WardWiseHouseholdLandPossessionsTable({
                     </TableCell>
                   </TableRow>
                 ))}
+                <TableRow className="bg-muted/10">
+                  <TableCell className="font-medium">जम्मा</TableCell>
+                  <TableCell className="text-right font-medium">
+                    {sortedData
+                      .reduce((sum, item) => sum + item.households, 0)
+                      .toLocaleString()}
+                  </TableCell>
+                  <TableCell />
+                </TableRow>
               </TableBody>
             </Table>
+          </div>
+        ) : (
+          // Grid view
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {sortedData.map((item) => (
+              <Card key={item.id} className="p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <Badge variant="outline" className="px-2 py-1">
+                    वडा {item.wardNumber}
+                  </Badge>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <span className="sr-only">मेनु खोल्नुहोस्</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[160px]">
+                      <DropdownMenuLabel>कार्यहरू</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => onEdit(item.id)}>
+                        <Edit2 className="mr-2 h-4 w-4" />
+                        सम्पादन गर्नुहोस्
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setDeleteId(item.id)}
+                        className="text-destructive focus:text-destructive"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        मेट्नुहोस्
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <div className="font-bold text-2xl text-center my-4">
+                  {item.households.toLocaleString()}
+                </div>
+                <div className="text-center text-sm text-muted-foreground">
+                  जग्गा भएका घरधुरी संख्या
+                </div>
+              </Card>
+            ))}
           </div>
         )}
 
         {/* Results summary */}
         {filteredData.length > 0 && (
           <div className="text-sm text-muted-foreground text-right">
-            जम्मा वडाहरू: {sortedWardGroups.length} | कुल जग्गा भएका घरधुरी:{" "}
+            जम्मा वडाहरू: {filteredData.length} | कुल जग्गा भएका घरधुरी:{" "}
             {filteredData
               .reduce((sum, item) => sum + (item.households || 0), 0)
               .toLocaleString()}

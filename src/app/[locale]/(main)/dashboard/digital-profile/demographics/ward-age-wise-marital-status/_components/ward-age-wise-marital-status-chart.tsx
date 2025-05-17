@@ -18,52 +18,33 @@ import {
 import { ResponsiveBar } from "@nivo/bar";
 import { ResponsivePie } from "@nivo/pie";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { educationalLevelEnum } from "@/server/db/schema/profile/demographics/ward-wise-absentee-educational-level";
+import {
+  AgeGroupEnum,
+  MaritalStatusEnum,
+  getAgeGroupDisplayName,
+  getMaritalStatusDisplayName,
+} from "@/server/api/routers/profile/demographics/ward-age-wise-marital-status.schema";
 
-// Helper function to get display names for educational levels
-const getEducationalLevelDisplay = (level: string): string => {
-  const displayMap: Record<string, string> = {
-    CHILD_DEVELOPMENT_CENTER: "बालविकास केन्द्र / मंटेस्वोरी",
-    NURSERY: "नर्सरी/केजी",
-    CLASS_1: "कक्षा १",
-    CLASS_2: "कक्षा २",
-    CLASS_3: "कक्षा ३",
-    CLASS_4: "कक्षा ४",
-    CLASS_5: "कक्षा ५",
-    CLASS_6: "कक्षा ६",
-    CLASS_7: "कक्षा ७",
-    CLASS_8: "कक्षा ८",
-    CLASS_9: "कक्षा ९",
-    CLASS_10: "कक्षा १०",
-    SLC_LEVEL: "एसईई/एसएलसी/सो सरह",
-    CLASS_12_LEVEL: "कक्षा १२ वा PCL वा सो सरह",
-    BACHELOR_LEVEL: "स्नातक वा सो सरह",
-    MASTERS_LEVEL: "स्नातकोत्तर वा सो सरह",
-    PHD_LEVEL: "पीएचडी वा सो सरह",
-    OTHER: "अन्य",
-    INFORMAL_EDUCATION: "अनौपचारिक शिक्षा",
-    EDUCATED: "साक्षर",
-    UNKNOWN: "थाहा नभएको",
-  };
-
-  return displayMap[level] || level;
-};
-
-interface WardWiseAbsenteeEducationalLevelData {
+interface AgeWiseMaritalStatusData {
   id: string;
   wardNumber: number;
-  educationalLevel: string;
+  ageGroup: string;
+  maritalStatus: string;
   population: number;
+  malePopulation?: number | null;
+  femalePopulation?: number | null;
+  otherPopulation?: number | null;
 }
 
-interface WardWiseAbsenteeEducationalLevelChartProps {
-  data: WardWiseAbsenteeEducationalLevelData[];
+interface AgeWiseMaritalStatusChartProps {
+  data: AgeWiseMaritalStatusData[];
 }
 
-export default function WardWiseAbsenteeEducationalLevelChart({
+export default function AgeWiseMaritalStatusChart({
   data,
-}: WardWiseAbsenteeEducationalLevelChartProps) {
+}: AgeWiseMaritalStatusChartProps) {
   const [selectedWard, setSelectedWard] = useState<string>("all");
+  const [selectedView, setSelectedView] = useState<string>("maritalStatus");
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
@@ -72,112 +53,138 @@ export default function WardWiseAbsenteeEducationalLevelChart({
     );
   }, [data]);
 
-  // Get unique educational levels
-  const uniqueEducationalLevels = useMemo(() => {
-    return Array.from(
-      new Set(data.map((item) => item.educationalLevel)),
-    ).sort();
-  }, [data]);
-
   // Filter by selected ward
   const filteredData = useMemo(() => {
     if (selectedWard === "all") return data;
     return data.filter((item) => item.wardNumber === parseInt(selectedWard));
   }, [data, selectedWard]);
 
-  // Add display names to data
-  const enhancedData = useMemo(() => {
-    return filteredData.map((item) => ({
-      ...item,
-      educationalLevelDisplay: getEducationalLevelDisplay(
-        item.educationalLevel,
-      ),
-    }));
-  }, [filteredData]);
-
-  // Group by ward and aggregate educational levels for bar chart
-  const barChartData = useMemo(() => {
-    if (selectedWard !== "all") {
-      // For a single ward, show all educational levels
-      return enhancedData
-        .sort((a, b) => b.population - a.population)
-        .map((item, index) => {
-          // Generate consistent colors based on index
-          const hue = (index * 137.5) % 360;
-          return {
-            educationLevel: getEducationalLevelDisplay(item.educationalLevel),
-            population: item.population,
-            color: `hsl(${hue}, 70%, 50%)`,
-          };
-        });
-    } else {
-      // For all wards, group by educational level instead of ward
-      const levelGroups = uniqueEducationalLevels.reduce(
-        (acc, level) => {
-          acc[level] = {
-            totalPopulation: 0,
-            displayName: getEducationalLevelDisplay(level),
+  // Prepare chart data based on selected view
+  const chartData = useMemo(() => {
+    if (selectedView === "maritalStatus") {
+      // Group by marital status
+      const statusGroups = Object.values(MaritalStatusEnum._def.values).reduce(
+        (acc, status) => {
+          acc[status] = {
+            id: status,
+            label: getMaritalStatusDisplayName(status as any),
+            value: 0,
+            maleValue: 0,
+            femaleValue: 0,
+            otherValue: 0,
           };
           return acc;
         },
-        {} as Record<string, { totalPopulation: number; displayName: string }>,
+        {} as Record<
+          string,
+          {
+            id: string;
+            label: string;
+            value: number;
+            maleValue: number;
+            femaleValue: number;
+            otherValue: number;
+          }
+        >,
       );
 
-      // Calculate total for each educational level
-      enhancedData.forEach((item) => {
-        if (item.educationalLevel) {
-          levelGroups[item.educationalLevel].totalPopulation += item.population;
+      // Sum up values for each marital status
+      filteredData.forEach((item) => {
+        if (item.maritalStatus && statusGroups[item.maritalStatus]) {
+          statusGroups[item.maritalStatus].value += item.population || 0;
+          statusGroups[item.maritalStatus].maleValue +=
+            item.malePopulation || 0;
+          statusGroups[item.maritalStatus].femaleValue +=
+            item.femalePopulation || 0;
+          statusGroups[item.maritalStatus].otherValue +=
+            item.otherPopulation || 0;
         }
       });
 
-      // Create chart data from educational level groups
-      return Object.keys(levelGroups)
-        .map((level, index) => {
-          const hue = (index * 137.5) % 360;
-          return {
-            educationLevel: levelGroups[level].displayName || level,
-            population: levelGroups[level].totalPopulation,
-            color: `hsl(${hue}, 70%, 50%)`,
+      // Convert to array and sort by value
+      return Object.values(statusGroups)
+        .filter((status) => status.value > 0)
+        .sort((a, b) => b.value - a.value);
+    } else {
+      // Group by age group
+      const ageGroups = Object.values(AgeGroupEnum._def.values).reduce(
+        (acc, age) => {
+          acc[age] = {
+            id: age,
+            label: getAgeGroupDisplayName(age as any),
+            value: 0,
+            maleValue: 0,
+            femaleValue: 0,
+            otherValue: 0,
           };
-        })
-        .sort((a, b) => b.population - a.population);
+          return acc;
+        },
+        {} as Record<
+          string,
+          {
+            id: string;
+            label: string;
+            value: number;
+            maleValue: number;
+            femaleValue: number;
+            otherValue: number;
+          }
+        >,
+      );
+
+      // Sum up values for each age group
+      filteredData.forEach((item) => {
+        if (item.ageGroup && ageGroups[item.ageGroup]) {
+          ageGroups[item.ageGroup].value += item.population || 0;
+          ageGroups[item.ageGroup].maleValue += item.malePopulation || 0;
+          ageGroups[item.ageGroup].femaleValue += item.femalePopulation || 0;
+          ageGroups[item.ageGroup].otherValue += item.otherPopulation || 0;
+        }
+      });
+
+      // Convert to array and sort by age group order
+      return Object.values(ageGroups).filter((age) => age.value > 0);
     }
-  }, [enhancedData, selectedWard, uniqueEducationalLevels]);
+  }, [filteredData, selectedView]);
 
-  // Prepare pie chart data
+  // Prepare data for Bar chart
+  const barChartData = useMemo(() => {
+    return chartData.map((item, index) => {
+      const hue = (index * 137.5) % 360;
+      return {
+        category: item.label,
+        जम्मा: item.value,
+        पुरुष: item.maleValue,
+        महिला: item.femaleValue,
+        अन्य: item.otherValue,
+        color: `hsl(${hue}, 70%, 50%)`,
+      };
+    });
+  }, [chartData]);
+
+  // Prepare data for Pie chart
   const pieChartData = useMemo(() => {
-    const levelGroups = uniqueEducationalLevels
-      .map((level) => {
-        const levelData = enhancedData.filter(
-          (item) => item.educationalLevel === level,
-        );
+    return chartData.map((item, index) => {
+      const hue = (index * 137.5) % 360;
+      return {
+        id: item.label,
+        label: item.label,
+        value: item.value,
+        color: `hsl(${hue}, 70%, 50%)`,
+      };
+    });
+  }, [chartData]);
 
-        // Calculate total
-        const total = levelData.reduce((sum, item) => sum + item.population, 0);
-        const displayName = getEducationalLevelDisplay(level);
-
-        return {
-          id: displayName,
-          label: displayName,
-          value: total,
-          color: `hsl(${Math.floor(Math.random() * 360)}, 70%, 50%)`,
-        };
-      })
-      .filter((item) => item.value > 0);
-
-    // Sort by value for better visualization
-    return levelGroups.sort((a, b) => b.value - a.value);
-  }, [enhancedData, uniqueEducationalLevels]);
-
-  // Get human-readable metric name
-  const getMetricLabel = () => "अनुपस्थित जनसंख्या";
+  // Get total population
+  const totalPopulation = useMemo(() => {
+    return filteredData.reduce((sum, item) => sum + (item.population || 0), 0);
+  }, [filteredData]);
 
   if (data.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 text-lg">
-          कुनै डाटा उपलब्ध छैन। पहिले वडा अनुसार अनुपस्थित शैक्षिक स्तर डाटा
-          थप्नुहोस्।
+          कुनै डाटा उपलब्ध छैन। पहिले वडा वैवाहिक स्थिति डाटा थप्नुहोस्।
         </p>
       </div>
     );
@@ -186,9 +193,9 @@ export default function WardWiseAbsenteeEducationalLevelChart({
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle>वडा अनुसार अनुपस्थित शैक्षिक स्तर विश्लेषण</CardTitle>
+        <CardTitle>वडा अनुसार उमेर र वैवाहिक स्थितिको विश्लेषण</CardTitle>
         <CardDescription>
-          वडा र शैक्षिक स्तर अनुसार अनुपस्थित जनसंख्या डाटा हेर्नुहोस्
+          वडा, उमेर समूह र वैवाहिक स्थिति अनुसार जनसंख्या डाटा हेर्नुहोस्
         </CardDescription>
 
         <div className="flex flex-wrap gap-4 mt-4">
@@ -210,6 +217,27 @@ export default function WardWiseAbsenteeEducationalLevelChart({
               </SelectContent>
             </Select>
           </div>
+
+          <div>
+            <label className="text-sm font-medium mb-1 block">
+              श्रेणी चयन गर्नुहोस्:
+            </label>
+            <Select value={selectedView} onValueChange={setSelectedView}>
+              <SelectTrigger className="w-[220px]">
+                <SelectValue placeholder="श्रेणी चयन गर्नुहोस्" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="maritalStatus">
+                  वैवाहिक स्थिति अनुसार
+                </SelectItem>
+                <SelectItem value="ageGroup">उमेर समूह अनुसार</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="text-sm mt-2">
+          जम्मा जनसंख्या: <strong>{totalPopulation.toLocaleString()}</strong>
         </div>
       </CardHeader>
 
@@ -224,13 +252,14 @@ export default function WardWiseAbsenteeEducationalLevelChart({
             <div className="h-96 border rounded-lg p-4 bg-white">
               <ResponsiveBar
                 data={barChartData}
-                keys={["population"]}
-                indexBy="educationLevel"
-                margin={{ top: 50, right: 130, bottom: 80, left: 60 }}
+                keys={["पुरुष", "महिला", "अन्य"]}
+                indexBy="category"
+                margin={{ top: 50, right: 130, bottom: 100, left: 60 }}
                 padding={0.3}
+                groupMode="grouped"
                 valueScale={{ type: "linear" }}
                 indexScale={{ type: "band", round: true }}
-                colors={({ data }) => String(data.color)}
+                colors={["#2563eb", "#db2777", "#65a30d"]}
                 borderColor={{
                   from: "color",
                   modifiers: [["darker", 1.6]],
@@ -241,16 +270,19 @@ export default function WardWiseAbsenteeEducationalLevelChart({
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 45,
-                  legend: "शैक्षिक स्तर",
+                  legend:
+                    selectedView === "maritalStatus"
+                      ? "वैवाहिक स्थिति"
+                      : "उमेर समूह",
                   legendPosition: "middle",
-                  legendOffset: 50,
+                  legendOffset: 80,
                   truncateTickAt: 0,
                 }}
                 axisLeft={{
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 0,
-                  legend: getMetricLabel(),
+                  legend: "जनसंख्या",
                   legendPosition: "middle",
                   legendOffset: -40,
                 }}
@@ -292,7 +324,7 @@ export default function WardWiseAbsenteeEducationalLevelChart({
             <div className="h-96 border rounded-lg p-4 bg-white">
               <ResponsivePie
                 data={pieChartData}
-                margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+                margin={{ top: 40, right: 80, bottom: 100, left: 80 }}
                 innerRadius={0.5}
                 padAngle={0.7}
                 cornerRadius={3}
@@ -311,26 +343,6 @@ export default function WardWiseAbsenteeEducationalLevelChart({
                   from: "color",
                   modifiers: [["darker", 2]],
                 }}
-                defs={[
-                  {
-                    id: "dots",
-                    type: "patternDots",
-                    background: "inherit",
-                    color: "rgba(255, 255, 255, 0.3)",
-                    size: 4,
-                    padding: 1,
-                    stagger: true,
-                  },
-                  {
-                    id: "lines",
-                    type: "patternLines",
-                    background: "inherit",
-                    color: "rgba(255, 255, 255, 0.3)",
-                    rotation: -45,
-                    lineWidth: 6,
-                    spacing: 10,
-                  },
-                ]}
                 legends={[
                   {
                     anchor: "bottom",

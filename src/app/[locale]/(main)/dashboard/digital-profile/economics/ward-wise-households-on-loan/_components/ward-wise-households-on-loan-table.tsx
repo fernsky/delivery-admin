@@ -53,8 +53,7 @@ import { Badge } from "@/components/ui/badge";
 
 type WardWiseHouseholdsOnLoanData = {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   households: number;
 };
 
@@ -91,7 +90,7 @@ export default function WardWiseHouseholdsOnLoanTable({
       const itemToDelete = data.find((item) => item.id === deleteId);
       if (itemToDelete) {
         deleteWardWiseHouseholdsOnLoan.mutate({
-          wardId: itemToDelete.wardId,
+          wardNumber: itemToDelete.wardNumber,
         });
       }
       setDeleteId(null);
@@ -100,14 +99,14 @@ export default function WardWiseHouseholdsOnLoanTable({
 
   // Calculate unique wards for filtering
   const uniqueWards = Array.from(
-    new Set(data.map((item) => item.wardId)),
-  ).sort();
+    new Set(data.map((item) => item.wardNumber.toString())),
+  ).sort((a, b) => parseInt(a) - parseInt(b));
 
   // Get ward numbers for display
   const wardIdToNumber = data.reduce(
     (acc, item) => {
-      if (item.wardId && item.wardNumber) {
-        acc[item.wardId] = item.wardNumber;
+      if (item.wardNumber) {
+        acc[item.wardNumber.toString()] = item.wardNumber;
       }
       return acc;
     },
@@ -116,21 +115,19 @@ export default function WardWiseHouseholdsOnLoanTable({
 
   // Filter the data
   const filteredData = data.filter((item) => {
-    return filterWard === "all" || item.wardId === filterWard;
+    return filterWard === "all" || item.wardNumber.toString() === filterWard;
   });
 
   // Sort data by ward number
   const sortedData = [...filteredData].sort((a, b) => {
-    const aNumber = a.wardNumber || parseInt(a.wardId);
-    const bNumber = b.wardNumber || parseInt(b.wardId);
-    return aNumber - bNumber;
+    return a.wardNumber - b.wardNumber;
   });
 
   // Toggle ward expansion
-  const toggleWardExpansion = (wardId: string) => {
+  const toggleWardExpansion = (wardNumber: string) => {
     setExpandedWards((prev) => ({
       ...prev,
-      [wardId]: !prev[wardId],
+      [wardNumber]: !prev[wardNumber],
     }));
   };
 
@@ -180,9 +177,9 @@ export default function WardWiseHouseholdsOnLoanTable({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै वडाहरू</SelectItem>
-                  {uniqueWards.map((wardId) => (
-                    <SelectItem key={wardId} value={wardId}>
-                      वडा {wardIdToNumber[wardId] || wardId}
+                  {uniqueWards.map((ward) => (
+                    <SelectItem key={ward} value={ward}>
+                      वडा {ward}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -217,7 +214,7 @@ export default function WardWiseHouseholdsOnLoanTable({
               <TableBody>
                 {sortedData.map((item) => (
                   <TableRow key={item.id} className="hover:bg-muted/30">
-                    <TableCell>वडा {item.wardNumber || item.wardId}</TableCell>
+                    <TableCell>वडा {item.wardNumber}</TableCell>
                     <TableCell className="text-right">
                       {item.households.toLocaleString()}
                     </TableCell>
@@ -271,7 +268,7 @@ export default function WardWiseHouseholdsOnLoanTable({
               <Card key={item.id} className="p-4">
                 <div className="flex justify-between items-center mb-2">
                   <Badge variant="outline" className="px-2 py-1">
-                    वडा {item.wardNumber || item.wardId}
+                    वडा {item.wardNumber}
                   </Badge>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

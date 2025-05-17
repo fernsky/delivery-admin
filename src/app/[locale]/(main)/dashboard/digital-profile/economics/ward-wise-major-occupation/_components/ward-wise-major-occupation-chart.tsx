@@ -22,8 +22,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface WardWiseMajorOccupationData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   occupation: string;
   population: number;
   percentage?: number;
@@ -42,20 +41,9 @@ export default function WardWiseMajorOccupationChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Get unique occupations
@@ -68,7 +56,9 @@ export default function WardWiseMajorOccupationChart({
     let result = [...data];
 
     if (selectedWard !== "all") {
-      result = result.filter((item) => item.wardId === selectedWard);
+      result = result.filter(
+        (item) => item.wardNumber.toString() === selectedWard,
+      );
     }
 
     if (selectedOccupation !== "all") {
@@ -102,15 +92,15 @@ export default function WardWiseMajorOccupationChart({
     if (chartView === "byWard") {
       // Group by ward
       return uniqueWards
-        .filter((wardId) => selectedWard === "all" || wardId === selectedWard)
-        .map((wardId) => {
+        .filter((wardNum) => selectedWard === "all" || wardNum === selectedWard)
+        .map((wardNum) => {
           const wardItems = filteredData.filter(
-            (item) => item.wardId === wardId,
+            (item) => item.wardNumber.toString() === wardNum,
           );
 
           // Create an object with ward as key and occupation populations
           const dataPoint: Record<string, any> = {
-            ward: `वडा ${wardIdToNumber[wardId] || wardId}`,
+            ward: `वडा ${wardNum}`,
           };
 
           // If occupation filter is applied, just show that occupation
@@ -151,19 +141,17 @@ export default function WardWiseMajorOccupationChart({
 
           if (selectedWard !== "all") {
             const wardItem = occupationItems.find(
-              (item) => item.wardId === selectedWard,
+              (item) => item.wardNumber.toString() === selectedWard,
             );
-            dataPoint[`वडा ${wardIdToNumber[selectedWard] || selectedWard}`] =
-              wardItem?.population || 0;
+            dataPoint[`वडा ${selectedWard}`] = wardItem?.population || 0;
           } else {
             // Show populations for all wards
-            uniqueWards.slice(0, 8).forEach((wardId) => {
+            uniqueWards.slice(0, 8).forEach((wardNum) => {
               // Limit to 8 wards for readability
               const wardItem = occupationItems.find(
-                (item) => item.wardId === wardId,
+                (item) => item.wardNumber.toString() === wardNum,
               );
-              dataPoint[`वडा ${wardIdToNumber[wardId] || wardId}`] =
-                wardItem?.population || 0;
+              dataPoint[`वडा ${wardNum}`] = wardItem?.population || 0;
             });
           }
 
@@ -178,7 +166,6 @@ export default function WardWiseMajorOccupationChart({
     selectedWard,
     selectedOccupation,
     topOccupations,
-    wardIdToNumber,
   ]);
 
   // Get chart keys based on the chartView
@@ -189,10 +176,10 @@ export default function WardWiseMajorOccupationChart({
         : topOccupations;
     } else {
       return selectedWard !== "all"
-        ? [`वडा ${wardIdToNumber[selectedWard] || selectedWard}`]
+        ? [`वडा ${selectedWard}`]
         : uniqueWards
             .slice(0, 8) // Limit to 8 wards for readability
-            .map((wardId) => `वडा ${wardIdToNumber[wardId] || wardId}`);
+            .map((wardNum) => `वडा ${wardNum}`);
     }
   }, [
     chartView,
@@ -200,7 +187,6 @@ export default function WardWiseMajorOccupationChart({
     topOccupations,
     selectedWard,
     uniqueWards,
-    wardIdToNumber,
   ]);
 
   // Prepare pie chart data
@@ -208,7 +194,7 @@ export default function WardWiseMajorOccupationChart({
     if (selectedWard !== "all" && chartView === "byWard") {
       // Show occupation distribution for a specific ward
       const wardData = filteredData.filter(
-        (item) => item.wardId === selectedWard,
+        (item) => item.wardNumber.toString() === selectedWard,
       );
 
       const totalWardPopulation = wardData.reduce(
@@ -236,8 +222,8 @@ export default function WardWiseMajorOccupationChart({
 
       return occupationData
         .map((item, index) => ({
-          id: `वडा ${item.wardNumber || item.wardId}`,
-          label: `वडा ${item.wardNumber || item.wardId}`,
+          id: `वडा ${item.wardNumber}`,
+          label: `वडा ${item.wardNumber}`,
           value: item.population,
           color: `hsl(${index * 25}, 70%, 50%)`,
         }))
@@ -320,9 +306,9 @@ export default function WardWiseMajorOccupationChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((wardId) => (
-                  <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                {uniqueWards.map((wardNum) => (
+                  <SelectItem key={wardNum} value={wardNum}>
+                    वडा {wardNum}
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -20,10 +20,10 @@ import { ResponsivePie } from "@nivo/pie";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 
+// Updated interface to match schema
 interface WardWiseTrainedPopulationData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   trainedPopulation: number;
 }
 
@@ -38,20 +38,9 @@ export default function WardWiseTrainedPopulationChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Filter by selected ward
@@ -59,7 +48,9 @@ export default function WardWiseTrainedPopulationChart({
     let result = [...data];
 
     if (selectedWard !== "all") {
-      result = result.filter((item) => item.wardId === selectedWard);
+      result = result.filter(
+        (item) => item.wardNumber.toString() === selectedWard,
+      );
     }
 
     return result;
@@ -76,26 +67,28 @@ export default function WardWiseTrainedPopulationChart({
   // Prepare bar chart data
   const barChartData = useMemo(() => {
     return data
-      .filter((item) => selectedWard === "all" || item.wardId === selectedWard)
-      .sort((a, b) => {
-        const aWardNum = a.wardNumber || Number(a.wardId);
-        const bWardNum = b.wardNumber || Number(b.wardId);
-        return aWardNum - bWardNum;
-      })
+      .filter(
+        (item) =>
+          selectedWard === "all" || item.wardNumber.toString() === selectedWard,
+      )
+      .sort((a, b) => a.wardNumber - b.wardNumber)
       .map((item) => ({
-        ward: `वडा ${item.wardNumber || item.wardId}`,
+        ward: `वडा ${item.wardNumber}`,
         जनसंख्या: item.trainedPopulation,
-        wardId: item.wardId,
+        wardNumber: item.wardNumber,
       }));
   }, [data, selectedWard]);
 
   // Prepare pie chart data
   const pieChartData = useMemo(() => {
     return data
-      .filter((item) => selectedWard === "all" || item.wardId === selectedWard)
+      .filter(
+        (item) =>
+          selectedWard === "all" || item.wardNumber.toString() === selectedWard,
+      )
       .map((item, index) => ({
-        id: `वडा ${item.wardNumber || item.wardId}`,
-        label: `वडा ${item.wardNumber || item.wardId}`,
+        id: `वडा ${item.wardNumber}`,
+        label: `वडा ${item.wardNumber}`,
         value: item.trainedPopulation,
         color: `hsl(${index * 25}, 70%, 50%)`,
       }))
@@ -143,9 +136,9 @@ export default function WardWiseTrainedPopulationChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((wardId) => (
-                  <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                {uniqueWards.map((wardNumber) => (
+                  <SelectItem key={wardNumber} value={wardNumber}>
+                    वडा {wardNumber}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -349,9 +342,7 @@ export default function WardWiseTrainedPopulationChart({
             {highestTrainedPopulationWard && (
               <div className="flex flex-col">
                 <div className="text-2xl font-bold">
-                  वडा{" "}
-                  {highestTrainedPopulationWard.wardNumber ||
-                    highestTrainedPopulationWard.wardId}
+                  वडा {highestTrainedPopulationWard.wardNumber}
                 </div>
                 <div className="text-sm mt-1">
                   {highestTrainedPopulationWard.trainedPopulation.toLocaleString()}{" "}

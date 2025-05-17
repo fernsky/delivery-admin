@@ -32,16 +32,15 @@ import {
 } from "@/server/api/routers/profile/economics/ward-age-gender-wise-economically-active-population.schema";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Create a schema for the form
+// Create a schema for the form matching the backend schema
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
   wardNumber: z.coerce
     .number()
     .int()
     .min(1, "वडा नम्बर १ वा सो भन्दा बढी हुनुपर्छ"),
-  ageGroup: z.string().min(1, "उमेर समूह आवश्यक छ"),
-  gender: z.string().min(1, "लिङ्ग आवश्यक छ"),
+  ageGroup: z.enum(EconomicallyActiveAgeGroupEnum.options),
+  gender: z.enum(GenderEnum.options),
   population: z.coerce
     .number()
     .int("जनसंख्या पूर्णांक हुनुपर्छ")
@@ -80,30 +79,10 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
   const ageGroupOptions = getAgeGroupOptions();
   const genderOptions = getGenderOptions();
 
-  // Extract unique ward information from existing data
-  const uniqueWards = Array.from(
-    new Set(
-      existingData.map((item) => ({
-        id: item.wardId,
-        number: item.wardNumber || parseInt(item.wardId),
-      })),
-    ),
-  ).sort((a, b) => a.number - b.number);
-
-  // Get ward numbers that already exist
-  const existingWardNumbers = new Set(uniqueWards.map((ward) => ward.number));
-
-  // Setup ward options including existing and new wards
-  const wardOptions = [
-    ...uniqueWards,
-    // Add options for new wards (1-32) that don't exist yet
-    ...Array.from({ length: 32 }, (_, i) => i + 1)
-      .filter((num) => !existingWardNumbers.has(num))
-      .map((num) => ({
-        id: num.toString(),
-        number: num,
-      })),
-  ].sort((a, b) => a.number - b.number);
+  // Extract unique ward numbers from existing data
+  const uniqueWardNumbers = Array.from(
+    new Set(existingData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
@@ -154,16 +133,15 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
       wardNumber: undefined,
-      ageGroup: "",
-      gender: "",
+      ageGroup: undefined as any,
+      gender: undefined as any,
       population: 0,
     },
   });
 
   // Watch for changes to check for duplicates
-  const watchWardId = form.watch("wardId");
+  const watchWardNumber = form.watch("wardNumber");
   const watchAgeGroup = form.watch("ageGroup");
   const watchGender = form.watch("gender");
 
@@ -174,10 +152,9 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: recordToEdit.wardNumber || parseInt(recordToEdit.wardId),
-          ageGroup: recordToEdit.ageGroup,
-          gender: recordToEdit.gender,
+          wardNumber: recordToEdit.wardNumber,
+          ageGroup: recordToEdit.ageGroup as any,
+          gender: recordToEdit.gender as any,
           population: recordToEdit.population || 0,
         });
       }
@@ -188,16 +165,15 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
   useEffect(() => {
     setDuplicateError(null);
 
-    if (watchWardId && watchAgeGroup && watchGender && !editId) {
+    if (watchWardNumber && watchAgeGroup && watchGender && !editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardId === watchWardId &&
+          item.wardNumber === watchWardNumber &&
           item.ageGroup === watchAgeGroup &&
           item.gender === watchGender,
       );
 
       if (duplicate) {
-        const wardNumber = duplicate.wardNumber || parseInt(watchWardId);
         const ageGroupLabel =
           ageGroupOptions.find((opt) => opt.value === watchAgeGroup)?.label ||
           watchAgeGroup;
@@ -206,12 +182,12 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
           watchGender;
 
         setDuplicateError(
-          `वडा ${wardNumber} को लागि ${ageGroupLabel} उमेर समूह र ${genderLabel} लिङ्गको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${watchWardNumber} को लागि ${ageGroupLabel} उमेर समूह र ${genderLabel} लिङ्गको डाटा पहिले नै अवस्थित छ`,
         );
       }
     }
   }, [
-    watchWardId,
+    watchWardNumber,
     watchAgeGroup,
     watchGender,
     existingData,
@@ -232,10 +208,10 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
     // Prepare data for submission
     const dataToSubmit = {
       ...values,
-      population: values.population ?? 0,
       ageGroup:
         values.ageGroup as keyof typeof EconomicallyActiveAgeGroupEnum.Values,
       gender: values.gender as keyof typeof GenderEnum.Values,
+      population: values.population ?? 0,
     };
 
     if (editId) {
@@ -268,24 +244,17 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
 
             <div className="bg-muted/40 p-4 rounded-lg">
               <h3 className="text-sm font-medium mb-3">वडा विवरण</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <FormField
                   control={form.control}
-                  name="wardId"
+                  name="wardNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>वडा</FormLabel>
+                      <FormLabel>वडा नम्बर</FormLabel>
                       <Select
-                        value={field.value}
+                        value={field.value?.toString() || ""}
                         onValueChange={(value) => {
-                          field.onChange(value);
-                          // Update ward number automatically
-                          const selectedWard = wardOptions.find(
-                            (ward) => ward.id === value,
-                          );
-                          if (selectedWard) {
-                            form.setValue("wardNumber", selectedWard.number);
-                          }
+                          field.onChange(parseInt(value, 10));
                         }}
                       >
                         <FormControl>
@@ -294,29 +263,22 @@ export default function WardAgeGenderWiseEconomicallyActivePopulationForm({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {wardOptions.map((ward) => (
-                            <SelectItem key={ward.id} value={ward.id}>
-                              वडा {ward.number}{" "}
-                              {!existingWardNumbers.has(ward.number) &&
-                                "(नयाँ)"}
-                            </SelectItem>
-                          ))}
+                          {/* Include both existing and new ward numbers (1-32) */}
+                          {Array.from({ length: 32 }, (_, i) => i + 1).map(
+                            (num) => (
+                              <SelectItem
+                                key={`ward-${num}`}
+                                value={num.toString()}
+                              >
+                                वडा {num}{" "}
+                                {uniqueWardNumbers.includes(num)
+                                  ? "(अवस्थित)"
+                                  : "(नयाँ)"}
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="wardNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>वडा नम्बर</FormLabel>
-                      <FormControl>
-                        <Input type="number" placeholder="1" {...field} />
-                      </FormControl>
                       <FormDescription>
                         वडा नम्बर १ देखि ३२ सम्म मात्र हुन सक्छ
                       </FormDescription>

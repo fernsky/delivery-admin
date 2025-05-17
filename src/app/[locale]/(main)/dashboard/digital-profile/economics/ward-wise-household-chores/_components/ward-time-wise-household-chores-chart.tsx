@@ -23,8 +23,7 @@ import { timeSpentLabels } from "@/server/api/routers/profile/economics/ward-tim
 
 interface WardTimeWiseHouseholdChoresData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   timeSpent: string;
   population: number;
 }
@@ -48,20 +47,9 @@ export default function WardTimeWiseHouseholdChoresChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Get unique time spent categories
@@ -74,7 +62,9 @@ export default function WardTimeWiseHouseholdChoresChart({
     let result = [...data];
 
     if (selectedWard !== "all") {
-      result = result.filter((item) => item.wardId === selectedWard);
+      result = result.filter(
+        (item) => item.wardNumber.toString() === selectedWard,
+      );
     }
 
     return result;
@@ -102,15 +92,15 @@ export default function WardTimeWiseHouseholdChoresChart({
     // Group by ward for all time spent categories
     else {
       return uniqueWards
-        .filter((wardId) => selectedWard === "all" || wardId === selectedWard)
-        .map((wardId) => {
+        .filter((ward) => selectedWard === "all" || ward === selectedWard)
+        .map((ward) => {
           const wardItems = filteredData.filter(
-            (item) => item.wardId === wardId,
+            (item) => item.wardNumber.toString() === ward,
           );
 
           // Create an object with ward as key
           const dataPoint: Record<string, any> = {
-            ward: `वडा ${wardIdToNumber[wardId] || wardId}`,
+            ward: `वडा ${ward}`,
           };
 
           // Add each time spent category as a property
@@ -128,14 +118,7 @@ export default function WardTimeWiseHouseholdChoresChart({
           return dataPoint;
         });
     }
-  }, [
-    filteredData,
-    uniqueTimeSpent,
-    uniqueWards,
-    chartView,
-    selectedWard,
-    wardIdToNumber,
-  ]);
+  }, [filteredData, uniqueTimeSpent, uniqueWards, chartView, selectedWard]);
 
   // Get chart keys based on the chartView
   const chartKeys = useMemo(() => {
@@ -173,10 +156,10 @@ export default function WardTimeWiseHouseholdChoresChart({
     } else {
       // Create pie data grouped by wards
       return uniqueWards
-        .filter((wardId) => selectedWard === "all" || wardId === selectedWard)
-        .map((wardId, index) => {
+        .filter((ward) => selectedWard === "all" || ward === selectedWard)
+        .map((ward, index) => {
           const wardData = filteredData.filter(
-            (item) => item.wardId === wardId,
+            (item) => item.wardNumber.toString() === ward,
           );
           const total = wardData.reduce(
             (sum, item) => sum + (item.population || 0),
@@ -184,22 +167,15 @@ export default function WardTimeWiseHouseholdChoresChart({
           );
 
           return {
-            id: `वडा ${wardIdToNumber[wardId] || wardId}`,
-            label: `वडा ${wardIdToNumber[wardId] || wardId}`,
+            id: `वडा ${ward}`,
+            label: `वडा ${ward}`,
             value: total,
             color: `hsl(${index * 40}, 70%, 50%)`,
           };
         })
         .filter((item) => item.value > 0);
     }
-  }, [
-    filteredData,
-    uniqueTimeSpent,
-    uniqueWards,
-    chartView,
-    selectedWard,
-    wardIdToNumber,
-  ]);
+  }, [filteredData, uniqueTimeSpent, uniqueWards, chartView, selectedWard]);
 
   if (data.length === 0) {
     return (
@@ -246,9 +222,9 @@ export default function WardTimeWiseHouseholdChoresChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((wardId) => (
-                  <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                {uniqueWards.map((ward) => (
+                  <SelectItem key={ward} value={ward}>
+                    वडा {ward}
                   </SelectItem>
                 ))}
               </SelectContent>

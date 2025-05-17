@@ -23,8 +23,7 @@ import { monthsSustainedLabels } from "@/server/api/routers/profile/economics/wa
 
 interface WardAnnualIncomeSustenanceData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   monthsSustained: string;
   households: number;
 }
@@ -50,20 +49,9 @@ export default function WardAnnualIncomeSustenanceChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Get unique months sustained categories
@@ -76,7 +64,9 @@ export default function WardAnnualIncomeSustenanceChart({
     let result = [...data];
 
     if (selectedWard !== "all") {
-      result = result.filter((item) => item.wardId === selectedWard);
+      result = result.filter(
+        (item) => item.wardNumber.toString() === selectedWard,
+      );
     }
 
     return result;
@@ -104,15 +94,15 @@ export default function WardAnnualIncomeSustenanceChart({
     // Group by ward for all months sustained categories
     else {
       return uniqueWards
-        .filter((wardId) => selectedWard === "all" || wardId === selectedWard)
-        .map((wardId) => {
+        .filter((ward) => selectedWard === "all" || ward === selectedWard)
+        .map((ward) => {
           const wardItems = filteredData.filter(
-            (item) => item.wardId === wardId,
+            (item) => item.wardNumber.toString() === ward,
           );
 
           // Create an object with ward as key
           const dataPoint: Record<string, any> = {
-            ward: `वडा ${wardIdToNumber[wardId] || wardId}`,
+            ward: `वडा ${ward}`,
           };
 
           // Add each months sustained category as a property
@@ -136,7 +126,6 @@ export default function WardAnnualIncomeSustenanceChart({
     uniqueWards,
     chartView,
     selectedWard,
-    wardIdToNumber,
   ]);
 
   // Get chart keys based on the chartView
@@ -175,10 +164,10 @@ export default function WardAnnualIncomeSustenanceChart({
     } else {
       // Create pie data grouped by wards
       return uniqueWards
-        .filter((wardId) => selectedWard === "all" || wardId === selectedWard)
-        .map((wardId, index) => {
+        .filter((ward) => selectedWard === "all" || ward === selectedWard)
+        .map((ward, index) => {
           const wardData = filteredData.filter(
-            (item) => item.wardId === wardId,
+            (item) => item.wardNumber.toString() === ward,
           );
           const total = wardData.reduce(
             (sum, item) => sum + (item.households || 0),
@@ -186,8 +175,8 @@ export default function WardAnnualIncomeSustenanceChart({
           );
 
           return {
-            id: `वडा ${wardIdToNumber[wardId] || wardId}`,
-            label: `वडा ${wardIdToNumber[wardId] || wardId}`,
+            id: `वडा ${ward}`,
+            label: `वडा ${ward}`,
             value: total,
             color: `hsl(${index * 40}, 70%, 50%)`,
           };
@@ -200,7 +189,6 @@ export default function WardAnnualIncomeSustenanceChart({
     uniqueWards,
     chartView,
     selectedWard,
-    wardIdToNumber,
   ]);
 
   if (data.length === 0) {
@@ -253,9 +241,9 @@ export default function WardAnnualIncomeSustenanceChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((wardId) => (
-                  <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                {uniqueWards.map((ward) => (
+                  <SelectItem key={ward} value={ward}>
+                    वडा {ward}
                   </SelectItem>
                 ))}
               </SelectContent>

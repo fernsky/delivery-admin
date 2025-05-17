@@ -21,8 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface WardWiseHouseholdsOnLoanData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   households: number;
 }
 
@@ -38,15 +37,17 @@ export default function WardWiseHouseholdsOnLoanChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Get ward numbers for display
   const wardIdToNumber = useMemo(() => {
     return data.reduce(
       (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
+        if (item.wardNumber) {
+          acc[item.wardNumber.toString()] = item.wardNumber;
         }
         return acc;
       },
@@ -59,15 +60,18 @@ export default function WardWiseHouseholdsOnLoanChart({
     if (selectedWard === "all") {
       return data;
     }
-    return data.filter((item) => item.wardId === selectedWard);
+    return data.filter((item) => item.wardNumber.toString() === selectedWard);
   }, [data, selectedWard]);
 
   // Prepare bar chart data
   const barChartData = useMemo(() => {
     return data
-      .filter((item) => selectedWard === "all" || item.wardId === selectedWard)
+      .filter(
+        (item) =>
+          selectedWard === "all" || item.wardNumber.toString() === selectedWard,
+      )
       .map((item) => ({
-        ward: `वडा ${item.wardNumber || item.wardId}`,
+        ward: `वडा ${item.wardNumber}`,
         households: item.households || 0,
         householdsColor: `hsl(215, 70%, 50%)`,
       }))
@@ -83,7 +87,7 @@ export default function WardWiseHouseholdsOnLoanChart({
     if (selectedWard !== "all") {
       // Just show selected ward data
       const selectedWardData = data.find(
-        (item) => item.wardId === selectedWard,
+        (item) => item.wardNumber.toString() === selectedWard,
       );
       if (!selectedWardData) return [];
 
@@ -107,8 +111,8 @@ export default function WardWiseHouseholdsOnLoanChart({
     } else {
       // Show distribution across wards
       return data.map((item, index) => ({
-        id: `वडा ${item.wardNumber || item.wardId}`,
-        label: `वडा ${item.wardNumber || item.wardId}`,
+        id: `वडा ${item.wardNumber}`,
+        label: `वडा ${item.wardNumber}`,
         value: item.households || 0,
         color: `hsl(${index * 25}, 70%, 50%)`,
       }));

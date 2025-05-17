@@ -26,14 +26,16 @@ import {
 } from "@/components/ui/select";
 import { LanguageTypeEnum } from "@/server/api/routers/profile/demographics/ward-wise-mother-tongue-population.schema";
 
-// Create a schema for the form
+// Create a schema for the form that aligns with the backend schema
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
-  wardNumber: z.coerce.number().int().min(1).optional(),
+  wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
+  languageType: z.nativeEnum(LanguageTypeEnum.Values, {
+    errorMap: () => ({ message: "मातृभाषा आवश्यक छ" }),
+  }),
+  population: z.coerce.number().int().nonnegative().default(0),
+  // Additional fields for UI purposes only
   wardName: z.string().optional(),
-  languageType: z.string().min(1, "मातृभाषा आवश्यक छ"),
-  population: z.coerce.number().int().nonnegative().optional(),
   percentage: z.string().optional(),
 });
 
@@ -65,8 +67,9 @@ export default function WardWiseMotherTonguePopulationForm({
   const uniqueWards = Array.from(
     new Set(
       existingData.map((item) => ({
-        id: item.wardId,
-        number: item.wardNumber || parseInt(item.wardId),
+        id: String(item.wardNumber || ""),
+        number: item.wardNumber || parseInt(item.id),
+        name: item.wardName || "",
       })),
     ),
   ).sort((a, b) => a.number - b.number);
@@ -108,15 +111,15 @@ export default function WardWiseMotherTonguePopulationForm({
       },
     });
 
-  // Set up the form
+  // Set up the form with proper defaults
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
       wardNumber: undefined,
       wardName: "",
-      languageType: "",
-      population: undefined,
+      languageType:
+        undefined as unknown as keyof typeof LanguageTypeEnum.Values,
+      population: 0,
       percentage: "",
     },
   });
@@ -128,11 +131,10 @@ export default function WardWiseMotherTonguePopulationForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: (recordToEdit as any).wardNumber || undefined,
+          wardNumber: recordToEdit.wardNumber,
           wardName: (recordToEdit as any).wardName || "",
           languageType: recordToEdit.languageType,
-          population: recordToEdit.population || undefined,
+          population: recordToEdit.population || 0,
           percentage: (recordToEdit as any).percentage || "",
         });
       }
@@ -146,23 +148,24 @@ export default function WardWiseMotherTonguePopulationForm({
     if (!editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardId === values.wardId &&
+          item.wardNumber === values.wardNumber &&
           item.languageType === values.languageType,
       );
       if (duplicate) {
         toast.error(
-          `वडा ${values.wardNumber || values.wardId} को लागि ${values.languageType} मातृभाषाको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${values.wardNumber} को लागि ${values.languageType} मातृभाषाको डाटा पहिले नै अवस्थित छ`,
         );
         setIsSubmitting(false);
         return;
       }
     }
 
-    // Ensure population has a default value of 0 if it's undefined
+    // Format data to match the expected schema for mutations
     const dataToSubmit = {
-      ...values,
-      population: values.population ?? 0,
+      id: values.id,
+      wardNumber: values.wardNumber,
       languageType: values.languageType as keyof typeof LanguageTypeEnum.Values,
+      population: values.population,
     };
 
     if (editId) {
@@ -187,21 +190,21 @@ export default function WardWiseMotherTonguePopulationForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="wardId"
+            name="wardNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>वडा</FormLabel>
+                <FormLabel>वडा नम्बर</FormLabel>
                 <FormControl>
                   <Select
-                    value={field.value}
+                    value={field.value?.toString() || ""}
                     onValueChange={(value) => {
-                      field.onChange(value);
-                      // Update ward number if available
+                      field.onChange(parseInt(value, 10));
+                      // Update ward name if available
                       const selectedWard = uniqueWards.find(
-                        (ward) => ward.id === value,
+                        (ward) => ward.number.toString() === value,
                       );
                       if (selectedWard) {
-                        form.setValue("wardNumber", selectedWard.number);
+                        form.setValue("wardName", selectedWard.name);
                       }
                     }}
                   >
@@ -210,7 +213,10 @@ export default function WardWiseMotherTonguePopulationForm({
                     </SelectTrigger>
                     <SelectContent>
                       {uniqueWards.map((ward) => (
-                        <SelectItem key={ward.id} value={ward.id}>
+                        <SelectItem
+                          key={ward.id}
+                          value={ward.number.toString()}
+                        >
                           वडा {ward.number}
                         </SelectItem>
                       ))}
@@ -258,7 +264,14 @@ export default function WardWiseMotherTonguePopulationForm({
                 <FormItem>
                   <FormLabel>मातृभाषा</FormLabel>
                   <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(
+                          value as keyof typeof LanguageTypeEnum.Values,
+                        );
+                      }}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="मातृभाषा चयन गर्नुहोस्" />
                       </SelectTrigger>
@@ -286,7 +299,16 @@ export default function WardWiseMotherTonguePopulationForm({
                 <FormItem>
                   <FormLabel>जनसंख्या</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      {...field}
+                      onChange={(e) => {
+                        const value =
+                          e.target.value === "" ? "0" : e.target.value;
+                        field.onChange(parseInt(value, 10));
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -25,16 +25,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ReligionTypeEnum } from "@/server/api/routers/profile/demographics/ward-wise-religion-population.schema";
+import type { ReligionType } from "@/server/api/routers/profile/demographics/ward-wise-religion-population.schema";
 
-// Create a schema for the form
+// Create a schema for the form that matches the backend schema
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
-  wardNumber: z.coerce.number().int().min(1).optional(),
-  wardName: z.string().optional(),
-  religionType: z.string().min(1, "धर्म आवश्यक छ"),
-  population: z.coerce.number().int().nonnegative().optional(),
-  percentage: z.string().optional(),
+  wardNumber: z.coerce.number().int().positive("वडा नम्बर आवश्यक छ"),
+  wardName: z.string().optional(), // For display only, not sent to backend
+  religionType: ReligionTypeEnum,
+  population: z.coerce.number().int().nonnegative().default(0),
+  percentage: z.string().optional(), // For display only, not sent to backend
 });
 
 interface WardWiseReligionPopulationFormProps {
@@ -45,8 +45,7 @@ interface WardWiseReligionPopulationFormProps {
 
 // Helper function to get religion display names
 const getReligionOptions = () => {
-  const enumValues = Object.values(ReligionTypeEnum.Values);
-  return enumValues.map((value) => ({
+  return Object.values(ReligionTypeEnum.Values).map((value) => ({
     value,
     label: value, // Using the enum value directly as label
   }));
@@ -65,11 +64,11 @@ export default function WardWiseReligionPopulationForm({
   const uniqueWards = Array.from(
     new Set(
       existingData.map((item) => ({
-        id: item.wardId,
-        number: item.wardNumber || parseInt(item.wardId),
+        wardNumber: item.wardNumber || parseInt(item.wardId),
+        name: item.wardName || "",
       })),
     ),
-  ).sort((a, b) => a.number - b.number);
+  ).sort((a, b) => a.wardNumber - b.wardNumber);
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
@@ -108,15 +107,14 @@ export default function WardWiseReligionPopulationForm({
       },
     });
 
-  // Set up the form
+  // Set up the form with proper default values
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
-      wardNumber: undefined,
+      wardNumber: 0,
       wardName: "",
-      religionType: "",
-      population: undefined,
+      religionType: ReligionTypeEnum.Values.HINDU,
+      population: 0,
       percentage: "",
     },
   });
@@ -128,11 +126,10 @@ export default function WardWiseReligionPopulationForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: (recordToEdit as any).wardNumber || undefined,
+          wardNumber: recordToEdit.wardNumber,
           wardName: (recordToEdit as any).wardName || "",
-          religionType: recordToEdit.religionType,
-          population: recordToEdit.population || undefined,
+          religionType: recordToEdit.religionType as ReligionType,
+          population: recordToEdit.population || 0,
           percentage: (recordToEdit as any).percentage || "",
         });
       }
@@ -146,23 +143,24 @@ export default function WardWiseReligionPopulationForm({
     if (!editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardId === values.wardId &&
+          item.wardNumber === values.wardNumber &&
           item.religionType === values.religionType,
       );
       if (duplicate) {
         toast.error(
-          `वडा ${values.wardNumber || values.wardId} को लागि ${values.religionType} धर्मको डाटा पहिले नै अवस्थित छ`,
+          `वडा ${values.wardNumber} को लागि ${values.religionType} धर्मको डाटा पहिले नै अवस्थित छ`,
         );
         setIsSubmitting(false);
         return;
       }
     }
 
-    // Ensure population has a default value of 0 if it's undefined
+    // Prepare data that matches the backend schema
     const dataToSubmit = {
-      ...values,
-      population: values.population ?? 0,
-      religionType: values.religionType as keyof typeof ReligionTypeEnum.Values,
+      id: values.id,
+      wardNumber: values.wardNumber,
+      religionType: values.religionType,
+      population: values.population,
     };
 
     if (editId) {
@@ -187,21 +185,21 @@ export default function WardWiseReligionPopulationForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="wardId"
+            name="wardNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>वडा</FormLabel>
+                <FormLabel>वडा नम्बर</FormLabel>
                 <FormControl>
                   <Select
-                    value={field.value}
+                    value={field.value?.toString() || ""}
                     onValueChange={(value) => {
-                      field.onChange(value);
-                      // Update ward number if available
+                      field.onChange(parseInt(value));
+                      // Find matching ward for name
                       const selectedWard = uniqueWards.find(
-                        (ward) => ward.id === value,
+                        (ward) => ward.wardNumber === parseInt(value),
                       );
                       if (selectedWard) {
-                        form.setValue("wardNumber", selectedWard.number);
+                        form.setValue("wardName", selectedWard.name);
                       }
                     }}
                   >
@@ -210,15 +208,20 @@ export default function WardWiseReligionPopulationForm({
                     </SelectTrigger>
                     <SelectContent>
                       {uniqueWards.map((ward) => (
-                        <SelectItem key={ward.id} value={ward.id}>
-                          वडा {ward.number}
+                        <SelectItem
+                          key={ward.wardNumber}
+                          value={ward.wardNumber.toString()}
+                        >
+                          वडा {ward.wardNumber}
                         </SelectItem>
                       ))}
                       {/* Allow adding new wards */}
                       {Array.from({ length: 32 }, (_, i) => i + 1)
                         .filter(
                           (num) =>
-                            !uniqueWards.some((ward) => ward.number === num),
+                            !uniqueWards.some(
+                              (ward) => ward.wardNumber === num,
+                            ),
                         )
                         .map((num) => (
                           <SelectItem key={`new-${num}`} value={num.toString()}>

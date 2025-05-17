@@ -53,8 +53,7 @@ import { skillTypeEnum } from "@/server/api/routers/profile/economics/ward-wise-
 
 type WardWiseMajorSkillsData = {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   skill: string;
   population: number;
 };
@@ -99,19 +98,8 @@ export default function WardWiseMajorSkillsTable({
 
   // Calculate unique wards for filtering
   const uniqueWards = Array.from(
-    new Set(data.map((item) => item.wardId)),
-  ).sort();
-
-  // Get ward numbers for display
-  const wardIdToNumber = data.reduce(
-    (acc, item) => {
-      if (item.wardId && item.wardNumber) {
-        acc[item.wardId] = item.wardNumber;
-      }
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+    new Set(data.map((item) => item.wardNumber.toString())),
+  ).sort((a, b) => parseInt(a) - parseInt(b));
 
   // Calculate unique skills for filtering
   const uniqueSkills = Array.from(
@@ -121,30 +109,29 @@ export default function WardWiseMajorSkillsTable({
   // Filter the data
   const filteredData = data.filter((item) => {
     return (
-      (filterWard === "all" || item.wardId === filterWard) &&
+      (filterWard === "all" || item.wardNumber.toString() === filterWard) &&
       (filterSkill === "all" || item.skill === filterSkill)
     );
   });
 
-  // Group data by ward ID
+  // Group data by ward
   const groupedByWard = filteredData.reduce(
     (acc, item) => {
-      if (!acc[item.wardId]) {
-        acc[item.wardId] = {
-          wardId: item.wardId,
-          wardNumber: item.wardNumber || Number(item.wardId),
+      const wardKey = item.wardNumber.toString();
+      if (!acc[wardKey]) {
+        acc[wardKey] = {
+          wardNumber: item.wardNumber,
           items: [],
           totalPopulation: 0,
         };
       }
-      acc[item.wardId].items.push(item);
-      acc[item.wardId].totalPopulation += item.population || 0;
+      acc[wardKey].items.push(item);
+      acc[wardKey].totalPopulation += item.population || 0;
       return acc;
     },
     {} as Record<
       string,
       {
-        wardId: string;
         wardNumber: number;
         items: WardWiseMajorSkillsData[];
         totalPopulation: number;
@@ -158,10 +145,10 @@ export default function WardWiseMajorSkillsTable({
   );
 
   // Toggle ward expansion
-  const toggleWardExpansion = (wardId: string) => {
+  const toggleWardExpansion = (wardNum: string) => {
     setExpandedWards((prev) => ({
       ...prev,
-      [wardId]: !prev[wardId],
+      [wardNum]: !prev[wardNum],
     }));
   };
 
@@ -169,7 +156,7 @@ export default function WardWiseMajorSkillsTable({
   if (sortedWardGroups.length > 0 && Object.keys(expandedWards).length === 0) {
     const initialExpandedState = sortedWardGroups.reduce(
       (acc, ward) => {
-        acc[ward.wardId] = true; // Start with all wards expanded
+        acc[ward.wardNumber.toString()] = true; // Start with all wards expanded
         return acc;
       },
       {} as Record<string, boolean>,
@@ -232,9 +219,9 @@ export default function WardWiseMajorSkillsTable({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">सबै वडाहरू</SelectItem>
-                  {uniqueWards.map((wardId) => (
-                    <SelectItem key={wardId} value={wardId}>
-                      वडा {wardIdToNumber[wardId] || wardId}
+                  {uniqueWards.map((wardNum) => (
+                    <SelectItem key={wardNum} value={wardNum}>
+                      वडा {wardNum}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -281,16 +268,17 @@ export default function WardWiseMajorSkillsTable({
             {viewMode === "list" ? (
               // Traditional list view
               sortedWardGroups.map((wardGroup) => {
-                const isExpanded = expandedWards[wardGroup.wardId] ?? true;
+                const wardKey = wardGroup.wardNumber.toString();
+                const isExpanded = expandedWards[wardKey] ?? true;
 
                 return (
                   <div
-                    key={`ward-${wardGroup.wardId}`}
+                    key={`ward-${wardKey}`}
                     className="border rounded-lg overflow-hidden"
                   >
                     <div
                       className="bg-muted/60 p-3 font-semibold flex items-center justify-between cursor-pointer hover:bg-muted/80"
-                      onClick={() => toggleWardExpansion(wardGroup.wardId)}
+                      onClick={() => toggleWardExpansion(wardKey)}
                     >
                       <div className="flex items-center">
                         <span className="bg-primary/10 text-primary rounded-full w-8 h-8 flex items-center justify-center mr-2">
@@ -422,7 +410,7 @@ export default function WardWiseMajorSkillsTable({
                       {/* Generate column headers for each ward */}
                       {sortedWardGroups.map((wardGroup) => (
                         <TableHead
-                          key={wardGroup.wardId}
+                          key={wardGroup.wardNumber}
                           className="text-center min-w-[100px]"
                         >
                           वडा {wardGroup.wardNumber}
@@ -463,7 +451,7 @@ export default function WardWiseMajorSkillsTable({
 
                               return (
                                 <TableCell
-                                  key={`${wardGroup.wardId}-${skill}`}
+                                  key={`${wardGroup.wardNumber}-${skill}`}
                                   className="text-center"
                                 >
                                   {item ? (
@@ -526,7 +514,7 @@ export default function WardWiseMajorSkillsTable({
                       </TableCell>
                       {sortedWardGroups.map((wardGroup) => (
                         <TableCell
-                          key={`total-${wardGroup.wardId}`}
+                          key={`total-${wardGroup.wardNumber}`}
                           className="text-center"
                         >
                           {wardGroup.totalPopulation > 0

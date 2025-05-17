@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { educationalLevelEnum } from "@/server/db/schema/profile/demographics/ward-wise-absentee-educational-level";
+import type { WardWiseAbsenteeEducationalLevelData } from "@/server/api/routers/profile/demographics/ward-wise-absentee-educational-level.schema";
 
 // Create education level options
 const educationalLevelOptions = [
@@ -51,11 +52,10 @@ const educationalLevelOptions = [
   { value: "UNKNOWN", label: "थाहा नभएको" },
 ];
 
-// Create a schema for the form
+// Create a schema for the form that matches the server schema
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
-  wardNumber: z.coerce.number().int().min(1, "वडा नम्बर आवश्यक छ"),
+  wardNumber: z.coerce.number().int().positive("वडा नम्बर आवश्यक छ"),
   educationalLevel: z.enum(educationalLevelEnum.enumValues, {
     errorMap: () => ({ message: "शैक्षिक स्तर आवश्यक छ" }),
   }),
@@ -65,7 +65,7 @@ const formSchema = z.object({
 interface WardWiseAbsenteeEducationalLevelFormProps {
   editId: string | null;
   onClose: () => void;
-  existingData: any[];
+  existingData: WardWiseAbsenteeEducationalLevelData[];
 }
 
 export default function WardWiseAbsenteeEducationalLevelForm({
@@ -125,7 +125,6 @@ export default function WardWiseAbsenteeEducationalLevelForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
       wardNumber: undefined,
       educationalLevel: undefined,
       population: undefined,
@@ -139,24 +138,13 @@ export default function WardWiseAbsenteeEducationalLevelForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: recordToEdit.wardNumber ?? undefined,
+          wardNumber: recordToEdit.wardNumber,
           educationalLevel: recordToEdit.educationalLevel,
           population: recordToEdit.population,
         });
       }
     }
   }, [editId, editingData, form]);
-
-  // Update wardId when wardNumber changes
-  const handleWardNumberChange = (wardNumber: number) => {
-    const selectedWard = wardData?.find(
-      (ward) => ward.wardNumber === wardNumber,
-    );
-    if (selectedWard) {
-      form.setValue("wardId", selectedWard.id);
-    }
-  };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
@@ -165,7 +153,7 @@ export default function WardWiseAbsenteeEducationalLevelForm({
     if (!editId) {
       const duplicate = existingData.find(
         (item) =>
-          item.wardId === values.wardId &&
+          item.wardNumber === values.wardNumber &&
           item.educationalLevel === values.educationalLevel,
       );
       if (duplicate) {
@@ -209,7 +197,6 @@ export default function WardWiseAbsenteeEducationalLevelForm({
                     onValueChange={(value) => {
                       const wardNumber = parseInt(value);
                       field.onChange(wardNumber);
-                      handleWardNumberChange(wardNumber);
                     }}
                   >
                     <SelectTrigger>
@@ -227,19 +214,6 @@ export default function WardWiseAbsenteeEducationalLevelForm({
                       ))}
                     </SelectContent>
                   </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="wardId"
-            render={({ field }) => (
-              <FormItem className="hidden">
-                <FormControl>
-                  <Input type="hidden" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

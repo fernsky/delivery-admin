@@ -23,8 +23,7 @@ import { skillTypeEnum } from "@/server/api/routers/profile/economics/ward-wise-
 
 interface WardWiseMajorSkillsData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   skill: string;
   population: number;
 }
@@ -42,20 +41,9 @@ export default function WardWiseMajorSkillsChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Get unique skills
@@ -76,7 +64,9 @@ export default function WardWiseMajorSkillsChart({
     let result = [...data];
 
     if (selectedWard !== "all") {
-      result = result.filter((item) => item.wardId === selectedWard);
+      result = result.filter(
+        (item) => item.wardNumber.toString() === selectedWard,
+      );
     }
 
     if (selectedSkill !== "all") {
@@ -110,15 +100,15 @@ export default function WardWiseMajorSkillsChart({
     if (chartView === "byWard") {
       // Group by ward
       return uniqueWards
-        .filter((wardId) => selectedWard === "all" || wardId === selectedWard)
-        .map((wardId) => {
+        .filter((wardNum) => selectedWard === "all" || wardNum === selectedWard)
+        .map((wardNum) => {
           const wardItems = filteredData.filter(
-            (item) => item.wardId === wardId,
+            (item) => item.wardNumber.toString() === wardNum,
           );
 
           // Create an object with ward as key and skill populations
           const dataPoint: Record<string, any> = {
-            ward: `वडा ${wardIdToNumber[wardId] || wardId}`,
+            ward: `वडा ${wardNum}`,
           };
 
           // If skill filter is applied, just show that skill
@@ -155,19 +145,17 @@ export default function WardWiseMajorSkillsChart({
 
           if (selectedWard !== "all") {
             const wardItem = skillItems.find(
-              (item) => item.wardId === selectedWard,
+              (item) => item.wardNumber.toString() === selectedWard,
             );
-            dataPoint[`वडा ${wardIdToNumber[selectedWard] || selectedWard}`] =
-              wardItem?.population || 0;
+            dataPoint[`वडा ${selectedWard}`] = wardItem?.population || 0;
           } else {
             // Show populations for all wards
-            uniqueWards.slice(0, 8).forEach((wardId) => {
+            uniqueWards.slice(0, 8).forEach((wardNum) => {
               // Limit to 8 wards for readability
               const wardItem = skillItems.find(
-                (item) => item.wardId === wardId,
+                (item) => item.wardNumber.toString() === wardNum,
               );
-              dataPoint[`वडा ${wardIdToNumber[wardId] || wardId}`] =
-                wardItem?.population || 0;
+              dataPoint[`वडा ${wardNum}`] = wardItem?.population || 0;
             });
           }
 
@@ -182,7 +170,6 @@ export default function WardWiseMajorSkillsChart({
     selectedWard,
     selectedSkill,
     topSkills,
-    wardIdToNumber,
   ]);
 
   // Get chart keys based on the chartView
@@ -193,26 +180,19 @@ export default function WardWiseMajorSkillsChart({
         : topSkills.map((skill) => formatSkillName(skill));
     } else {
       return selectedWard !== "all"
-        ? [`वडा ${wardIdToNumber[selectedWard] || selectedWard}`]
+        ? [`वडा ${selectedWard}`]
         : uniqueWards
             .slice(0, 8) // Limit to 8 wards for readability
-            .map((wardId) => `वडा ${wardIdToNumber[wardId] || wardId}`);
+            .map((wardNum) => `वडा ${wardNum}`);
     }
-  }, [
-    chartView,
-    selectedSkill,
-    topSkills,
-    selectedWard,
-    uniqueWards,
-    wardIdToNumber,
-  ]);
+  }, [chartView, selectedSkill, topSkills, selectedWard, uniqueWards]);
 
   // Prepare pie chart data
   const pieChartData = useMemo(() => {
     if (selectedWard !== "all" && chartView === "byWard") {
       // Show skill distribution for a specific ward
       const wardData = filteredData.filter(
-        (item) => item.wardId === selectedWard,
+        (item) => item.wardNumber.toString() === selectedWard,
       );
 
       const totalWardPopulation = wardData.reduce(
@@ -240,8 +220,8 @@ export default function WardWiseMajorSkillsChart({
 
       return skillData
         .map((item, index) => ({
-          id: `वडा ${item.wardNumber || item.wardId}`,
-          label: `वडा ${item.wardNumber || item.wardId}`,
+          id: `वडा ${item.wardNumber}`,
+          label: `वडा ${item.wardNumber}`,
           value: item.population,
           color: `hsl(${index * 25}, 70%, 50%)`,
         }))
@@ -324,9 +304,9 @@ export default function WardWiseMajorSkillsChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((wardId) => (
-                  <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                {uniqueWards.map((wardNum) => (
+                  <SelectItem key={wardNum} value={wardNum}>
+                    वडा {wardNum}
                   </SelectItem>
                 ))}
               </SelectContent>

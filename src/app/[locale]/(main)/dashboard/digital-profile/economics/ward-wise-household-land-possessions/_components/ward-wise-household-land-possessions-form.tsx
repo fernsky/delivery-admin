@@ -28,10 +28,9 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Create a schema for the form
+// Create a schema for the form matching the backend schema
 const formSchema = z.object({
   id: z.string().optional(),
-  wardId: z.string().min(1, "वडा आईडी आवश्यक छ"),
   wardNumber: z.coerce
     .number()
     .int()
@@ -58,30 +57,10 @@ export default function WardWiseHouseholdLandPossessionsForm({
   const [duplicateError, setDuplicateError] = useState<string | null>(null);
   const utils = api.useContext();
 
-  // Extract unique ward information from existing data
-  const uniqueWards = Array.from(
-    new Set(
-      existingData.map((item) => ({
-        id: item.wardId,
-        number: item.wardNumber || parseInt(item.wardId),
-      })),
-    ),
-  ).sort((a, b) => a.number - b.number);
-
-  // Get ward numbers that already exist
-  const existingWardNumbers = new Set(uniqueWards.map((ward) => ward.number));
-
-  // Setup ward options including existing and new wards
-  const wardOptions = [
-    ...uniqueWards,
-    // Add options for new wards (1-32) that don't exist yet
-    ...Array.from({ length: 32 }, (_, i) => i + 1)
-      .filter((num) => !existingWardNumbers.has(num))
-      .map((num) => ({
-        id: num.toString(),
-        number: num,
-      })),
-  ].sort((a, b) => a.number - b.number);
+  // Extract unique ward numbers from existing data
+  const uniqueWardNumbers = Array.from(
+    new Set(existingData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
@@ -92,7 +71,7 @@ export default function WardWiseHouseholdLandPossessionsForm({
       },
     );
 
-  const addMutation =
+  const createMutation =
     api.profile.economics.wardWiseHouseholdLandPossessions.create.useMutation({
       onSuccess: () => {
         toast.success(
@@ -126,14 +105,13 @@ export default function WardWiseHouseholdLandPossessionsForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wardId: "",
       wardNumber: undefined,
       households: 0,
     },
   });
 
   // Watch for changes to check for duplicates
-  const watchWardId = form.watch("wardId");
+  const watchWardNumber = form.watch("wardNumber");
 
   // Populate the form when editing
   useEffect(() => {
@@ -142,8 +120,7 @@ export default function WardWiseHouseholdLandPossessionsForm({
       if (recordToEdit) {
         form.reset({
           id: recordToEdit.id,
-          wardId: recordToEdit.wardId,
-          wardNumber: recordToEdit.wardNumber || parseInt(recordToEdit.wardId),
+          wardNumber: recordToEdit.wardNumber,
           households: recordToEdit.households || 0,
         });
       }
@@ -154,19 +131,18 @@ export default function WardWiseHouseholdLandPossessionsForm({
   useEffect(() => {
     setDuplicateError(null);
 
-    if (watchWardId && !editId) {
+    if (watchWardNumber && !editId) {
       const duplicate = existingData.find(
-        (item) => item.wardId === watchWardId,
+        (item) => item.wardNumber === watchWardNumber,
       );
 
       if (duplicate) {
-        const wardNumber = duplicate.wardNumber || parseInt(watchWardId);
         setDuplicateError(
-          `वडा ${wardNumber} को जग्गा स्वामित्व डाटा पहिले नै अवस्थित छ`,
+          `वडा ${watchWardNumber} को जग्गा स्वामित्व डाटा पहिले नै अवस्थित छ`,
         );
       }
     }
-  }, [watchWardId, existingData, editId]);
+  }, [watchWardNumber, existingData, editId]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     // Don't submit if there's a duplicate error
@@ -183,8 +159,7 @@ export default function WardWiseHouseholdLandPossessionsForm({
         households: values.households,
       });
     } else {
-      addMutation.mutate({
-        wardId: values.wardId,
+      createMutation.mutate({
         wardNumber: values.wardNumber,
         households: values.households,
       });
@@ -214,24 +189,17 @@ export default function WardWiseHouseholdLandPossessionsForm({
 
             <div className="bg-muted/40 p-4 rounded-lg">
               <h3 className="text-sm font-medium mb-3">वडा विवरण</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <FormField
                   control={form.control}
-                  name="wardId"
+                  name="wardNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>वडा</FormLabel>
+                      <FormLabel>वडा नम्बर</FormLabel>
                       <Select
-                        value={field.value}
+                        value={field.value?.toString() || ""}
                         onValueChange={(value) => {
-                          field.onChange(value);
-                          // Update ward number automatically
-                          const selectedWard = wardOptions.find(
-                            (ward) => ward.id === value,
-                          );
-                          if (selectedWard) {
-                            form.setValue("wardNumber", selectedWard.number);
-                          }
+                          field.onChange(parseInt(value, 10));
                         }}
                         disabled={!!editId}
                       >
@@ -241,34 +209,22 @@ export default function WardWiseHouseholdLandPossessionsForm({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {wardOptions.map((ward) => (
-                            <SelectItem key={ward.id} value={ward.id}>
-                              वडा {ward.number}{" "}
-                              {!existingWardNumbers.has(ward.number) &&
-                                "(नयाँ)"}
-                            </SelectItem>
-                          ))}
+                          {/* Include both existing and new ward numbers (1-32) */}
+                          {Array.from({ length: 32 }, (_, i) => i + 1).map(
+                            (num) => (
+                              <SelectItem
+                                key={`ward-${num}`}
+                                value={num.toString()}
+                              >
+                                वडा {num}{" "}
+                                {uniqueWardNumbers.includes(num)
+                                  ? "(अवस्थित)"
+                                  : "(नयाँ)"}
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="wardNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>वडा नम्बर</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="1"
-                          {...field}
-                          disabled={!!editId}
-                        />
-                      </FormControl>
                       <FormDescription>
                         वडा नम्बर १ देखि ३२ सम्म मात्र हुन सक्छ
                       </FormDescription>

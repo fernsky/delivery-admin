@@ -19,12 +19,12 @@ import { ResponsiveBar } from "@nivo/bar";
 import { ResponsivePie } from "@nivo/pie";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { type RemittanceExpenseType } from "@/server/api/routers/profile/economics/ward-wise-remittance-expenses.schema";
 
 interface WardWiseRemittanceExpenseData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
-  remittanceExpense: string;
+  wardNumber: number;
+  remittanceExpense: RemittanceExpenseType;
   households: number;
   percentage?: number;
 }
@@ -42,20 +42,9 @@ export default function WardWiseRemittanceExpenseChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => String(item.wardNumber))),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Get unique expense types
@@ -70,7 +59,9 @@ export default function WardWiseRemittanceExpenseChart({
     let result = [...data];
 
     if (selectedWard !== "all") {
-      result = result.filter((item) => item.wardId === selectedWard);
+      result = result.filter(
+        (item) => String(item.wardNumber) === selectedWard,
+      );
     }
 
     if (selectedExpenseType !== "all") {
@@ -106,15 +97,15 @@ export default function WardWiseRemittanceExpenseChart({
     if (chartView === "byWard") {
       // Group by ward
       return uniqueWards
-        .filter((wardId) => selectedWard === "all" || wardId === selectedWard)
-        .map((wardId) => {
+        .filter((ward) => selectedWard === "all" || ward === selectedWard)
+        .map((ward) => {
           const wardItems = filteredData.filter(
-            (item) => item.wardId === wardId,
+            (item) => String(item.wardNumber) === ward,
           );
 
           // Create an object with ward as key and expense type households
           const dataPoint: Record<string, any> = {
-            ward: `वडा ${wardIdToNumber[wardId] || wardId}`,
+            ward: `वडा ${ward}`,
           };
 
           // If expense type filter is applied, just show that expense type
@@ -156,19 +147,17 @@ export default function WardWiseRemittanceExpenseChart({
 
           if (selectedWard !== "all") {
             const wardItem = expenseTypeItems.find(
-              (item) => item.wardId === selectedWard,
+              (item) => String(item.wardNumber) === selectedWard,
             );
-            dataPoint[`वडा ${wardIdToNumber[selectedWard] || selectedWard}`] =
-              wardItem?.households || 0;
+            dataPoint[`वडा ${selectedWard}`] = wardItem?.households || 0;
           } else {
             // Show households for all wards
-            uniqueWards.slice(0, 8).forEach((wardId) => {
+            uniqueWards.slice(0, 8).forEach((ward) => {
               // Limit to 8 wards for readability
               const wardItem = expenseTypeItems.find(
-                (item) => item.wardId === wardId,
+                (item) => String(item.wardNumber) === ward,
               );
-              dataPoint[`वडा ${wardIdToNumber[wardId] || wardId}`] =
-                wardItem?.households || 0;
+              dataPoint[`वडा ${ward}`] = wardItem?.households || 0;
             });
           }
 
@@ -183,7 +172,6 @@ export default function WardWiseRemittanceExpenseChart({
     selectedWard,
     selectedExpenseType,
     topExpenseTypes,
-    wardIdToNumber,
   ]);
 
   // Get chart keys based on the chartView
@@ -194,10 +182,10 @@ export default function WardWiseRemittanceExpenseChart({
         : topExpenseTypes;
     } else {
       return selectedWard !== "all"
-        ? [`वडा ${wardIdToNumber[selectedWard] || selectedWard}`]
+        ? [`वडा ${selectedWard}`]
         : uniqueWards
             .slice(0, 8) // Limit to 8 wards for readability
-            .map((wardId) => `वडा ${wardIdToNumber[wardId] || wardId}`);
+            .map((ward) => `वडा ${ward}`);
     }
   }, [
     chartView,
@@ -205,7 +193,6 @@ export default function WardWiseRemittanceExpenseChart({
     topExpenseTypes,
     selectedWard,
     uniqueWards,
-    wardIdToNumber,
   ]);
 
   // Prepare pie chart data
@@ -213,7 +200,7 @@ export default function WardWiseRemittanceExpenseChart({
     if (selectedWard !== "all" && chartView === "byWard") {
       // Show expense type distribution for a specific ward
       const wardData = filteredData.filter(
-        (item) => item.wardId === selectedWard,
+        (item) => String(item.wardNumber) === selectedWard,
       );
 
       const totalWardHouseholds = wardData.reduce(
@@ -241,8 +228,8 @@ export default function WardWiseRemittanceExpenseChart({
 
       return expenseTypeData
         .map((item, index) => ({
-          id: `वडा ${item.wardNumber || item.wardId}`,
-          label: `वडा ${item.wardNumber || item.wardId}`,
+          id: `वडा ${item.wardNumber}`,
+          label: `वडा ${item.wardNumber}`,
           value: item.households,
           color: `hsl(${index * 25}, 70%, 50%)`,
         }))
@@ -330,7 +317,7 @@ export default function WardWiseRemittanceExpenseChart({
                 <SelectItem value="all">सबै वडा</SelectItem>
                 {uniqueWards.map((wardId) => (
                   <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                    वडा {wardId}
                   </SelectItem>
                 ))}
               </SelectContent>

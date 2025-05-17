@@ -22,8 +22,7 @@ import { Badge } from "@/components/ui/badge";
 
 interface WardWiseHouseholdLandPossessionsData {
   id: string;
-  wardId: string;
-  wardNumber?: number;
+  wardNumber: number;
   households: number;
 }
 
@@ -38,20 +37,9 @@ export default function WardWiseHouseholdLandPossessionsChart({
 
   // Get unique wards
   const uniqueWards = useMemo(() => {
-    return Array.from(new Set(data.map((item) => item.wardId))).sort();
-  }, [data]);
-
-  // Get ward numbers for display
-  const wardIdToNumber = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        if (item.wardId && item.wardNumber) {
-          acc[item.wardId] = item.wardNumber;
-        }
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    return Array.from(
+      new Set(data.map((item) => item.wardNumber.toString())),
+    ).sort((a, b) => parseInt(a) - parseInt(b));
   }, [data]);
 
   // Filter by selected view
@@ -59,27 +47,25 @@ export default function WardWiseHouseholdLandPossessionsChart({
     if (selectedView === "all") {
       return data;
     }
-    return data.filter((item) => item.wardId === selectedView);
+    return data.filter((item) => item.wardNumber.toString() === selectedView);
   }, [data, selectedView]);
 
   // Prepare bar chart data
   const barChartData = useMemo(() => {
     return uniqueWards
-      .filter((wardId) => selectedView === "all" || wardId === selectedView)
-      .map((wardId) => {
-        const wardItem = data.find((item) => item.wardId === wardId);
+      .filter((ward) => selectedView === "all" || ward === selectedView)
+      .map((ward) => {
+        const wardItem = data.find(
+          (item) => item.wardNumber.toString() === ward,
+        );
         return {
-          wardId: wardId,
-          ward: `वडा ${wardIdToNumber[wardId] || wardId}`,
+          wardNumber: parseInt(ward),
+          ward: `वडा ${ward}`,
           households: wardItem?.households || 0,
         };
       })
-      .sort((a, b) => {
-        const aNum = parseInt(a.wardId);
-        const bNum = parseInt(b.wardId);
-        return aNum - bNum;
-      });
-  }, [data, uniqueWards, selectedView, wardIdToNumber]);
+      .sort((a, b) => a.wardNumber - b.wardNumber);
+  }, [data, uniqueWards, selectedView]);
 
   // Prepare pie chart data
   const pieChartData = useMemo(() => {
@@ -109,7 +95,7 @@ export default function WardWiseHouseholdLandPossessionsChart({
       (a, b) => b.households - a.households,
     )[0];
     return {
-      wardNumber: highest.wardNumber || parseInt(highest.wardId),
+      wardNumber: highest.wardNumber,
       households: highest.households,
     };
   }, [filteredData]);
@@ -144,9 +130,9 @@ export default function WardWiseHouseholdLandPossessionsChart({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">सबै वडा</SelectItem>
-                {uniqueWards.map((wardId) => (
-                  <SelectItem key={wardId} value={wardId}>
-                    वडा {wardIdToNumber[wardId] || wardId}
+                {uniqueWards.map((ward) => (
+                  <SelectItem key={ward} value={ward}>
+                    वडा {ward}
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, UsersIcon } from "lucide-react";
+import { PlusCircle, Users2Icon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,17 +11,17 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/trpc/react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ContentLayout } from "@/components/admin-panel/content-layout";
-import AgeWiseMaritalStatusChart from "./_components/age-wise-marital-status-chart";
-import AgeWiseMaritalStatusTable from "./_components/age-wise-marital-status-table";
+import AgeWiseMaritalStatusTable from "./_components/ward-age-wise-marital-status-table";
 import AgeWiseMaritalStatusForm from "./_components/age-wise-marital-status-form";
+import AgeWiseMaritalStatusChart from "./_components/ward-age-wise-marital-status-chart";
+import { ContentLayout } from "@/components/admin-panel/content-layout";
 
-export default function WardWiseMaritalStatusPage() {
+export default function AgeWiseMaritalStatusPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
 
   const {
-    data: wardMaritalStatusData,
+    data: maritalStatusData,
     isLoading,
     isError,
   } = api.profile.demographics.wardAgeWiseMaritalStatus.getAll.useQuery();
@@ -39,9 +39,9 @@ export default function WardWiseMaritalStatusPage() {
   if (isLoading) {
     return (
       <ContentLayout
-        title="वडा वैवाहिक स्थिति विवरण"
-        subtitle="वडा अनुसार वैवाहिक स्थितिको विवरण"
-        icon={<UsersIcon className="h-6 w-6 text-primary" />}
+        title="वडा उमेर अनुसार वैवाहिक स्थिति विवरण"
+        subtitle="वडा र उमेर समूह अनुसार वैवाहिक स्थितिको जनसंख्या विवरण"
+        icon={<Users2Icon className="h-6 w-6 text-primary" />}
       >
         <div className="space-y-2">
           <Skeleton className="h-8 w-full" />
@@ -55,9 +55,9 @@ export default function WardWiseMaritalStatusPage() {
   if (isError) {
     return (
       <ContentLayout
-        title="वडा वैवाहिक स्थिति विवरण"
-        subtitle="वडा अनुसार वैवाहिक स्थितिको विवरण"
-        icon={<UsersIcon className="h-6 w-6 text-primary" />}
+        title="वडा उमेर अनुसार वैवाहिक स्थिति विवरण"
+        subtitle="वडा र उमेर समूह अनुसार वैवाहिक स्थितिको जनसंख्या विवरण"
+        icon={<Users2Icon className="h-6 w-6 text-primary" />}
       >
         <div className="text-center text-red-500 py-10">
           डाटा लोड गर्न समस्या भयो। कृपया पछि फेरि प्रयास गर्नुहोस्।
@@ -68,9 +68,9 @@ export default function WardWiseMaritalStatusPage() {
 
   return (
     <ContentLayout
-      title="वडा वैवाहिक स्थिति विवरण"
-      subtitle="वडा अनुसार वैवाहिक स्थितिको विवरण"
-      icon={<UsersIcon className="h-6 w-6 text-primary" />}
+      title="वडा उमेर अनुसार वैवाहिक स्थिति विवरण"
+      subtitle="वडा र उमेर समूह अनुसार वैवाहिक स्थितिको जनसंख्या विवरण"
+      icon={<Users2Icon className="h-6 w-6 text-primary" />}
       actions={
         <Button
           onClick={() => setIsFormOpen(true)}
@@ -81,10 +81,10 @@ export default function WardWiseMaritalStatusPage() {
         </Button>
       }
     >
-      <AgeWiseMaritalStatusChart data={wardMaritalStatusData || []} />
+      <AgeWiseMaritalStatusChart data={maritalStatusData || []} />
 
       <AgeWiseMaritalStatusTable
-        data={wardMaritalStatusData || []}
+        data={maritalStatusData || []}
         onEdit={handleEdit}
       />
 
@@ -100,7 +100,7 @@ export default function WardWiseMaritalStatusPage() {
           <AgeWiseMaritalStatusForm
             editId={editId}
             onClose={handleFormClose}
-            existingData={wardMaritalStatusData || []}
+            existingData={maritalStatusData || []}
           />
         </DialogContent>
       </Dialog>
