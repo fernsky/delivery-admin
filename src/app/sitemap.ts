@@ -1,12 +1,66 @@
-import { type MetadataRoute } from "next";
+import { MetadataRoute } from 'next';
+import { locales } from '@/i18n/config';
+import { api } from "@/trpc/server";
 
-import { absoluteUrl } from "@/lib/utils";
+// Base URL from environment or default
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://khajura-delivery.vercel.app';
 
+// Define static routes that should appear in the sitemap
+const staticRoutes = [
+  '/',
+  '/profile',
+  '/profile/demographics',
+  '/profile/education',
+  '/profile/health',
+  '/profile/infrastructure',
+  '/profile/economy',
+  '/profile/maps',
+];
+
+// This function will generate the sitemap entries
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const routes = ["", "/dashboard", "/dashboard/billing"].map((route) => ({
-    url: absoluteUrl(route),
-    lastModified: new Date().toISOString(),
-  }));
+  const sitemapEntries: MetadataRoute.Sitemap = [];
+  const currentDate = new Date();
+  
+  // Generate entries for static routes in all locales
+  for (const locale of locales) {
+    for (const route of staticRoutes) {
+      sitemapEntries.push({
+        url: `${baseUrl}/${locale}${route}`,
+        lastModified: currentDate,
+        changeFrequency: 'weekly',
+        priority: route === '/' ? 1.0 : 0.8,
+      });
+    }
+  }
 
-  return [...routes];
+  // Fetch dynamic demographic data routes
+  try {
+    // Example: Get all the ward-wise religion population data to generate URLs for them
+    const religionData = await api.profile.demographics.wardWiseReligionPopulation.getAll.query();
+    
+    // Get unique ward numbers
+    const wardNumbers = Array.from(
+      new Set(religionData.map(item => item.wardNumber))
+    ).sort((a, b) => a - b);
+    
+    // Add demographic detail pages for each ward
+    for (const locale of locales) {
+      // Main demographics/religion page
+      sitemapEntries.push({
+        url: `${baseUrl}/${locale}/profile/demographics/ward-wise-religion-population`,
+        lastModified: currentDate,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      });
+      
+    }
+  } catch (error) {
+    console.error('Error generating dynamic sitemap entries:', error);
+  }
+  
+  // Add other dynamic routes here as the application grows
+  // For example, fetch and add news articles, events, etc.
+  
+  return sitemapEntries;
 }

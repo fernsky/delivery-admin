@@ -50,7 +50,7 @@ export async function generateMetadata(props: {
     const t = await getTranslations({ locale, namespace: "seo.default" });
 
     const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL || "https://citizen.khajura.gov.np";
+      process.env.NEXT_PUBLIC_BASE_URL || "https://khajura-delivery.vercel.app";
 
     const appUrl = process.env.APP_URL
       ? `${process.env.APP_URL}`

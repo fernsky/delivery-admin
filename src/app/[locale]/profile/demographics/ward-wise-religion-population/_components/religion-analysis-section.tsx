@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 
 interface ReligionAnalysisProps {
   overallSummary: Array<{
@@ -40,44 +41,173 @@ export default function ReligionAnalysisSection({
       ? (topReligion.population / secondReligion.population).toFixed(2)
       : "N/A";
 
+  // Add SEO-friendly data attributes to enhance crawler understanding
+  useEffect(() => {
+    // Create English translations for key data
+    const RELIGION_NAMES_EN: Record<string, string> = {
+      HINDU: "Hindu",
+      BUDDHIST: "Buddhist",
+      KIRANT: "Kirat",
+      CHRISTIAN: "Christian",
+      ISLAM: "Islam",
+      NATURE: "Nature Worship",
+      BON: "Bon",
+      JAIN: "Jain",
+      BAHAI: "Bahai",
+      SIKH: "Sikh",
+      OTHER: "Other",
+    };
+
+    // Add data to document.body for SEO (will be crawled but not visible to users)
+    if (document && document.body) {
+      document.body.setAttribute(
+        "data-municipality",
+        "Khajura Rural Municipality / खजुरा गाउँपालिका",
+      );
+      document.body.setAttribute(
+        "data-total-population",
+        totalPopulation.toString(),
+      );
+
+      // Add main religion data
+      if (topReligion) {
+        const religionNameEN =
+          RELIGION_NAMES_EN[topReligion.religion] || topReligion.religion;
+        document.body.setAttribute(
+          "data-main-religion",
+          `${religionNameEN} / ${topReligion.religionName}`,
+        );
+        document.body.setAttribute(
+          "data-main-religion-population",
+          topReligion.population.toString(),
+        );
+        document.body.setAttribute(
+          "data-main-religion-percentage",
+          ((topReligion.population / totalPopulation) * 100).toFixed(2),
+        );
+      }
+
+      // Add second religion data
+      if (secondReligion) {
+        const religionNameEN =
+          RELIGION_NAMES_EN[secondReligion.religion] || secondReligion.religion;
+        document.body.setAttribute(
+          "data-second-religion",
+          `${religionNameEN} / ${secondReligion.religionName}`,
+        );
+        document.body.setAttribute(
+          "data-second-religion-population",
+          secondReligion.population.toString(),
+        );
+        document.body.setAttribute(
+          "data-second-religion-percentage",
+          ((secondReligion.population / totalPopulation) * 100).toFixed(2),
+        );
+      }
+    }
+  }, [overallSummary, totalPopulation]);
+
   return (
     <>
       <div className="mt-6 flex flex-wrap gap-4 justify-center">
-        {overallSummary.slice(0, 6).map((item, index) => (
-          <div
-            key={index}
-            className="bg-muted/50 rounded-lg p-4 text-center min-w-[200px] relative overflow-hidden"
-          >
+        {overallSummary.slice(0, 6).map((item, index) => {
+          // Define English religion name for SEO
+          const religionEN =
+            item.religion === "HINDU"
+              ? "Hindu"
+              : item.religion === "BUDDHIST"
+                ? "Buddhist"
+                : item.religion === "KIRANT"
+                  ? "Kirat"
+                  : item.religion === "CHRISTIAN"
+                    ? "Christian"
+                    : item.religion === "ISLAM"
+                      ? "Islam"
+                      : item.religion === "NATURE"
+                        ? "Nature Worship"
+                        : item.religion === "BON"
+                          ? "Bon"
+                          : item.religion === "JAIN"
+                            ? "Jain"
+                            : item.religion === "BAHAI"
+                              ? "Bahai"
+                              : item.religion === "SIKH"
+                                ? "Sikh"
+                                : "Other";
+
+          // Calculate percentage
+          const percentage = (
+            (item.population / totalPopulation) *
+            100
+          ).toFixed(2);
+
+          return (
             <div
-              className="absolute bottom-0 left-0 right-0"
-              style={{
-                height: `${Math.min((item.population / overallSummary[0].population) * 100, 100)}%`,
-                backgroundColor:
-                  RELIGION_COLORS[
-                    item.religion as keyof typeof RELIGION_COLORS
-                  ] || "#888",
-                opacity: 0.2,
-                zIndex: 0,
-              }}
-            />
-            <div className="relative z-10">
-              <h3 className="text-lg font-medium mb-2">{item.religionName}</h3>
-              <p className="text-2xl font-bold">
-                {((item.population / totalPopulation) * 100).toFixed(2)}%
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {item.population.toLocaleString()} व्यक्ति
-              </p>
+              key={index}
+              className="bg-muted/50 rounded-lg p-4 text-center min-w-[200px] relative overflow-hidden"
+              // Add data attributes for SEO crawlers
+              data-religion={`${religionEN} / ${item.religionName}`}
+              data-population={item.population}
+              data-percentage={percentage}
+            >
+              <div
+                className="absolute bottom-0 left-0 right-0"
+                style={{
+                  height: `${Math.min(
+                    (item.population / overallSummary[0].population) * 100,
+                    100,
+                  )}%`,
+                  backgroundColor:
+                    RELIGION_COLORS[
+                      item.religion as keyof typeof RELIGION_COLORS
+                    ] || "#888",
+                  opacity: 0.2,
+                  zIndex: 0,
+                }}
+              />
+              <div className="relative z-10">
+                <h3 className="text-lg font-medium mb-2">
+                  {item.religionName}
+                  {/* Hidden span for SEO with English name */}
+                  <span className="sr-only">{religionEN}</span>
+                </h3>
+                <p className="text-2xl font-bold">{percentage}%</p>
+                <p className="text-sm text-muted-foreground">
+                  {item.population.toLocaleString()} व्यक्ति
+                  <span className="sr-only">
+                    ({item.population.toLocaleString()} people)
+                  </span>
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="bg-muted/50 p-4 rounded-lg mt-8">
-        <h3 className="text-xl font-medium mb-4">धार्मिक विविधता विश्लेषण</h3>
+        <h3 className="text-xl font-medium mb-4">
+          धार्मिक विविधता विश्लेषण
+          <span className="sr-only">
+            Religious Diversity Analysis of Khajura
+          </span>
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-card p-4 rounded border">
-            <h4 className="font-medium mb-2">प्रमुख धर्म</h4>
+          <div
+            className="bg-card p-4 rounded border"
+            data-analysis-type="main-religion"
+            data-religion-name={topReligion?.religion}
+            data-religion-percentage={
+              topReligion
+                ? ((topReligion.population / totalPopulation) * 100).toFixed(2)
+                : "0"
+            }
+          >
+            <h4 className="font-medium mb-2">
+              प्रमुख धर्म
+              <span className="sr-only">
+                Main Religion in Khajura Rural Municipality
+              </span>
+            </h4>
             <p className="text-3xl font-bold">
               {topReligion ? topReligion.religionName : "-"}
             </p>
@@ -85,26 +215,52 @@ export default function ReligionAnalysisSection({
               {topReligion
                 ? `कुल जनसंख्याको ${((topReligion.population / totalPopulation) * 100).toFixed(2)}% व्यक्ति`
                 : ""}
+              <span className="sr-only">
+                {topReligion
+                  ? `${((topReligion.population / totalPopulation) * 100).toFixed(2)}% of total population in Khajura Rural Municipality`
+                  : ""}
+              </span>
             </p>
           </div>
 
-          <div className="bg-card p-4 rounded border">
-            <h4 className="font-medium mb-2">प्रमुख-दोस्रो धर्म अनुपात</h4>
+          <div
+            className="bg-card p-4 rounded border"
+            data-analysis-type="religion-ratio"
+            data-ratio={topTwoReligionRatio}
+            data-primary-religion={topReligion?.religion}
+            data-secondary-religion={secondReligion?.religion}
+          >
+            <h4 className="font-medium mb-2">
+              प्रमुख-दोस्रो धर्म अनुपात
+              <span className="sr-only">
+                Primary to Secondary Religion Ratio in Khajura
+              </span>
+            </h4>
             <p className="text-3xl font-bold">{topTwoReligionRatio}</p>
             <p className="text-sm text-muted-foreground mt-2">
               {topReligion && secondReligion
                 ? `हरेक ${topTwoReligionRatio} ${topReligion.religionName} अवलम्बनकर्ताका लागि 1 ${secondReligion.religionName} अवलम्बनकर्ता`
                 : ""}
+              <span className="sr-only">
+                {topReligion && secondReligion
+                  ? `For every ${topTwoReligionRatio} ${topReligion.religion.toLowerCase()} followers, there is 1 ${secondReligion.religion.toLowerCase()} follower in Khajura Rural Municipality`
+                  : ""}
+              </span>
             </p>
           </div>
         </div>
       </div>
 
       <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">थप जानकारी</h3>
+        <h3 className="text-xl font-medium mb-2">
+          थप जानकारी
+          <span className="sr-only">
+            Additional Information about Religious Demographics in Khajura
+          </span>
+        </h3>
         <p>
-          पालिकाको धार्मिक वितरण सम्बन्धी थप जानकारी वा विस्तृत तथ्याङ्कको लागि,
-          कृपया{" "}
+          खजुरा गाउँपालिकाको धार्मिक वितरण सम्बन्धी थप जानकारी वा विस्तृत
+          तथ्याङ्कको लागि, कृपया{" "}
           <Link href="/contact" className="text-primary hover:underline">
             हामीलाई सम्पर्क
           </Link>{" "}

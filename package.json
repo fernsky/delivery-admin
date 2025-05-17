@@ -4,7 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "next build",
     "db:push": "dotenv drizzle-kit push",
     "db:generate": "dotenv drizzle-kit generate",
     "db:migrate": "dotenv drizzle-kit migrate",
@@ -14,7 +13,10 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --latest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "generate-sitemaps": "tsx src/scripts/generate-sitemaps.ts",
+    "build": "next build",
+    "postbuild": "next-sitemap --config next-sitemap.config.cjs"
   },
   "dependencies": {
     "@ariakit/react": "^0.4.15",
@@ -163,10 +165,12 @@
     "drizzle-orm": "^0.32.1",
     "eslint": "^8.57.0",
     "eslint-plugin-next": "^0.0.0",
+    "next-sitemap": "^4.2.3",
     "pg": "^8.12.0",
     "postcss": "^8.4.40",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.5.14",
+    "sitemap": "^8.0.0",
     "tailwindcss": "^3.4.7",
     "tsx": "^4.16.2",
     "typescript": "^5.5.4"
