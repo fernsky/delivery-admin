@@ -49,6 +49,7 @@ export const enumeratorIdCardProcedures = {
         });
       }
 
+      //@ts-ignore
       const details = await ctx.db.query.users.findFirst({
         where: eq(users.id, input),
         columns: {
