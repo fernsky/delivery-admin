@@ -117,14 +117,16 @@ export default async function WardWiseReligionPopulationPage() {
     });
   }
 
-  // Get unique ward IDs
-  const wardIds = Array.from(
-    new Set(religionData.map((item) => item.wardId)),
-  ).sort();
+  // Get unique ward numbers
+  const wardNumbers = Array.from(
+    new Set(religionData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b); // Sort numerically
 
   // Process data for ward-wise visualization (top 5 religions per ward + others)
-  const wardWiseData = wardIds.map((wardId) => {
-    const wardData = religionData.filter((item) => item.wardId === wardId);
+  const wardWiseData = wardNumbers.map((wardNumber) => {
+    const wardData = religionData.filter(
+      (item) => item.wardNumber === wardNumber,
+    );
 
     // Sort ward data by population
     wardData.sort((a, b) => (b.population || 0) - (a.population || 0));
@@ -137,7 +139,7 @@ export default async function WardWiseReligionPopulationPage() {
       0,
     );
 
-    const result: Record<string, any> = { ward: `वडा ${wardId}` };
+    const result: Record<string, any> = { ward: `वडा ${wardNumber}` };
 
     // Add top religions
     topWardReligions.forEach((item) => {
@@ -200,7 +202,7 @@ export default async function WardWiseReligionPopulationPage() {
             totalPopulation={totalPopulation}
             pieChartData={pieChartData}
             wardWiseData={wardWiseData}
-            wardIds={wardIds}
+            wardNumbers={wardNumbers}
             religionData={religionData}
             RELIGION_NAMES={RELIGION_NAMES}
           />

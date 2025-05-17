@@ -47,8 +47,15 @@ interface ReligionChartsProps {
     percentage: string;
   }>;
   wardWiseData: Array<Record<string, any>>;
-  wardIds: string[];
-  religionData: any[];
+  wardNumbers: number[];
+  religionData: Array<{
+    id?: string;
+    wardNumber: number;
+    religionType: string;
+    population: number;
+    updatedAt?: Date;
+    createdAt?: Date;
+  }>;
   RELIGION_NAMES: Record<string, string>;
 }
 
@@ -57,7 +64,7 @@ export default function ReligionCharts({
   totalPopulation,
   pieChartData,
   wardWiseData,
-  wardIds,
+  wardNumbers,
   religionData,
   RELIGION_NAMES,
 }: ReligionChartsProps) {
@@ -390,9 +397,9 @@ export default function ReligionCharts({
                   </tr>
                 </thead>
                 <tbody>
-                  {wardIds.map((wardId, i) => {
+                  {wardNumbers.map((wardNumber, i) => {
                     const wardItems = religionData.filter(
-                      (item) => item.wardId === wardId,
+                      (item) => item.wardNumber === wardNumber,
                     );
                     const wardTotal = wardItems.reduce(
                       (sum, item) => sum + (item.population || 0),
@@ -408,7 +415,7 @@ export default function ReligionCharts({
 
                     return (
                       <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                        <td className="border p-2">वडा {wardId}</td>
+                        <td className="border p-2">वडा {wardNumber}</td>
                         <td className="border p-2">
                           {primaryReligion
                             ? RELIGION_NAMES[primaryReligion.religionType] ||
@@ -460,9 +467,9 @@ export default function ReligionCharts({
 
           <TabsContent value="chart" className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wardIds.map((wardId) => {
+              {wardNumbers.map((wardNumber) => {
                 const wardItems = religionData.filter(
-                  (item) => item.wardId === wardId,
+                  (item) => item.wardNumber === wardNumber,
                 );
 
                 // Sort by population and take top 5 religions, group others
@@ -489,9 +496,9 @@ export default function ReligionCharts({
                 }
 
                 return (
-                  <div key={wardId} className="h-[300px]">
+                  <div key={wardNumber} className="h-[300px]">
                     <h3 className="text-lg font-medium mb-2 text-center">
-                      वडा {wardId}
+                      वडा {wardNumber}
                     </h3>
                     <ResponsiveContainer width="100%" height="90%">
                       <PieChart>
