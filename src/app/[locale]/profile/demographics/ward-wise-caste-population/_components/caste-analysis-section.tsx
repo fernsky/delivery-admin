@@ -4,8 +4,8 @@ import Link from "next/link";
 
 interface CasteAnalysisProps {
   overallSummary: Array<{
-    caste: string;
-    casteName: string;
+    casteType: string;
+    casteTypeDisplay: string;
     population: number;
   }>;
   totalPopulation: number;
@@ -93,7 +93,7 @@ export default function CasteAnalysisSection({
   const broadCategoryData = Object.entries(groupedCategories)
     .map(([category, casteList]) => {
       const totalInCategory = overallSummary
-        .filter((item) => casteList.includes(item.caste))
+        .filter((item) => casteList.includes(item.casteType))
         .reduce((sum, item) => sum + item.population, 0);
 
       const percentage =
@@ -120,14 +120,16 @@ export default function CasteAnalysisSection({
               style={{
                 height: `${Math.min((item.population / overallSummary[0].population) * 100, 100)}%`,
                 backgroundColor:
-                  CASTE_COLORS[item.caste as keyof typeof CASTE_COLORS] ||
+                  CASTE_COLORS[item.casteType as keyof typeof CASTE_COLORS] ||
                   "#888",
                 opacity: 0.2,
                 zIndex: 0,
               }}
             />
             <div className="relative z-10">
-              <h3 className="text-lg font-medium mb-2">{item.casteName}</h3>
+              <h3 className="text-lg font-medium mb-2">
+                {item.casteTypeDisplay}
+              </h3>
               <p className="text-2xl font-bold">
                 {((item.population / totalPopulation) * 100).toFixed(2)}%
               </p>
@@ -145,7 +147,7 @@ export default function CasteAnalysisSection({
           <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-2">प्रमुख जाति</h4>
             <p className="text-3xl font-bold">
-              {topCaste ? topCaste.casteName : "-"}
+              {topCaste ? topCaste.casteTypeDisplay : "-"}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {topCaste
@@ -159,7 +161,7 @@ export default function CasteAnalysisSection({
             <p className="text-3xl font-bold">{topTwoCasteRatio}</p>
             <p className="text-sm text-muted-foreground mt-2">
               {topCaste && secondCaste
-                ? `हरेक ${topTwoCasteRatio} ${topCaste.casteName} का लागि 1 ${secondCaste.casteName}`
+                ? `हरेक ${topTwoCasteRatio} ${topCaste.casteTypeDisplay} का लागि 1 ${secondCaste.casteTypeDisplay}`
                 : ""}
             </p>
           </div>

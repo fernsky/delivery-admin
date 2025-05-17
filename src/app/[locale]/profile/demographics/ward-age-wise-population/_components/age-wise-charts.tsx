@@ -59,8 +59,14 @@ interface AgeWiseChartsProps {
     female: number;
   }>;
   wardWiseData: Array<Record<string, any>>;
-  wardIds: string[];
-  ageData: any[];
+  wardNumbers: number[];
+  ageData: Array<{
+    id: string;
+    wardNumber: number;
+    ageGroup: string;
+    gender: string;
+    population: number;
+  }>;
   AGE_GROUP_NAMES: Record<string, string>;
   GENDER_NAMES: Record<string, string>;
 }
@@ -71,7 +77,7 @@ export default function AgeWiseCharts({
   totalPopulation,
   pyramidData,
   wardWiseData,
-  wardIds,
+  wardNumbers,
   ageData,
   AGE_GROUP_NAMES,
   GENDER_NAMES,
@@ -595,10 +601,9 @@ export default function AgeWiseCharts({
                   </tr>
                 </thead>
                 <tbody>
-                  {wardIds.map((wardId, i) => {
-                    const wardNum = parseInt(wardId);
+                  {wardNumbers.map((wardNumber, i) => {
                     const wardItems = ageData.filter(
-                      (item) => item.wardNumber === wardNum,
+                      (item) => item.wardNumber === wardNumber,
                     );
                     const wardTotal = wardItems.reduce(
                       (sum, item) => sum + item.population,
@@ -625,7 +630,7 @@ export default function AgeWiseCharts({
 
                     return (
                       <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                        <td className="border p-2">वडा {wardId}</td>
+                        <td className="border p-2">वडा {wardNumber}</td>
                         <td className="border p-2">बाल जनसंख्या</td>
                         <td className="border p-2 text-right">
                           {childPopulation.toLocaleString()}
@@ -662,10 +667,9 @@ export default function AgeWiseCharts({
 
           <TabsContent value="chart" className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wardIds.map((wardId) => {
-                const wardNum = parseInt(wardId);
+              {wardNumbers.map((wardNumber) => {
                 const wardItems = ageData.filter(
-                  (item) => item.wardNumber === wardNum,
+                  (item) => item.wardNumber === wardNumber,
                 );
 
                 // Group by broader age categories
@@ -715,9 +719,9 @@ export default function AgeWiseCharts({
                 ];
 
                 return (
-                  <div key={wardId} className="h-[300px]">
+                  <div key={wardNumber} className="h-[300px]">
                     <h3 className="text-lg font-medium mb-2 text-center">
-                      वडा {wardId}
+                      वडा {wardNumber}
                     </h3>
                     <ResponsiveContainer width="100%" height="90%">
                       <PieChart>

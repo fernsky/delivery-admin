@@ -54,8 +54,8 @@ const CASTE_COLORS = {
 
 interface CasteChartsProps {
   overallSummary: Array<{
-    caste: string;
-    casteName: string;
+    casteType: string;
+    casteTypeDisplay: string;
     population: number;
   }>;
   totalPopulation: number;
@@ -65,8 +65,14 @@ interface CasteChartsProps {
     percentage: string;
   }>;
   wardWiseData: Array<Record<string, any>>;
-  wardIds: string[];
-  casteData: any[];
+  wardNumbers: number[];
+  casteData: Array<{
+    id: string;
+    wardNumber: number;
+    casteType: string;
+    casteTypeDisplay: string;
+    population: number;
+  }>;
   CASTE_NAMES: Record<string, string>;
 }
 
@@ -75,7 +81,7 @@ export default function CasteCharts({
   totalPopulation,
   pieChartData,
   wardWiseData,
-  wardIds,
+  wardNumbers,
   casteData,
   CASTE_NAMES,
 }: CasteChartsProps) {
@@ -175,13 +181,13 @@ export default function CasteCharts({
                         style={{
                           backgroundColor:
                             CASTE_COLORS[
-                              item.caste as keyof typeof CASTE_COLORS
+                              item.casteType as keyof typeof CASTE_COLORS
                             ] || "#888",
                         }}
                       ></div>
                       <div className="flex-grow">
                         <div className="flex justify-between items-center">
-                          <span>{item.casteName}</span>
+                          <span>{item.casteTypeDisplay}</span>
                           <span className="font-medium">
                             {(
                               (item.population / totalPopulation) *
@@ -197,7 +203,7 @@ export default function CasteCharts({
                               width: `${(item.population / totalPopulation) * 100}%`,
                               backgroundColor:
                                 CASTE_COLORS[
-                                  item.caste as keyof typeof CASTE_COLORS
+                                  item.casteType as keyof typeof CASTE_COLORS
                                 ] || "#888",
                             }}
                           ></div>
@@ -230,7 +236,7 @@ export default function CasteCharts({
                   {overallSummary.map((item, i) => (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
                       <td className="border p-2">{i + 1}</td>
-                      <td className="border p-2">{item.casteName}</td>
+                      <td className="border p-2">{item.casteTypeDisplay}</td>
                       <td className="border p-2 text-right">
                         {item.population.toLocaleString()}
                       </td>
@@ -406,9 +412,9 @@ export default function CasteCharts({
                   </tr>
                 </thead>
                 <tbody>
-                  {wardIds.map((wardId, i) => {
+                  {wardNumbers.map((wardNumber, i) => {
                     const wardItems = casteData.filter(
-                      (item) => item.wardNumber.toString() === wardId,
+                      (item) => item.wardNumber === wardNumber,
                     );
                     const wardTotal = wardItems.reduce(
                       (sum, item) => sum + (item.population || 0),
@@ -424,15 +430,9 @@ export default function CasteCharts({
 
                     return (
                       <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                        <td className="border p-2">वडा {wardId}</td>
+                        <td className="border p-2">वडा {wardNumber}</td>
                         <td className="border p-2">
-                          {primaryCaste
-                            ? CASTE_NAMES[
-                                primaryCaste.casteType as keyof typeof CASTE_NAMES
-                              ] ||
-                              primaryCaste.casteTypeDisplay ||
-                              primaryCaste.casteType
-                            : "-"}
+                          {primaryCaste ? primaryCaste.casteTypeDisplay : "-"}
                         </td>
                         <td className="border p-2 text-right">
                           {primaryCaste?.population?.toLocaleString() || "0"}
@@ -447,11 +447,7 @@ export default function CasteCharts({
                         </td>
                         <td className="border p-2">
                           {secondaryCaste
-                            ? CASTE_NAMES[
-                                secondaryCaste.casteType as keyof typeof CASTE_NAMES
-                              ] ||
-                              secondaryCaste.casteTypeDisplay ||
-                              secondaryCaste.casteType
+                            ? secondaryCaste.casteTypeDisplay
                             : "-"}
                         </td>
                         <td className="border p-2 text-right">
@@ -481,9 +477,9 @@ export default function CasteCharts({
 
           <TabsContent value="chart" className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wardIds.map((wardId) => {
+              {wardNumbers.map((wardNumber) => {
                 const wardItems = casteData.filter(
-                  (item) => item.wardNumber.toString() === wardId,
+                  (item) => item.wardNumber === wardNumber,
                 );
 
                 // Sort by population and take top 5 castes, group others
@@ -498,10 +494,7 @@ export default function CasteCharts({
                 );
 
                 let wardData = topCastes.map((item) => ({
-                  name:
-                    CASTE_NAMES[item.casteType as keyof typeof CASTE_NAMES] ||
-                    item.casteTypeDisplay ||
-                    item.casteType,
+                  name: item.casteTypeDisplay,
                   value: item.population || 0,
                 }));
 
@@ -513,9 +506,9 @@ export default function CasteCharts({
                 }
 
                 return (
-                  <div key={wardId} className="h-[300px]">
+                  <div key={wardNumber} className="h-[300px]">
                     <h3 className="text-lg font-medium mb-2 text-center">
-                      वडा {wardId}
+                      वडा {wardNumber}
                     </h3>
                     <ResponsiveContainer width="100%" height="90%">
                       <PieChart>

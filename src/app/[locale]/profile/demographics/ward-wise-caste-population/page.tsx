@@ -101,9 +101,10 @@ export default async function WardWiseCastePopulationPage() {
       return acc;
     }, {}),
   )
-    .map(([caste, population]) => ({
-      caste,
-      casteName: CASTE_NAMES[caste as keyof typeof CASTE_NAMES] || caste,
+    .map(([casteType, population]) => ({
+      casteType,
+      casteTypeDisplay:
+        CASTE_NAMES[casteType as keyof typeof CASTE_NAMES] || casteType,
       population,
     }))
     .sort((a, b) => b.population - a.population);
@@ -124,7 +125,7 @@ export default async function WardWiseCastePopulationPage() {
   );
 
   let pieChartData = topCastes.map((item) => ({
-    name: item.casteName,
+    name: item.casteTypeDisplay,
     value: item.population,
     percentage: ((item.population / totalPopulation) * 100).toFixed(2),
   }));
@@ -138,16 +139,14 @@ export default async function WardWiseCastePopulationPage() {
     });
   }
 
-  // Get unique ward IDs
-  const wardIds = Array.from(
-    new Set(casteData.map((item) => item.wardNumber.toString())),
-  ).sort((a, b) => parseInt(a) - parseInt(b));
+  // Get unique ward numbers
+  const wardNumbers = Array.from(
+    new Set(casteData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
   // Process data for ward-wise visualization (top 5 castes per ward + others)
-  const wardWiseData = wardIds.map((wardId) => {
-    const wardData = casteData.filter(
-      (item) => item.wardNumber.toString() === wardId,
-    );
+  const wardWiseData = wardNumbers.map((wardNumber) => {
+    const wardData = casteData.filter((item) => item.wardNumber === wardNumber);
 
     // Sort ward data by population
     wardData.sort((a, b) => (b.population || 0) - (a.population || 0));
@@ -160,15 +159,11 @@ export default async function WardWiseCastePopulationPage() {
       0,
     );
 
-    const result: Record<string, any> = { ward: `वडा ${wardId}` };
+    const result: Record<string, any> = { ward: `वडा ${wardNumber}` };
 
     // Add top castes
     topWardCastes.forEach((item) => {
-      result[
-        CASTE_NAMES[item.casteType as keyof typeof CASTE_NAMES] ||
-          item.casteTypeDisplay ||
-          item.casteType
-      ] = item.population;
+      result[item.casteTypeDisplay || item.casteType] = item.population;
     });
 
     // Add "Other" category if needed
@@ -223,7 +218,8 @@ export default async function WardWiseCastePopulationPage() {
             totalPopulation={totalPopulation}
             pieChartData={pieChartData}
             wardWiseData={wardWiseData}
-            wardIds={wardIds}
+            wardNumbers={wardNumbers}
+            //@ts-ignore
             casteData={casteData}
             CASTE_NAMES={CASTE_NAMES}
           />
@@ -234,11 +230,7 @@ export default async function WardWiseCastePopulationPage() {
             </h2>
             <p>
               पालिकामा निम्न जातिहरू प्रमुख रूपमा बसोबास गर्छन्। यी जातिहरूमध्ये{" "}
-              {CASTE_NAMES[
-                overallSummary[0]?.caste as keyof typeof CASTE_NAMES
-              ] ||
-                overallSummary[0]?.caste ||
-                ""}
+              {overallSummary[0]?.casteTypeDisplay || ""}
               सबैभन्दा धेरै व्यक्तिहरू भएको जाति हो, जसमा कुल जनसंख्याको{" "}
               {(
                 ((overallSummary[0]?.population || 0) / totalPopulation) *

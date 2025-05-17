@@ -189,14 +189,13 @@ export default async function WardAgeWisePopulationPage() {
       );
     });
 
-  // Get unique ward IDs
-  const wardIds = Array.from(
-    new Set(ageData.map((item) => item.wardNumber.toString())),
-  ).sort((a, b) => parseInt(a) - parseInt(b));
+  // Get unique ward numbers
+  const wardNumbers = Array.from(
+    new Set(ageData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
-  // Group data by ward for charts
-  const wardWiseData = wardIds.map((wardId) => {
-    const wardNumber = parseInt(wardId);
+  // Process data by ward for charts
+  const wardWiseData = wardNumbers.map((wardNumber) => {
     const wardItems = ageData.filter((item) => item.wardNumber === wardNumber);
 
     // Aggregate by broader age categories for ward-wise comparison
@@ -217,7 +216,7 @@ export default async function WardAgeWisePopulationPage() {
       .reduce((sum, item) => sum + item.population, 0);
 
     return {
-      ward: `वडा ${wardId}`,
+      ward: `वडा ${wardNumber}`,
       "बाल (०-१४)": childrenCount,
       "युवा (१५-२९)": youthCount,
       "वयस्क (३०-५९)": adultCount,
@@ -273,7 +272,7 @@ export default async function WardAgeWisePopulationPage() {
             totalPopulation={totalPopulation}
             pyramidData={pyramidData}
             wardWiseData={wardWiseData}
-            wardIds={wardIds}
+            wardNumbers={wardNumbers}
             ageData={ageData}
             AGE_GROUP_NAMES={AGE_GROUP_NAMES}
             GENDER_NAMES={GENDER_NAMES}

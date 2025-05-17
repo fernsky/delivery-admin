@@ -95,18 +95,18 @@ export default async function WardWiseHouseheadGenderPage() {
     percentage: ((item.population / totalPopulation) * 100).toFixed(2),
   }));
 
-  // Get unique ward IDs
-  const wardIds = Array.from(
-    new Set(genderData.map((item) => item.wardNumber.toString())),
-  ).sort((a, b) => parseInt(a) - parseInt(b));
+  // Get unique ward numbers
+  const wardNumbers = Array.from(
+    new Set(genderData.map((item) => item.wardNumber)),
+  ).sort((a, b) => a - b);
 
   // Process data for ward-wise visualization
-  const wardWiseData = wardIds.map((wardId) => {
+  const wardWiseData = wardNumbers.map((wardNumber) => {
     const wardData = genderData.filter(
-      (item) => item.wardNumber.toString() === wardId,
+      (item) => item.wardNumber === wardNumber,
     );
 
-    const result: Record<string, any> = { ward: `वडा ${wardId}` };
+    const result: Record<string, any> = { ward: `वडा ${wardNumber}` };
 
     // Add gender data
     wardData.forEach((item) => {
@@ -160,7 +160,8 @@ export default async function WardWiseHouseheadGenderPage() {
             totalPopulation={totalPopulation}
             pieChartData={pieChartData}
             wardWiseData={wardWiseData}
-            wardIds={wardIds}
+            wardNumbers={wardNumbers}
+            //@ts-ignore
             genderData={genderData}
             GENDER_NAMES={GENDER_NAMES}
           />
