@@ -56,7 +56,7 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
 
       <div className="flex-1">
         <div className="container px-4 sm:px-6 max-w-7xl mx-auto">
-          <div className="flex flex-col md:grid md:grid-cols-[220px_minmax(0,1fr)] lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_220px] md:gap-6 lg:gap-8 mt-4 md:mt-6">
+          <div className="flex flex-col md:grid md:grid-cols-[200px_minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_200px] md:gap-6 lg:gap-8 mt-4 md:mt-6">
             {/* Mobile sidebar sheet */}
             {isMobile ? (
               <Sheet>
