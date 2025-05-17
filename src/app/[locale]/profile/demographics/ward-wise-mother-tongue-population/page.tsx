@@ -123,14 +123,16 @@ export default async function WardWiseMotherTonguePopulationPage() {
     });
   }
 
-  // Get unique ward IDs
+  // Get unique ward numbers
   const wardIds = Array.from(
-    new Set(languageData.map((item) => item.wardId)),
+    new Set(languageData.map((item) => item.wardNumber)),
   ).sort();
 
   // Process data for ward-wise visualization (top 5 languages per ward + others)
-  const wardWiseData = wardIds.map((wardId) => {
-    const wardData = languageData.filter((item) => item.wardId === wardId);
+  const wardWiseData = wardIds.map((wardNumber) => {
+    const wardData = languageData.filter(
+      (item) => item.wardNumber === wardNumber,
+    );
 
     // Sort ward data by population
     wardData.sort((a, b) => (b.population || 0) - (a.population || 0));
@@ -143,7 +145,7 @@ export default async function WardWiseMotherTonguePopulationPage() {
       0,
     );
 
-    const result: Record<string, any> = { ward: `वडा ${wardId}` };
+    const result: Record<string, any> = { ward: `वडा ${wardNumber}` };
 
     // Add top languages
     topWardLanguages.forEach((item) => {

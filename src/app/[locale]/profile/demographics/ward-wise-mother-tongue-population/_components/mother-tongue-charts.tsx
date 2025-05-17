@@ -47,8 +47,15 @@ interface MotherTongueChartsProps {
     percentage: string;
   }>;
   wardWiseData: Array<Record<string, any>>;
-  wardIds: string[];
-  languageData: any[];
+  wardIds: number[];
+  languageData: Array<{
+    id?: string;
+    wardNumber: number;
+    languageType: string;
+    population: number;
+    updatedAt?: Date;
+    createdAt?: Date;
+  }>;
   LANGUAGE_NAMES: Record<string, string>;
 }
 
@@ -392,9 +399,9 @@ export default function MotherTongueCharts({
                   </tr>
                 </thead>
                 <tbody>
-                  {wardIds.map((wardId, i) => {
+                  {wardIds.map((wardNumber, i) => {
                     const wardItems = languageData.filter(
-                      (item) => item.wardId === wardId,
+                      (item) => item.wardNumber === wardNumber,
                     );
                     const wardTotal = wardItems.reduce(
                       (sum, item) => sum + (item.population || 0),
@@ -410,7 +417,7 @@ export default function MotherTongueCharts({
 
                     return (
                       <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                        <td className="border p-2">वडा {wardId}</td>
+                        <td className="border p-2">वडा {wardNumber}</td>
                         <td className="border p-2">
                           {primaryLang
                             ? LANGUAGE_NAMES[primaryLang.languageType] ||
@@ -461,9 +468,9 @@ export default function MotherTongueCharts({
 
           <TabsContent value="chart" className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wardIds.map((wardId) => {
+              {wardIds.map((wardNumber) => {
                 const wardItems = languageData.filter(
-                  (item) => item.wardId === wardId,
+                  (item) => item.wardNumber === wardNumber,
                 );
 
                 // Sort by population and take top 5 languages, group others
@@ -490,9 +497,9 @@ export default function MotherTongueCharts({
                 }
 
                 return (
-                  <div key={wardId} className="h-[300px]">
+                  <div key={wardNumber} className="h-[300px]">
                     <h3 className="text-lg font-medium mb-2 text-center">
-                      वडा {wardId}
+                      वडा {wardNumber}
                     </h3>
                     <ResponsiveContainer width="100%" height="90%">
                       <PieChart>
