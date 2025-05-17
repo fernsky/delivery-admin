@@ -2,7 +2,7 @@ import { getServerSideSitemap, getServerSideSitemapIndex } from 'next-sitemap';
 import { locales } from '@/i18n/config';
 
 // Base URL from environment or default
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://khajura-delivery.vercel.app';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://khajuramun.digprofile.com';
 
 // Define your sitemap categories
 const sitemapCategories = [

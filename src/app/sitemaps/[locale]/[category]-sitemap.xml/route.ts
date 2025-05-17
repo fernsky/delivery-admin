@@ -4,7 +4,7 @@ import { api } from "@/trpc/server";
 import { locales } from '@/i18n/config';
 
 // Base URL from environment or default
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://khajura-delivery.vercel.app';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://khajuramun.digprofile.com';
 
 export async function GET(request: NextRequest, context: { params: { locale: string, category: string } }) {
   const { locale, category } = context.params;

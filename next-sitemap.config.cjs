@@ -1,12 +1,12 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_BASE_URL || 'https://khajura-delivery.vercel.app',
+  siteUrl: process.env.NEXT_PUBLIC_BASE_URL || 'https://khajuramun.digprofile.com',
   generateRobotsTxt: true,
   sitemapSize: 7000,
   exclude: ['/admin/*', '/api/*', '/server/*'],
   robotsTxtOptions: {
     additionalSitemaps: [
-      `${process.env.NEXT_PUBLIC_BASE_URL || 'https://khajura-delivery.vercel.app'}/sitemap-index.xml`,
+      `${process.env.NEXT_PUBLIC_BASE_URL || 'https://khajuramun.digprofile.com'}/sitemap-index.xml`,
     ],
     policies: [
       {
@@ -18,11 +18,11 @@ module.exports = {
   // Add locale alternates to URLs
   alternateRefs: [
     {
-      href: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://khajura-delivery.vercel.app'}/en`,
+      href: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://khajuramun.digprofile.com'}/en`,
       hreflang: 'en',
     },
     {
-      href: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://khajura-delivery.vercel.app'}/ne`,
+      href: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://khajuramun.digprofile.com'}/ne`,
       hreflang: 'ne',
     },
   ],

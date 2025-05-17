@@ -3,8 +3,8 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://khajura-delivery.vercel.app
+Host: https://khajuramun.digprofile.com
 
 # Sitemaps
-Sitemap: https://khajura-delivery.vercel.app/sitemap.xml
-Sitemap: https://khajura-delivery.vercel.app/sitemap-index.xml
+Sitemap: https://khajuramun.digprofile.com/sitemap.xml
+Sitemap: https://khajuramun.digprofile.com/sitemap-index.xml

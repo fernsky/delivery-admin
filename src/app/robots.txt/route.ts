@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 // Base URL from environment or default
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://khajura-delivery.vercel.app';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://khajuramun.digprofile.com';
 
 export function GET(): Response {
   // Generate the robots.txt content
