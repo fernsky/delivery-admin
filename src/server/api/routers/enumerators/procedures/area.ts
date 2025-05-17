@@ -92,13 +92,15 @@ export const enumeratorAreaProcedures = {
       });
     }
 
-    const area = await ctx.db.query.areas.findFirst({
-      columns: {
-        id: true,
-        areaStatus: true,
-      },
-      where: (areas, { eq }) => eq(areas.assignedTo, ctx.user.id),
-    });
+    const area = await ctx.db
+      .select({
+        id: areas.id,
+        areaStatus: areas.areaStatus,
+      })
+      .from(areas)
+      .where(eq(areas.assignedTo, ctx.user.id))
+      .limit(1)
+      .then((rows) => rows[0] || null);
 
     if (!area) {
       throw new TRPCError({
@@ -123,13 +125,15 @@ export const enumeratorAreaProcedures = {
       });
     }
 
-    const area = await ctx.db.query.areas.findFirst({
-      columns: {
-        id: true,
-        areaStatus: true,
-      },
-      where: (areas, { eq }) => eq(areas.assignedTo, ctx.user.id),
-    });
+    const area = await ctx.db
+      .select({
+        id: areas.id,
+        areaStatus: areas.areaStatus,
+      })
+      .from(areas)
+      .where(eq(areas.assignedTo, ctx.user.id))
+      .limit(1)
+      .then((rows) => rows[0] || null);
 
     if (!area || area.areaStatus !== "revision") {
       throw new TRPCError({
@@ -153,13 +157,15 @@ export const enumeratorAreaProcedures = {
         message: "Only enumerators can request withdrawal",
       });
     }
-    const area = await ctx.db.query.areas.findFirst({
-      columns: {
-        id: true,
-        areaStatus: true,
-      },
-      where: (areas, { eq }) => eq(areas.assignedTo, ctx.user.id),
-    });
+    const area = await ctx.db
+      .select({
+        id: areas.id,
+        areaStatus: areas.areaStatus,
+      })
+      .from(areas)
+      .where(eq(areas.assignedTo, ctx.user.id))
+      .limit(1)
+      .then((rows) => rows[0] || null);
 
     if (!area) {
       throw new TRPCError({

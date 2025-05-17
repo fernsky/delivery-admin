@@ -129,7 +129,7 @@ export function PetrolPumpEditForm({ petrolPump }: PetrolPumpEditFormProps) {
   const onSubmit = (values: FormValues) => {
     updatePetrolPump({
       ...values,
-      wardNumber: values.wardNumber ? Number(values.wardNumber) : undefined,
+      wardNumber: Number(values.wardNumber),
     });
   };
 

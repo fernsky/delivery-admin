@@ -60,7 +60,7 @@ export const areaManagementRouter = createTRPCRouter({
           .update(areas)
           .set({
             areaStatus: "completed",
-            assignedTo: null,  // This line already sets assignedTo to null
+            assignedTo: null, // This line already sets assignedTo to null
           })
           .where(eq(areas.id, input.areaId));
 
@@ -202,14 +202,16 @@ export const areaManagementRouter = createTRPCRouter({
         });
       }
 
-      const area = await ctx.db.query.areas.findFirst({
-        columns: {
-          id: true,
-          assignedTo: true,
-          areaStatus: true,
-        },
-        where: (areas, { eq }) => eq(areas.id, input.areaId),
-      });
+      const area = await ctx.db
+        .select({
+          id: areas.id,
+          assignedTo: areas.assignedTo,
+          areaStatus: areas.areaStatus,
+        })
+        .from(areas)
+        .where(eq(areas.id, input.areaId))
+        .limit(1)
+        .then((rows) => rows[0] || null);
 
       if (!area) {
         throw new TRPCError({

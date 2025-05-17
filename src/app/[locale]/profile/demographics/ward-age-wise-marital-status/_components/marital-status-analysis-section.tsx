@@ -39,14 +39,12 @@ export default function MaritalStatusAnalysisSection({
   // Calculate key indicators and metrics
   const indicators = useMemo(() => {
     // Find married and unmarried populations
-    const marriedPopulation = overallByMaritalStatus
-      .filter((item) =>
-        ["ONE_MARRIAGE", "MULTI_MARRIAGE", "REMARRIAGE"].includes(item.status),
-      )
-      .reduce((sum, item) => sum + item.population, 0);
+    const marriedPopulation =
+      overallByMaritalStatus.find((item) => item.status === "MARRIED")
+        ?.population || 0;
 
     const unmarriedPopulation =
-      overallByMaritalStatus.find((item) => item.status === "UNMARRIED")
+      overallByMaritalStatus.find((item) => item.status === "SINGLE")
         ?.population || 0;
 
     const widowedPopulation =
@@ -58,17 +56,11 @@ export default function MaritalStatusAnalysisSection({
       .reduce((sum, item) => sum + item.population, 0);
 
     // Calculate gender ratios
-    const marriedMales = genderWiseData
-      .filter((item) =>
-        ["ONE_MARRIAGE", "MULTI_MARRIAGE", "REMARRIAGE"].includes(item.status),
-      )
-      .reduce((sum, item) => sum + item.male, 0);
+    const marriedMales =
+      genderWiseData.find((item) => item.status === "MARRIED")?.male || 0;
 
-    const marriedFemales = genderWiseData
-      .filter((item) =>
-        ["ONE_MARRIAGE", "MULTI_MARRIAGE", "REMARRIAGE"].includes(item.status),
-      )
-      .reduce((sum, item) => sum + item.female, 0);
+    const marriedFemales =
+      genderWiseData.find((item) => item.status === "MARRIED")?.female || 0;
 
     // Find early marriage data (15-19 age group with married status)
     const earlyMarriageData = ageWiseMaritalData.find(
@@ -76,9 +68,7 @@ export default function MaritalStatusAnalysisSection({
     );
 
     const earlyMarriageCount = earlyMarriageData
-      ? (earlyMarriageData.ONE_MARRIAGE || 0) +
-        (earlyMarriageData.MULTI_MARRIAGE || 0) +
-        (earlyMarriageData.REMARRIAGE || 0)
+      ? earlyMarriageData.MARRIED || 0
       : 0;
 
     // Find child marriage data (below 15 with any marriage)
@@ -87,9 +77,7 @@ export default function MaritalStatusAnalysisSection({
     );
 
     const childMarriageCount = childMarriageData
-      ? (childMarriageData.ONE_MARRIAGE || 0) +
-        (childMarriageData.MULTI_MARRIAGE || 0) +
-        (childMarriageData.REMARRIAGE || 0)
+      ? childMarriageData.MARRIED || 0
       : 0;
 
     // Calculate widowhood rate - percent of widowed among total married
@@ -117,16 +105,6 @@ export default function MaritalStatusAnalysisSection({
           100
         : 0;
 
-    // Calculate multi-marriage prevalence
-    const multiMarriagePopulation =
-      overallByMaritalStatus.find((item) => item.status === "MULTI_MARRIAGE")
-        ?.population || 0;
-
-    const multiMarriageRate =
-      marriedPopulation > 0
-        ? (multiMarriagePopulation / marriedPopulation) * 100
-        : 0;
-
     return {
       marriedPopulation,
       unmarriedPopulation,
@@ -136,7 +114,6 @@ export default function MaritalStatusAnalysisSection({
       divorceRate,
       marriageRate,
       genderGapInMarriage,
-      multiMarriageRate,
       earlyMarriageCount,
       childMarriageCount,
     };
@@ -151,10 +128,7 @@ export default function MaritalStatusAnalysisSection({
   const ageSpecificMarriageRates = useMemo(() => {
     return ageWiseMaritalData.map((ageGroup) => {
       const totalInAgeGroup = ageGroup.total;
-      const marriedInAgeGroup =
-        (ageGroup.ONE_MARRIAGE || 0) +
-        (ageGroup.MULTI_MARRIAGE || 0) +
-        (ageGroup.REMARRIAGE || 0);
+      const marriedInAgeGroup = ageGroup.MARRIED || 0;
 
       const marriageRate =
         totalInAgeGroup > 0 ? (marriedInAgeGroup / totalInAgeGroup) * 100 : 0;
@@ -172,11 +146,7 @@ export default function MaritalStatusAnalysisSection({
     return wardWiseData
       .map((ward) => {
         const totalPopulationInWard = ward.total;
-
-        const marriedPopulationInWard =
-          (ward.ONE_MARRIAGE || 0) +
-          (ward.MULTI_MARRIAGE || 0) +
-          (ward.REMARRIAGE || 0);
+        const marriedPopulationInWard = ward.MARRIED || 0;
 
         const marriageRate =
           totalPopulationInWard > 0
@@ -250,26 +220,6 @@ export default function MaritalStatusAnalysisSection({
               <div
                 className="h-full rounded-full bg-blue-500"
                 style={{ width: `${indicators.widowhoodRate}%` }}
-              ></div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-muted/50">
-          <CardContent className="p-4 flex flex-col items-center">
-            <div className="text-xs uppercase text-muted-foreground mb-1">
-              बहुविवाह दर
-            </div>
-            <div className="text-2xl font-bold text-green-500">
-              {indicators.multiMarriageRate.toFixed(1)}%
-            </div>
-            <div className="text-sm text-muted-foreground">
-              विवाहित जनसंख्याको
-            </div>
-            <div className="w-full bg-muted h-2 rounded-full mt-3 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-green-500"
-                style={{ width: `${indicators.multiMarriageRate}%` }}
               ></div>
             </div>
           </CardContent>
@@ -452,14 +402,6 @@ export default function MaritalStatusAnalysisSection({
                 ? "बाल विवाह विरुद्धको जनचेतनामूलक कार्यक्रमको आवश्यकता"
                 : "शिक्षा र जनचेतना बढेको सङ्केत"}{" "}
               देखाउँछ
-            </li>
-
-            <li>
-              <strong>पुनर्विवाह/बहुविवाह:</strong> पालिकामा{" "}
-              {indicators.multiMarriageRate > 5
-                ? "उल्लेख्य मात्रामा बहुविवाह/पुनर्विवाहको प्रचलन रहेको"
-                : "बहुविवाह/पुनर्विवाहको दर न्यून रहेको"}{" "}
-              देखिन्छ
             </li>
 
             <li>

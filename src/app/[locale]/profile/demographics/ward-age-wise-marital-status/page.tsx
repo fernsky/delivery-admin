@@ -75,12 +75,10 @@ const AGE_GROUP_NAMES: Record<string, string> = {
 
 // Define Nepali names for marital status
 const MARITAL_STATUS_NAMES: Record<string, string> = {
-  UNMARRIED: "अविवाहित",
-  ONE_MARRIAGE: "एक विवाह",
-  MULTI_MARRIAGE: "बहुविवाह",
-  REMARRIAGE: "पुनर्विवाह",
-  WIDOWED: "विधुर/विधवा",
+  SINGLE: "अविवाहित",
+  MARRIED: "विवाहित",
   DIVORCED: "पारपाचुके",
+  WIDOWED: "विधुर/विधवा",
   SEPARATED: "छुट्टिएको",
   NOT_STATED: "उल्लेख नभएको",
 };
@@ -102,13 +100,13 @@ const AGE_CATEGORIES = {
 export default async function AgeWiseMaritalStatusPage() {
   // Fetch all age-wise marital status data from tRPC route
   const maritalData =
-    await api.profile.demographics.ageWiseMaritalStatus.getAll.query();
+    await api.profile.demographics.wardAgeWiseMaritalStatus.getAll.query();
 
   // Fetch summary statistics if available
   let summaryData;
   try {
     summaryData =
-      await api.profile.demographics.ageWiseMaritalStatus.summary.query();
+      await api.profile.demographics.wardAgeWiseMaritalStatus.summary.query();
   } catch (error) {
     console.error("Could not fetch summary data", error);
     summaryData = null;
@@ -166,11 +164,13 @@ export default async function AgeWiseMaritalStatusPage() {
     .filter((item) => item.total > 0);
 
   // Get unique ward IDs
-  const wardIds = Array.from(new Set(maritalData.map((item) => item.wardId)));
+  const wardIds = Array.from(
+    new Set(maritalData.map((item) => item.wardNumber)),
+  );
 
   // Process data for ward-wise analysis
   const wardWiseData = wardIds.map((wardId) => {
-    const wardItems = maritalData.filter((item) => item.wardId === wardId);
+    const wardItems = maritalData.filter((item) => item.wardNumber === wardId);
 
     // Calculate counts for each marital status in this ward
     const counts: Record<string, number> = {};

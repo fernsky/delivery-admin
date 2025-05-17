@@ -25,12 +25,10 @@ import {
 
 // Define colors for marital status and gender
 const MARITAL_STATUS_COLORS = {
-  UNMARRIED: "#36A2EB", // Blue
-  ONE_MARRIAGE: "#4BC0C0", // Teal
-  MULTI_MARRIAGE: "#FF9F40", // Orange
-  REMARRIAGE: "#9966FF", // Purple
+  SINGLE: "#36A2EB", // Blue
+  MARRIED: "#4BC0C0", // Teal
+  DIVORCED: "#FF9F40", // Orange
   WIDOWED: "#FF6384", // Pink/Red
-  DIVORCED: "#FFCD56", // Yellow
   SEPARATED: "#C9CBCF", // Grey
   NOT_STATED: "#808080", // Dark Grey
 };

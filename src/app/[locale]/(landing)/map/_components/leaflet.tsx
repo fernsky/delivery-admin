@@ -263,18 +263,7 @@ const Leaflet: React.FC = () => {
             style={() => getPolygonStyle("municipality")}
           />
         ))}
-      {showMunicipalityOffices &&
-        municipalityOffices?.map((office) => (
-          <GeoJSON
-            key={office.id}
-            data={JSON.parse(office.geometry as unknown as string)}
-            pointToLayer={(feature, latlng) =>
-              L.marker(latlng, { icon: icons.office })
-            }
-          >
-            <Popup>{office.name_ne || office.name_en}</Popup>
-          </GeoJSON>
-        ))}
+
       {showHealth &&
         healthData?.map((health) => (
           <GeoJSON
@@ -314,25 +303,7 @@ const Leaflet: React.FC = () => {
             }}
           />
         ))}
-      {showSchools &&
-        schools?.map((school) => (
-          <GeoJSON
-            key={school.id}
-            data={JSON.parse(school.geometry as unknown as string)}
-            pointToLayer={(feature, latlng) =>
-              L.marker(latlng, { icon: icons.school })
-            }
-            onEachFeature={(feature, layer) => {
-              layer.bindTooltip(school.name_ne || school.name_en, {
-                permanent: true,
-                direction: "auto",
-                className: "school-label",
-              });
-            }}
-          >
-            <Popup>{school.name_ne || school.name_en}</Popup>
-          </GeoJSON>
-        ))}
+
       {showTouristPlaces &&
         touristPlaces?.map((place) => (
           <GeoJSON
@@ -367,25 +338,7 @@ const Leaflet: React.FC = () => {
             }}
           />
         ))}
-      {showWardOffices &&
-        wardOffices?.map((office) => (
-          <GeoJSON
-            key={office.id}
-            data={JSON.parse(office.geometry as unknown as string)}
-            pointToLayer={(feature, latlng) =>
-              L.marker(latlng, { icon: icons.office })
-            }
-            onEachFeature={(feature, layer) => {
-              layer.bindTooltip(office.name_ne || office.name_en, {
-                permanent: true,
-                direction: "auto",
-                className: "office-label",
-              });
-            }}
-          >
-            <Popup>{office.name_ne || office.name_en}</Popup>
-          </GeoJSON>
-        ))}
+
       {showAspectFlat && aspectFlat && (
         <GeoJSON
           key={aspectFlat.id}
@@ -526,13 +479,7 @@ const Leaflet: React.FC = () => {
           style={() => getPolygonStyle("Builtup")}
         />
       )}
-      {showRoads &&
-        roads?.map((road) => (
-          <GeoJSON
-            key={road.id}
-            data={JSON.parse(road.geometry as unknown as string)}
-          />
-        ))}
+
       {showSlope15 && slope15 && (
         <GeoJSON
           key={slope15.id}
@@ -568,16 +515,7 @@ const Leaflet: React.FC = () => {
           style={() => getPolygonStyle("72")}
         />
       )}
-      {showSprings &&
-        springs?.map((spring) => (
-          <GeoJSON
-            key={spring.id}
-            data={JSON.parse(spring.geometry as unknown as string)}
-            pointToLayer={(feature, latlng) =>
-              L.marker(latlng, { icon: icons.spring })
-            }
-          ></GeoJSON>
-        ))}
+
       {showVillages &&
         villages?.map((village) => (
           <GeoJSON

@@ -5,7 +5,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { generateId, Scrypt } from "lucia";
-import { eq } from "drizzle-orm";
+import { eq, type SQL } from "drizzle-orm";
 import { lucia } from "@/lib/auth";
 import { db } from "@/server/db";
 import {
@@ -43,10 +43,12 @@ export async function login(
   }
 
   const { userName, password } = parsed.data;
-
-  const existingUser = await db.query.users.findFirst({
-    where: (table, { eq }) => eq(table.userName, userName),
-  });
+  const existingUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.userName, userName))
+    .limit(1)
+    .then((rows) => rows[0] || null);
 
   if (!existingUser || !existingUser?.hashedPassword) {
     return {
@@ -101,11 +103,12 @@ export async function signup(
 
   const { userName, password, name, email, phoneNumber, wardNumber } =
     parsed.data;
-
-  const existingUser = await db.query.users.findFirst({
-    where: (table, { eq }) => eq(table.userName, userName),
-    columns: { userName: true },
-  });
+  const existingUser = await db
+    .select({ userName: users.userName })
+    .from(users)
+    .where(eq(users.userName, userName))
+    .limit(1)
+    .then((rows) => rows[0] || null);
 
   if (existingUser) {
     return {
@@ -175,9 +178,12 @@ export async function resetPassword(
     return { error: "User not authenticated" };
   }
 
-  const existingUser = await db.query.users.findFirst({
-    where: (table, { eq }) => eq(table.id, user.id),
-  });
+  const existingUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, user.id))
+    .limit(1)
+    .then((rows) => rows[0] || null);
 
   if (!existingUser || !existingUser.hashedPassword) {
     return { error: "User not found" };

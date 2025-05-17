@@ -62,10 +62,10 @@ export async function generateMetadata({
         type: "article",
         locale: "ne_NP",
         images:
-          road.media && road.media.length > 0
+          road.media && road.media.length > 0 && road.media[0].url
             ? [
                 {
-                  url: road.media[0].url,
+                  url: road.media[0].url || "",
                   width: 1200,
                   height: 630,
                   alt: road.name,
@@ -203,7 +203,7 @@ export default async function RoadDetailPage({
           <section>
             <div className="relative rounded-lg overflow-hidden mb-8">
               <Image
-                src={featuredImage}
+                src={featuredImage as string}
                 width={1200}
                 height={400}
                 alt={road.name}

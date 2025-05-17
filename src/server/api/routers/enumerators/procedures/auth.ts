@@ -24,10 +24,12 @@ export const enumeratorAuthProcedures = {
           message: "Must be an admin to manage enumerators",
         });
       }
-
-      const existingUser = await ctx.db.query.users.findFirst({
-        where: (users, { eq }) => eq(users.userName, input.userName),
-      });
+      const existingUser = await ctx.db
+        .select({ userName: users.userName })
+        .from(users)
+        .where(eq(users.userName, input.userName))
+        .limit(1)
+        .then((rows) => rows[0] || null);
 
       if (existingUser) {
         throw new TRPCError({
@@ -82,12 +84,12 @@ export const enumeratorAuthProcedures = {
       const { enumeratorId, ...updateData } = input;
 
       if (updateData.userName) {
-        const existingUser = await ctx.db.query.users.findFirst({
-          where: (users, { eq }) =>
-            updateData.userName
-              ? eq(users.userName, updateData.userName)
-              : undefined,
-        });
+        const existingUser = await ctx.db
+          .select({ id: users.id, userName: users.userName })
+          .from(users)
+          .where(eq(users.userName, updateData.userName))
+          .limit(1)
+          .then((rows) => rows[0] || null);
 
         if (existingUser && existingUser.id !== enumeratorId) {
           throw new TRPCError({
@@ -148,7 +150,7 @@ export const enumeratorAuthProcedures = {
       .from(users)
       .where(eq(users.role, "enumerator"));
 
-    return enumerators.map(e => e.id);
+    return enumerators.map((e) => e.id);
   }),
 
   getAllEnumerators: protectedProcedure.query(async ({ ctx }) => {

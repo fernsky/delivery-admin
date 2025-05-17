@@ -60,7 +60,7 @@ export function FarmMedia({ farmId, media }: FarmMediaProps) {
               <div className="relative">
                 <div className="aspect-video w-full relative rounded-md overflow-hidden mb-4 border">
                   <Image
-                    src={selectedImage.url}
+                    src={selectedImage.url as string}
                     alt={selectedImage.title || "फार्म तस्बिर"}
                     fill
                     className="object-contain"
@@ -83,7 +83,7 @@ export function FarmMedia({ farmId, media }: FarmMediaProps) {
             ) : (
               <div className="aspect-video w-full relative rounded-md overflow-hidden mb-4 border">
                 <Image
-                  src={sortedMedia[0].url}
+                  src={sortedMedia[0].url as string}
                   alt={sortedMedia[0].title || "फार्म मुख्य तस्बिर"}
                   fill
                   className="object-cover"
@@ -108,7 +108,7 @@ export function FarmMedia({ farmId, media }: FarmMediaProps) {
                     onClick={() => setSelectedImage(file)}
                   >
                     <Image
-                      src={file.url}
+                      src={file.url as string}
                       alt={file.title || file.fileName}
                       fill
                       className="object-cover"
