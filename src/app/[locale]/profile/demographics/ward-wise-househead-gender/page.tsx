@@ -5,6 +5,7 @@ import { api } from "@/trpc/server";
 import Image from "next/image";
 import HouseheadGenderCharts from "./_components/househead-gender-charts";
 import GenderAnalysisSection from "./_components/gender-analysis-section";
+import GenderSEO from "./_components/gender-seo";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
@@ -118,6 +119,14 @@ export default async function WardWiseHouseheadGenderPage() {
 
   return (
     <DocsLayout toc={<TableOfContents toc={toc} />}>
+      {/* Add structured data for SEO */}
+      <GenderSEO
+        overallSummary={overallSummary}
+        totalPopulation={totalPopulation}
+        GENDER_NAMES={GENDER_NAMES}
+        wardNumbers={wardNumbers}
+      />
+      
       <div className="flex flex-col gap-8">
         <section>
           <div className="relative rounded-lg overflow-hidden mb-8">

@@ -1,23 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from "recharts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import GenderPieChart from "./charts/gender-pie-chart";
+import GenderBarChart from "./charts/gender-bar-chart";
+import WardGenderPieCharts from "./charts/ward-gender-pie-charts";
 
 // Define gender colors for consistency
 const GENDER_COLORS = {
@@ -102,46 +91,11 @@ export default function HouseheadGenderCharts({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={pieChartData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={true}
-                        label={({ name, percentage }) =>
-                          `${name}: ${percentage}%`
-                        }
-                        outerRadius={140}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {pieChartData.map((entry, index) => {
-                          // Find the original gender key for color mapping
-                          const genderKey =
-                            Object.keys(GENDER_NAMES).find(
-                              (key) => GENDER_NAMES[key] === entry.name,
-                            ) || "OTHER";
-
-                          return (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={
-                                GENDER_COLORS[
-                                  genderKey as keyof typeof GENDER_COLORS
-                                ] ||
-                                `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                              }
-                            />
-                          );
-                        })}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value) => Number(value).toLocaleString()}
-                      />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <GenderPieChart
+                    pieChartData={pieChartData}
+                    GENDER_NAMES={GENDER_NAMES}
+                    GENDER_COLORS={GENDER_COLORS}
+                  />
                 </div>
               </div>
 
@@ -252,91 +206,11 @@ export default function HouseheadGenderCharts({
 
         <div className="p-6">
           <div className="h-[500px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={wardWiseData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-                barSize={40}
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis
-                  dataKey="ward"
-                  scale="point"
-                  padding={{ left: 10, right: 10 }}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="bg-background p-3 border shadow-sm rounded-md">
-                          <p className="font-medium">
-                            {payload[0].payload.ward}
-                          </p>
-                          <div className="space-y-1 mt-2">
-                            {payload.map((entry, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center gap-2"
-                              >
-                                <div
-                                  className="w-2 h-2"
-                                  style={{ backgroundColor: entry.color }}
-                                ></div>
-                                <span>{entry.name}: </span>
-                                <span className="font-medium">
-                                  {entry.value?.toLocaleString()}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Legend
-                  wrapperStyle={{ paddingTop: 20 }}
-                  layout="horizontal"
-                  verticalAlign="bottom"
-                  align="center"
-                />
-                {/* Dynamically generate bars based on available genders in wardWiseData */}
-                {Object.keys(
-                  wardWiseData.reduce(
-                    (acc, ward) => {
-                      Object.keys(ward).forEach((key) => {
-                        if (key !== "ward") acc[key] = true;
-                      });
-                      return acc;
-                    },
-                    {} as Record<string, boolean>,
-                  ),
-                ).map((gender) => {
-                  // Find the gender key for color mapping
-                  const genderKey =
-                    Object.keys(GENDER_NAMES).find(
-                      (key) => GENDER_NAMES[key] === gender,
-                    ) || "OTHER";
-
-                  return (
-                    <Bar
-                      key={gender}
-                      dataKey={gender}
-                      stackId="a"
-                      fill={
-                        GENDER_COLORS[
-                          genderKey as keyof typeof GENDER_COLORS
-                        ] ||
-                        `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                      }
-                    />
-                  );
-                })}
-              </BarChart>
-            </ResponsiveContainer>
+            <GenderBarChart
+              wardWiseData={wardWiseData}
+              GENDER_COLORS={GENDER_COLORS}
+              GENDER_NAMES={GENDER_NAMES}
+            />
           </div>
         </div>
       </div>
@@ -445,63 +319,12 @@ export default function HouseheadGenderCharts({
           </TabsContent>
 
           <TabsContent value="chart" className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wardNumbers.map((wardNumber) => {
-                const wardItems = genderData.filter(
-                  (item) => item.wardNumber === wardNumber,
-                );
-
-                // Prepare data for pie chart
-                const wardData = wardItems.map((item) => ({
-                  name: GENDER_NAMES[item.gender] || item.gender,
-                  value: item.population || 0,
-                }));
-
-                return (
-                  <div key={wardNumber} className="h-[300px]">
-                    <h3 className="text-lg font-medium mb-2 text-center">
-                      वडा {wardNumber}
-                    </h3>
-                    <ResponsiveContainer width="100%" height="90%">
-                      <PieChart>
-                        <Pie
-                          data={wardData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={30}
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, percent }) =>
-                            `${name}: ${(percent * 100).toFixed(1)}%`
-                          }
-                        >
-                          {wardData.map((entry, index) => {
-                            const genderKey =
-                              Object.keys(GENDER_NAMES).find(
-                                (key) => GENDER_NAMES[key] === entry.name,
-                              ) || "OTHER";
-
-                            return (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={
-                                  GENDER_COLORS[
-                                    genderKey as keyof typeof GENDER_COLORS
-                                  ] ||
-                                  `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                                }
-                              />
-                            );
-                          })}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                );
-              })}
-            </div>
+            <WardGenderPieCharts
+              wardNumbers={wardNumbers}
+              genderData={genderData}
+              GENDER_NAMES={GENDER_NAMES}
+              GENDER_COLORS={GENDER_COLORS}
+            />
           </TabsContent>
         </Tabs>
       </div>
