@@ -1,27 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Line,
-  LineChart,
-  AreaChart,
-  Area,
-} from "recharts";
+import AgeDistributionBarChart from "./charts/age-distribution-bar-chart";
+import AgeCategoryPieChart from "./charts/age-category-pie-chart";
+import GenderDistributionPieChart from "./charts/gender-distribution-pie-chart";
+import PopulationPyramidChart from "./charts/population-pyramid-chart";
+import WardAgeBarChart from "./charts/ward-age-bar-chart";
+import WardDetailedAgePieCharts from "./charts/ward-detailed-age-pie-charts";
 
 // Define colors for age groups and gender
 const GENDER_COLORS = {
@@ -84,14 +73,6 @@ export default function AgeWiseCharts({
 }: AgeWiseChartsProps) {
   const [selectedTab, setSelectedTab] = useState<string>("bar");
 
-  // Format pyramid data for display
-  const formatPyramidData = useMemo(() => {
-    const maxValue = Math.max(
-      ...pyramidData.flatMap((d) => [Math.abs(d.male), d.female]),
-    );
-    return { data: pyramidData, maxValue };
-  }, [pyramidData]);
-
   // Calculate age distribution percentages
   const calculateAgeDistributionPercentage = (
     ages: string[],
@@ -150,45 +131,11 @@ export default function AgeWiseCharts({
 
           <TabsContent value="bar" className="p-4">
             <div className="h-[500px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={overallSummaryByAge}
-                  layout="vertical"
-                  margin={{ top: 20, right: 30, left: 80, bottom: 10 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                  <XAxis type="number" />
-                  <YAxis
-                    dataKey="ageGroupName"
-                    type="category"
-                    tick={{ fontSize: 12 }}
-                    width={70}
-                  />
-                  <Tooltip
-                    formatter={(value) => Number(value).toLocaleString()}
-                    labelFormatter={(value) => `उमेर समूह: ${value}`}
-                  />
-                  <Legend />
-                  <Bar
-                    dataKey="male"
-                    name={GENDER_NAMES["MALE"]}
-                    fill={GENDER_COLORS["MALE"]}
-                    stackId="a"
-                  />
-                  <Bar
-                    dataKey="female"
-                    name={GENDER_NAMES["FEMALE"]}
-                    fill={GENDER_COLORS["FEMALE"]}
-                    stackId="a"
-                  />
-                  <Bar
-                    dataKey="other"
-                    name={GENDER_NAMES["OTHER"]}
-                    fill={GENDER_COLORS["OTHER"]}
-                    stackId="a"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+              <AgeDistributionBarChart
+                overallSummaryByAge={overallSummaryByAge}
+                GENDER_NAMES={GENDER_NAMES}
+                GENDER_COLORS={GENDER_COLORS}
+              />
             </div>
           </TabsContent>
 
@@ -200,77 +147,11 @@ export default function AgeWiseCharts({
                   उमेरगत वर्गीकरण
                 </h3>
                 <div className="h-[320px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={[
-                          {
-                            name: "बाल (०-१४)",
-                            value: calculateAgeDistributionPercentage(
-                              ["AGE_0_4", "AGE_5_9", "AGE_10_14"],
-                              totalPopulation,
-                            ),
-                          },
-                          {
-                            name: "युवा (१५-२९)",
-                            value: calculateAgeDistributionPercentage(
-                              ["AGE_15_19", "AGE_20_24", "AGE_25_29"],
-                              totalPopulation,
-                            ),
-                          },
-                          {
-                            name: "वयस्क (३०-५९)",
-                            value: calculateAgeDistributionPercentage(
-                              [
-                                "AGE_30_34",
-                                "AGE_35_39",
-                                "AGE_40_44",
-                                "AGE_45_49",
-                                "AGE_50_54",
-                                "AGE_55_59",
-                              ],
-                              totalPopulation,
-                            ),
-                          },
-                          {
-                            name: "वृद्ध (६० माथि)",
-                            value: calculateAgeDistributionPercentage(
-                              [
-                                "AGE_60_64",
-                                "AGE_65_69",
-                                "AGE_70_74",
-                                "AGE_75_AND_ABOVE",
-                              ],
-                              totalPopulation,
-                            ),
-                          },
-                        ]}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={120}
-                        label={({ name, percent }) =>
-                          `${name}: ${(percent * 100).toFixed(1)}%`
-                        }
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {Object.entries(AGE_CATEGORY_COLORS).map(
-                          ([name, color], index) => (
-                            <Cell key={`cell-${index}`} fill={color} />
-                          ),
-                        )}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value) => `${Number(value).toFixed(2)}%`}
-                      />
-                      <Legend
-                        layout="vertical"
-                        verticalAlign="bottom"
-                        align="center"
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <AgeCategoryPieChart
+                    totalPopulation={totalPopulation}
+                    calculateAgeDistributionPercentage={calculateAgeDistributionPercentage}
+                    AGE_CATEGORY_COLORS={AGE_CATEGORY_COLORS}
+                  />
                 </div>
               </div>
 
@@ -280,44 +161,11 @@ export default function AgeWiseCharts({
                   लिङ्ग अनुसार वितरण
                 </h3>
                 <div className="h-[320px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={overallSummaryByGender.map((item) => ({
-                          name: item.genderName,
-                          value: item.population,
-                          percentage: (
-                            (item.population / totalPopulation) *
-                            100
-                          ).toFixed(2),
-                        }))}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={true}
-                        label={({ name, percentage }) =>
-                          `${name}: ${percentage}%`
-                        }
-                        outerRadius={120}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {overallSummaryByGender.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={
-                              GENDER_COLORS[
-                                entry.gender as keyof typeof GENDER_COLORS
-                              ] || "#888"
-                            }
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value) => Number(value).toLocaleString()}
-                      />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <GenderDistributionPieChart
+                    overallSummaryByGender={overallSummaryByGender}
+                    totalPopulation={totalPopulation}
+                    GENDER_COLORS={GENDER_COLORS}
+                  />
                 </div>
               </div>
             </div>
@@ -406,68 +254,10 @@ export default function AgeWiseCharts({
 
         <div className="p-6">
           <div className="h-[600px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={formatPyramidData.data}
-                margin={{ top: 20, right: 30, left: 30, bottom: 20 }}
-                layout="vertical"
-                barGap={0}
-                barSize={20}
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis
-                  type="number"
-                  domain={[
-                    -formatPyramidData.maxValue,
-                    formatPyramidData.maxValue,
-                  ]}
-                  tickFormatter={(value) => Math.abs(value).toString()}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="ageGroupName"
-                  width={80}
-                  tick={{ fontSize: 12 }}
-                />
-                <Tooltip
-                  formatter={(value) =>
-                    Math.abs(Number(value)).toLocaleString()
-                  }
-                  labelFormatter={(value) => `उमेर समूह: ${value}`}
-                />
-                <Legend />
-                <Bar
-                  dataKey="male"
-                  name="पुरुष"
-                  fill={GENDER_COLORS.MALE}
-                  stackId="stack"
-                />
-                <Bar
-                  dataKey="female"
-                  name="महिला"
-                  fill={GENDER_COLORS.FEMALE}
-                  stackId="stack"
-                />
-                <text
-                  x="25%"
-                  y={15}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  className="fill-current text-sm font-medium"
-                >
-                  पुरुष
-                </text>
-                <text
-                  x="75%"
-                  y={15}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  className="fill-current text-sm font-medium"
-                >
-                  महिला
-                </text>
-              </BarChart>
-            </ResponsiveContainer>
+            <PopulationPyramidChart
+              pyramidData={pyramidData}
+              GENDER_COLORS={GENDER_COLORS}
+            />
           </div>
         </div>
       </div>
@@ -486,73 +276,10 @@ export default function AgeWiseCharts({
 
         <div className="p-6">
           <div className="h-[500px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={wardWiseData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-                barSize={20}
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis
-                  dataKey="ward"
-                  scale="point"
-                  padding={{ left: 10, right: 10 }}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="bg-background p-3 border shadow-sm rounded-md">
-                          <p className="font-medium">
-                            {payload[0].payload.ward}
-                          </p>
-                          <div className="space-y-1 mt-2">
-                            {payload.map((entry, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center gap-2"
-                              >
-                                <div
-                                  className="w-2 h-2"
-                                  style={{ backgroundColor: entry.color }}
-                                ></div>
-                                <span>{entry.name}: </span>
-                                <span className="font-medium">
-                                  {entry.value?.toLocaleString()}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Legend
-                  wrapperStyle={{ paddingTop: 20 }}
-                  layout="horizontal"
-                  verticalAlign="bottom"
-                  align="center"
-                />
-                {/* Dynamically generate bars for age categories */}
-                {Object.keys(AGE_CATEGORY_COLORS).map((category) => (
-                  <Bar
-                    key={category}
-                    dataKey={category}
-                    name={category}
-                    fill={
-                      AGE_CATEGORY_COLORS[
-                        category as keyof typeof AGE_CATEGORY_COLORS
-                      ]
-                    }
-                    stackId="a"
-                  />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
+            <WardAgeBarChart
+              wardWiseData={wardWiseData}
+              AGE_CATEGORY_COLORS={AGE_CATEGORY_COLORS}
+            />
           </div>
         </div>
       </div>
@@ -666,95 +393,11 @@ export default function AgeWiseCharts({
           </TabsContent>
 
           <TabsContent value="chart" className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wardNumbers.map((wardNumber) => {
-                const wardItems = ageData.filter(
-                  (item) => item.wardNumber === wardNumber,
-                );
-
-                // Group by broader age categories
-                const childrenCount = wardItems
-                  .filter((item) =>
-                    ["AGE_0_4", "AGE_5_9", "AGE_10_14"].includes(item.ageGroup),
-                  )
-                  .reduce((sum, item) => sum + item.population, 0);
-
-                const youthCount = wardItems
-                  .filter((item) =>
-                    ["AGE_15_19", "AGE_20_24", "AGE_25_29"].includes(
-                      item.ageGroup,
-                    ),
-                  )
-                  .reduce((sum, item) => sum + item.population, 0);
-
-                const adultCount = wardItems
-                  .filter((item) =>
-                    [
-                      "AGE_30_34",
-                      "AGE_35_39",
-                      "AGE_40_44",
-                      "AGE_45_49",
-                      "AGE_50_54",
-                      "AGE_55_59",
-                    ].includes(item.ageGroup),
-                  )
-                  .reduce((sum, item) => sum + item.population, 0);
-
-                const elderlyCount = wardItems
-                  .filter((item) =>
-                    [
-                      "AGE_60_64",
-                      "AGE_65_69",
-                      "AGE_70_74",
-                      "AGE_75_AND_ABOVE",
-                    ].includes(item.ageGroup),
-                  )
-                  .reduce((sum, item) => sum + item.population, 0);
-
-                const wardData = [
-                  { name: "बाल (०-१४)", value: childrenCount },
-                  { name: "युवा (१५-२९)", value: youthCount },
-                  { name: "वयस्क (३०-५९)", value: adultCount },
-                  { name: "वृद्ध (६० माथि)", value: elderlyCount },
-                ];
-
-                return (
-                  <div key={wardNumber} className="h-[300px]">
-                    <h3 className="text-lg font-medium mb-2 text-center">
-                      वडा {wardNumber}
-                    </h3>
-                    <ResponsiveContainer width="100%" height="90%">
-                      <PieChart>
-                        <Pie
-                          data={wardData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={30}
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, percent }) =>
-                            `${name}: ${(percent * 100).toFixed(1)}%`
-                          }
-                        >
-                          {wardData.map((entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={
-                                AGE_CATEGORY_COLORS[
-                                  entry.name as keyof typeof AGE_CATEGORY_COLORS
-                                ] || "#888"
-                              }
-                            />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                );
-              })}
-            </div>
+            <WardDetailedAgePieCharts
+              wardNumbers={wardNumbers}
+              ageData={ageData}
+              AGE_CATEGORY_COLORS={AGE_CATEGORY_COLORS}
+            />
           </TabsContent>
         </Tabs>
       </div>
