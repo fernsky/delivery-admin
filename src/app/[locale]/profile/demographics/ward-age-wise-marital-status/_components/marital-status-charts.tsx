@@ -1,29 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-} from "recharts";
+import MaritalStatusPieChart from "./charts/marital-status-pie-chart";
+import MaritalStatusBarChart from "./charts/marital-status-bar-chart";
+import AgeWiseMaritalStatusChart from "./charts/age-wise-marital-status-chart";
+import WardMaritalStatusCharts from "./charts/ward-marital-status-charts";
+import GenderMaritalStatusChart from "./charts/gender-marital-status-chart";
 
-// Define colors for marital status and gender
+// Define marital status colors for consistency
 const MARITAL_STATUS_COLORS = {
   SINGLE: "#36A2EB", // Blue
   MARRIED: "#4BC0C0", // Teal
@@ -31,12 +16,6 @@ const MARITAL_STATUS_COLORS = {
   WIDOWED: "#FF6384", // Pink/Red
   SEPARATED: "#C9CBCF", // Grey
   NOT_STATED: "#808080", // Dark Grey
-};
-
-const GENDER_COLORS = {
-  male: "#36A2EB", // Blue
-  female: "#FF6384", // Pink/Red
-  other: "#FFCD56", // Yellow
 };
 
 interface MaritalStatusChartsProps {
@@ -58,6 +37,24 @@ interface MaritalStatusChartsProps {
   totalPopulation: number;
   MARITAL_STATUS_NAMES: Record<string, string>;
   AGE_GROUP_NAMES: Record<string, string>;
+  pieChartData: Array<{
+    name: string;
+    value: number;
+    percentage: string;
+  }>;
+  wardNumbers: number[];
+  maritalData: Array<{
+    id?: string;
+    wardNumber: number;
+    ageGroup: string;
+    maritalStatus: string;
+    population: number;
+    malePopulation?: number;
+    femalePopulation?: number;
+    otherPopulation?: number;
+    updatedAt?: string;
+    createdAt?: string;
+  }>;
 }
 
 export default function MaritalStatusCharts({
@@ -68,197 +65,37 @@ export default function MaritalStatusCharts({
   totalPopulation,
   MARITAL_STATUS_NAMES,
   AGE_GROUP_NAMES,
+  pieChartData,
+  wardNumbers,
+  maritalData,
 }: MaritalStatusChartsProps) {
-  const [selectedTab, setSelectedTab] = useState<string>("pie");
-
-  // Prepare data for stacked bar chart of age-wise marital status
-  const stackedBarData = ageWiseMaritalData.map((item) => {
-    const result: Record<string, any> = {
-      ageGroup: item.ageGroupName,
-    };
-
-    Object.keys(MARITAL_STATUS_NAMES).forEach((status) => {
-      if (item[status]) {
-        result[
-          MARITAL_STATUS_NAMES[status as keyof typeof MARITAL_STATUS_NAMES]
-        ] = item[status];
-      }
-    });
-
-    return result;
-  });
-
   return (
     <>
       {/* Overall marital status distribution */}
       <div className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card">
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">
-            वैवाहिक स्थिति अनुसार जनसंख्या वितरण
-          </h3>
+          <h3 className="text-xl font-semibold">वैवाहिक स्थिति अनुसार जनसंख्या वितरण</h3>
           <p className="text-sm text-muted-foreground">
             कुल जनसंख्या: {totalPopulation.toLocaleString()} व्यक्ति
           </p>
         </div>
 
-        <Tabs
-          value={selectedTab}
-          onValueChange={setSelectedTab}
-          className="w-full"
-        >
-          <div className="border-b bg-muted/40">
-            <div className="container">
-              <TabsList className="h-10 bg-transparent">
-                <TabsTrigger
-                  value="pie"
-                  className="data-[state=active]:bg-background"
-                >
-                  पाई चार्ट
-                </TabsTrigger>
-                <TabsTrigger
-                  value="bar"
-                  className="data-[state=active]:bg-background"
-                >
-                  बार चार्ट
-                </TabsTrigger>
-                <TabsTrigger
-                  value="table"
-                  className="data-[state=active]:bg-background"
-                >
-                  तालिका
-                </TabsTrigger>
-              </TabsList>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4">
+          {/* Client-side pie chart */}
+          <div className="lg:col-span-1">
+            <h4 className="text-lg font-medium mb-4 text-center">पाई चार्ट</h4>
+            <div className="h-[400px]">
+              <MaritalStatusPieChart
+                pieChartData={pieChartData}
+                MARITAL_STATUS_NAMES={MARITAL_STATUS_NAMES}
+                MARITAL_STATUS_COLORS={MARITAL_STATUS_COLORS}
+              />
             </div>
           </div>
 
-          <TabsContent value="pie" className="p-4">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={overallByMaritalStatus}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={true}
-                        label={({ name, percent }) =>
-                          `${name}: ${(percent * 100).toFixed(1)}%`
-                        }
-                        outerRadius={140}
-                        fill="#8884d8"
-                        dataKey="population"
-                        nameKey="statusName"
-                      >
-                        {overallByMaritalStatus.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={
-                              MARITAL_STATUS_COLORS[
-                                entry.status as keyof typeof MARITAL_STATUS_COLORS
-                              ] ||
-                              `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                            }
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value) => Number(value).toLocaleString()}
-                      />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              <div className="lg:col-span-1">
-                <div className="space-y-4">
-                  <h4 className="text-sm font-medium text-muted-foreground">
-                    प्रमुख वैवाहिक स्थिति
-                  </h4>
-                  {overallByMaritalStatus
-                    .sort((a, b) => b.population - a.population)
-                    .slice(0, 5)
-                    .map((item, i) => (
-                      <div key={i} className="flex items-center gap-4">
-                        <div
-                          className="w-3 h-3 rounded-full flex-shrink-0"
-                          style={{
-                            backgroundColor:
-                              MARITAL_STATUS_COLORS[
-                                item.status as keyof typeof MARITAL_STATUS_COLORS
-                              ] || "#888",
-                          }}
-                        ></div>
-                        <div className="flex-grow">
-                          <div className="flex justify-between items-center">
-                            <span>{item.statusName}</span>
-                            <span className="font-medium">
-                              {(
-                                (item.population / totalPopulation) *
-                                100
-                              ).toFixed(1)}
-                              %
-                            </span>
-                          </div>
-                          <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
-                            <div
-                              className="h-full rounded-full"
-                              style={{
-                                width: `${(item.population / totalPopulation) * 100}%`,
-                                backgroundColor:
-                                  MARITAL_STATUS_COLORS[
-                                    item.status as keyof typeof MARITAL_STATUS_COLORS
-                                  ] || "#888",
-                              }}
-                            ></div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="bar" className="p-4">
-            <div className="h-[500px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={overallByMaritalStatus.sort(
-                    (a, b) => b.population - a.population,
-                  )}
-                  margin={{ top: 20, right: 30, left: 30, bottom: 60 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                  <XAxis
-                    dataKey="statusName"
-                    angle={-45}
-                    textAnchor="end"
-                    height={80}
-                  />
-                  <YAxis />
-                  <Tooltip
-                    formatter={(value) => Number(value).toLocaleString()}
-                  />
-                  <Bar dataKey="population" fill="#8884d8" name="जनसंख्या">
-                    {overallByMaritalStatus.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={
-                          MARITAL_STATUS_COLORS[
-                            entry.status as keyof typeof MARITAL_STATUS_COLORS
-                          ] || "#888"
-                        }
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="table" className="p-6">
+          {/* Server-side pre-rendered table for SEO */}
+          <div className="lg:col-span-1">
+            <h4 className="text-lg font-medium mb-4 text-center">तालिका</h4>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
@@ -270,23 +107,21 @@ export default function MaritalStatusCharts({
                   </tr>
                 </thead>
                 <tbody>
-                  {overallByMaritalStatus
-                    .sort((a, b) => b.population - a.population)
-                    .map((item, i) => (
-                      <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                        <td className="border p-2">{i + 1}</td>
-                        <td className="border p-2">{item.statusName}</td>
-                        <td className="border p-2 text-right">
-                          {item.population.toLocaleString()}
-                        </td>
-                        <td className="border p-2 text-right">
-                          {((item.population / totalPopulation) * 100).toFixed(
-                            2,
-                          )}
-                          %
-                        </td>
-                      </tr>
-                    ))}
+                  {overallByMaritalStatus.map((item, i) => (
+                    <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
+                      <td className="border p-2">{i + 1}</td>
+                      <td className="border p-2">{item.statusName}</td>
+                      <td className="border p-2 text-right">
+                        {item.population.toLocaleString()}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {((item.population / totalPopulation) * 100).toFixed(2)}
+                        %
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
                   <tr className="font-semibold bg-muted/70">
                     <td className="border p-2" colSpan={2}>
                       जम्मा
@@ -296,7 +131,7 @@ export default function MaritalStatusCharts({
                     </td>
                     <td className="border p-2 text-right">100.00%</td>
                   </tr>
-                </tbody>
+                </tfoot>
               </table>
             </div>
             <div className="mt-4 flex justify-end">
@@ -305,8 +140,54 @@ export default function MaritalStatusCharts({
                 Excel डाउनलोड
               </Button>
             </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
+
+        <div className="lg:col-span-1 p-4 border-t">
+          <h4 className="text-sm font-medium text-muted-foreground mb-4">
+            प्रमुख वैवाहिक स्थितिहरू
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {overallByMaritalStatus.slice(0, 5).map((item, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{
+                    backgroundColor:
+                      MARITAL_STATUS_COLORS[
+                        item.status as keyof typeof MARITAL_STATUS_COLORS
+                      ] || "#888",
+                  }}
+                ></div>
+                <div className="flex-grow">
+                  <div className="flex justify-between items-center">
+                    <span>{item.statusName}</span>
+                    <span className="font-medium">
+                      {((item.population / totalPopulation) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${(item.population / totalPopulation) * 100}%`,
+                        backgroundColor:
+                          MARITAL_STATUS_COLORS[
+                            item.status as keyof typeof MARITAL_STATUS_COLORS
+                          ] || "#888",
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-sm text-muted-foreground pt-4">
+            {overallByMaritalStatus.length > 5
+              ? `${overallByMaritalStatus.length - 5} अन्य वैवाहिक स्थितिहरू पनि छन्।`
+              : ""}
+          </p>
+        </div>
       </div>
 
       {/* Age-wise marital status section */}
@@ -323,99 +204,11 @@ export default function MaritalStatusCharts({
 
         <div className="p-6">
           <div className="h-[500px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={stackedBarData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-                barSize={30}
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis dataKey="ageGroup" />
-                <YAxis />
-                <Tooltip />
-                <Legend
-                  wrapperStyle={{ paddingTop: 20 }}
-                  layout="horizontal"
-                  verticalAlign="bottom"
-                />
-                {Object.entries(MARITAL_STATUS_NAMES).map(([status, name]) => (
-                  <Bar
-                    key={status}
-                    dataKey={name}
-                    stackId="a"
-                    fill={
-                      MARITAL_STATUS_COLORS[
-                        status as keyof typeof MARITAL_STATUS_COLORS
-                      ] || "#888"
-                    }
-                    name={name}
-                  />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Percentage distribution chart */}
-          <div className="mt-8 h-[500px]">
-            <h4 className="text-lg font-medium mb-4">प्रतिशत वितरण</h4>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={stackedBarData.map((item) => {
-                  const result: Record<string, any> = {
-                    ageGroup: item.ageGroup,
-                  };
-                  let total = 0;
-
-                  // Calculate total for this age group
-                  Object.entries(MARITAL_STATUS_NAMES).forEach(
-                    ([status, name]) => {
-                      total += item[name] || 0;
-                    },
-                  );
-
-                  // Calculate percentages
-                  Object.entries(MARITAL_STATUS_NAMES).forEach(
-                    ([status, name]) => {
-                      if (total > 0 && item[name]) {
-                        result[name] = (item[name] / total) * 100;
-                      } else {
-                        result[name] = 0;
-                      }
-                    },
-                  );
-
-                  return result;
-                })}
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis dataKey="ageGroup" />
-                <YAxis tickFormatter={(value) => `${value}%`} />
-                <Tooltip
-                  formatter={(value) => `${Number(value).toFixed(1)}%`}
-                />
-                <Legend />
-                {Object.entries(MARITAL_STATUS_NAMES).map(([status, name]) => (
-                  <Area
-                    key={status}
-                    type="monotone"
-                    dataKey={name}
-                    stackId="1"
-                    stroke={
-                      MARITAL_STATUS_COLORS[
-                        status as keyof typeof MARITAL_STATUS_COLORS
-                      ] || "#888"
-                    }
-                    fill={
-                      MARITAL_STATUS_COLORS[
-                        status as keyof typeof MARITAL_STATUS_COLORS
-                      ] || "#888"
-                    }
-                    name={name}
-                  />
-                ))}
-              </AreaChart>
-            </ResponsiveContainer>
+            <AgeWiseMaritalStatusChart 
+              ageWiseMaritalData={ageWiseMaritalData}
+              MARITAL_STATUS_COLORS={MARITAL_STATUS_COLORS}
+              MARITAL_STATUS_NAMES={MARITAL_STATUS_NAMES}
+            />
           </div>
         </div>
       </div>
@@ -434,45 +227,9 @@ export default function MaritalStatusCharts({
 
         <div className="p-6">
           <div className="h-[500px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={genderWiseData.sort((a, b) => b.total - a.total)}
-                margin={{ top: 20, right: 30, left: 30, bottom: 60 }}
-                barSize={40}
-                layout="vertical"
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis type="number" />
-                <YAxis
-                  dataKey="statusName"
-                  type="category"
-                  width={120}
-                  tick={{ fontSize: 12 }}
-                />
-                <Tooltip
-                  formatter={(value) => Number(value).toLocaleString()}
-                />
-                <Legend />
-                <Bar
-                  dataKey="male"
-                  name="पुरुष"
-                  stackId="a"
-                  fill={GENDER_COLORS.male}
-                />
-                <Bar
-                  dataKey="female"
-                  name="महिला"
-                  stackId="a"
-                  fill={GENDER_COLORS.female}
-                />
-                <Bar
-                  dataKey="other"
-                  name="अन्य"
-                  stackId="a"
-                  fill={GENDER_COLORS.other}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            <GenderMaritalStatusChart 
+              genderWiseData={genderWiseData}
+            />
           </div>
 
           <div className="mt-6 overflow-x-auto">
@@ -534,136 +291,145 @@ export default function MaritalStatusCharts({
                 </tr>
               </tbody>
             </table>
+            <div className="mt-4 flex justify-end">
+              <Button variant="outline" size="sm">
+                <FileDown className="mr-2 h-4 w-4" />
+                Excel डाउनलोड
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Ward-wise analysis */}
-      <div
-        className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card"
-        id="ward-wise-analysis"
-      >
+      {/* Ward-wise distribution */}
+      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">
-            वडा अनुसार वैवाहिक स्थिति वितरण
-          </h3>
+          <h3 className="text-xl font-semibold">वडा अनुसार वैवाहिक स्थिति वितरण</h3>
           <p className="text-sm text-muted-foreground">
-            विभिन्न वडाहरूमा वैवाहिक स्थितिको तुलना
+            वडा र वैवाहिक स्थिति अनुसार जनसंख्या वितरण
           </p>
         </div>
 
         <div className="p-6">
-          <Tabs defaultValue="chart">
-            <TabsList className="mb-4">
-              <TabsTrigger value="chart">चार्ट</TabsTrigger>
-              <TabsTrigger value="table">तालिका</TabsTrigger>
-            </TabsList>
+          <div className="h-[500px]">
+            <MaritalStatusBarChart
+              wardWiseData={wardWiseData}
+              MARITAL_STATUS_COLORS={MARITAL_STATUS_COLORS}
+              MARITAL_STATUS_NAMES={MARITAL_STATUS_NAMES}
+            />
+          </div>
+        </div>
+      </div>
 
-            <TabsContent value="chart">
-              <div className="h-[500px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={wardWiseData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-                    barSize={20}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                    <XAxis dataKey="wardNumber" />
-                    <YAxis />
-                    <Tooltip
-                      formatter={(value) => Number(value).toLocaleString()}
-                      content={({ active, payload, label }) => {
-                        if (active && payload && payload.length) {
-                          return (
-                            <div className="bg-background p-3 border shadow-sm rounded-md">
-                              <p className="font-medium">{label}</p>
-                              <div className="space-y-1 mt-2">
-                                {payload.map((entry, index) => (
-                                  <div
-                                    key={index}
-                                    className="flex items-center gap-2"
-                                  >
-                                    <div
-                                      className="w-2 h-2"
-                                      style={{ backgroundColor: entry.color }}
-                                    ></div>
-                                    <span>{entry.name}: </span>
-                                    <span className="font-medium">
-                                      {Number(entry.value).toLocaleString()}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                    <Legend />
-                    {Object.entries(MARITAL_STATUS_NAMES).map(
-                      ([status, name]) => (
-                        <Bar
-                          key={status}
-                          dataKey={status}
-                          name={name}
-                          stackId="a"
-                          fill={
-                            MARITAL_STATUS_COLORS[
-                              status as keyof typeof MARITAL_STATUS_COLORS
-                            ] || "#888"
-                          }
-                        />
-                      ),
-                    )}
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </TabsContent>
+      {/* Detailed ward analysis */}
+      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+        <div className="border-b px-4 py-3">
+          <h3 className="text-xl font-semibold">
+            वडा अनुसार विस्तृत वैवाहिक विश्लेषण
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            प्रत्येक वडाको विस्तृत वैवाहिक स्थिति संरचना
+          </p>
+        </div>
 
-            <TabsContent value="table">
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse min-w-[800px]">
-                  <thead>
-                    <tr className="bg-muted">
-                      <th className="border p-2">वडा</th>
-                      {Object.entries(MARITAL_STATUS_NAMES).map(
-                        ([status, name]) => (
-                          <th key={status} className="border p-2 text-right">
-                            {name}
-                          </th>
-                        ),
-                      )}
-                      <th className="border p-2 text-right">जम्मा</th>
+        <div className="p-6">
+          <h4 className="text-lg font-medium mb-4">वडागत वैवाहिक स्थिति तालिका</h4>
+          <div className="overflow-auto max-h-[600px]">
+            <table className="w-full border-collapse min-w-[800px]">
+              <thead className="sticky top-0 z-10">
+                <tr className="bg-muted">
+                  <th className="border p-2">वडा नं.</th>
+                  <th className="border p-2">प्रमुख वैवाहिक स्थिति</th>
+                  <th className="border p-2 text-right">जनसंख्या</th>
+                  <th className="border p-2 text-right">वडाको प्रतिशत</th>
+                  <th className="border p-2">दोस्रो प्रमुख वैवाहिक स्थिति</th>
+                  <th className="border p-2 text-right">जनसंख्या</th>
+                  <th className="border p-2 text-right">वडाको प्रतिशत</th>
+                </tr>
+              </thead>
+              <tbody>
+                {wardNumbers.map((wardNumber, i) => {
+                  const wardItems = maritalData.filter(
+                    (item) => item.wardNumber === wardNumber,
+                  );
+                  const wardTotal = wardItems.reduce(
+                    (sum, item) => sum + (item.population || 0),
+                    0,
+                  );
+
+                  // Group by marital status and sum population
+                  const maritalStatusGroups = wardItems.reduce((acc: Record<string, number>, item) => {
+                    if (!acc[item.maritalStatus]) acc[item.maritalStatus] = 0;
+                    acc[item.maritalStatus] += item.population || 0;
+                    return acc;
+                  }, {});
+
+                  // Convert to array and sort by population
+                  const sortedMaritalStatus = Object.entries(maritalStatusGroups)
+                    .map(([status, population]) => ({ status, population: population as number }))
+                    .sort((a, b) => b.population - a.population);
+
+                  const primaryStatus = sortedMaritalStatus[0];
+                  const secondaryStatus = sortedMaritalStatus[1];
+
+                  return (
+                    <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
+                      <td className="border p-2">वडा {wardNumber}</td>
+                      <td className="border p-2">
+                        {primaryStatus
+                          ? MARITAL_STATUS_NAMES[primaryStatus.status as keyof typeof MARITAL_STATUS_NAMES] ||
+                            primaryStatus.status
+                          : "-"}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {primaryStatus?.population?.toLocaleString() || "0"}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {wardTotal > 0 && primaryStatus?.population
+                          ? (
+                              (primaryStatus.population / wardTotal) *
+                              100
+                            ).toFixed(2) + "%"
+                          : "0%"}
+                      </td>
+                      <td className="border p-2">
+                        {secondaryStatus
+                          ? MARITAL_STATUS_NAMES[secondaryStatus.status as keyof typeof MARITAL_STATUS_NAMES] ||
+                            secondaryStatus.status
+                          : "-"}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {secondaryStatus?.population?.toLocaleString() || "0"}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {wardTotal > 0 && secondaryStatus?.population
+                          ? (
+                              (secondaryStatus.population / wardTotal) *
+                              100
+                            ).toFixed(2) + "%"
+                          : "0%"}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {wardWiseData.map((item, i) => (
-                      <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                        <td className="border p-2">{item.wardNumber}</td>
-                        {Object.entries(MARITAL_STATUS_NAMES).map(
-                          ([status, name]) => (
-                            <td key={status} className="border p-2 text-right">
-                              {(item[status] || 0).toLocaleString()}
-                            </td>
-                          ),
-                        )}
-                        <td className="border p-2 text-right font-medium">
-                          {item.total.toLocaleString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="mt-4 flex justify-end">
-                <Button variant="outline" size="sm">
-                  <FileDown className="mr-2 h-4 w-4" />
-                  Excel डाउनलोड
-                </Button>
-              </div>
-            </TabsContent>
-          </Tabs>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button variant="outline" size="sm">
+              <FileDown className="mr-2 h-4 w-4" />
+              Excel डाउनलोड
+            </Button>
+          </div>
+
+          {/* Ward pie charts (client component) */}
+          <h4 className="text-lg font-medium mt-8 mb-4">वडागत पाई चार्ट</h4>
+          <WardMaritalStatusCharts
+            wardNumbers={wardNumbers}
+            maritalData={maritalData}
+            MARITAL_STATUS_NAMES={MARITAL_STATUS_NAMES}
+            MARITAL_STATUS_COLORS={MARITAL_STATUS_COLORS}
+          />
         </div>
       </div>
     </>

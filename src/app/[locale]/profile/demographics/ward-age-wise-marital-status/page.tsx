@@ -5,33 +5,130 @@ import { api } from "@/trpc/server";
 import Image from "next/image";
 import MaritalStatusCharts from "./_components/marital-status-charts";
 import MaritalStatusAnalysisSection from "./_components/marital-status-analysis-section";
+import MaritalStatusSEO from "./_components/marital-status-seo";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "उमेर अनुसार वैवाहिक स्थिति | पालिका प्रोफाइल",
-  description:
-    "उमेर समूह अनुसार वैवाहिक स्थितिको वितरण, प्रवृत्ति र विश्लेषण। विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
-  keywords: [
-    "वैवाहिक स्थिति",
-    "विवाहित",
-    "अविवाहित",
-    "बहुविवाह",
-    "विधवा",
-    "पारपाचुके",
-    "उमेर अनुसार विवाह",
-    "जनसांख्यिकी",
-    "जीवन साथी",
-  ],
-  openGraph: {
-    title: "उमेर अनुसार वैवाहिक स्थिति | पालिका प्रोफाइल",
-    description:
-      "उमेर समूह अनुसार वैवाहिक स्थितिको वितरण, प्रवृत्ति र विश्लेषण। विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
-    type: "article",
-    locale: "ne_NP",
-  },
-};
+// Define the locales for which this page should be statically generated
+export async function generateStaticParams() {
+  // Generate the page for 'en' and 'ne' locales
+  return [{ locale: "en" }];
+}
+
+// Optional: Add revalidation period if you want to update the static pages periodically
+export const revalidate = 86400; // Revalidate once per day (in seconds)
+
+// This function will generate metadata dynamically based on the actual data
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    // Fetch data for SEO using tRPC
+    const maritalData = await api.profile.demographics.wardAgeWiseMaritalStatus.getAll.query();
+    const municipalityName = "खजुरा गाउँपालिका"; // Khajura Rural Municipality
+
+    // Process data for SEO
+    const totalPopulation = maritalData.reduce(
+      (sum, item) => sum + (item.population || 0),
+      0,
+    );
+
+    // Group by marital status type and calculate totals
+    const maritalCounts: Record<string, number> = {};
+    maritalData.forEach((item) => {
+      if (!maritalCounts[item.maritalStatus])
+        maritalCounts[item.maritalStatus] = 0;
+      maritalCounts[item.maritalStatus] += item.population || 0;
+    });
+
+    // Get top marital statuses for keywords
+    const topMaritalStatuses = Object.entries(maritalCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+      .map(([type]) => type);
+
+    // Define marital status names in both languages
+    const MARITAL_STATUS_NAMES_NP: Record<string, string> = {
+      SINGLE: "अविवाहित",
+      MARRIED: "विवाहित",
+      DIVORCED: "पारपाचुके",
+      WIDOWED: "विधुर/विधवा",
+      SEPARATED: "छुट्टिएको",
+      NOT_STATED: "उल्लेख नभएको",
+    };
+
+    const MARITAL_STATUS_NAMES_EN: Record<string, string> = {
+      SINGLE: "Single",
+      MARRIED: "Married",
+      DIVORCED: "Divorced",
+      WIDOWED: "Widowed",
+      SEPARATED: "Separated",
+      NOT_STATED: "Not Stated",
+    };
+
+    // Create rich keywords with actual data
+    const keywordsNP = [
+      "खजुरा गाउँपालिका वैवाहिक जनसंख्या",
+      "खजुरा वैवाहिक स्थिति",
+      `खजुरा ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[0]]} जनसंख्या`,
+      ...topMaritalStatuses.map((r) => `${MARITAL_STATUS_NAMES_NP[r]} जनसंख्या खजुरा`),
+      "वडा अनुसार वैवाहिक स्थिति",
+      "उमेर अनुसार वैवाहिक स्थिति",
+      "वैवाहिक स्थिति तथ्याङ्क",
+      `खजुरा कुल जनसंख्या ${totalPopulation}`,
+    ];
+
+    const keywordsEN = [
+      "Khajura Rural Municipality marital status population",
+      "Khajura marital status",
+      `Khajura ${MARITAL_STATUS_NAMES_EN[topMaritalStatuses[0]]} population`,
+      ...topMaritalStatuses.map(
+        (r) => `${MARITAL_STATUS_NAMES_EN[r]} population in Khajura`,
+      ),
+      "Ward-wise marital status demographics",
+      "Age-wise marital status statistics",
+      "Marital status census Khajura",
+      `Khajura total population ${totalPopulation}`,
+    ];
+
+    // Create detailed description with actual data
+    const descriptionNP = `खजुरा गाउँपालिकाको वडा र उमेर अनुसार वैवाहिक स्थिति वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${totalPopulation} मध्ये ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[0]]} (${maritalCounts[topMaritalStatuses[0]]}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[1]]} (${maritalCounts[topMaritalStatuses[1]]}) र ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[2]]} (${maritalCounts[topMaritalStatuses[2]]})। विभिन्न उमेर समूह र वैवाहिक स्थितिको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
+
+    const descriptionEN = `Ward-wise and age-wise marital status distribution, trends and analysis for Khajura Rural Municipality. Out of a total population of ${totalPopulation}, ${MARITAL_STATUS_NAMES_EN[topMaritalStatuses[0]]} (${maritalCounts[topMaritalStatuses[0]]}) is the largest group, followed by ${MARITAL_STATUS_NAMES_EN[topMaritalStatuses[1]]} (${maritalCounts[topMaritalStatuses[1]]}) and ${MARITAL_STATUS_NAMES_EN[topMaritalStatuses[2]]} (${maritalCounts[topMaritalStatuses[2]]})। Detailed statistics and visualizations of various marital status groups by age.`;
+
+    return {
+      title: `उमेर अनुसार वैवाहिक स्थिति | ${municipalityName} पालिका प्रोफाइल`,
+      description: descriptionNP,
+      keywords: [...keywordsNP, ...keywordsEN],
+      alternates: {
+        canonical: "/profile/demographics/ward-age-wise-marital-status",
+        languages: {
+          en: "/en/profile/demographics/ward-age-wise-marital-status",
+          ne: "/ne/profile/demographics/ward-age-wise-marital-status",
+        },
+      },
+      openGraph: {
+        title: `उमेर अनुसार वैवाहिक स्थिति | ${municipalityName}`,
+        description: descriptionNP,
+        type: "article",
+        locale: "ne_NP",
+        alternateLocale: "en_US",
+        siteName: `${municipalityName} डिजिटल प्रोफाइल`,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `उमेर अनुसार वैवाहिक स्थिति | ${municipalityName}`,
+        description: descriptionNP,
+      },
+    };
+  } catch (error) {
+    // Fallback metadata if data fetching fails
+    return {
+      title: "उमेर अनुसार वैवाहिक स्थिति | पालिका प्रोफाइल",
+      description:
+        "उमेर समूह अनुसार वैवाहिक स्थितिको वितरण, प्रवृत्ति र विश्लेषण। विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
+    };
+  }
+}
 
 const toc = [
   { level: 2, text: "परिचय", slug: "introduction" },
@@ -103,13 +200,12 @@ export default async function AgeWiseMaritalStatusPage() {
     await api.profile.demographics.wardAgeWiseMaritalStatus.getAll.query();
 
   // Fetch summary statistics if available
-  let summaryData;
+  let summaryData = null;
   try {
     summaryData =
       await api.profile.demographics.wardAgeWiseMaritalStatus.summary.query();
   } catch (error) {
     console.error("Could not fetch summary data", error);
-    summaryData = null;
   }
 
   // Process data for overall summary by marital status
@@ -164,12 +260,12 @@ export default async function AgeWiseMaritalStatusPage() {
     .filter((item) => item.total > 0);
 
   // Get unique ward IDs
-  const wardIds = Array.from(
+  const wardNumbers = Array.from(
     new Set(maritalData.map((item) => item.wardNumber)),
-  );
+  ).sort((a, b) => a - b);
 
   // Process data for ward-wise analysis
-  const wardWiseData = wardIds.map((wardId) => {
+  const wardWiseData = wardNumbers.map((wardId) => {
     const wardItems = maritalData.filter((item) => item.wardNumber === wardId);
 
     // Calculate counts for each marital status in this ward
@@ -220,37 +316,62 @@ export default async function AgeWiseMaritalStatusPage() {
     })
     .filter((item) => item.total > 0);
 
+  // Prepare data for pie chart
+  const pieChartData = overallByMaritalStatus.map((item) => ({
+    name: item.statusName,
+    value: item.population,
+    percentage: ((item.population / totalPopulation) * 100).toFixed(2),
+  }));
+
   return (
     <DocsLayout toc={<TableOfContents toc={toc} />}>
+      {/* Add structured data for SEO */}
+      <MaritalStatusSEO
+        overallByMaritalStatus={overallByMaritalStatus}
+        totalPopulation={totalPopulation}
+        MARITAL_STATUS_NAMES={MARITAL_STATUS_NAMES}
+        wardNumbers={wardNumbers}
+        AGE_GROUP_NAMES={AGE_GROUP_NAMES}
+      />
+
       <div className="flex flex-col gap-8">
         <section>
           <div className="relative rounded-lg overflow-hidden mb-8">
             <Image
-              src="/images/marital-status.svg" // You'll need this image
+              src="/images/marital-status.svg"
               width={1200}
               height={400}
-              alt="उमेर अनुसार वैवाहिक स्थिति"
+              alt="उमेर अनुसार वैवाहिक स्थिति - खजुरा गाउँपालिका (Age-wise Marital Status - Khajura Rural Municipality)"
               className="w-full h-[250px] object-cover rounded-sm"
               priority
             />
           </div>
 
           <div className="prose prose-slate dark:prose-invert max-w-none">
+            <h1 className="scroll-m-20 tracking-tight mb-6">
+              खजुरा गाउँपालिकामा उमेर अनुसार वैवाहिक स्थिति
+            </h1>
+
             <h2 id="introduction" className="scroll-m-20">
               परिचय
             </h2>
             <p>
-              यस खण्डमा पालिकाको जनसंख्याको उमेर अनुसारको वैवाहिक स्थिति
-              सम्बन्धी विस्तृत तथ्याङ्क प्रस्तुत गरिएको छ। वैवाहिक स्थिति एक
-              महत्त्वपूर्ण सामाजिक सूचक हो जसले सामाजिक संरचना, परिवारको आकार,
-              प्रजनन दर र जनसंख्या वृद्धि जस्ता पक्षहरूलाई प्रभावित गर्दछ।
+              यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा उमेर समूह अनुसारको वैवाहिक 
+              स्थिति सम्बन्धी विस्तृत तथ्याङ्क प्रस्तुत गरिएको छ। यो तथ्याङ्कले
+              सामाजिक संरचना, परिवारको आकार, प्रजनन दर र जनसंख्या वृद्धि जस्ता
+              पक्षहरूलाई प्रतिबिम्बित गर्दछ।
             </p>
             <p>
-              विभिन्न उमेर समूहका व्यक्तिहरूको वैवाहिक स्थितिको जानकारीले
+              खजुरा गाउँपालिकामा विभिन्न उमेर समूहका व्यक्तिहरूको वैवाहिक स्थितिको जानकारीले
               सामाजिक सुरक्षा, स्वास्थ्य, शिक्षा र अन्य कल्याणकारी कार्यक्रमहरू
-              निर्धारण गर्न महत्वपूर्ण आधार प्रदान गर्दछ। विशेष गरी महिला, एकल
-              महिला तथा पुरुषहरूको स्थिति र आवश्यकताहरू पहिचान गर्न यस
-              तथ्याङ्कले सहयोग गर्दछ।
+              निर्धारण गर्न महत्वपूर्ण आधार प्रदान गर्दछ। कुल जनसंख्या
+              {totalPopulation.toLocaleString()} मध्ये{" "}
+              {overallByMaritalStatus[0]?.statusName || ""} स्थिति भएका व्यक्तिहरू{" "}
+              {(
+                ((overallByMaritalStatus[0]?.population || 0) / totalPopulation) *
+                100
+              ).toFixed(1)}
+              % रहेका छन्।
             </p>
 
             <h2
@@ -260,7 +381,7 @@ export default async function AgeWiseMaritalStatusPage() {
               वैवाहिक स्थितिको समग्र वितरण
             </h2>
             <p>
-              पालिकामा विभिन्न वैवाहिक स्थिति भएका व्यक्तिहरूको वितरण
+              खजुरा गाउँपालिकामा विभिन्न वैवाहिक स्थितिमा रहेका व्यक्तिहरूको कुल जनसंख्या
               निम्नानुसार छ:
             </p>
           </div>
@@ -274,6 +395,9 @@ export default async function AgeWiseMaritalStatusPage() {
             totalPopulation={totalPopulation}
             MARITAL_STATUS_NAMES={MARITAL_STATUS_NAMES}
             AGE_GROUP_NAMES={AGE_GROUP_NAMES}
+            pieChartData={pieChartData}
+            wardNumbers={wardNumbers}
+            maritalData={maritalData}
           />
 
           <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
@@ -301,8 +425,8 @@ export default async function AgeWiseMaritalStatusPage() {
               तथ्याङ्क स्रोत
             </h2>
             <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू नेपालको राष्ट्रिय जनगणना र
-              पालिकाको आफ्नै सर्वेक्षणबाट संकलन गरिएको हो। यी तथ्याङ्कहरूको
+              माथि प्रस्तुत गरिएका तथ्याङ्कहरू नेपालको राष्ट्रिय जनगणना र खजुरा
+              गाउँपालिकाको आफ्नै सर्वेक्षणबाट संकलन गरिएको हो। यी तथ्याङ्कहरूको
               महत्व निम्न अनुसार छ:
             </p>
 
