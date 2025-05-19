@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
+import { useEffect } from "react";
 
 interface WardData {
   wardNumber: number;
@@ -81,6 +82,53 @@ export default function WardWiseDemographicsAnalysis({
       (municipalityStats.totalPopulation / wardData.length)) *
     100;
 
+  // Add SEO-friendly data attributes to enhance crawler understanding
+  useEffect(() => {
+    // Add data to document.body for SEO (will be crawled but not visible to users)
+    if (document && document.body) {
+      document.body.setAttribute(
+        "data-municipality",
+        "Khajura Rural Municipality / खजुरा गाउँपालिका",
+      );
+      document.body.setAttribute(
+        "data-total-population",
+        municipalityStats.totalPopulation.toString(),
+      );
+      document.body.setAttribute(
+        "data-total-households",
+        municipalityStats.totalHouseholds.toString(),
+      );
+      document.body.setAttribute(
+        "data-ward-count",
+        wardData.length.toString(),
+      );
+
+      // Add highest population ward data
+      if (highestPopulationWard) {
+        document.body.setAttribute(
+          "data-highest-population-ward",
+          highestPopulationWard.wardNumber.toString(),
+        );
+        document.body.setAttribute(
+          "data-highest-population-value",
+          highestPopulationWard.totalPopulation.toString(),
+        );
+      }
+      
+      // Add sex ratio data
+      document.body.setAttribute(
+        "data-sex-ratio",
+        municipalityAverages.sexRatio.toString(),
+      );
+      
+      // Add household size data
+      document.body.setAttribute(
+        "data-average-household-size",
+        municipalityAverages.averageHouseholdSize.toString(),
+      );
+    }
+  }, [wardData, municipalityStats, municipalityAverages, highestPopulationWard]);
+  
   return (
     <>
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -88,12 +136,14 @@ export default function WardWiseDemographicsAnalysis({
           <CardContent className="p-4 flex flex-col items-center">
             <div className="text-xs uppercase text-muted-foreground mb-1">
               वडा संख्या
+              <span className="sr-only">Ward Count</span>
             </div>
             <div className="text-2xl font-bold text-primary">
               {wardData.length}
             </div>
             <div className="text-sm text-muted-foreground mt-1">
               पालिकामा रहेका वडाहरूको कुल संख्या
+              <span className="sr-only">Total number of wards in the municipality</span>
             </div>
           </CardContent>
         </Card>
@@ -102,6 +152,7 @@ export default function WardWiseDemographicsAnalysis({
           <CardContent className="p-4 flex flex-col items-center">
             <div className="text-xs uppercase text-muted-foreground mb-1">
               औसत जनसंख्या
+              <span className="sr-only">Average Population</span>
             </div>
             <div className="text-2xl font-bold text-green-500">
               {Math.round(
@@ -110,6 +161,7 @@ export default function WardWiseDemographicsAnalysis({
             </div>
             <div className="text-sm text-muted-foreground mt-1">
               प्रति वडाको औसत जनसंख्या
+              <span className="sr-only">Average population per ward</span>
             </div>
           </CardContent>
         </Card>
@@ -118,6 +170,7 @@ export default function WardWiseDemographicsAnalysis({
           <CardContent className="p-4 flex flex-col items-center">
             <div className="text-xs uppercase text-muted-foreground mb-1">
               औसत घरधुरी
+              <span className="sr-only">Average Households</span>
             </div>
             <div className="text-2xl font-bold text-blue-500">
               {Math.round(
@@ -126,6 +179,7 @@ export default function WardWiseDemographicsAnalysis({
             </div>
             <div className="text-sm text-muted-foreground mt-1">
               प्रति वडामा रहेको औसत घरधुरी संख्या
+              <span className="sr-only">Average number of households per ward</span>
             </div>
           </CardContent>
         </Card>
@@ -134,12 +188,14 @@ export default function WardWiseDemographicsAnalysis({
           <CardContent className="p-4 flex flex-col items-center">
             <div className="text-xs uppercase text-muted-foreground mb-1">
               वितरण विविधता
+              <span className="sr-only">Distribution Diversity</span>
             </div>
             <div className="text-2xl font-bold text-orange-500">
               {populationCoefficientOfVariation.toFixed(1)}%
             </div>
             <div className="text-sm text-muted-foreground mt-1">
               वडागत जनसंख्या वितरणको विविधता सूचक
+              <span className="sr-only">Ward population distribution diversity index</span>
             </div>
           </CardContent>
         </Card>
@@ -148,9 +204,10 @@ export default function WardWiseDemographicsAnalysis({
       <div className="bg-muted/50 p-4 rounded-lg mt-8">
         <h3 className="text-xl font-medium mb-4">
           वडागत अधिकतम र न्यूनतम सूचकहरू
+          <span className="sr-only">Ward-wise Maximum and Minimum Indicators</span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-card p-4 rounded border">
+          <div className="bg-card p-4 rounded border" data-analysis-type="population-distribution">
             <h4 className="font-medium mb-2">जनसंख्या अनुपात</h4>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
@@ -176,7 +233,7 @@ export default function WardWiseDemographicsAnalysis({
             </div>
           </div>
 
-          <div className="bg-card p-4 rounded border">
+          <div className="bg-card p-4 rounded border" data-analysis-type="gender-ratio">
             <h4 className="font-medium mb-2">लैङ्गिक अनुपात</h4>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
@@ -202,7 +259,7 @@ export default function WardWiseDemographicsAnalysis({
             </div>
           </div>
 
-          <div className="bg-card p-4 rounded border">
+          <div className="bg-card p-4 rounded border" data-analysis-type="household-count">
             <h4 className="font-medium mb-2">घरधुरी संख्या</h4>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
@@ -230,7 +287,7 @@ export default function WardWiseDemographicsAnalysis({
             </div>
           </div>
 
-          <div className="bg-card p-4 rounded border">
+          <div className="bg-card p-4 rounded border" data-analysis-type="family-size">
             <h4 className="font-medium mb-2">परिवार संख्या</h4>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
@@ -259,52 +316,70 @@ export default function WardWiseDemographicsAnalysis({
       </div>
 
       <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">वडागत विश्लेषण</h3>
+        <h3 className="text-xl font-medium mb-2">
+          वडागत विश्लेषण
+          <span className="sr-only">Ward-wise Analysis</span>
+        </h3>
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <p>
             पालिकाको वडागत जनसंख्या वितरण विश्लेषणबाट निम्न निष्कर्षहरू निकाल्न
             सकिन्छ:
           </p>
 
-          <ul>
-            <li>
-              <strong>जनसंख्या वितरण:</strong> पालिकाभित्र वडाहरू बीच जनसंख्याको
-              विविधता सूचक {populationCoefficientOfVariation.toFixed(1)}% रहेको
-              छ, जुन{" "}
-              {populationCoefficientOfVariation > 30
-                ? "उच्च"
-                : populationCoefficientOfVariation > 15
-                  ? "मध्यम"
-                  : "कम"}{" "}
-              स्तरको असमानता देखाउँछ।
+          <ul itemScope itemType="https://schema.org/ItemList">
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <meta itemProp="position" content="1" />
+              <div itemProp="item">
+                <strong>जनसंख्या वितरण:</strong> पालिकाभित्र वडाहरू बीच जनसंख्याको
+                विविधता सूचक {populationCoefficientOfVariation.toFixed(1)}% रहेको
+                छ, जुन{" "}
+                {populationCoefficientOfVariation > 30
+                  ? "उच्च"
+                  : populationCoefficientOfVariation > 15
+                    ? "मध्यम"
+                    : "कम"}{" "}
+                स्तरको असमानता देखाउँछ。
+              </div>
             </li>
-            <li>
-              <strong>लैङ्गिक अनुपात:</strong> पालिकाका विभिन्न वडाहरूमा लैङ्गिक
-              अनुपात {lowestSexRatioWard.sexRatio.toFixed(1)} देखि{" "}
-              {highestSexRatioWard.sexRatio.toFixed(1)} सम्म रहेको छ। यस
-              अनुपातमा वडागत भिन्नता रहेको छ।
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <meta itemProp="position" content="2" />
+              <div itemProp="item">
+                <strong>लैङ्गिक अनुपात:</strong> पालिकाका विभिन्न वडाहरूमा लैङ्गिक
+                अनुपात {lowestSexRatioWard.sexRatio.toFixed(1)} देखि{" "}
+                {highestSexRatioWard.sexRatio.toFixed(1)} सम्म रहेको छ। यस
+                अनुपातमा वडागत भिन्नता रहेको छ。
+              </div>
             </li>
-            <li>
-              <strong>घरधुरी:</strong> {highestHouseholdsWard.wardName} मा
-              सबैभन्दा बढी घरधुरी (
-              {highestHouseholdsWard.totalHouseholds.toLocaleString()}) छन्,
-              जबकि {lowestHouseholdsWard.wardName} मा सबैभन्दा कम घरधुरी (
-              {lowestHouseholdsWard.totalHouseholds.toLocaleString()}) रहेका
-              छन्।
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <meta itemProp="position" content="3" />
+              <div itemProp="item">
+                <strong>घरधुरी:</strong> {highestHouseholdsWard.wardName} मा
+                सबैभन्दा बढी घरधुरी (
+                {highestHouseholdsWard.totalHouseholds.toLocaleString()}) छन्,
+                जबकि {lowestHouseholdsWard.wardName} मा सबैभन्दा कम घरधुरी (
+                {lowestHouseholdsWard.totalHouseholds.toLocaleString()}) रहेका
+                छन्。
+              </div>
             </li>
-            <li>
-              <strong>परिवार संख्या:</strong> औसत परिवार संख्यामा पनि वडा अनुसार
-              भिन्नता देखिन्छ, जुन{" "}
-              {lowestHouseholdSizeWard.averageHouseholdSize.toFixed(2)} देखि
-              {highestHouseholdSizeWard.averageHouseholdSize.toFixed(2)} सम्म
-              रहेको छ।
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <meta itemProp="position" content="4" />
+              <div itemProp="item">
+                <strong>परिवार संख्या:</strong> औसत परिवार संख्यामा पनि वडा अनुसार
+                भिन्नता देखिन्छ, जुन{" "}
+                {lowestHouseholdSizeWard.averageHouseholdSize.toFixed(2)} देखि{" "}
+                {highestHouseholdSizeWard.averageHouseholdSize.toFixed(2)} सम्म
+                रहेको छ。
+              </div>
             </li>
           </ul>
         </div>
       </div>
 
       <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">नीतिगत सुझाव</h3>
+        <h3 className="text-xl font-medium mb-2">
+          नीतिगत सुझाव
+          <span className="sr-only">Policy Recommendations</span>
+        </h3>
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <p>
             वडागत विश्लेषणका आधारमा निम्न नीतिगत सुझावहरू प्रस्तुत गरिएका छन्:
@@ -315,26 +390,29 @@ export default function WardWiseDemographicsAnalysis({
               <strong>समतामूलक विकास:</strong> {highestPopulationWard.wardName}{" "}
               र {lowestPopulationWard.wardName} बीचको जनसंख्या असमानतालाई
               सम्बोधन गर्न विकास योजना र बजेट विनियोजनमा समतामूलक दृष्टिकोण
-              अपनाउने।
+              अपनाउने。
             </li>
             <li>
               <strong>लैङ्गिक समानता:</strong> न्यून लैङ्गिक अनुपात भएका
-              वडाहरूमा लैङ्गिक समानता सम्बन्धी विशेष कार्यक्रमहरू सञ्चालन गर्ने।
+              वडाहरूमा लैङ्गिक समानता सम्बन्धी विशेष कार्यक्रमहरू सञ्चालन गर्ने。
             </li>
             <li>
               <strong>घरधुरी सर्वेक्षण:</strong> उच्च परिवार संख्या भएका
-              वडाहरूमा परिवार नियोजन र सचेतना कार्यक्रम सञ्चालन गर्ने।
+              वडाहरूमा परिवार नियोजन र सचेतना कार्यक्रम सञ्चालन गर्ने。
             </li>
             <li>
               <strong>वडागत योजना:</strong> प्रत्येक वडाको विशिष्ट जनसांख्यिकी
-              विशेषतालाई ध्यानमा राखेर वडागत विकास योजना तर्जुमा गर्ने।
+              विशेषतालाई ध्यानमा राखेर वडागत विकास योजना तर्जुमा गर्ने。
             </li>
           </ul>
         </div>
       </div>
 
       <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">थप जानकारी</h3>
+        <h3 className="text-xl font-medium mb-2">
+          थप जानकारी
+          <span className="sr-only">Additional Information</span>
+        </h3>
         <p>
           वडागत जनसांख्यिकी विवरण सम्बन्धी थप जानकारी वा विस्तृत तथ्याङ्कको
           लागि, कृपया{" "}
@@ -348,7 +426,7 @@ export default function WardWiseDemographicsAnalysis({
           >
             जनसांख्यिकी सारांश
           </Link>{" "}
-          खण्डमा हेर्नुहोस्।
+          खण्डमा हेर्नुहोस्。
         </p>
       </div>
     </>

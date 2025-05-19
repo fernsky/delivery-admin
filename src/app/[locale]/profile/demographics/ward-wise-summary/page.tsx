@@ -5,31 +5,103 @@ import { api } from "@/trpc/server";
 import Image from "next/image";
 import WardWiseCharts from "./_components/ward-wise-charts";
 import WardWiseDemographicsAnalysis from "./_components/ward-wise-demographics-analysis";
+import WardWiseSEO from "./_components/ward-wise-seo";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "वडागत जनसांख्यिकी सारांश | पालिका प्रोफाइल",
-  description:
-    "प्रत्येक वडाको जनसांख्यिकी विवरण, लिङ्ग अनुपात, घरधुरी र जनसंख्या वितरणको विश्लेषण।",
-  keywords: [
-    "वडागत जनसांख्यिकी",
-    "जनसंख्या वितरण",
-    "वडा विवरण",
-    "लिङ्ग अनुपात",
-    "घरधुरी",
-    "जनसंख्या घनत्व",
-    "स्थानीय तह",
-  ],
-  openGraph: {
-    title: "वडागत जनसांख्यिकी सारांश | पालिका प्रोफाइल",
-    description:
-      "प्रत्येक वडाको जनसांख्यिकी विवरण, लिङ्ग अनुपात, घरधुरी र जनसंख्या वितरणको विश्लेषण।",
-    type: "article",
-    locale: "ne_NP",
-  },
-};
+// Define the locales for which this page should be statically generated
+export async function generateStaticParams() {
+  // Generate the page for 'en' and 'ne' locales
+  return [{ locale: "en" }];
+}
+
+// Optional: Add revalidation period if you want to update the static pages periodically
+export const revalidate = 86400; // Revalidate once per day (in seconds)
+
+// This function will generate metadata dynamically based on the actual data
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    // Fetch data for SEO using tRPC
+    const wardData =
+      await api.profile.demographics.wardWiseDemographicSummary.getAll.query();
+    const municipalityName = "खजुरा गाउँपालिका"; // Khajura Rural Municipality
+
+    // Process data for SEO
+    const totalPopulation = wardData.reduce(
+      (sum, ward) => sum + (ward.totalPopulation || (ward.populationMale || 0) + (ward.populationFemale || 0) + (ward.populationOther || 0)),
+      0,
+    );
+    
+    const totalHouseholds = wardData.reduce(
+      (sum, ward) => sum + (ward.totalHouseholds || 0),
+      0,
+    );
+    
+    const wardCount = new Set(wardData.map(ward => ward.wardNumber)).size;
+
+    // Create rich keywords with actual data
+    const keywordsNP = [
+      "खजुरा गाउँपालिका वडागत जनसंख्या",
+      "खजुरा वडा विवरण",
+      "वडागत जनसांख्यिकी तथ्याङ्क",
+      "खजुरा घरधुरी विवरण",
+      `खजुरा कुल जनसंख्या ${totalPopulation}`,
+      `खजुरा कुल घरधुरी ${totalHouseholds}`,
+      "वडागत लैङ्गिक अनुपात",
+      "पालिकाको वडागत विश्लेषण",
+    ];
+
+    const keywordsEN = [
+      "Khajura Rural Municipality ward-wise population",
+      "Khajura ward details",
+      "Ward demographics statistics",
+      "Khajura household details",
+      `Khajura total population ${totalPopulation}`,
+      `Khajura total households ${totalHouseholds}`,
+      "Ward-wise gender ratio",
+      "Municipal ward analysis",
+    ];
+
+    // Create detailed description with actual data
+    const descriptionNP = `खजुरा गाउँपालिकाको वडागत जनसांख्यिकी सारांश। कुल जनसंख्या ${totalPopulation.toLocaleString()} र कुल घरधुरी ${totalHouseholds.toLocaleString()}। पालिकाका ${wardCount} वडाहरूको जनसंख्या वितरण, लैङ्गिक अनुपात, घरधुरी र परिवार संख्याको विस्तृत विश्लेषण।`;
+
+    const descriptionEN = `Ward-wise demographic summary for Khajura Rural Municipality. Total population of ${totalPopulation.toLocaleString()} and total households of ${totalHouseholds.toLocaleString()}. Detailed analysis of population distribution, gender ratio, households and family size across ${wardCount} wards.`;
+
+    return {
+      title: `वडागत जनसांख्यिकी सारांश | ${municipalityName} पालिका प्रोफाइल`,
+      description: descriptionNP,
+      keywords: [...keywordsNP, ...keywordsEN],
+      alternates: {
+        canonical: "/profile/demographics/ward-wise-summary",
+        languages: {
+          en: "/en/profile/demographics/ward-wise-summary",
+          ne: "/ne/profile/demographics/ward-wise-summary",
+        },
+      },
+      openGraph: {
+        title: `वडागत जनसांख्यिकी सारांश | ${municipalityName}`,
+        description: descriptionNP,
+        type: "article",
+        locale: "ne_NP",
+        alternateLocale: "en_US",
+        siteName: `${municipalityName} डिजिटल प्रोफाइल`,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `वडागत जनसांख्यिकी सारांश | ${municipalityName}`,
+        description: descriptionNP,
+      },
+    };
+  } catch (error) {
+    // Fallback metadata if data fetching fails
+    return {
+      title: "वडागत जनसांख्यिकी सारांश | पालिका प्रोफाइल",
+      description:
+        "प्रत्येक वडाको जनसांख्यिकी विवरण, लिङ्ग अनुपात, घरधुरी र जनसंख्या वितरणको विश्लेषण।",
+    };
+  }
+}
 
 const toc = [
   { level: 2, text: "परिचय", slug: "introduction" },
@@ -89,8 +161,7 @@ export default async function WardWiseSummaryPage() {
       totalHouseholds: ward.totalHouseholds || 0,
       averageHouseholdSize: parseFloat(averageHouseholdSize.toFixed(2)),
       sexRatio: parseFloat(sexRatio.toFixed(2)),
-      area: 0, // Will be populated if available
-      density: 0, // Will be populated if available
+      
     };
   });
 
@@ -116,10 +187,7 @@ export default async function WardWiseSummaryPage() {
       (sum, ward) => sum + ward.totalHouseholds,
       0,
     ),
-    totalArea: processedWardData.reduce(
-      (sum, ward) => sum + (ward.area || 0),
-      0,
-    ),
+    
   };
 
   // Calculate municipality averages
@@ -144,14 +212,7 @@ export default async function WardWiseSummaryPage() {
             ).toFixed(2),
           )
         : 0,
-    density:
-      municipalityStats.totalArea > 0
-        ? parseFloat(
-            (
-              municipalityStats.totalPopulation / municipalityStats.totalArea
-            ).toFixed(2),
-          )
-        : 0,
+  
   };
 
   // Format data for ward-wise sex ratio comparison
@@ -180,39 +241,50 @@ export default async function WardWiseSummaryPage() {
       100
     ).toFixed(2),
     households: ward.totalHouseholds,
-    area: ward.area || 0,
-    density: ward.density || 0,
+   
   }));
 
   return (
     <DocsLayout toc={<TableOfContents toc={toc} />}>
+      {/* Add structured data for SEO */}
+      <WardWiseSEO 
+      //@ts-ignore
+        processedWardData={processedWardData} 
+        municipalityStats={municipalityStats} 
+        municipalityAverages={municipalityAverages}
+      />
+
       <div className="flex flex-col gap-8">
         <section>
           <div className="relative rounded-lg overflow-hidden mb-8">
             <Image
-              src="/images/ward-demographics.svg" // You'll need this image
+              src="/images/ward-demographics.svg"
               width={1200}
               height={400}
-              alt="वडागत जनसांख्यिकी सारांश"
+              alt="वडागत जनसांख्यिकी सारांश - खजुरा गाउँपालिका (Ward Demographics Summary - Khajura Rural Municipality)"
               className="w-full h-[250px] object-cover rounded-sm"
               priority
             />
           </div>
 
           <div className="prose prose-slate dark:prose-invert max-w-none">
+            <h1 className="scroll-m-20 tracking-tight mb-6">
+              खजुरा गाउँपालिकाको वडागत जनसांख्यिकी सारांश
+            </h1>
+            
             <h2 id="introduction" className="scroll-m-20">
               परिचय
             </h2>
             <p>
-              यस खण्डमा पालिकाको प्रत्येक वडाको जनसांख्यिकी विवरण प्रस्तुत
+              यस खण्डमा खजुरा गाउँपालिकाको प्रत्येक वडाको जनसांख्यिकी विवरण प्रस्तुत
               गरिएको छ। वडागत जनसंख्या वितरण, लिङ्ग अनुपात, घरधुरी विवरण र अन्य
-              महत्त्वपूर्ण जनसांख्यिकी सूचकहरू यहाँ विश्लेषण गरिएको छ।
+              महत्त्वपूर्ण जनसांख्यिकी सूचकहरू यहाँ विश्लेषण गरिएको छ。
             </p>
             <p>
               वडागत विश्लेषणले पालिकाभित्र रहेका विविधता र असमानताहरू पहिचान
               गर्न मद्दत गर्दछ। यी तथ्याङ्कहरूले वडागत विकास योजना तर्जुमा,
               स्रोत साधन विनियोजन तथा अनुगमन मूल्याङ्कनमा महत्त्वपूर्ण भूमिका
-              निर्वाह गर्दछन्।
+              निर्वाह गर्दछन्。
             </p>
 
             <h2
@@ -222,7 +294,7 @@ export default async function WardWiseSummaryPage() {
               वडागत जनसंख्या वितरण
             </h2>
             <p>
-              पालिकाको कुल जनसंख्या{" "}
+              खजुरा गाउँपालिकाको कुल जनसंख्या{" "}
               {municipalityStats.totalPopulation.toLocaleString()} रहेको छ,
               जसमध्ये {municipalityStats.malePopulation.toLocaleString()} पुरुष,{" "}
               {municipalityStats.femalePopulation.toLocaleString()} महिला र{" "}
