@@ -397,6 +397,7 @@ export default async function AgeWiseMaritalStatusPage() {
             AGE_GROUP_NAMES={AGE_GROUP_NAMES}
             pieChartData={pieChartData}
             wardNumbers={wardNumbers}
+            //@ts-ignore
             maritalData={maritalData}
           />
 
