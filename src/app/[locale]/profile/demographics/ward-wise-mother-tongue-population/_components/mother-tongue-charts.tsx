@@ -1,23 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from "recharts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LanguagePieChart from "./charts/language-pie-chart";
+import LanguageBarChart from "./charts/language-bar-chart";
+import WardLanguagePieCharts from "./charts/ward-language-pie-charts";
 
 // Define language colors for consistency
 const LANGUAGE_COLORS = {
@@ -72,7 +61,7 @@ export default function MotherTongueCharts({
 
   return (
     <>
-      {/* Overall language distribution */}
+      {/* Overall language distribution - with pre-rendered table and client-side chart */}
       <div className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card">
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold">
@@ -111,46 +100,11 @@ export default function MotherTongueCharts({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={pieChartData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={true}
-                        label={({ name, percentage }) =>
-                          `${name}: ${percentage}%`
-                        }
-                        outerRadius={140}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {pieChartData.map((entry, index) => {
-                          // Find the original language key for color mapping
-                          const languageKey =
-                            Object.keys(LANGUAGE_NAMES).find(
-                              (key) => LANGUAGE_NAMES[key] === entry.name,
-                            ) || "OTHER";
-
-                          return (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={
-                                LANGUAGE_COLORS[
-                                  languageKey as keyof typeof LANGUAGE_COLORS
-                                ] ||
-                                `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                              }
-                            />
-                          );
-                        })}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value) => Number(value).toLocaleString()}
-                      />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <LanguagePieChart
+                    pieChartData={pieChartData}
+                    LANGUAGE_NAMES={LANGUAGE_NAMES}
+                    LANGUAGE_COLORS={LANGUAGE_COLORS}
+                  />
                 </div>
               </div>
 
@@ -231,6 +185,8 @@ export default function MotherTongueCharts({
                       </td>
                     </tr>
                   ))}
+                </tbody>
+                <tfoot>
                   <tr className="font-semibold bg-muted/70">
                     <td className="border p-2" colSpan={2}>
                       जम्मा
@@ -240,7 +196,7 @@ export default function MotherTongueCharts({
                     </td>
                     <td className="border p-2 text-right">100.00%</td>
                   </tr>
-                </tbody>
+                </tfoot>
               </table>
             </div>
             <div className="mt-4 flex justify-end">
@@ -264,91 +220,11 @@ export default function MotherTongueCharts({
 
         <div className="p-6">
           <div className="h-[500px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={wardWiseData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-                barSize={20}
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis
-                  dataKey="ward"
-                  scale="point"
-                  padding={{ left: 10, right: 10 }}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="bg-background p-3 border shadow-sm rounded-md">
-                          <p className="font-medium">
-                            {payload[0].payload.ward}
-                          </p>
-                          <div className="space-y-1 mt-2">
-                            {payload.map((entry, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center gap-2"
-                              >
-                                <div
-                                  className="w-2 h-2"
-                                  style={{ backgroundColor: entry.color }}
-                                ></div>
-                                <span>{entry.name}: </span>
-                                <span className="font-medium">
-                                  {entry.value?.toLocaleString()}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Legend
-                  wrapperStyle={{ paddingTop: 20 }}
-                  layout="horizontal"
-                  verticalAlign="bottom"
-                  align="center"
-                />
-                {/* Dynamically generate bars based on available languages in wardWiseData */}
-                {Object.keys(
-                  wardWiseData.reduce(
-                    (acc, ward) => {
-                      Object.keys(ward).forEach((key) => {
-                        if (key !== "ward") acc[key] = true;
-                      });
-                      return acc;
-                    },
-                    {} as Record<string, boolean>,
-                  ),
-                ).map((language) => {
-                  // Find the language key for color mapping
-                  const languageKey =
-                    Object.keys(LANGUAGE_NAMES).find(
-                      (key) => LANGUAGE_NAMES[key] === language,
-                    ) || "OTHER";
-
-                  return (
-                    <Bar
-                      key={language}
-                      dataKey={language}
-                      stackId="a"
-                      fill={
-                        LANGUAGE_COLORS[
-                          languageKey as keyof typeof LANGUAGE_COLORS
-                        ] ||
-                        `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                      }
-                    />
-                  );
-                })}
-              </BarChart>
-            </ResponsiveContainer>
+            <LanguageBarChart
+              wardWiseData={wardWiseData}
+              LANGUAGE_COLORS={LANGUAGE_COLORS}
+              LANGUAGE_NAMES={LANGUAGE_NAMES}
+            />
           </div>
         </div>
       </div>
@@ -467,80 +343,12 @@ export default function MotherTongueCharts({
           </TabsContent>
 
           <TabsContent value="chart" className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wardIds.map((wardNumber) => {
-                const wardItems = languageData.filter(
-                  (item) => item.wardNumber === wardNumber,
-                );
-
-                // Sort by population and take top 5 languages, group others
-                const sortedItems = [...wardItems].sort(
-                  (a, b) => (b.population || 0) - (a.population || 0),
-                );
-                const topLangs = sortedItems.slice(0, 5);
-                const otherLangs = sortedItems.slice(5);
-                const otherTotal = otherLangs.reduce(
-                  (sum, item) => sum + (item.population || 0),
-                  0,
-                );
-
-                let wardData = topLangs.map((item) => ({
-                  name: LANGUAGE_NAMES[item.languageType] || item.languageType,
-                  value: item.population || 0,
-                }));
-
-                if (otherTotal > 0) {
-                  wardData.push({
-                    name: "अन्य",
-                    value: otherTotal,
-                  });
-                }
-
-                return (
-                  <div key={wardNumber} className="h-[300px]">
-                    <h3 className="text-lg font-medium mb-2 text-center">
-                      वडा {wardNumber}
-                    </h3>
-                    <ResponsiveContainer width="100%" height="90%">
-                      <PieChart>
-                        <Pie
-                          data={wardData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={30}
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, percent }) =>
-                            `${name}: ${(percent * 100).toFixed(1)}%`
-                          }
-                        >
-                          {wardData.map((entry, index) => {
-                            const languageKey =
-                              Object.keys(LANGUAGE_NAMES).find(
-                                (key) => LANGUAGE_NAMES[key] === entry.name,
-                              ) || "OTHER";
-
-                            return (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={
-                                  LANGUAGE_COLORS[
-                                    languageKey as keyof typeof LANGUAGE_COLORS
-                                  ] ||
-                                  `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                                }
-                              />
-                            );
-                          })}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                );
-              })}
-            </div>
+            <WardLanguagePieCharts
+              wardIds={wardIds}
+              languageData={languageData}
+              LANGUAGE_NAMES={LANGUAGE_NAMES}
+              LANGUAGE_COLORS={LANGUAGE_COLORS}
+            />
           </TabsContent>
         </Tabs>
       </div>
