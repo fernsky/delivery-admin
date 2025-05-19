@@ -1,23 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from "recharts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CastePieChart from "./charts/caste-pie-chart";
+import CasteBarChart from "./charts/caste-bar-chart";
+import WardCastePieCharts from "./charts/ward-caste-pie-charts";
 
 // Define caste colors for consistency
 const CASTE_COLORS = {
@@ -126,46 +115,11 @@ export default function CasteCharts({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={pieChartData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={true}
-                        label={({ name, percentage }) =>
-                          `${name}: ${percentage}%`
-                        }
-                        outerRadius={140}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {pieChartData.map((entry, index) => {
-                          // Find the original caste key for color mapping
-                          const casteKey =
-                            Object.keys(CASTE_NAMES).find(
-                              (key) => CASTE_NAMES[key] === entry.name,
-                            ) || "OTHER";
-
-                          return (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={
-                                CASTE_COLORS[
-                                  casteKey as keyof typeof CASTE_COLORS
-                                ] ||
-                                `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                              }
-                            />
-                          );
-                        })}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value) => Number(value).toLocaleString()}
-                      />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <CastePieChart
+                    pieChartData={pieChartData}
+                    CASTE_NAMES={CASTE_NAMES}
+                    CASTE_COLORS={CASTE_COLORS}
+                  />
                 </div>
               </div>
 
@@ -279,89 +233,11 @@ export default function CasteCharts({
 
         <div className="p-6">
           <div className="h-[500px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={wardWiseData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-                barSize={20}
-              >
-                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                <XAxis
-                  dataKey="ward"
-                  scale="point"
-                  padding={{ left: 10, right: 10 }}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="bg-background p-3 border shadow-sm rounded-md">
-                          <p className="font-medium">
-                            {payload[0].payload.ward}
-                          </p>
-                          <div className="space-y-1 mt-2">
-                            {payload.map((entry, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center gap-2"
-                              >
-                                <div
-                                  className="w-2 h-2"
-                                  style={{ backgroundColor: entry.color }}
-                                ></div>
-                                <span>{entry.name}: </span>
-                                <span className="font-medium">
-                                  {entry.value?.toLocaleString()}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Legend
-                  wrapperStyle={{ paddingTop: 20 }}
-                  layout="horizontal"
-                  verticalAlign="bottom"
-                  align="center"
-                />
-                {/* Dynamically generate bars based on available castes in wardWiseData */}
-                {Object.keys(
-                  wardWiseData.reduce(
-                    (acc, ward) => {
-                      Object.keys(ward).forEach((key) => {
-                        if (key !== "ward") acc[key] = true;
-                      });
-                      return acc;
-                    },
-                    {} as Record<string, boolean>,
-                  ),
-                ).map((casteName) => {
-                  // Find the caste key for color mapping
-                  const casteKey =
-                    Object.keys(CASTE_NAMES).find(
-                      (key) => CASTE_NAMES[key] === casteName,
-                    ) || "OTHER";
-
-                  return (
-                    <Bar
-                      key={casteName}
-                      dataKey={casteName}
-                      stackId="a"
-                      fill={
-                        CASTE_COLORS[casteKey as keyof typeof CASTE_COLORS] ||
-                        `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                      }
-                    />
-                  );
-                })}
-              </BarChart>
-            </ResponsiveContainer>
+            <CasteBarChart
+              wardWiseData={wardWiseData}
+              CASTE_COLORS={CASTE_COLORS}
+              CASTE_NAMES={CASTE_NAMES}
+            />
           </div>
         </div>
       </div>
@@ -476,80 +352,12 @@ export default function CasteCharts({
           </TabsContent>
 
           <TabsContent value="chart" className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wardNumbers.map((wardNumber) => {
-                const wardItems = casteData.filter(
-                  (item) => item.wardNumber === wardNumber,
-                );
-
-                // Sort by population and take top 5 castes, group others
-                const sortedItems = [...wardItems].sort(
-                  (a, b) => (b.population || 0) - (a.population || 0),
-                );
-                const topCastes = sortedItems.slice(0, 5);
-                const otherCastes = sortedItems.slice(5);
-                const otherTotal = otherCastes.reduce(
-                  (sum, item) => sum + (item.population || 0),
-                  0,
-                );
-
-                let wardData = topCastes.map((item) => ({
-                  name: item.casteTypeDisplay,
-                  value: item.population || 0,
-                }));
-
-                if (otherTotal > 0) {
-                  wardData.push({
-                    name: "अन्य",
-                    value: otherTotal,
-                  });
-                }
-
-                return (
-                  <div key={wardNumber} className="h-[300px]">
-                    <h3 className="text-lg font-medium mb-2 text-center">
-                      वडा {wardNumber}
-                    </h3>
-                    <ResponsiveContainer width="100%" height="90%">
-                      <PieChart>
-                        <Pie
-                          data={wardData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={30}
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, percent }) =>
-                            `${name}: ${(percent * 100).toFixed(1)}%`
-                          }
-                        >
-                          {wardData.map((entry, index) => {
-                            const casteKey =
-                              Object.keys(CASTE_NAMES).find(
-                                (key) => CASTE_NAMES[key] === entry.name,
-                              ) || "OTHER";
-
-                            return (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={
-                                  CASTE_COLORS[
-                                    casteKey as keyof typeof CASTE_COLORS
-                                  ] ||
-                                  `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                                }
-                              />
-                            );
-                          })}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                );
-              })}
-            </div>
+            <WardCastePieCharts
+              wardNumbers={wardNumbers}
+              casteData={casteData}
+              CASTE_NAMES={CASTE_NAMES}
+              CASTE_COLORS={CASTE_COLORS}
+            />
           </TabsContent>
         </Tabs>
       </div>
