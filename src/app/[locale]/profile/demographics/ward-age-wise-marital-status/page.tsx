@@ -23,7 +23,8 @@ export const revalidate = 86400; // Revalidate once per day (in seconds)
 export async function generateMetadata(): Promise<Metadata> {
   try {
     // Fetch data for SEO using tRPC
-    const maritalData = await api.profile.demographics.wardAgeWiseMaritalStatus.getAll.query();
+    const maritalData =
+      await api.profile.demographics.wardAgeWiseMaritalStatus.getAll.query();
     const municipalityName = "खजुरा गाउँपालिका"; // Khajura Rural Municipality
 
     // Process data for SEO
@@ -70,7 +71,9 @@ export async function generateMetadata(): Promise<Metadata> {
       "खजुरा गाउँपालिका वैवाहिक जनसंख्या",
       "खजुरा वैवाहिक स्थिति",
       `खजुरा ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[0]]} जनसंख्या`,
-      ...topMaritalStatuses.map((r) => `${MARITAL_STATUS_NAMES_NP[r]} जनसंख्या खजुरा`),
+      ...topMaritalStatuses.map(
+        (r) => `${MARITAL_STATUS_NAMES_NP[r]} जनसंख्या खजुरा`,
+      ),
       "वडा अनुसार वैवाहिक स्थिति",
       "उमेर अनुसार वैवाहिक स्थिति",
       "वैवाहिक स्थिति तथ्याङ्क",
@@ -356,19 +359,22 @@ export default async function AgeWiseMaritalStatusPage() {
               परिचय
             </h2>
             <p>
-              यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा उमेर समूह अनुसारको वैवाहिक 
-              स्थिति सम्बन्धी विस्तृत तथ्याङ्क प्रस्तुत गरिएको छ। यो तथ्याङ्कले
-              सामाजिक संरचना, परिवारको आकार, प्रजनन दर र जनसंख्या वृद्धि जस्ता
-              पक्षहरूलाई प्रतिबिम्बित गर्दछ।
+              यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा उमेर समूह अनुसारको
+              वैवाहिक स्थिति सम्बन्धी विस्तृत तथ्याङ्क प्रस्तुत गरिएको छ। यो
+              तथ्याङ्कले सामाजिक संरचना, परिवारको आकार, प्रजनन दर र जनसंख्या
+              वृद्धि जस्ता पक्षहरूलाई प्रतिबिम्बित गर्दछ।
             </p>
             <p>
-              खजुरा गाउँपालिकामा विभिन्न उमेर समूहका व्यक्तिहरूको वैवाहिक स्थितिको जानकारीले
-              सामाजिक सुरक्षा, स्वास्थ्य, शिक्षा र अन्य कल्याणकारी कार्यक्रमहरू
-              निर्धारण गर्न महत्वपूर्ण आधार प्रदान गर्दछ। कुल जनसंख्या
+              खजुरा गाउँपालिकामा विभिन्न उमेर समूहका व्यक्तिहरूको वैवाहिक
+              स्थितिको जानकारीले सामाजिक सुरक्षा, स्वास्थ्य, शिक्षा र अन्य
+              कल्याणकारी कार्यक्रमहरू निर्धारण गर्न महत्वपूर्ण आधार प्रदान
+              गर्दछ। कुल जनसंख्या
               {totalPopulation.toLocaleString()} मध्ये{" "}
-              {overallByMaritalStatus[0]?.statusName || ""} स्थिति भएका व्यक्तिहरू{" "}
+              {overallByMaritalStatus[0]?.statusName || ""} स्थिति भएका
+              व्यक्तिहरू{" "}
               {(
-                ((overallByMaritalStatus[0]?.population || 0) / totalPopulation) *
+                ((overallByMaritalStatus[0]?.population || 0) /
+                  totalPopulation) *
                 100
               ).toFixed(1)}
               % रहेका छन्।
@@ -381,8 +387,8 @@ export default async function AgeWiseMaritalStatusPage() {
               वैवाहिक स्थितिको समग्र वितरण
             </h2>
             <p>
-              खजुरा गाउँपालिकामा विभिन्न वैवाहिक स्थितिमा रहेका व्यक्तिहरूको कुल जनसंख्या
-              निम्नानुसार छ:
+              खजुरा गाउँपालिकामा विभिन्न वैवाहिक स्थितिमा रहेका व्यक्तिहरूको कुल
+              जनसंख्या निम्नानुसार छ:
             </p>
           </div>
 

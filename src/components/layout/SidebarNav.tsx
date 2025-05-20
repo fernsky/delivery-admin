@@ -58,23 +58,86 @@ const navItems = [
       },
       {
         title: "उमेर अनुसार वैवाहिक स्थिति",
-        href: "/profile/demographics/age-wise-marital-status",
+        href: "/profile/demographics/ward-age-wise-marital-status",
       },
       {
         title: "उमेर र लिङ्ग अनुसार जनसंख्या",
         href: "/profile/demographics/ward-age-wise-population",
       },
       {
-        title: "घरमुलीको लिङ्ग अनुसार जनसंख्या",
-        href: "/profile/demographics/ward-wise-househead-gender",
+        title: "वर्ष अनुसार जनसंख्या परिवर्तन",
+        href: "/profile/demographics/ward-time-series-population",
+      },
+      // {
+      //   title: "उमेर र लिङ्ग अनुसार अनुपस्थित जनसंख्या",
+      //   href: "/profile/demographics/ward-age-gender-wise-absentee",
+      // },
+    ],
+  },
+  {
+    title: "अर्थतन्त्र",
+    href: "/profile/economics",
+    icon: <PieChart className="w-4 h-4" />,
+    items: [
+      {
+        title: "रोजगारी स्थिति",
+        href: "/profile/economics/economic-status",
       },
       {
-        title: "उमेर र लिङ्ग अनुसार विवाह",
-        href: "/profile/demographics/ward-age-gender-wise-married-age",
+        title: "आय स्रोतहरू",
+        href: "/profile/economics/income-sources",
       },
       {
-        title: "उमेर र लिङ्ग अनुसार अनुपस्थित जनसंख्या",
-        href: "/profile/demographics/ward-age-gender-wise-absentee",
+        title: "निर्यात उत्पादनहरू",
+        href: "/profile/economics/exported-products",
+      },
+      {
+        title: "आयात उत्पादनहरू",
+        href: "/profile/economics/imported-products",
+      },
+      {
+        title: "आर्थिक रूपमा सक्रिय जनसंख्या",
+        href: "/profile/economics/ward-economically-active-population",
+      },
+      {
+        title: "घरायसी कामको समय वितरण",
+        href: "/profile/economics/ward-household-chores",
+      },
+      {
+        title: "वार्षिक आय र निर्वाह",
+        href: "/profile/economics/ward-yearly-income-sustenance",
+      },
+      {
+        title: "घरधुरी आय स्रोत",
+        href: "/profile/economics/ward-household-income-sources",
+      },
+      {
+        title: "जमिन स्वामित्व",
+        href: "/profile/economics/ward-land-possessions",
+      },
+      {
+        title: "ऋणको उपयोग",
+        href: "/profile/economics/ward-loan-usage",
+      },
+      {
+        title: "ऋणमा रहेका घरधुरी",
+        href: "/profile/economics/ward-households-in-loan",
+      },
+      {
+        title: "प्रमुख पेशा",
+        href: "/profile/economics/ward-main-occupations",
+      },
+      {
+        title: "प्रमुख सीपहरू",
+        href: "/profile/economics/ward-main-skills",
+      },
+      {
+        title: "रेमिट्यान्स खर्च",
+        href: "/profile/economics/ward-remittance-expenses",
+      },
+      {
+        title: "तालिम प्राप्त जनसंख्या",
+        href: "/profile/economics/ward-trained-population",
       },
     ],
   },
@@ -120,21 +183,6 @@ const navItems = [
       {
         title: "खानेपानी आपूर्ति",
         href: "/profile/infrastructure/water-supply",
-      },
-    ],
-  },
-  {
-    title: "अर्थतन्त्र",
-    href: "/profile/economy",
-    icon: <PieChart className="w-4 h-4" />,
-    items: [
-      {
-        title: "रोजगारी स्थिति",
-        href: "/profile/economy/employment",
-      },
-      {
-        title: "आय स्रोतहरू",
-        href: "/profile/economy/income-sources",
       },
     ],
   },

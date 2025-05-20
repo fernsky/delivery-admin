@@ -2,9 +2,9 @@
 DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM pg_tables WHERE tablename = 'acme_ward_wise_marital_status'
+        SELECT 1 FROM pg_tables WHERE tablename = 'acme_ward_age_wise_marital_status'
     ) THEN
-        CREATE TABLE acme_ward_wise_marital_status (
+        CREATE TABLE acme_ward_age_wise_marital_status (
             id VARCHAR(36) PRIMARY KEY,
             ward_number INTEGER NOT NULL,
             age_group VARCHAR(100) NOT NULL,
@@ -23,8 +23,8 @@ $$;
 -- Insert seed data if table is empty
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM acme_ward_wise_marital_status) THEN
-        INSERT INTO acme_ward_wise_marital_status (
+    IF NOT EXISTS (SELECT 1 FROM acme_ward_age_wise_marital_status) THEN
+        INSERT INTO acme_ward_age_wise_marital_status (
             id, ward_number, age_group, marital_status, population, male_population, female_population, other_population
         )
         VALUES

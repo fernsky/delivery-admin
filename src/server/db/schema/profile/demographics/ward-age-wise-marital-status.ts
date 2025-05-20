@@ -29,7 +29,7 @@ export const maritalStatusEnum = pgEnum("marital_status", [
   "NOT_STATED",
 ]);
 
-export const wardWiseMaritalStatus = pgTable("ward_wise_marital_status", {
+export const wardWiseMaritalStatus = pgTable("ward_age_wise_marital_status", {
   id: varchar("id", { length: 36 }).primaryKey(),
 
   // Reference to the ward entity through the demographic summary
