@@ -105,22 +105,25 @@ export default function ProfilePage() {
     <DocsLayout>
       <div className="flex flex-col gap-8">
         <section className="py-6">
-          <div className="relative rounded-lg overflow-hidden mb-8">
-            <Image
-              src="/images/municipality-hero.jpg"
-              width={1200}
-              height={400}
-              alt="पालिका परिदृश्य"
-              className="w-full h-[300px] object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 flex items-center">
-              <div className="p-8 text-white">
-                <h1 className="text-4xl font-bold mb-3">
+          <div className="relative rounded-md overflow-hidden mb-8">
+            <div className="bg-black relative rounded-md">
+              <div className="absolute inset-0 bg-black/60 z-10 rounded-md" />
+              <Image
+                src="/images/municipality-profile-hero.svg"
+                width={1200}
+                height={300}
+                alt="पालिका प्रोफाइल दृश्य"
+                className="w-full h-[300px] object-cover rounded-md"
+                priority
+              />
+            </div>
+            <div className="absolute inset-0 flex items-center z-20">
+              <div className="p-8">
+                <h1 className="text-4xl font-bold mb-3 text-white drop-shadow-lg">
                   पालिका प्रोफाइल पोर्टल
                 </h1>
-                <p className="text-lg opacity-90 max-w-xl">
-                  तथ्य, तथ्याङ्क र विश्लेषण मार्फत आफ्नो पालिकालाई अझ राम्रोसँग
+                <p className="text-lg text-white/90 max-w-xl drop-shadow-lg">
+                  तथ्य, तथ्याङ्क र विश्लेषण मार्फत खजुरा गाउँपालिकालाई
                   चिन्नुहोस्।
                 </p>
               </div>
