@@ -88,7 +88,7 @@ export async function generateMetadata(): Promise<Metadata> {
         siteName: `${municipalityName} डिजिटल प्रोफाइल`,
         images: [
           {
-            url: "https://khajura-rm.gov.np/images/municipality-logo.png",
+            url: "https://khajuramun.digprofile.com/images/municipality-logo.png",
             width: 1200,
             height: 630,
             alt: municipalityName,
@@ -99,7 +99,9 @@ export async function generateMetadata(): Promise<Metadata> {
         card: "summary_large_image",
         title: `${municipalityName} | आधिकारिक वेबसाइट`,
         description: descriptionNP,
-        images: ["https://khajura-rm.gov.np/images/municipality-logo.png"],
+        images: [
+          "https://khajuramun.digprofile.com/images/municipality-logo.png",
+        ],
       },
     };
   } catch (error) {

@@ -74,16 +74,24 @@ export default function MaritalStatusSEO({
         "Age-wise marital status",
         "Ward-wise marital status data",
         "Nepal census",
-        ...Object.values(MARITAL_STATUS_NAMES_EN).map((name) => `${name} population`),
-        ...Object.values(MARITAL_STATUS_NAMES).map((name) => `${name} जनसंख्या`),
-        ...Object.values(AGE_GROUP_NAMES_EN).map((name) => `${name} marital status`),
-        ...Object.values(AGE_GROUP_NAMES).map((name) => `${name} वैवाहिक स्थिति`),
+        ...Object.values(MARITAL_STATUS_NAMES_EN).map(
+          (name) => `${name} population`,
+        ),
+        ...Object.values(MARITAL_STATUS_NAMES).map(
+          (name) => `${name} जनसंख्या`,
+        ),
+        ...Object.values(AGE_GROUP_NAMES_EN).map(
+          (name) => `${name} marital status`,
+        ),
+        ...Object.values(AGE_GROUP_NAMES).map(
+          (name) => `${name} वैवाहिक स्थिति`,
+        ),
       ],
-      url: "https://khajura-rm.gov.np/profile/demographics/ward-age-wise-marital-status",
+      url: "https://khajuramun.digprofile.com/profile/demographics/ward-age-wise-marital-status",
       creator: {
         "@type": "Organization",
         name: "Khajura Rural Municipality",
-        url: "https://khajura-rm.gov.np",
+        url: "https://khajuramun.digprofile.com",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {

@@ -104,11 +104,11 @@ export default function EconomicallyActiveSEO({
           (name) => `${name} आर्थिक रूपमा सक्रिय जनसंख्या`,
         ),
       ],
-      url: "https://khajura-rm.gov.np/profile/economics/ward-economically-active-population",
+      url: "https://khajuramun.digprofile.com/profile/economics/ward-economically-active-population",
       creator: {
         "@type": "Organization",
         name: "Khajura Rural Municipality",
-        url: "https://khajura-rm.gov.np",
+        url: "https://khajuramun.digprofile.com",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {
@@ -151,7 +151,7 @@ export default function EconomicallyActiveSEO({
         "@type": "DataDownload",
         encodingFormat: "CSV",
         contentUrl:
-          "https://khajura-rm.gov.np/data/economically-active-population.csv",
+          "https://khajuramun.digprofile.com/data/economically-active-population.csv",
       },
     };
   };

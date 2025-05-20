@@ -66,8 +66,8 @@ const Hero: React.FC<HeroProps> = ({
             "@type": "GovernmentOrganization",
             name: municipalityName,
             alternateName: municipalityNameEn,
-            url: `https://${lng === "en" ? "en." : ""}khajura-rm.gov.np`,
-            logo: "https://khajura-rm.gov.np/logo.png",
+            url: `https://${lng === "en" ? "en." : ""}khajuramun.digprofile.com`,
+            logo: "https://khajuramun.digprofile.com/logo.png",
             areaServed: {
               "@type": "AdministrativeArea",
               name: "Khajura",
