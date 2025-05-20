@@ -16,7 +16,7 @@ interface FooterProps {
   lng: string;
 }
 
-const Footer: React.FC<FooterProps> = async ({ lng }) => {
+const Footer: React.FC<FooterProps> = ({ lng }) => {
   const resources = [
     { label: "प्रोफाइल", icon: FileText, href: "/landing" },
     { label: "नक्सा", icon: MapPin, href: "/map" },

@@ -174,8 +174,7 @@ export default async function WardHouseholdChoresPage() {
   )
     .map(([timeSpent, population]) => ({
       timeSpent,
-      timeSpentName:
-        TIME_SPENT_NAMES[timeSpent] || timeSpentLabels[timeSpent] || timeSpent,
+      timeSpentName: TIME_SPENT_NAMES[timeSpent] || timeSpent,
       population,
     }))
     .sort((a, b) => {
@@ -219,11 +218,8 @@ export default async function WardHouseholdChoresPage() {
 
     // Add time spent categories for this ward
     wardData.forEach((item) => {
-      result[
-        TIME_SPENT_NAMES[item.timeSpent] ||
-          timeSpentLabels[item.timeSpent] ||
-          item.timeSpent
-      ] = item.population;
+      result[TIME_SPENT_NAMES[item.timeSpent] || item.timeSpent] =
+        item.population;
     });
 
     return result;
