@@ -19,6 +19,24 @@ export const RemittanceExpenseTypeEnum = z.enum([
 ]);
 export type RemittanceExpenseType = z.infer<typeof RemittanceExpenseTypeEnum>;
 
+// Define Nepali remittance expense names for display
+export const remittanceExpenseLabels: Record<string, string> = {
+  EDUCATION: "शिक्षा",
+  HEALTH: "स्वास्थ्य",
+  HOUSEHOLD_USE: "घरायसी प्रयोग",
+  FESTIVALS: "चाडपर्व",
+  LOAN_PAYMENT: "ऋण भुक्तानी",
+  LOANED_OTHERS: "अरूलाई ऋण दिएको",
+  SAVING: "बचत",
+  HOUSE_CONSTRUCTION: "घर निर्माण",
+  LAND_OWNERSHIP: "जग्गा खरिद",
+  JEWELRY_PURCHASE: "गहना खरिद",
+  GOODS_PURCHASE: "सामान खरिद",
+  BUSINESS_INVESTMENT: "व्यवसायमा लगानी",
+  OTHER: "अन्य",
+  UNKNOWN: "थाहा छैन",
+};
+
 // Schema for ward-wise remittance expense data
 export const wardWiseRemittanceExpensesSchema = z.object({
   id: z.string().optional(),

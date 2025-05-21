@@ -1,7 +1,7 @@
 import { pgTable, uuid, integer, text, timestamp } from "drizzle-orm/pg-core";
 
 export const wardWiseHouseholdsOnLoan = pgTable(
-  "ward_wise_households_on_loan",
+  "acme_ward_wise_households_on_loan",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     wardNumber: integer("ward_number").notNull(),

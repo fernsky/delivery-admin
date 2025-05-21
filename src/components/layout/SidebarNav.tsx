@@ -64,10 +64,10 @@ const navItems = [
         title: "उमेर र लिङ्ग अनुसार जनसंख्या",
         href: "/profile/demographics/ward-age-wise-population",
       },
-      {
-        title: "वर्ष अनुसार जनसंख्या परिवर्तन",
-        href: "/profile/demographics/ward-time-series-population",
-      },
+      // {
+      //   title: "वर्ष अनुसार जनसंख्या परिवर्तन",
+      //   href: "/profile/demographics/ward-time-series-population",
+      // },
       // {
       //   title: "उमेर र लिङ्ग अनुसार अनुपस्थित जनसंख्या",
       //   href: "/profile/demographics/ward-age-gender-wise-absentee",
@@ -109,15 +109,15 @@ const navItems = [
       },
       {
         title: "घरधुरी आय स्रोत",
-        href: "/profile/economics/ward-household-income-sources",
+        href: "/profile/economics/ward-wise-household-income-source",
       },
       {
         title: "जमिन स्वामित्व",
-        href: "/profile/economics/ward-land-possessions",
+        href: "/profile/economics/ward-household-land-possessions",
       },
       {
         title: "ऋणको उपयोग",
-        href: "/profile/economics/ward-loan-usage",
+        href: "/profile/economics/ward-households-loan-usage",
       },
       {
         title: "ऋणमा रहेका घरधुरी",

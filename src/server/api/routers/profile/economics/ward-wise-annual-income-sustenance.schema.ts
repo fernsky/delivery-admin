@@ -9,10 +9,10 @@ export const MonthsSustainedEnum = z.enum([
 ]);
 
 export const monthsSustainedLabels = {
-  UPTO_THREE_MONTHS: "Up to 3 months",
-  THREE_TO_SIX_MONTHS: "3-6 months",
-  SIX_TO_NINE_MONTHS: "6-9 months",
-  TWELVE_MONTHS: "Year-round",
+  UPTO_THREE_MONTHS: "३ महिनासम्म",
+  THREE_TO_SIX_MONTHS: "३-६ महिना",
+  SIX_TO_NINE_MONTHS: "६-९ महिना",
+  TWELVE_MONTHS: "वर्षभरि",
 };
 
 // Base schema for ward wise annual income sustenance
