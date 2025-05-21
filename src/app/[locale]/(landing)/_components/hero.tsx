@@ -1,133 +1,236 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { Mountain, MapPin, ArrowUpRight, Sparkles } from "lucide-react";
+import {
+  Mountain,
+  MapPin,
+  ArrowUpRight,
+  Sparkles,
+  Users,
+  Home,
+} from "lucide-react";
+import Head from "next/head";
+import { localizeNumber } from "@/lib/utils/localize-number";
+import TeraiLandscape from "./terai-landscape";
 
 interface HeroProps {
   lng: string;
+  municipalityName: string;
+  municipalityNameEn: string;
+  demographicData?: {
+    totalPopulation?: number | null;
+    totalHouseholds?: number | null;
+    areaSqKm?: string | null;
+    populationDensity?: string | null;
+    id?: string;
+  } | null;
 }
 
-const Hero: React.FC<HeroProps> = ({ lng }) => {
+const Hero: React.FC<HeroProps> = ({
+  lng,
+  municipalityName,
+  municipalityNameEn,
+  demographicData,
+}) => {
+  // Extract data with proper fallbacks
+  const totalArea = demographicData?.areaSqKm
+    ? parseFloat(demographicData.areaSqKm)
+    : 124.38;
+
+  // Get ward count data for Khajura Rural Municipality
+  const wardCount = 8;
+
+  // Calculate stats to display
+  const population = demographicData?.totalPopulation || 35055;
+  const households = demographicData?.totalHouseholds || 7562;
+
+  // SEO description with actual data
+  const seoDescription = `${municipalityName} (${municipalityNameEn}) - ${localizeNumber(totalArea.toString(), "ne")} वर्ग कि.मि. क्षेत्रफल, ${localizeNumber(wardCount.toString(), "ne")} प्रशासनिक वडाहरू, ${localizeNumber(population.toString(), "ne")} जनसंख्या। बाँके जिल्लाको प्राकृतिक सुन्दरता र समृद्ध संस्कृति। सम्पूर्ण जानकारी र नक्सा यहाँ उपलब्ध छ।`;
+
   return (
-    <section className="relative w-full h-screen overflow-hidden">
-      {/* Mountain Animation Section */}
-
-      {/* Mountain Animation Section */}
-      <div className="absolute inset-0 z-0">
-        {/* Sky */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-300 to-blue-100" />
-
-        {/* Sun */}
-        <motion.div
-          className="absolute top-20 right-20 w-24 h-24 rounded-full bg-yellow-200"
-          animate={{
-            boxShadow: [
-              "0 0 40px 20px rgba(252, 211, 77, 0.3)",
-              "0 0 60px 30px rgba(252, 211, 77, 0.4)",
-            ],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            repeatType: "reverse",
-          }}
+    <>
+      {/* SEO Structured Data */}
+      <Head>
+        <meta name="description" content={seoDescription} />
+        <meta
+          property="og:title"
+          content={`${municipalityName} | आधिकारिक वेबसाइट`}
         />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "GovernmentOrganization",
+            name: municipalityName,
+            alternateName: municipalityNameEn,
+            url: `https://${lng === "en" ? "en." : ""}khajuramun.digprofile.com`,
+            logo: "https://khajuramun.digprofile.com/logo.png",
+            areaServed: {
+              "@type": "AdministrativeArea",
+              name: "Khajura",
+              containedIn: "Banke District, Nepal",
+              description: seoDescription,
+              additionalProperty: [
+                {
+                  "@type": "PropertyValue",
+                  name: "population",
+                  value: population,
+                },
+                {
+                  "@type": "PropertyValue",
+                  name: "numberOfWards",
+                  value: wardCount,
+                },
+                {
+                  "@type": "PropertyValue",
+                  name: "totalArea",
+                  value: totalArea,
+                  unitCode: "KMQ",
+                },
+              ],
+            },
+          })}
+        </script>
+      </Head>
 
-        {/* Mountains in background */}
-        <div className="absolute bottom-0 w-full">
-          <svg
-            viewBox="0 0 1440 320"
-            className="w-full"
-            preserveAspectRatio="none"
-          >
-            <path
-              fill="#4b7e3d"
-              fillOpacity="0.6"
-              d="M0,224L60,213.3C120,203,240,181,360,181.3C480,181,600,203,720,197.3C840,192,960,160,1080,160C1200,160,1320,192,1380,208L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
-            />
-          </svg>
-        </div>
+      {/* Background Container with Landscape */}
+      <div className="relative w-full h-screen overflow-hidden">
+        {/* Three.js Terai Landscape Component with reduced opacity */}
+        <TeraiLandscape opacity={0.9} />
 
-        {/* Fields in foreground */}
-        <div className="absolute bottom-0 w-full">
-          <svg
-            viewBox="0 0 1440 320"
-            className="w-full"
-            preserveAspectRatio="none"
-          >
-            <path
-              fill="#65a30d"
-              fillOpacity="0.8"
-              d="M0,288L48,272C96,256,192,224,288,229.3C384,235,480,277,576,272C672,267,768,213,864,197.3C960,181,1056,203,1152,208C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-            />
-          </svg>
-        </div>
+        {/* Overlay gradient for better text readability */}
+        <div className="absolute inset-0 z-5 bg-gradient-to-b from-white/20 to-white/60 backdrop-blur-[2px]"></div>
 
-        {/* Animated birds */}
-        <motion.div
-          className="absolute top-40 left-1/4"
-          animate={{
-            x: [0, 100, 200, 300, 400],
-            y: [0, -20, -10, -30, -5],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: "loop",
-          }}
-        >
-          <svg width="40" height="20" viewBox="0 0 40 20">
-            <path
-              d="M0,10 C10,0 10,20 20,10 C30,0 30,20 40,10"
-              stroke="black"
-              fill="transparent"
-              strokeWidth="1"
-            />
-          </svg>
-        </motion.div>
-      </div>
+        {/* Content Section */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4">
+          {/* Hero Content Container with glass effect */}
+          <div className="w-full max-w-4xl mx-auto rounded-2xl backdrop-blur-sm p-8 ">
+            {/* Municipality English Name */}
+            <motion.h1
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-2 text-center text-emerald-950"
+              itemProp="name"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              {municipalityName}
+            </motion.h1>
 
-      {/* Content Section */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-gray-900 bg-gradient-to-t from-white/70 via-white/50 to-transparent">
-        <Badge variant="outline" className="mb-4">
-          <Sparkles className="w-4 h-4 mr-1" />
-          खजुरा गाउँपालिकामा स्वागत छ
-        </Badge>
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15]">
-          खजुरा गाउँपालिका
-        </h1>
-        <p className="text-lg leading-relaxed mt-4">
-          बाँके जिल्लाको प्राकृतिक सुन्दरता र समृद्ध संस्कृति
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-8">
-          <div className="flex items-center gap-2 text-green-600">
-            <Mountain className="w-5 h-5" />
-            <span className="text-sm font-medium">
-              १२४.३८ वर्ग कि.मि. क्षेत्रफल
-            </span>
+            {/* Location - District and Province */}
+            <motion.p
+              className="text-base sm:text-lg leading-relaxed mb-6 text-gray-800 max-w-2xl mx-auto text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              बाँके जिल्ला, लुम्बिनी प्रदेश
+            </motion.p>
+
+            {/* Key Metrics Cards */}
+            <motion.div
+              className="flex flex-wrap gap-4 items-center justify-center mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              {/* Area Card */}
+              <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm text-emerald-700 border border-green-100 border-l-4 border-l-emerald-500">
+                <Mountain className="w-4 h-4" />
+                <span
+                  className="text-sm font-medium"
+                  itemProp="areaServed"
+                  itemScope
+                  itemType="https://schema.org/AdministrativeArea"
+                >
+                  <span itemProp="size">
+                    {localizeNumber(totalArea.toString(), "ne")}
+                  </span>{" "}
+                  वर्ग कि.मि.
+                </span>
+              </div>
+
+              {/* Ward Count Card */}
+              <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm text-emerald-700 border border-green-100 border-l-4 border-l-emerald-500">
+                <MapPin className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  {localizeNumber(wardCount.toString(), "ne")} वडा
+                </span>
+              </div>
+
+              {/* Population Card */}
+              {demographicData?.totalPopulation && (
+                <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm text-emerald-700 border border-green-100 border-l-4 border-l-emerald-500">
+                  <Users className="w-4 h-4" />
+                  <span className="text-sm font-medium">
+                    {localizeNumber(
+                      demographicData.totalPopulation.toString(),
+                      "ne",
+                    )}{" "}
+                    जनसंख्या
+                  </span>
+                </div>
+              )}
+
+              {/* Households Card */}
+              {demographicData?.totalHouseholds && (
+                <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm text-emerald-700 border border-green-100 border-l-4 border-l-emerald-500">
+                  <Home className="w-4 h-4" />
+                  <span className="text-sm font-medium">
+                    {localizeNumber(
+                      demographicData.totalHouseholds.toString(),
+                      "ne",
+                    )}{" "}
+                    घरधुरी
+                  </span>
+                </div>
+              )}
+            </motion.div>
+
+            {/* Action Buttons */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              {/* Profile Button */}
+              <Link href={`/profile`}>
+                <motion.button
+                  className="group px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl shadow-lg flex items-center gap-2 relative overflow-hidden"
+                  whileHover={{
+                    scale: 1.03,
+                    boxShadow:
+                      "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <span className="absolute inset-0 bg-[url('/patterns/topography.svg')] opacity-10"></span>
+                  <span className="relative">प्रोफाइल हेर्नुहोस्</span>
+                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform relative" />
+                </motion.button>
+              </Link>
+
+              {/* Map Button */}
+              <Link href={`/profile`}>
+                <motion.button
+                  className="px-8 py-4 border-2 border-green-600 text-green-700 rounded-xl transition-all flex items-center gap-2 bg-white/80 backdrop-blur-sm hover:bg-white/100"
+                  whileHover={{ backgroundColor: "rgba(240, 253, 244, 0.8)" }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  नक्सा हेर्नुहोस्
+                  <MapPin className="w-4 h-4 group-hover:animate-bounce" />
+                </motion.button>
+              </Link>
+            </motion.div>
           </div>
-          <div className="flex items-center gap-2 text-green-600">
-            <MapPin className="w-5 h-5" />
-            <span className="text-sm font-medium">५ प्रशासनिक वडाहरू</span>
-          </div>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
-          <Link href={`https://digprofile.com/khajura`}>
-            <button className="group px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-[15px] font-medium tracking-wide flex items-center gap-2">
-              प्रोफाइल हेर्नुहोस्
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            </button>
-          </Link>
-          <Link href={`/${lng}/map`}>
-            <button className="px-8 py-4 border-2 border-green-600 text-green-700 rounded-xl hover:bg-green-50 transition-all duration-300 text-[15px] font-medium tracking-wide group flex items-center gap-2">
-              नक्सा अन्वेषण गर्नुहोस्
-              <MapPin className="w-4 h-4 group-hover:animate-bounce" />
-            </button>
-          </Link>
         </div>
       </div>
-    </section>
+    </>
   );
 };
 

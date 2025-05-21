@@ -123,11 +123,11 @@ export default function AgeSEO({
         "निर्भरता अनुपात",
         "मध्यम उमेर",
       ],
-      url: "https://khajura-rm.gov.np/profile/demographics/ward-age-wise-population",
+      url: "https://khajuramun.digprofile.com/profile/demographics/ward-age-wise-population",
       creator: {
         "@type": "Organization",
         name: "Khajura Rural Municipality",
-        url: "https://khajura-rm.gov.np",
+        url: "https://khajuramun.digprofile.com",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {

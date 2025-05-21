@@ -1,25 +1,29 @@
-import { NextRequest } from 'next/server';
-import { getServerSideSitemap } from 'next-sitemap';
+import { NextRequest } from "next/server";
+import { getServerSideSitemap } from "next-sitemap";
 import { api } from "@/trpc/server";
-import { locales } from '@/i18n/config';
+import { locales } from "@/i18n/config";
 
 // Base URL from environment or default
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://khajuramun.digprofile.com';
+const baseUrl =
+  process.env.NEXT_PUBLIC_BASE_URL || "https://khajuramun.digprofile.com";
 
-export async function GET(request: NextRequest, context: { params: { locale: string, category: string } }) {
+export async function GET(
+  request: NextRequest,
+  context: { params: { locale: string; category: string } },
+) {
   const { locale, category } = context.params;
-  
+
   // Validate locale
   if (!locales.includes(locale as "en" | "ne")) {
-    return new Response('Invalid locale', { status: 400 });
+    return new Response("Invalid locale", { status: 400 });
   }
-  
+
   // Define current date for lastModified
   const currentDate = new Date().toISOString();
-  
+
   // Initialize empty sitemap array
   const sitemapEntries = [];
-  console.log(category)
+  console.log(category);
   // Generate different entries based on category
   switch (category) {
     case "main-sitemap.xml":
@@ -42,19 +46,33 @@ export async function GET(request: NextRequest, context: { params: { locale: str
 
     case "demographics-sitemap.xml":
       // Demographics pages
+      // Add main demographics page
+      sitemapEntries.push({
+        loc: `${baseUrl}/${locale}/profile/demographics`,
+        lastmod: currentDate,
+        changefreq: "weekly",
+        priority: 0.8,
+      });
+
+      // Define all demographic pages
+      const demographicPages = [
+        "ward-age-wise-religion-population",
+        "ward-age-wise-population",
+        "ward-wise-caste-population",
+        "ward-wise-househead-gender",
+        "ward-wise-mother-tongue-population",
+        "ward-wise-religion-population",
+        "ward-wise-summary",
+      ];
+
+      // Add all demographic sub-pages
       sitemapEntries.push(
-        {
-          loc: `${baseUrl}/${locale}/profile/demographics`,
-          lastmod: currentDate,
-          changefreq: "weekly",
-          priority: 0.8,
-        },
-        {
-          loc: `${baseUrl}/${locale}/profile/demographics/ward-wise-religion-population`,
+        ...demographicPages.map((page) => ({
+          loc: `${baseUrl}/${locale}/profile/demographics/${page}`,
           lastmod: currentDate,
           changefreq: "monthly",
           priority: 0.7,
-        },
+        })),
       );
 
       try {
@@ -148,10 +166,10 @@ export async function GET(request: NextRequest, context: { params: { locale: str
       // Invalid category
       return new Response("Invalid sitemap category", { status: 400 });
   }
-  
+
   // Return XML sitemap
   //@ts-ignore
   return getServerSideSitemap(sitemapEntries);
 }
 
-export const dynamic = 'force-dynamic'; // Make sure the sitemap is generated on-demand
+export const dynamic = "force-dynamic"; // Make sure the sitemap is generated on-demand

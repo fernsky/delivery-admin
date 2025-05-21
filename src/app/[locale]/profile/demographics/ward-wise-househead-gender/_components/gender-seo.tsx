@@ -60,11 +60,11 @@ export default function GenderSEO({
         "पुरुष घरमूली",
         "घरमूली लिङ्ग वितरण",
       ],
-      url: "https://khajura-rm.gov.np/profile/demographics/ward-wise-househead-gender",
+      url: "https://khajuramun.digprofile.com/profile/demographics/ward-wise-househead-gender",
       creator: {
         "@type": "Organization",
         name: "Khajura Rural Municipality",
-        url: "https://khajura-rm.gov.np",
+        url: "https://khajuramun.digprofile.com",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {

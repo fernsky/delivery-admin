@@ -10,7 +10,6 @@ interface WardData {
   totalHouseholds: number;
   averageHouseholdSize: number;
   sexRatio: number;
-
 }
 
 interface WardWiseSEOProps {
@@ -21,12 +20,10 @@ interface WardWiseSEOProps {
     femalePopulation: number;
     otherPopulation: number;
     totalHouseholds: number;
-  
   };
   municipalityAverages: {
     averageHouseholdSize: number;
     sexRatio: number;
-  
   };
 }
 
@@ -97,11 +94,11 @@ export default function WardWiseSEO({
         "Household data",
         "Population statistics",
       ],
-      url: "https://khajura-rm.gov.np/profile/demographics/ward-wise-summary",
+      url: "https://khajuramun.digprofile.com/profile/demographics/ward-wise-summary",
       creator: {
         "@type": "Organization",
         name: "Khajura Rural Municipality",
-        url: "https://khajura-rm.gov.np",
+        url: "https://khajuramun.digprofile.com",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {

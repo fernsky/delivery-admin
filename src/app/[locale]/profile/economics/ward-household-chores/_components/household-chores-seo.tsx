@@ -64,11 +64,11 @@ export default function HouseholdChoresSEO({
           (name) => `घरायसी कामकाजमा ${name}`,
         ),
       ],
-      url: "https://khajura-rm.gov.np/profile/economics/ward-household-chores",
+      url: "https://khajuramun.digprofile.com/profile/economics/ward-household-chores",
       creator: {
         "@type": "Organization",
         name: "Khajura Rural Municipality",
-        url: "https://khajura-rm.gov.np",
+        url: "https://khajuramun.digprofile.com",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {
@@ -91,7 +91,7 @@ export default function HouseholdChoresSEO({
         "@type": "DataDownload",
         encodingFormat: "CSV",
         contentUrl:
-          "https://khajura-rm.gov.np/data/household-chores-time-distribution.csv",
+          "https://khajuramun.digprofile.com/data/household-chores-time-distribution.csv",
       },
     };
   };

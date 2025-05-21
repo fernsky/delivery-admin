@@ -56,11 +56,11 @@ export default function ExportedProductsSEO({
         ...Object.values(CATEGORY_NAMES_EN).map((name) => `${name} exports`),
         ...categoryDistribution.map((cat) => `${cat.name} निर्यातित वस्तु`),
       ],
-      url: "https://khajura-rm.gov.np/profile/economics/exported-products",
+      url: "https://khajuramun.digprofile.com/profile/economics/exported-products",
       creator: {
         "@type": "Organization",
         name: "Khajura Rural Municipality",
-        url: "https://khajura-rm.gov.np",
+        url: "https://khajuramun.digprofile.com",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {

@@ -1,20 +1,55 @@
+"use client";
 import { useInView } from "react-intersection-observer";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import CountUp from "react-countup";
-import { MapPinned, Users, Home, Trees, TrendingUp } from "lucide-react";
+import {
+  MapPinned,
+  Users,
+  Home,
+  Trees,
+  TrendingUp,
+  UserX,
+  ChevronRight,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import Script from "next/script";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
-const Statistics = () => {
+interface StatisticsProps {
+  demographicData?: {
+    totalPopulation?: number | null;
+    totalHouseholds?: number | null;
+    areaSqKm?: string | null;
+    populationDensity?: string | null;
+    populationMale?: number | null;
+    populationFemale?: number | null;
+    sexRatio?: string | null;
+    literacyRateAbove15?: string | null;
+    growthRate?: string | null;
+    populationAbsenteeTotal?: number | null;
+    averageHouseholdSize?: string | null;
+  } | null;
+  isLoading: boolean;
+  municipalityName: string;
+}
+
+const Statistics = ({
+  demographicData,
+  isLoading,
+  municipalityName,
+}: StatisticsProps) => {
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
 
+  // Define stats based on the demographic data
   const stats = [
     {
       label: "कुल क्षेत्रफल",
-      value: 124.38,
+      value: demographicData?.areaSqKm || 124.38,
       suffix: "वर्ग कि.मि.",
       icon: <MapPinned className="w-5 h-5" />,
       description: "कुल भूमि क्षेत्रफल",
@@ -22,111 +57,301 @@ const Statistics = () => {
     },
     {
       label: "जनसंख्या",
-      value: 5534,
+      value: demographicData?.totalPopulation || 5534,
       suffix: "+",
       icon: <Users className="w-5 h-5" />,
       description: "बासिन्दा संख्या",
       color: "from-emerald-500 to-green-600",
     },
     {
-      label: "वडाहरू",
-      value: 5,
+      label: "घरधुरी",
+      value: demographicData?.totalHouseholds || 1268,
       suffix: "",
       icon: <Home className="w-5 h-5" />,
-      description: "प्रशासनिक विभाजन",
+      description: `प्रति घर ${localizeNumber(parseFloat(demographicData?.averageHouseholdSize as string)?.toFixed(1) || "4.4", "ne")} व्यक्ति`,
       color: "from-green-400 to-emerald-500",
     },
     {
-      label: "गाउँहरू",
-      value: 3,
+      label: "प्रवासी जनसंख्या",
+      value: demographicData?.populationAbsenteeTotal || 317,
       suffix: "",
-      icon: <Trees className="w-5 h-5" />,
-      description: "ग्रामीण समुदायहरू",
+      icon: <UserX className="w-5 h-5" />,
+      description: "विदेशिएका नागरिक",
       color: "from-emerald-400 to-green-500",
     },
   ];
 
+  // Generate JSON-LD structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: `${municipalityName} जनसांख्यिकीय तथ्याङ्क`,
+    description:
+      "खजुरा गाउँपालिकाको प्रमुख जनसांख्यिकीय तथ्याङ्क, जनगणना अनुसार",
+    url: "https://khajuramun.digprofile.com",
+    keywords: [
+      "खजुरा गाउँपालिका जनसंख्या",
+      "Khajura Rural Municipality demographics",
+      "खजुरा जनगणना",
+      "बाँके जनसंख्या",
+      "नेपालको जनसंख्या",
+    ],
+    variableMeasured: [
+      {
+        "@type": "PropertyValue",
+        name: "कुल जनसंख्या",
+        value: demographicData?.totalPopulation || "उपलब्ध छैन",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "कुल घरधुरी",
+        value: demographicData?.totalHouseholds || "उपलब्ध छैन",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "क्षेत्रफल",
+        value: demographicData?.areaSqKm || "उपलब्ध छैन",
+        unitText: "square kilometers",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "पुरुष जनसंख्या",
+        value: demographicData?.populationMale || "उपलब्ध छैन",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "महिला जनसंख्या",
+        value: demographicData?.populationFemale || "उपलब्ध छैन",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "प्रवासी जनसंख्या",
+        value: demographicData?.populationAbsenteeTotal || "उपलब्ध छैन",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "लैङ्गिक अनुपात",
+        value: demographicData?.sexRatio || "उपलब्ध छैन",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "साक्षरता दर",
+        value: demographicData?.literacyRateAbove15 || "उपलब्ध छैन",
+        unitText: "percentage",
+      },
+    ],
+  };
+
+  // Animation variants for staggered animations
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  };
+
   return (
-    <section ref={ref} className="py-24 relative overflow-hidden">
-      {/* Background with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-green-50/50 to-white/80" />
-      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-white to-transparent" />
+    <>
+      {/* Add structured data for SEO */}
+      <Script
+        id="demographics-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="text-center mb-16 space-y-4"
-        >
-          <Badge variant="outline" className="mb-4">
-            <TrendingUp className="w-4 ह-4 mr-1" />
-            नगरपालिका अवलोकन
-          </Badge>
-          <h2 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">
-            प्रमुख जनसांख्यिकी
-          </h2>
-          <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            हाम्रो स्थानीय शासन र समुदाय विकासलाई परिभाषित गर्ने आवश्यक आँकडा र
-            तथ्याङ्क
-          </p>
-        </motion.div>
+      <section
+        ref={ref}
+        className="py-16 relative overflow-hidden"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        {/* Background with gradient - Updated to match WardInfo */}
+        <div className="absolute inset-0 bg-gradient-to-b from-green-50/80 to-white/90" />
+        <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-white to-transparent" />
+        <div className="absolute -top-32 right-0 w-96 h-96 bg-green-100/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-emerald-100/30 rounded-full blur-3xl" />
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: index * 0.1, duration: 0.4 }}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12 space-y-3"
+          >
+            <Badge
+              variant="outline"
+              className="mb-2 px-3 py-1 bg-white/80 backdrop-blur-sm border-green-200 shadow-sm inline-flex items-center"
             >
-              <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300">
-                <div className="relative h-full">
-                  {/* Gradient background */}
-                  <div
-                    className={`absolute inset-x-0 top-0 h-24 bg-gradient-to-br ${stat.color} opacity-10 group-hover:opacity-15 transition-opacity`}
-                  />
+              <TrendingUp className="w-3 h-3 mr-1 text-emerald-600" />
+              <span className="text-xs text-emerald-800 font-medium">
+                नगरपालिका अवलोकन
+              </span>
+            </Badge>
 
-                  <CardContent className="relative p-6">
-                    <div className="flex flex-col gap-6">
-                      <div
-                        className={`p-3 w-fit rounded-xl bg-gradient-to-br ${stat.color} text-white group-hover:scale-105 transition-transform`}
-                      >
-                        {stat.icon}
-                      </div>
+            <h2
+              className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-800 to-green-700 bg-clip-text text-transparent"
+              itemProp="name"
+            >
+              प्रमुख जनसांख्यिकी
+            </h2>
 
-                      <div className="pt-2">
-                        <p className="text-sm font-medium text-gray-600 mb-1">
-                          {stat.label}
-                        </p>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-3xl font-bold text-gray-900">
-                            {inView && (
-                              <CountUp
-                                end={stat.value}
-                                duration={2}
-                                decimals={
-                                  stat.label === "कुल क्षेत्रफल" ? 2 : 0
-                                }
-                              />
-                            )}
-                          </span>
-                          <span className="text-lg font-medium text-green-600">
-                            {stat.suffix}
-                          </span>
+            <p
+              className="text-gray-600 max-w-2xl mx-auto text-xs md:text-sm"
+              itemProp="description"
+            >
+              हाम्रो स्थानीय शासन र समुदाय विकासलाई परिभाषित गर्ने आवश्यक आँकडा
+              र तथ्याङ्क
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate={inView ? "show" : "hidden"}
+            className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="relative"
+              >
+                <Card className="border-0 overflow-hidden group hover:shadow-md transition-all duration-300 bg-white/95 backdrop-blur-sm">
+                  <div className="relative h-full">
+                    {/* Gradient header - similar to WardInfo cards */}
+                    <div
+                      className={`p-2 bg-gradient-to-r ${stat.color} relative`}
+                    >
+                      <div className="absolute inset-0 bg-[url('/patterns/topography.svg')] opacity-10"></div>
+                      <div className="relative z-10 flex items-center">
+                        <div className="p-1.5 rounded-full bg-white/20 text-white">
+                          {stat.icon}
                         </div>
-                        <p className="mt-2 text-sm text-gray-500">
+                        <h3 className="ml-2 font-bold text-white text-sm">
+                          {stat.label}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <CardContent className="p-4">
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex items-baseline gap-1">
+                          {isLoading ? (
+                            <Skeleton className="h-8 w-24" />
+                          ) : (
+                            <>
+                              <span
+                                className="text-3xl font-bold text-gray-900"
+                                itemProp="value"
+                              >
+                                {inView && (
+                                  <CountUp
+                                    end={parseFloat(stat.value as string)}
+                                    duration={2}
+                                    decimals={
+                                      stat.label === "कुल क्षेत्रफल" ? 2 : 0
+                                    }
+                                    formattingFn={(value) =>
+                                      localizeNumber(value.toString(), "ne")
+                                    }
+                                  />
+                                )}
+                              </span>
+                              <span className="text-sm font-medium text-emerald-700">
+                                {stat.suffix}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">
                           {stat.description}
                         </p>
                       </div>
-                    </div>
-                  </CardContent>
+                    </CardContent>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {!isLoading && demographicData && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="mt-8"
+            >
+              <div className="overflow-hidden rounded-xl shadow-sm bg-white/90 backdrop-blur-sm">
+                <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-green-100">
+                  <div className="p-4 bg-gradient-to-br from-white to-green-50/50">
+                    <p className="text-xs text-emerald-700 font-medium mb-1 flex items-center">
+                      <Users className="w-3 h-3 mr-1 opacity-70" />
+                      पुरुष जनसंख्या
+                    </p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {demographicData.populationMale
+                        ? localizeNumber(
+                            demographicData.populationMale.toString(),
+                            "ne",
+                          )
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-white to-green-50/50">
+                    <p className="text-xs text-emerald-700 font-medium mb-1 flex items-center">
+                      <Users className="w-3 h-3 mr-1 opacity-70" />
+                      महिला जनसंख्या
+                    </p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {demographicData.populationFemale
+                        ? localizeNumber(
+                            demographicData.populationFemale.toString(),
+                            "ne",
+                          )
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-white to-green-50/50">
+                    <p className="text-xs text-emerald-700 font-medium mb-1 flex items-center">
+                      <ChevronRight className="w-3 h-3 mr-1 opacity-70" />
+                      लैङ्गिक अनुपात
+                    </p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {demographicData.sexRatio
+                        ? localizeNumber(
+                            parseFloat(demographicData.sexRatio).toFixed(2),
+                            "ne",
+                          )
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-gradient-to-br from-white to-green-50/50">
+                    <p className="text-xs text-emerald-700 font-medium mb-1 flex items-center">
+                      <TrendingUp className="w-3 h-3 mr-1 opacity-70" />
+                      साक्षरता दर
+                    </p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {demographicData.literacyRateAbove15
+                        ? `${localizeNumber(parseFloat(demographicData.literacyRateAbove15).toFixed(1), "ne")}%`
+                        : "N/A"}
+                    </p>
+                  </div>
                 </div>
-              </Card>
+              </div>
             </motion.div>
-          ))}
+          )}
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 
