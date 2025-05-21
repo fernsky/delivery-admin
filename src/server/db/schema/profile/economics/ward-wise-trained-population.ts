@@ -1,7 +1,7 @@
 import { pgTable, uuid, integer, text, timestamp } from "drizzle-orm/pg-core";
 
 export const wardWiseTrainedPopulation = pgTable(
-  "ward_wise_trained_population",
+  "acme_ward_wise_trained_population",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     wardNumber: integer("ward_number").notNull(),

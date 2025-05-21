@@ -49,7 +49,9 @@ export default function RemittanceExpensesSEO({
         "Nepal remittance",
         "Foreign employment earnings",
         ...Object.values(EXPENSE_NAMES_EN).map((name) => `${name} expenses`),
-        ...Object.values(remittanceExpenseLabels).map((name) => `${name} विप्रेषण खर्च`),
+        ...Object.values(remittanceExpenseLabels).map(
+          (name) => `${name} विप्रेषण खर्च`,
+        ),
       ],
       url: "https://khajura-rm.gov.np/profile/economics/ward-remittance-expenses",
       creator: {
