@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Search, X, ChevronRight } from "lucide-react";
+import { Menu, X, ChevronRight } from "lucide-react";
 import SidebarNav from "./SidebarNav";
 import { SiteHeader } from "./SiteHeader";
 
@@ -20,7 +20,6 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
   const pathname = usePathname();
   const [isMounted, setIsMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
 
   // Handle mobile detection
   useEffect(() => {
@@ -70,28 +69,15 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
                     <span className="sr-only">Toggle sidebar</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-[80%] sm:w-[350px] pr-0">
+                <SheetContent
+                  side="left"
+                  className="w-[80%] sm:w-[350px] pr-0 z-[100000]"
+                >
                   <ScrollArea className="h-full py-6 pl-6">
                     <div className="flex items-center mb-6">
                       <Link href="/profile" className="font-semibold">
                         स्थानीय प्रोफाइल
                       </Link>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-4 top-4"
-                        asChild
-                      >
-                        <X className="h-5 w-5" />
-                      </Button>
-                    </div>
-                    <div className="relative mb-6">
-                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <input
-                        type="text"
-                        placeholder="खोज्नुहोस्..."
-                        className="w-full rounded-md pl-9 border border-input bg-background py-2 text-sm"
-                      />
                     </div>
                     <SidebarNav />
                   </ScrollArea>
@@ -101,14 +87,6 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
               <div className="hidden md:block sticky top-16 self-start h-[calc(100vh-4rem)]">
                 <ScrollArea className="h-full pb-10">
                   <div className="pr-2 pt-4">
-                    <div className="relative mb-4">
-                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <input
-                        type="text"
-                        placeholder="खोज्नुहोस्..."
-                        className="w-full rounded-md pl-9 border border-input bg-background py-2 text-sm focus-within:ring-1 focus-within:ring-ring"
-                      />
-                    </div>
                     <SidebarNav />
                   </div>
                 </ScrollArea>

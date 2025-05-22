@@ -219,7 +219,7 @@ export default function SidebarNav() {
   }, [pathname]);
 
   return (
-    <div className="w-full space-y-1.5">
+    <div className="w-full space-y-1.5 ">
       <div className="text-sm text-muted-foreground font-medium mb-2 pl-2">
         तथ्याङ्क वर्गहरू
       </div>
