@@ -92,7 +92,7 @@ export default function WardRemittanceExpensesPieCharts({
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value, name) => [
+                  formatter={(value: any, name) => [
                     `${value.toLocaleString()} (${((value / wardTotal) * 100).toFixed(1)}%)`,
                     name,
                   ]}

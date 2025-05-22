@@ -85,8 +85,7 @@ export default function IncomeSourceBarChart({
           // Find the income source key for color mapping
           const incomeSourceKey =
             Object.keys(incomeSourceLabels).find(
-              (key) =>
-                incomeSourceLabels[key as IncomeSourceEnum] === incomeSource,
+              (key) => incomeSourceLabels[key as any] === incomeSource,
             ) || "OTHER";
 
           return (

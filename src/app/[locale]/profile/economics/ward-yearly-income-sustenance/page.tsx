@@ -29,7 +29,7 @@ const MONTHS_SUSTAINED_NAMES: Record<string, string> = {
 };
 
 // Define the months sustained enums used in the data and charts
-export enum MonthsSustained {
+enum MonthsSustained {
   UPTO_THREE_MONTHS = "UPTO_THREE_MONTHS",
   THREE_TO_SIX_MONTHS = "THREE_TO_SIX_MONTHS",
   SIX_TO_NINE_MONTHS = "SIX_TO_NINE_MONTHS",
@@ -37,7 +37,7 @@ export enum MonthsSustained {
 }
 
 // English translations/display labels for the months sustained categories
-export const MONTHS_SUSTAINED_LABELS: Record<MonthsSustained, string> = {
+const MONTHS_SUSTAINED_LABELS: Record<MonthsSustained, string> = {
   [MonthsSustained.UPTO_THREE_MONTHS]: "Up to 3 Months",
   [MonthsSustained.THREE_TO_SIX_MONTHS]: "3 to 6 Months",
   [MonthsSustained.SIX_TO_NINE_MONTHS]: "6 to 9 Months",
