@@ -6,6 +6,8 @@ import { transportationRouter } from "./transportation";
 import { agriculturalRouter } from "./agricultural";
 import { educationRouter } from "./education";
 import { physicalRouter } from "./physical";
+import { healthRouter } from "./health";
+import { fertilityRouter } from "./fertility";
 
 export const profileRouter = createTRPCRouter({
   demographics: demographicsRouter,
@@ -15,5 +17,7 @@ export const profileRouter = createTRPCRouter({
   agriculture: agriculturalRouter,
   education: educationRouter,
   physical: physicalRouter,
+  health: healthRouter,
+  fertility: fertilityRouter,
   // Add other profile-related routers here in the future
 });
