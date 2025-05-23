@@ -194,7 +194,6 @@ export default function WardWiseCharts({
             wardPopulationData={wardPopulationData}
             municipalityStats={municipalityStats}
             municipalityAverages={municipalityAverages}
-            GENDER_COLORS={GENDER_COLORS}
             GENDER_NAMES={GENDER_NAMES}
           />
         </Tabs>
