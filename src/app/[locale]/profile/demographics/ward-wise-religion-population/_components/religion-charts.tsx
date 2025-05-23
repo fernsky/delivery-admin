@@ -3,20 +3,21 @@ import { FileDown } from "lucide-react";
 import ReligionPieChart from "./charts/religion-pie-chart";
 import ReligionBarChart from "./charts/religion-bar-chart";
 import WardReligionPieCharts from "./charts/ward-religion-pie-charts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
-// Define religion colors for consistency
+// Define religion colors with more modern aesthetic palette
 const RELIGION_COLORS = {
-  HINDU: "#FF5733",
-  BUDDHIST: "#FFC300",
-  KIRANT: "#36A2EB",
-  CHRISTIAN: "#4BC0C0",
-  ISLAM: "#9966FF",
-  NATURE: "#3CB371",
-  BON: "#FF6384",
-  JAIN: "#FFCE56",
-  BAHAI: "#C9CBCF",
-  SIKH: "#FF9F40",
-  OTHER: "#808080",
+  HINDU: "#6366F1", // Indigo
+  BUDDHIST: "#8B5CF6", // Purple
+  KIRANT: "#EC4899", // Pink
+  CHRISTIAN: "#F43F5E", // Rose
+  ISLAM: "#10B981", // Emerald
+  NATURE: "#06B6D4", // Cyan
+  BON: "#3B82F6", // Blue
+  JAIN: "#F59E0B", // Amber
+  BAHAI: "#84CC16", // Lime
+  SIKH: "#9333EA", // Fuchsia
+  OTHER: "#14B8A6", // Teal
 };
 
 interface ReligionChartsProps {
@@ -56,11 +57,27 @@ export default function ReligionCharts({
   return (
     <>
       {/* Overall religion distribution - with pre-rendered table and client-side chart */}
-      <div className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div
+        className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Religion Distribution in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content={`Religious composition of Khajura with a total population of ${totalPopulation}`}
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">धर्म अनुसार जनसंख्या वितरण</h3>
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            धर्म अनुसार जनसंख्या वितरण
+          </h3>
           <p className="text-sm text-muted-foreground">
-            कुल जनसंख्या: {totalPopulation.toLocaleString()} व्यक्ति
+            कुल जनसंख्या:{" "}
+            {localizeNumber(totalPopulation.toLocaleString(), "ne")} व्यक्ति
           </p>
         </div>
 
@@ -93,13 +110,18 @@ export default function ReligionCharts({
                 <tbody>
                   {overallSummary.map((item, i) => (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                      <td className="border p-2">{i + 1}</td>
+                      <td className="border p-2">
+                        {localizeNumber(i + 1, "ne")}
+                      </td>
                       <td className="border p-2">{item.religionName}</td>
                       <td className="border p-2 text-right">
-                        {item.population.toLocaleString()}
+                        {localizeNumber(item.population.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {((item.population / totalPopulation) * 100).toFixed(2)}
+                        {localizeNumber(
+                          ((item.population / totalPopulation) * 100).toFixed(2),
+                          "ne"
+                        )}
                         %
                       </td>
                     </tr>
@@ -111,9 +133,9 @@ export default function ReligionCharts({
                       जम्मा
                     </td>
                     <td className="border p-2 text-right">
-                      {totalPopulation.toLocaleString()}
+                      {localizeNumber(totalPopulation.toLocaleString(), "ne")}
                     </td>
-                    <td className="border p-2 text-right">100.00%</td>
+                    <td className="border p-2 text-right">१००.००%</td>
                   </tr>
                 </tfoot>
               </table>
@@ -147,7 +169,11 @@ export default function ReligionCharts({
                   <div className="flex justify-between items-center">
                     <span>{item.religionName}</span>
                     <span className="font-medium">
-                      {((item.population / totalPopulation) * 100).toFixed(1)}%
+                      {localizeNumber(
+                        ((item.population / totalPopulation) * 100).toFixed(1),
+                        "ne"
+                      )}
+                      %
                     </span>
                   </div>
                   <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -168,16 +194,31 @@ export default function ReligionCharts({
           </div>
           <p className="text-sm text-muted-foreground pt-4">
             {overallSummary.length > 5
-              ? `${overallSummary.length - 5} अन्य धर्महरू पनि छन्।`
+              ? `${localizeNumber(overallSummary.length - 5, "ne")} अन्य धर्महरू पनि छन्।`
               : ""}
           </p>
         </div>
       </div>
 
       {/* Ward-wise distribution - pre-rendered table with client-side chart */}
-      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div
+        className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Ward-wise Religion Distribution in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content="Religion distribution across wards in Khajura"
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">वडा अनुसार धर्म वितरण</h3>
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            वडा अनुसार धर्म वितरण
+          </h3>
           <p className="text-sm text-muted-foreground">
             वडा र धर्म अनुसार जनसंख्या वितरण
           </p>
@@ -195,9 +236,22 @@ export default function ReligionCharts({
       </div>
 
       {/* Detailed ward analysis - with pre-rendered HTML table for SEO */}
-      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div
+        className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Detailed Religious Analysis by Ward in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content="Detailed religious composition of each ward in Khajura"
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">
+          <h3 className="text-xl font-semibold" itemProp="headline">
             वडा अनुसार विस्तृत धार्मिक विश्लेषण
           </h3>
           <p className="text-sm text-muted-foreground">
@@ -223,23 +277,25 @@ export default function ReligionCharts({
               <tbody>
                 {wardNumbers.map((wardNumber, i) => {
                   const wardItems = religionData.filter(
-                    (item) => item.wardNumber === wardNumber,
+                    (item) => item.wardNumber === wardNumber
                   );
                   const wardTotal = wardItems.reduce(
                     (sum, item) => sum + (item.population || 0),
-                    0,
+                    0
                   );
 
                   // Sort by population to find primary and secondary religions
                   const sortedItems = [...wardItems].sort(
-                    (a, b) => (b.population || 0) - (a.population || 0),
+                    (a, b) => (b.population || 0) - (a.population || 0)
                   );
                   const primaryReligion = sortedItems[0];
                   const secondaryReligion = sortedItems[1];
 
                   return (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                      <td className="border p-2">वडा {wardNumber}</td>
+                      <td className="border p-2">
+                        वडा {localizeNumber(wardNumber, "ne")}
+                      </td>
                       <td className="border p-2">
                         {primaryReligion
                           ? RELIGION_NAMES[primaryReligion.religionType] ||
@@ -247,15 +303,23 @@ export default function ReligionCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {primaryReligion?.population?.toLocaleString() || "0"}
+                        {primaryReligion?.population
+                          ? localizeNumber(
+                              primaryReligion.population.toLocaleString(),
+                              "ne"
+                            )
+                          : "०"}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && primaryReligion?.population
-                          ? (
-                              (primaryReligion.population / wardTotal) *
-                              100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                          ? localizeNumber(
+                              (
+                                (primaryReligion.population / wardTotal) *
+                                100
+                              ).toFixed(2),
+                              "ne"
+                            ) + "%"
+                          : "०%"}
                       </td>
                       <td className="border p-2">
                         {secondaryReligion
@@ -264,15 +328,23 @@ export default function ReligionCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {secondaryReligion?.population?.toLocaleString() || "0"}
+                        {secondaryReligion?.population
+                          ? localizeNumber(
+                              secondaryReligion.population.toLocaleString(),
+                              "ne"
+                            )
+                          : "०"}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && secondaryReligion?.population
-                          ? (
-                              (secondaryReligion.population / wardTotal) *
-                              100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                          ? localizeNumber(
+                              (
+                                (secondaryReligion.population / wardTotal) *
+                                100
+                              ).toFixed(2),
+                              "ne"
+                            ) + "%"
+                          : "०%"}
                       </td>
                     </tr>
                   );

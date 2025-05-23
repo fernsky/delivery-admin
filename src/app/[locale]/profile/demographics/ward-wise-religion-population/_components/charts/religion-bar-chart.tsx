@@ -9,7 +9,25 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
+  Cell,
 } from "recharts";
+import { localizeNumber } from "@/lib/utils/localize-number";
+
+// Modern aesthetic color palette for religions
+const RELIGION_COLOR_PALETTE = [
+  "#6366F1", // Indigo
+  "#8B5CF6", // Purple
+  "#EC4899", // Pink
+  "#F43F5E", // Rose
+  "#10B981", // Emerald
+  "#06B6D4", // Cyan
+  "#3B82F6", // Blue
+  "#F59E0B", // Amber
+  "#84CC16", // Lime
+  "#9333EA", // Fuchsia
+  "#14B8A6", // Teal
+  "#EF4444", // Red
+];
 
 interface ReligionBarChartProps {
   wardWiseData: Array<Record<string, any>>;
@@ -22,6 +40,32 @@ export default function ReligionBarChart({
   RELIGION_COLORS,
   RELIGION_NAMES,
 }: ReligionBarChartProps) {
+  // Custom tooltip component for better presentation with Nepali numbers
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-background p-3 border shadow-sm rounded-md">
+          <p className="font-medium">{label}</p>
+          <div className="space-y-1 mt-2">
+            {payload.map((entry: any, index: number) => (
+              <div key={index} className="flex items-center gap-2">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: entry.color }}
+                ></div>
+                <span>{entry.name}: </span>
+                <span className="font-medium">
+                  {localizeNumber(entry.value?.toLocaleString() || "0", "ne")}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -36,33 +80,8 @@ export default function ReligionBarChart({
           padding={{ left: 10, right: 10 }}
           tick={{ fontSize: 12 }}
         />
-        <YAxis />
-        <Tooltip
-          content={({ active, payload }) => {
-            if (active && payload && payload.length) {
-              return (
-                <div className="bg-background p-3 border shadow-sm rounded-md">
-                  <p className="font-medium">{payload[0].payload.ward}</p>
-                  <div className="space-y-1 mt-2">
-                    {payload.map((entry, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <div
-                          className="w-2 h-2"
-                          style={{ backgroundColor: entry.color }}
-                        ></div>
-                        <span>{entry.name}: </span>
-                        <span className="font-medium">
-                          {entry.value?.toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            }
-            return null;
-          }}
-        />
+        <YAxis tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
+        <Tooltip content={CustomTooltip} />
         <Legend
           wrapperStyle={{ paddingTop: 20 }}
           layout="horizontal"
@@ -80,7 +99,7 @@ export default function ReligionBarChart({
             },
             {} as Record<string, boolean>,
           ),
-        ).map((religion) => {
+        ).map((religion, index) => {
           // Find the religion key for color mapping
           const religionKey =
             Object.keys(RELIGION_NAMES).find(
@@ -92,11 +111,23 @@ export default function ReligionBarChart({
               key={religion}
               dataKey={religion}
               stackId="a"
+              name={religion}
               fill={
                 RELIGION_COLORS[religionKey as keyof typeof RELIGION_COLORS] ||
-                `#${Math.floor(Math.random() * 16777215).toString(16)}`
+                RELIGION_COLOR_PALETTE[index % RELIGION_COLOR_PALETTE.length]
               }
-            />
+            >
+              {wardWiseData.map((entry, entryIndex) => (
+                <Cell
+                  key={`cell-${entryIndex}`}
+                  fill={
+                    RELIGION_COLORS[religionKey as keyof typeof RELIGION_COLORS] ||
+                    RELIGION_COLOR_PALETTE[index % RELIGION_COLOR_PALETTE.length]
+                  }
+                  fillOpacity={0.8 + (0.2 * index) / Object.keys(RELIGION_NAMES).length}
+                />
+              ))}
+            </Bar>
           );
         })}
       </BarChart>

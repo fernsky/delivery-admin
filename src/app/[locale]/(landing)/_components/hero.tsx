@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import Head from "next/head";
 import { localizeNumber } from "@/lib/utils/localize-number";
-import TeraiLandscape from "./terai-landscape";
+import Image from "next/image";
 
 interface HeroProps {
   lng: string;
@@ -96,21 +96,33 @@ const Hero: React.FC<HeroProps> = ({
         </script>
       </Head>
 
-      {/* Background Container with Landscape */}
+      {/* Background Container with SVG Landscape */}
       <div className="relative w-full h-screen overflow-hidden">
-        {/* Three.js Terai Landscape Component with reduced opacity */}
-        <TeraiLandscape opacity={0.9} />
-
-        {/* Overlay gradient for better text readability */}
-        <div className="absolute inset-0 z-5 bg-gradient-to-b from-white/20 to-white/60 backdrop-blur-[2px]"></div>
+        {/* SVG Landscape */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/khajura-hero.png"
+            alt="Khajura Hero"
+            fill
+            priority
+            className="object-cover"
+          />
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/50 z-10"></div>
+        </div>
 
         {/* Content Section */}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4">
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 pt-16">
           {/* Hero Content Container with glass effect */}
-          <div className="w-full max-w-4xl mx-auto rounded-2xl backdrop-blur-sm p-8 ">
-            {/* Municipality English Name */}
+          <motion.div 
+            className="w-full max-w-4xl mx-auto rounded-2xl p-8 "
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Municipality Name */}
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-2 text-center text-emerald-950"
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-2 text-center text-white"
               itemProp="name"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -121,7 +133,7 @@ const Hero: React.FC<HeroProps> = ({
 
             {/* Location - District and Province */}
             <motion.p
-              className="text-base sm:text-lg leading-relaxed mb-6 text-gray-800 max-w-2xl mx-auto text-center"
+              className="text-base sm:text-lg leading-relaxed mb-6 text-gray-100 max-w-2xl mx-auto text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -217,8 +229,8 @@ const Hero: React.FC<HeroProps> = ({
               {/* Map Button */}
               <Link href={`/profile`}>
                 <motion.button
-                  className="px-8 py-4 border-2 border-green-600 text-green-700 rounded-xl transition-all flex items-center gap-2 bg-white/80 backdrop-blur-sm hover:bg-white/100"
-                  whileHover={{ backgroundColor: "rgba(240, 253, 244, 0.8)" }}
+                  className="px-8 py-4 border-2 border-green-600 text-green-700 rounded-xl transition-all flex items-center gap-2 bg-white/90 backdrop-blur-sm hover:bg-white/100"
+                  whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
@@ -227,7 +239,7 @@ const Hero: React.FC<HeroProps> = ({
                 </motion.button>
               </Link>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </>

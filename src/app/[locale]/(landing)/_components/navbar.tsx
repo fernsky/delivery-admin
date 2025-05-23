@@ -45,10 +45,12 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "shadow-md" : ""}`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? "bg-white shadow-md" : "bg-transparent"
+      }`}
     >
       <div
-        className={`bg-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/60 transition-all duration-300 ${scrolled ? "py-2" : "py-4"}`}
+        className={`transition-all duration-300 ${scrolled ? "py-4" : "py-4"}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
@@ -58,12 +60,16 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
                 <Mountain className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
-                <span className="text-gray-900 font-bold tracking-tight group-hover:text-green-600 transition-colors">
+                <span className={`font-bold tracking-tight group-hover:text-green-600 transition-colors ${
+                  scrolled ? "text-gray-900" : "text-white"
+                }`}>
                   खजुरा
                 </span>
                 <Badge
                   variant="outline"
-                  className="hidden sm:flex items-center gap-1 mt-1"
+                  className={`hidden sm:flex items-center gap-1 mt-1 ${
+                    scrolled ? "border-gray-200" : "border-white/30 text-white"
+                  }`}
                 >
                   <Sparkles className="w-3 h-3" />
                   <span className="text-[10px]">गाउँपालिका</span>
@@ -80,10 +86,18 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
                     href={item.href}
                     className="group flex items-center gap-3 px-3 py-2"
                   >
-                    <div className="p-2 rounded-lg border border-green-500/20 group-hover:border-green-500/40 transition-colors">
-                      <item.icon className="w-4 h-4 text-green-600" />
+                    <div className={`p-2 rounded-lg ${
+                      scrolled 
+                        ? "border border-green-500/20 group-hover:border-green-500/40" 
+                        : "bg-white/20 backdrop-blur-sm border border-white/30"
+                    } transition-colors`}>
+                      <item.icon className={`w-4 h-4 ${
+                        scrolled ? "text-green-600" : "text-white"
+                      }`} />
                     </div>
-                    <span className="text-sm font-medium text-gray-600 group-hover:text-green-600 transition-colors tracking-tight">
+                    <span className={`text-sm font-medium group-hover:text-green-600 transition-colors tracking-tight ${
+                      scrolled ? "text-gray-600" : "text-white"
+                    }`}>
                       {item.label}
                     </span>
                   </Link>
@@ -94,7 +108,11 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
             {/* Enhanced Mobile Menu Button */}
             <motion.button
               whileTap={{ scale: 0.95 }}
-              className="md:hidden p-2 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-600/10 text-green-700 hover:bg-green-50 transition-colors"
+              className={`md:hidden p-2 rounded-xl transition-colors ${
+                scrolled 
+                  ? "bg-gradient-to-br from-green-500/10 to-emerald-600/10 text-green-700 hover:bg-green-50" 
+                  : "bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm"
+              }`}
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X size={20} /> : <Menu size={20} />}

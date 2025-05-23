@@ -7,6 +7,7 @@ import ReligionAnalysisSection from "./_components/religion-analysis-section";
 import ReligionSEO from "./_components/religion-seo";
 import { api } from "@/trpc/server";
 import { ReligionType } from "@/server/api/routers/profile/demographics/ward-wise-religion-population.schema";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
@@ -75,7 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
       OTHER: "Other",
     };
 
-    // Create rich keywords with actual data
+    // Create rich keywords with actual data using localized numbers
     const keywordsNP = [
       "खजुरा गाउँपालिका धार्मिक जनसंख्या",
       "खजुरा धार्मिक विविधता",
@@ -84,7 +85,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "वडा अनुसार धार्मिक जनसंख्या",
       "धार्मिक विविधता तथ्याङ्क",
       "धार्मिक जनगणना खजुरा",
-      `खजुरा कुल जनसंख्या ${totalPopulation}`,
+      `खजुरा कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")}`,
     ];
 
     const keywordsEN = [
@@ -100,8 +101,8 @@ export async function generateMetadata(): Promise<Metadata> {
       `Khajura total population ${totalPopulation}`,
     ];
 
-    // Create detailed description with actual data
-    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार धार्मिक जनसंख्या वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${totalPopulation} मध्ये ${RELIGION_NAMES_NP[topReligions[0] as ReligionType]} (${religionCounts[topReligions[0]]}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${RELIGION_NAMES_NP[topReligions[1] as ReligionType]} (${religionCounts[topReligions[1]]}) र ${RELIGION_NAMES_NP[topReligions[2] as ReligionType]} (${religionCounts[topReligions[2]]})। विभिन्न धर्मावलम्बीहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
+    // Create detailed description with actual data using localized numbers
+    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार धार्मिक जनसंख्या वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")} मध्ये ${RELIGION_NAMES_NP[topReligions[0] as ReligionType]} (${localizeNumber(religionCounts[topReligions[0]].toString(), "ne")}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${RELIGION_NAMES_NP[topReligions[1] as ReligionType]} (${localizeNumber(religionCounts[topReligions[1]].toString(), "ne")}) र ${RELIGION_NAMES_NP[topReligions[2] as ReligionType]} (${localizeNumber(religionCounts[topReligions[2]].toString(), "ne")})। विभिन्न धर्मावलम्बीहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
 
     const descriptionEN = `Ward-wise religious population distribution, trends and analysis for Khajura Rural Municipality. Out of a total population of ${totalPopulation}, ${RELIGION_NAMES_EN[topReligions[0] as ReligionType]} (${religionCounts[topReligions[0]]}) is the largest group, followed by ${RELIGION_NAMES_EN[topReligions[1] as ReligionType]} (${religionCounts[topReligions[1]]}) and ${RELIGION_NAMES_EN[topReligions[2] as ReligionType]} (${religionCounts[topReligions[2]]})। Detailed statistics and visualizations of various religious communities.`;
 
@@ -145,7 +146,6 @@ const toc = [
   { level: 2, text: "धर्म अनुसार जनसंख्या", slug: "religion-distribution" },
   { level: 2, text: "वडा अनुसार धार्मिक विविधता", slug: "ward-wise-religion" },
   { level: 2, text: "प्रमुख धर्महरूको विश्लेषण", slug: "major-religions" },
-  { level: 2, text: "तथ्याङ्क स्रोत", slug: "data-source" },
 ];
 
 // Define Nepali names for religions
@@ -298,13 +298,16 @@ export default async function WardWiseReligionPopulationPage() {
             <p>
               खजुरा गाउँपालिका विभिन्न धर्मावलम्बी समुदायहरूको सद्भाव र
               सहिष्णुताको नमूना हो, र यस पालिकामा पनि विविध धार्मिक समुदायहरूको
-              बसोबास रहेको छ। कुल जनसंख्या
-              {totalPopulation.toLocaleString()} मध्ये{" "}
+              बसोबास रहेको छ। कुल जनसंख्या{" "}
+              {localizeNumber(totalPopulation.toLocaleString(), "ne")} मध्ये{" "}
               {overallSummary[0]?.religionName || ""} धर्म मान्ने व्यक्तिहरू{" "}
-              {(
-                ((overallSummary[0]?.population || 0) / totalPopulation) *
-                100
-              ).toFixed(1)}
+              {localizeNumber(
+                (
+                  ((overallSummary[0]?.population || 0) / totalPopulation) *
+                  100
+                ).toFixed(1),
+                "ne"
+              )}
               % रहेका छन्। यस तथ्याङ्कले धार्मिक नीति, सांस्कृतिक संरक्षण र
               सामाजिक समानतामा सहयोग पुर्‍याउँछ।
             </p>
@@ -341,10 +344,10 @@ export default async function WardWiseReligionPopulationPage() {
               धर्महरूमध्ये{" "}
               {RELIGION_NAMES[overallSummary[0]?.religion] || "हिन्दू"}
               सबैभन्दा धेरै व्यक्तिहरूले मान्ने धर्म हो, जसलाई कुल जनसंख्याको{" "}
-              {(
+              {localizeNumber((
                 ((overallSummary[0]?.population || 0) / totalPopulation) *
                 100
-              ).toFixed(2)}
+              ).toFixed(2), "ne")}
               % ले अवलम्बन गर्दछन्।
             </p>
 
@@ -354,24 +357,6 @@ export default async function WardWiseReligionPopulationPage() {
               totalPopulation={totalPopulation}
               RELIGION_NAMES={RELIGION_NAMES}
             />
-
-            <h2 id="data-source" className="scroll-m-20 border-b pb-2">
-              तथ्याङ्क स्रोत
-            </h2>
-            <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू नेपालको राष्ट्रिय जनगणना र खजुरा
-              गाउँपालिकाको आफ्नै सर्वेक्षणबाट संकलन गरिएको हो। यी तथ्याङ्कहरूको
-              महत्व निम्न अनुसार छ:
-            </p>
-
-            <ul>
-              <li>धार्मिक विविधता र सहिष्णुतालाई प्रवर्द्धन गर्न</li>
-              <li>
-                विभिन्न धार्मिक समुदायहरूको आवश्यकता अनुसार योजना निर्माण गर्न
-              </li>
-              <li>सांस्कृतिक तथा धार्मिक सम्पदाको संरक्षण गर्न</li>
-              <li>सामाजिक सद्भाव र समानता कायम राख्न</li>
-            </ul>
           </div>
         </section>
       </div>

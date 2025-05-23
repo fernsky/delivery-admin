@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface ReligionAnalysisProps {
   overallSummary: Array<{
@@ -18,18 +18,19 @@ export default function ReligionAnalysisSection({
   totalPopulation,
   RELIGION_NAMES,
 }: ReligionAnalysisProps) {
+  // Modern aesthetic color palette for religions
   const RELIGION_COLORS = {
-    HINDU: "#FF5733",
-    BUDDHIST: "#FFC300",
-    KIRANT: "#36A2EB",
-    CHRISTIAN: "#4BC0C0",
-    ISLAM: "#9966FF",
-    NATURE: "#3CB371",
-    BON: "#FF6384",
-    JAIN: "#FFCE56",
-    BAHAI: "#C9CBCF",
-    SIKH: "#FF9F40",
-    OTHER: "#808080",
+    HINDU: "#6366F1", // Indigo
+    BUDDHIST: "#8B5CF6", // Purple
+    KIRANT: "#EC4899", // Pink
+    CHRISTIAN: "#F43F5E", // Rose
+    ISLAM: "#10B981", // Emerald
+    NATURE: "#06B6D4", // Cyan
+    BON: "#3B82F6", // Blue
+    JAIN: "#F59E0B", // Amber
+    BAHAI: "#84CC16", // Lime
+    SIKH: "#9333EA", // Fuchsia
+    OTHER: "#14B8A6", // Teal
   };
 
   // Calculate top two religions ratio if both exist
@@ -66,7 +67,7 @@ export default function ReligionAnalysisSection({
       );
       document.body.setAttribute(
         "data-total-population",
-        totalPopulation.toString(),
+        localizeNumber(totalPopulation.toString(), "ne"),
       );
 
       // Add main religion data
@@ -79,11 +80,11 @@ export default function ReligionAnalysisSection({
         );
         document.body.setAttribute(
           "data-main-religion-population",
-          topReligion.population.toString(),
+          localizeNumber(topReligion.population.toString(), "ne"),
         );
         document.body.setAttribute(
           "data-main-religion-percentage",
-          ((topReligion.population / totalPopulation) * 100).toFixed(2),
+          localizeNumber(((topReligion.population / totalPopulation) * 100).toFixed(2), "ne"),
         );
       }
 
@@ -97,11 +98,11 @@ export default function ReligionAnalysisSection({
         );
         document.body.setAttribute(
           "data-second-religion-population",
-          secondReligion.population.toString(),
+          localizeNumber(secondReligion.population.toString(), "ne"),
         );
         document.body.setAttribute(
           "data-second-religion-percentage",
-          ((secondReligion.population / totalPopulation) * 100).toFixed(2),
+          localizeNumber(((secondReligion.population / totalPopulation) * 100).toFixed(2), "ne"),
         );
       }
     }
@@ -171,9 +172,9 @@ export default function ReligionAnalysisSection({
                   {/* Hidden span for SEO with English name */}
                   <span className="sr-only">{religionEN}</span>
                 </h3>
-                <p className="text-2xl font-bold">{percentage}%</p>
+                <p className="text-2xl font-bold">{localizeNumber(percentage, "ne")}%</p>
                 <p className="text-sm text-muted-foreground">
-                  {item.population.toLocaleString()} व्यक्ति
+                  {localizeNumber(item.population.toLocaleString(), "ne")} व्यक्ति
                   <span className="sr-only">
                     ({item.population.toLocaleString()} people)
                   </span>
@@ -213,7 +214,7 @@ export default function ReligionAnalysisSection({
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {topReligion
-                ? `कुल जनसंख्याको ${((topReligion.population / totalPopulation) * 100).toFixed(2)}% व्यक्ति`
+                ? `कुल जनसंख्याको ${localizeNumber(((topReligion.population / totalPopulation) * 100).toFixed(2), "ne")}% व्यक्ति`
                 : ""}
               <span className="sr-only">
                 {topReligion
@@ -236,10 +237,10 @@ export default function ReligionAnalysisSection({
                 Primary to Secondary Religion Ratio in Khajura
               </span>
             </h4>
-            <p className="text-3xl font-bold">{topTwoReligionRatio}</p>
+            <p className="text-3xl font-bold">{localizeNumber(topTwoReligionRatio, "ne")}</p>
             <p className="text-sm text-muted-foreground mt-2">
               {topReligion && secondReligion
-                ? `हरेक ${topTwoReligionRatio} ${topReligion.religionName} अवलम्बनकर्ताका लागि 1 ${secondReligion.religionName} अवलम्बनकर्ता`
+                ? `हरेक ${localizeNumber(topTwoReligionRatio, "ne")} ${topReligion.religionName} अवलम्बनकर्ताका लागि 1 ${secondReligion.religionName} अवलम्बनकर्ता`
                 : ""}
               <span className="sr-only">
                 {topReligion && secondReligion
@@ -249,30 +250,6 @@ export default function ReligionAnalysisSection({
             </p>
           </div>
         </div>
-      </div>
-
-      <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">
-          थप जानकारी
-          <span className="sr-only">
-            Additional Information about Religious Demographics in Khajura
-          </span>
-        </h3>
-        <p>
-          खजुरा गाउँपालिकाको धार्मिक वितरण सम्बन्धी थप जानकारी वा विस्तृत
-          तथ्याङ्कको लागि, कृपया{" "}
-          <Link href="/contact" className="text-primary hover:underline">
-            हामीलाई सम्पर्क
-          </Link>{" "}
-          गर्नुहोस् वा{" "}
-          <Link
-            href="/profile/demographics"
-            className="text-primary hover:underline"
-          >
-            जनसांख्यिकी तथ्याङ्क
-          </Link>{" "}
-          खण्डमा हेर्नुहोस्।
-        </p>
       </div>
     </>
   );
