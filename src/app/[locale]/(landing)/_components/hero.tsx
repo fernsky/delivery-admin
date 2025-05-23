@@ -101,10 +101,10 @@ const Hero: React.FC<HeroProps> = ({
         {/* SVG Landscape */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/khajura-hero.png"
+            src="/images/khajura-hero.jpg"
             alt="Khajura Hero"
             fill
-            priority
+            priority={false}
             className="object-cover"
           />
           {/* Dark overlay */}

@@ -127,9 +127,11 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-green-100 z-[500]"
+              className="md:hidden border-t border-green-100/20 z-[500]"
             >
-              <div className="bg-gradient-to-b from-white to-green-50/30 px-4 pt-2 pb-3 z-[500]">
+              <div className={`px-4 pt-2 pb-3 z-[500] ${
+                scrolled ? "bg-gradient-to-b from-white to-green-50/30" : "bg-transparent backdrop-blur-sm"
+              }`}>
                 {menuItems.map((item, index) => (
                   <motion.div
                     key={item.label}
@@ -139,17 +141,31 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
                   >
                     <Link
                       href={item.href}
-                      className="flex items-center gap-4 p-3 rounded-xl hover:bg-gradient-to-br hover:from-green-500/10 hover:to-emerald-600/10 group transition-all duration-300"
+                      className={`flex items-center gap-4 p-3 rounded-xl ${
+                        scrolled 
+                          ? "hover:bg-gradient-to-br hover:from-green-500/10 hover:to-emerald-600/10" 
+                          : "hover:bg-white/20"
+                      } group transition-all duration-300`}
                       onClick={() => setIsOpen(false)}
                     >
-                      <div className="p-2 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-sm group-hover:shadow-md transition-all">
+                      <div className={`p-2 rounded-lg ${
+                        scrolled 
+                          ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white" 
+                          : "border border-white/30 bg-white/20 text-white"
+                      } shadow-sm group-hover:shadow-md transition-all`}>
                         <item.icon className="w-4 h-4" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-sm font-medium text-gray-900 group-hover:text-green-600 transition-colors">
+                        <h4 className={`text-sm font-medium ${
+                          scrolled 
+                            ? "text-gray-900 group-hover:text-green-600" 
+                            : "text-white group-hover:text-white/80"
+                        } transition-colors`}>
                           {item.label}
                         </h4>
-                        <p className="text-xs text-gray-500">
+                        <p className={`text-xs ${
+                          scrolled ? "text-gray-500" : "text-white/70"
+                        }`}>
                           {item.description}
                         </p>
                       </div>
