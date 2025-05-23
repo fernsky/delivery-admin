@@ -17,6 +17,22 @@ export const OccupationTypeEnum = z.enum([
 ]);
 export type OccupationType = z.infer<typeof OccupationTypeEnum>;
 
+// Define Nepali occupation labels for display
+export const occupationLabels: Record<string, string> = {
+  GOVERNMENTAL_JOB: "सरकारी नोकरी / जागिर",
+  NON_GOVERNMENTAL_JOB: "गैरसरकारी नोकरी / जागिर",
+  LABOUR: "ज्याला/ मजदुरी",
+  FOREIGN_EMPLOYMENT: "वैदेशिक रोजगारी",
+  BUSINESS: "व्यापार",
+  OTHER_EMPLOYMENT: "अन्य रोजगारी",
+  STUDENT: "विद्यार्थी",
+  HOUSEHOLDER: "गृहणी",
+  OTHER_UNEMPLOYMENT: "अन्य बेरोजगार",
+  INDUSTRY: "उद्योग, व्यापार, कृषि",
+  ANIMAL_HUSBANDRY: "पशुपालन",
+  OTHER_SELF_EMPLOYMENT: "अन्य स्वरोजगार",
+};
+
 // Schema for ward-wise major occupation data
 export const wardWiseMajorOccupationSchema = z.object({
   id: z.string().optional(),
