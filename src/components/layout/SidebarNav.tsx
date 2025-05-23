@@ -79,14 +79,14 @@ const navItems = [
     href: "/profile/economics",
     icon: <PieChart className="w-4 h-4" />,
     items: [
-      {
-        title: "रोजगारी स्थिति",
-        href: "/profile/economics/economic-status",
-      },
-      {
-        title: "आय स्रोतहरू",
-        href: "/profile/economics/income-sources",
-      },
+      // {
+      //   title: "रोजगारी स्थिति",
+      //   href: "/profile/economics/economic-status",
+      // },
+      // {
+      //   title: "आय स्रोतहरू",
+      //   href: "/profile/economics/income-sources",
+      // },
       {
         title: "निर्यात उत्पादनहरू",
         href: "/profile/economics/exported-products",
