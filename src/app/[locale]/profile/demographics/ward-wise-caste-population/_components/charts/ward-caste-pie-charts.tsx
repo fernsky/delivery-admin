@@ -1,6 +1,7 @@
 "use client";
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface WardCastePieChartsProps {
   wardNumbers: number[];
@@ -23,6 +24,30 @@ export default function WardCastePieCharts({
   CASTE_NAMES,
   CASTE_COLORS,
 }: WardCastePieChartsProps) {
+  // Custom tooltip component with Nepali numbers
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const { name, value } = payload[0];
+      return (
+        <div className="bg-background p-3 border shadow-sm rounded-md">
+          <p className="font-medium">{name}</p>
+          <div className="flex items-center justify-between gap-4 mt-1">
+            <span>जनसंख्या:</span>
+            <span className="font-medium">
+              {localizeNumber(value.toLocaleString(), "ne")}
+            </span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Custom label with Nepali numbers
+  const renderCustomizedLabel = ({ name, percent }: any) => {
+    return `${name}: ${localizeNumber((percent * 100).toFixed(1), "ne")}%`;
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {wardNumbers.map((wardNumber) => {
@@ -56,7 +81,7 @@ export default function WardCastePieCharts({
         return (
           <div key={wardNumber} className="h-[300px]">
             <h3 className="text-lg font-medium mb-2 text-center">
-              वडा {wardNumber}
+              वडा {localizeNumber(wardNumber.toString(), "ne")}
             </h3>
             <ResponsiveContainer width="100%" height="90%">
               <PieChart>
@@ -68,9 +93,7 @@ export default function WardCastePieCharts({
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) =>
-                    `${name}: ${(percent * 100).toFixed(1)}%`
-                  }
+                  label={renderCustomizedLabel}
                 >
                   {wardData.map((entry, index) => {
                     const casteKey =
@@ -93,7 +116,7 @@ export default function WardCastePieCharts({
                     );
                   })}
                 </Pie>
-                <Tooltip />
+                <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           </div>

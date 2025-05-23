@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface CasteAnalysisProps {
   overallSummary: Array<{
@@ -18,37 +18,37 @@ export default function CasteAnalysisSection({
   totalPopulation,
   CASTE_NAMES,
 }: CasteAnalysisProps) {
-  // Define colors for visualization
+  // Define colors for visualization with updated palette
   const CASTE_COLORS = {
-    BRAHMIN_HILL: "#FF5733",
-    CHHETRI: "#FFC300",
-    THAKURI: "#36A2EB",
-    SANYASI_DASNAMI: "#4BC0C0",
-    BRAHMIN_TARAI: "#9966FF",
-    RAJPUT: "#3CB371",
-    KAYASTHA: "#FF6384",
-    BANIYA: "#FFCE56",
-    NEWAR: "#C9CBCF",
-    GURUNG: "#FF9F40",
-    MAGAR: "#8A2BE2",
-    TAMANG: "#20B2AA",
-    RAI: "#B22222",
-    LIMBU: "#228B22",
-    SHERPA: "#4682B4",
-    THAKALI: "#D2691E",
-    THARU: "#800080",
-    MAJHI: "#FF4500",
-    DALIT_HILL: "#2F4F4F",
-    DALIT_TARAI: "#8B4513",
-    MUSLIM: "#708090",
-    MADHESI: "#A0522D",
-    YADAV: "#6B8E23",
-    TELI: "#483D8B",
-    KOIRI: "#CD5C5C",
-    KURMI: "#9ACD32",
-    MARWADI: "#00CED1",
-    BANGALI: "#FF1493",
-    OTHER: "#808080",
+    BRAHMIN_HILL: "#6366F1", // Indigo
+    CHHETRI: "#8B5CF6", // Purple
+    THAKURI: "#EC4899", // Pink
+    SANYASI_DASNAMI: "#F43F5E", // Rose
+    BRAHMIN_TARAI: "#10B981", // Emerald
+    RAJPUT: "#06B6D4", // Cyan
+    KAYASTHA: "#3B82F6", // Blue
+    BANIYA: "#F59E0B", // Amber
+    NEWAR: "#84CC16", // Lime
+    GURUNG: "#9333EA", // Fuchsia
+    MAGAR: "#14B8A6", // Teal
+    TAMANG: "#EF4444", // Red
+    RAI: "#22D3EE", // Sky
+    LIMBU: "#FB923C", // Orange
+    SHERPA: "#A3E635", // Lime
+    THAKALI: "#E879F9", // Fuchsia
+    THARU: "#8B5CF6", // Purple
+    MAJHI: "#F97316", // Orange
+    DALIT_HILL: "#2563EB", // Blue
+    DALIT_TARAI: "#DC2626", // Red
+    MUSLIM: "#059669", // Emerald
+    MADHESI: "#D946EF", // Fuchsia
+    YADAV: "#14B8A6", // Teal
+    TELI: "#F59E0B", // Amber
+    KOIRI: "#EC4899", // Pink
+    KURMI: "#6366F1", // Indigo
+    MARWADI: "#F43F5E", // Rose
+    BANGALI: "#06B6D4", // Cyan
+    OTHER: "#64748B", // Slate
   };
 
   // Calculate top two castes ratio if both exist
@@ -151,7 +151,7 @@ export default function CasteAnalysisSection({
       );
       document.body.setAttribute(
         "data-total-population",
-        totalPopulation.toString()
+        localizeNumber(totalPopulation.toString(), "ne")
       );
 
       // Add main caste data
@@ -164,11 +164,11 @@ export default function CasteAnalysisSection({
         );
         document.body.setAttribute(
           "data-main-caste-population",
-          topCaste.population.toString()
+          localizeNumber(topCaste.population.toString(), "ne")
         );
         document.body.setAttribute(
           "data-main-caste-percentage",
-          ((topCaste.population / totalPopulation) * 100).toFixed(2)
+          localizeNumber(((topCaste.population / totalPopulation) * 100).toFixed(2), "ne")
         );
       }
 
@@ -182,11 +182,11 @@ export default function CasteAnalysisSection({
         );
         document.body.setAttribute(
           "data-second-caste-population",
-          secondCaste.population.toString()
+          localizeNumber(secondCaste.population.toString(), "ne")
         );
         document.body.setAttribute(
           "data-second-caste-percentage",
-          ((secondCaste.population / totalPopulation) * 100).toFixed(2)
+          localizeNumber(((secondCaste.population / totalPopulation) * 100).toFixed(2), "ne")
         );
       }
 
@@ -207,19 +207,22 @@ export default function CasteAnalysisSection({
             item.casteType === "BRAHMIN_HILL"
               ? "Hill Brahmin"
               : item.casteType === "CHHETRI"
-              ? "Chhetri"
-              : item.casteType === "THAKURI"
-              ? "Thakuri"
-              : item.casteType === "THARU"
-              ? "Tharu"
-              : item.casteType === "MAGAR"
-              ? "Magar"
-              : item.casteType === "NEWAR"
-              ? "Newar"
-              : "Other";
+                ? "Chhetri"
+                : item.casteType === "THAKURI"
+                  ? "Thakuri"
+                  : item.casteType === "THARU"
+                    ? "Tharu"
+                    : item.casteType === "MAGAR"
+                      ? "Magar"
+                      : item.casteType === "NEWAR"
+                        ? "Newar"
+                        : "Other";
 
           // Calculate percentage
-          const percentage = ((item.population / totalPopulation) * 100).toFixed(2);
+          const percentage = (
+            (item.population / totalPopulation) *
+            100
+          ).toFixed(2);
 
           return (
             <div
@@ -233,12 +236,10 @@ export default function CasteAnalysisSection({
               <div
                 className="absolute bottom-0 left-0 right-0"
                 style={{
-                  height: `${
-                    Math.min(
-                      (item.population / overallSummary[0].population) * 100,
-                      100
-                    )
-                  }%`,
+                  height: `${Math.min(
+                    (item.population / overallSummary[0].population) * 100,
+                    100,
+                  )}%`,
                   backgroundColor:
                     CASTE_COLORS[item.casteType as keyof typeof CASTE_COLORS] ||
                     "#888",
@@ -252,9 +253,9 @@ export default function CasteAnalysisSection({
                   {/* Hidden span for SEO with English name */}
                   <span className="sr-only">{casteEN}</span>
                 </h3>
-                <p className="text-2xl font-bold">{percentage}%</p>
+                <p className="text-2xl font-bold">{localizeNumber(percentage, "ne")}%</p>
                 <p className="text-sm text-muted-foreground">
-                  {item.population.toLocaleString()} व्यक्ति
+                  {localizeNumber(item.population.toLocaleString(), "ne")} व्यक्ति
                   <span className="sr-only">
                     ({item.population.toLocaleString()} people)
                   </span>
@@ -267,10 +268,8 @@ export default function CasteAnalysisSection({
 
       <div className="bg-muted/50 p-4 rounded-lg mt-8">
         <h3 className="text-xl font-medium mb-4">
-          जातिगत विविधता विश्लेषण
-          <span className="sr-only">
-            Caste Diversity Analysis of Khajura
-          </span>
+          खजुरा गाउँपालिकाको जातिगत विविधता विश्लेषण
+          <span className="sr-only">Caste Diversity Analysis of Khajura</span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
@@ -284,7 +283,7 @@ export default function CasteAnalysisSection({
             }
           >
             <h4 className="font-medium mb-2">
-              प्रमुख जाति
+              खजुरा गाउँपालिकाको प्रमुख जाति
               <span className="sr-only">
                 Main Caste in Khajura Rural Municipality
               </span>
@@ -294,7 +293,7 @@ export default function CasteAnalysisSection({
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {topCaste
-                ? `कुल जनसंख्याको ${((topCaste.population / totalPopulation) * 100).toFixed(2)}% व्यक्ति`
+                ? `कुल जनसंख्याको ${localizeNumber(((topCaste.population / totalPopulation) * 100).toFixed(2), "ne")}% व्यक्ति`
                 : ""}
               <span className="sr-only">
                 {topCaste
@@ -317,10 +316,10 @@ export default function CasteAnalysisSection({
                 Primary to Secondary Caste Ratio in Khajura
               </span>
             </h4>
-            <p className="text-3xl font-bold">{topTwoCasteRatio}</p>
+            <p className="text-3xl font-bold">{localizeNumber(topTwoCasteRatio, "ne")}</p>
             <p className="text-sm text-muted-foreground mt-2">
               {topCaste && secondCaste
-                ? `हरेक ${topTwoCasteRatio} ${topCaste.casteTypeDisplay} का लागि 1 ${secondCaste.casteTypeDisplay}`
+                ? `हरेक ${localizeNumber(topTwoCasteRatio, "ne")} ${topCaste.casteTypeDisplay} का लागि १ ${secondCaste.casteTypeDisplay}`
                 : ""}
               <span className="sr-only">
                 {topCaste && secondCaste
@@ -347,7 +346,7 @@ export default function CasteAnalysisSection({
             >
               <div className="flex justify-between">
                 <span className="font-medium">{category.category}</span>
-                <span>{category.percentage}%</span>
+                <span>{localizeNumber(category.percentage, "ne")}%</span>
               </div>
               <div className="w-full bg-muted h-3 rounded-full mt-1 overflow-hidden">
                 <div
@@ -359,35 +358,11 @@ export default function CasteAnalysisSection({
                 ></div>
               </div>
               <p className="text-sm text-muted-foreground mt-1">
-                {category.population.toLocaleString()} व्यक्ति
+                {localizeNumber(category.population.toLocaleString(), "ne")} व्यक्ति
               </p>
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">
-          थप जानकारी
-          <span className="sr-only">
-            Additional Information about Caste Demographics in Khajura
-          </span>
-        </h3>
-        <p>
-          पालिकाको जातिगत वितरण सम्बन्धी थप जानकारी वा विस्तृत तथ्याङ्कको लागि,
-          कृपया{" "}
-          <Link href="/contact" className="text-primary hover:underline">
-            हामीलाई सम्पर्क
-          </Link>{" "}
-          गर्नुहोस् वा{" "}
-          <Link
-            href="/profile/demographics"
-            className="text-primary hover:underline"
-          >
-            जनसांख्यिकी तथ्याङ्क
-          </Link>{" "}
-          खण्डमा हेर्नुहोस्।
-        </p>
       </div>
     </>
   );

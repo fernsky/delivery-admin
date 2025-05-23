@@ -172,9 +172,12 @@ export default function ReligionAnalysisSection({
                   {/* Hidden span for SEO with English name */}
                   <span className="sr-only">{religionEN}</span>
                 </h3>
-                <p className="text-2xl font-bold">{localizeNumber(percentage, "ne")}%</p>
+                <p className="text-2xl font-bold">
+                  {localizeNumber(percentage, "ne")}%
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  {localizeNumber(item.population.toLocaleString(), "ne")} व्यक्ति
+                  {localizeNumber(item.population.toLocaleString(), "ne")}{" "}
+                  व्यक्ति
                   <span className="sr-only">
                     ({item.population.toLocaleString()} people)
                   </span>
@@ -187,7 +190,7 @@ export default function ReligionAnalysisSection({
 
       <div className="bg-muted/50 p-4 rounded-lg mt-8">
         <h3 className="text-xl font-medium mb-4">
-          धार्मिक विविधता विश्लेषण
+          खजुरा गाउँपालिकाको धार्मिक विविधता विश्लेषण
           <span className="sr-only">
             Religious Diversity Analysis of Khajura
           </span>
@@ -204,7 +207,7 @@ export default function ReligionAnalysisSection({
             }
           >
             <h4 className="font-medium mb-2">
-              प्रमुख धर्म
+              खजुरा गाउँपालिकाको प्रमुख धर्म
               <span className="sr-only">
                 Main Religion in Khajura Rural Municipality
               </span>
@@ -232,15 +235,17 @@ export default function ReligionAnalysisSection({
             data-secondary-religion={secondReligion?.religion}
           >
             <h4 className="font-medium mb-2">
-              प्रमुख-दोस्रो धर्म अनुपात
+              खजुरा गाउँपालिकाको प्रमुख-दोस्रो धर्म अनुपात
               <span className="sr-only">
                 Primary to Secondary Religion Ratio in Khajura
               </span>
             </h4>
-            <p className="text-3xl font-bold">{localizeNumber(topTwoReligionRatio, "ne")}</p>
+            <p className="text-3xl font-bold">
+              {localizeNumber(topTwoReligionRatio, "ne")}
+            </p>
             <p className="text-sm text-muted-foreground mt-2">
               {topReligion && secondReligion
-                ? `हरेक ${localizeNumber(topTwoReligionRatio, "ne")} ${topReligion.religionName} अवलम्बनकर्ताका लागि 1 ${secondReligion.religionName} अवलम्बनकर्ता`
+                ? `हरेक ${localizeNumber(topTwoReligionRatio, "ne")} ${topReligion.religionName} अवलम्बनकर्ताका लागि १ ${secondReligion.religionName} अवलम्बनकर्ता`
                 : ""}
               <span className="sr-only">
                 {topReligion && secondReligion

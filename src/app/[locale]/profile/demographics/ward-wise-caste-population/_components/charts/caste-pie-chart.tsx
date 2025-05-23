@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface CastePieChartProps {
   pieChartData: Array<{
@@ -24,6 +25,37 @@ export default function CastePieChart({
   CASTE_NAMES,
   CASTE_COLORS,
 }: CastePieChartProps) {
+  // Custom tooltip component for better presentation with Nepali numbers
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const { name, value, payload: originalPayload } = payload[0];
+      const percentage = originalPayload.percentage;
+      return (
+        <div className="bg-background p-3 border shadow-sm rounded-md">
+          <p className="font-medium">{name}</p>
+          <div className="flex justify-between gap-4 mt-1">
+            <span className="text-sm">जनसंख्या:</span>
+            <span className="font-medium">
+              {localizeNumber(value.toLocaleString(), "ne")}
+            </span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-sm">प्रतिशत:</span>
+            <span className="font-medium">
+              {localizeNumber(percentage, "ne")}%
+            </span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Custom label with Nepali numbers for percentages
+  const renderCustomizedLabel = ({ name, payload }: any) => {
+    return `${name}: ${localizeNumber(payload.percentage, "ne")}%`;
+  };
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <PieChart>
@@ -32,7 +64,7 @@ export default function CastePieChart({
           cx="50%"
           cy="50%"
           labelLine={true}
-          label={({ name, percentage }) => `${name}: ${percentage}%`}
+          label={renderCustomizedLabel}
           outerRadius={140}
           fill="#8884d8"
           dataKey="value"
@@ -56,8 +88,8 @@ export default function CastePieChart({
             );
           })}
         </Pie>
-        <Tooltip formatter={(value) => Number(value).toLocaleString()} />
-        <Legend />
+        <Tooltip content={CustomTooltip} />
+        <Legend formatter={(value) => value} />
       </PieChart>
     </ResponsiveContainer>
   );

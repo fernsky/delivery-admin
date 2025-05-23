@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface LanguageAnalysisProps {
   overallSummary: Array<{
@@ -18,18 +19,25 @@ export default function LanguageAnalysisSection({
   totalPopulation,
   LANGUAGE_NAMES,
 }: LanguageAnalysisProps) {
+  // Modern aesthetic color palette for languages
   const LANGUAGE_COLORS = {
-    NEPALI: "#FF5733",
-    MAITHILI: "#FFC300",
-    BHOJPURI: "#36A2EB",
-    THARU: "#4BC0C0",
-    TAMANG: "#9966FF",
-    NEWARI: "#3CB371",
-    MAGAR: "#FF6384",
-    BAJJIKA: "#FFCE56",
-    URDU: "#C9CBCF",
-    HINDI: "#FF9F40",
-    OTHER: "#808080",
+    NEPALI: "#6366F1", // Indigo
+    MAITHILI: "#8B5CF6", // Purple
+    BHOJPURI: "#EC4899", // Pink
+    THARU: "#F43F5E", // Rose
+    TAMANG: "#10B981", // Emerald
+    NEWARI: "#06B6D4", // Cyan
+    MAGAR: "#3B82F6", // Blue
+    BAJJIKA: "#F59E0B", // Amber
+    URDU: "#84CC16", // Lime
+    HINDI: "#9333EA", // Fuchsia
+    LIMBU: "#14B8A6", // Teal
+    RAI: "#EF4444", // Red
+    GURUNG: "#22D3EE", // Sky
+    SHERPA: "#FB923C", // Orange
+    DOTELI: "#A3E635", // Lime
+    AWADI: "#E879F9", // Fuchsia
+    OTHER: "#94A3B8", // Slate
   };
 
   // Calculate top two languages ratio if both exist
@@ -72,7 +80,7 @@ export default function LanguageAnalysisSection({
       );
       document.body.setAttribute(
         "data-total-population",
-        totalPopulation.toString(),
+        localizeNumber(totalPopulation.toString(), "ne"),
       );
 
       // Add main language data
@@ -85,11 +93,14 @@ export default function LanguageAnalysisSection({
         );
         document.body.setAttribute(
           "data-main-language-population",
-          topLanguage.population.toString(),
+          localizeNumber(topLanguage.population.toString(), "ne"),
         );
         document.body.setAttribute(
           "data-main-language-percentage",
-          ((topLanguage.population / totalPopulation) * 100).toFixed(2),
+          localizeNumber(
+            ((topLanguage.population / totalPopulation) * 100).toFixed(2),
+            "ne",
+          ),
         );
       }
 
@@ -103,11 +114,14 @@ export default function LanguageAnalysisSection({
         );
         document.body.setAttribute(
           "data-second-language-population",
-          secondLanguage.population.toString(),
+          localizeNumber(secondLanguage.population.toString(), "ne"),
         );
         document.body.setAttribute(
           "data-second-language-percentage",
-          ((secondLanguage.population / totalPopulation) * 100).toFixed(2),
+          localizeNumber(
+            ((secondLanguage.population / totalPopulation) * 100).toFixed(2),
+            "ne",
+          ),
         );
       }
     }
@@ -135,7 +149,11 @@ export default function LanguageAnalysisSection({
                           ? "Magar"
                           : item.language === "BAJJIKA"
                             ? "Bajjika"
-                            : "Other";
+                            : item.language === "URDU"
+                              ? "Urdu"
+                              : item.language === "HINDI"
+                                ? "Hindi"
+                                : "Other";
 
           // Calculate percentage
           const percentage = (
@@ -173,9 +191,11 @@ export default function LanguageAnalysisSection({
                   {/* Hidden span for SEO with English name */}
                   <span className="sr-only">{languageEN}</span>
                 </h3>
-                <p className="text-2xl font-bold">{percentage}%</p>
+                <p className="text-2xl font-bold">
+                  {localizeNumber(percentage, "ne")}%
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  {item.population.toLocaleString()} वक्ता
+                  {localizeNumber(item.population.toLocaleString(), "ne")} वक्ता
                   <span className="sr-only">
                     ({item.population.toLocaleString()} speakers)
                   </span>
@@ -215,7 +235,12 @@ export default function LanguageAnalysisSection({
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {topLanguage
-                ? `कुल जनसंख्याको ${((topLanguage.population / totalPopulation) * 100).toFixed(2)}% व्यक्ति`
+                ? `कुल जनसंख्याको ${localizeNumber(
+                    ((topLanguage.population / totalPopulation) * 100).toFixed(
+                      2,
+                    ),
+                    "ne",
+                  )}% व्यक्ति`
                 : ""}
               <span className="sr-only">
                 {topLanguage
@@ -238,10 +263,12 @@ export default function LanguageAnalysisSection({
                 Primary to Secondary Language Ratio in Khajura
               </span>
             </h4>
-            <p className="text-3xl font-bold">{topTwoLanguageRatio}</p>
+            <p className="text-3xl font-bold">
+              {localizeNumber(topTwoLanguageRatio, "ne")}
+            </p>
             <p className="text-sm text-muted-foreground mt-2">
               {topLanguage && secondLanguage
-                ? `हरेक ${topTwoLanguageRatio} ${topLanguage.languageName} वक्ताका लागि 1 ${secondLanguage.languageName} वक्ता`
+                ? `हरेक ${localizeNumber(topTwoLanguageRatio, "ne")} ${topLanguage.languageName} वक्ताका लागि १ ${secondLanguage.languageName} वक्ता`
                 : ""}
               <span className="sr-only">
                 {topLanguage && secondLanguage
@@ -251,30 +278,6 @@ export default function LanguageAnalysisSection({
             </p>
           </div>
         </div>
-      </div>
-
-      <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">
-          थप जानकारी
-          <span className="sr-only">
-            Additional Information about Linguistic Demographics in Khajura
-          </span>
-        </h3>
-        <p>
-          पालिकाको भाषिक विविधता सम्बन्धी थप जानकारी वा विस्तृत तथ्याङ्कको लागि,
-          कृपया{" "}
-          <Link href="/contact" className="text-primary hover:underline">
-            हामीलाई सम्पर्क
-          </Link>{" "}
-          गर्नुहोस् वा{" "}
-          <Link
-            href="/profile/demographics"
-            className="text-primary hover:underline"
-          >
-            जनसांख्यिकी तथ्याङ्क
-          </Link>{" "}
-          खण्डमा हेर्नुहोस्。
-        </p>
       </div>
     </>
   );

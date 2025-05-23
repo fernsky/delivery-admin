@@ -1,18 +1,30 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import GenderPieChart from "./charts/gender-pie-chart";
-import GenderBarChart from "./charts/gender-bar-chart";
-import WardGenderPieCharts from "./charts/ward-gender-pie-charts";
+import { localizeNumber } from "@/lib/utils/localize-number";
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from "recharts";
 
-// Define gender colors for consistency
+// Modern aesthetic color scheme for gender representation
 const GENDER_COLORS = {
-  MALE: "#36A2EB",
-  FEMALE: "#FF6384",
-  OTHER: "#FFCE56",
+  MALE: "#4F46E5", // Indigo
+  FEMALE: "#EC4899", // Pink
+  OTHER: "#06B6D4", // Cyan
 };
 
 interface HouseheadGenderChartsProps {
@@ -32,8 +44,7 @@ interface HouseheadGenderChartsProps {
   genderData: Array<{
     id?: string;
     wardNumber: number;
-    wardName?: string;
-    gender: string;
+    gender: string; // This should match schema field name
     population: number;
     updatedAt?: Date;
     createdAt?: Date;
@@ -52,14 +63,79 @@ export default function HouseheadGenderCharts({
 }: HouseheadGenderChartsProps) {
   const [selectedTab, setSelectedTab] = useState<string>("pie");
 
+  // Custom tooltip component for better presentation with Nepali numbers
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-background p-3 border shadow-sm rounded-md">
+          <p className="font-medium">{label}</p>
+          <div className="space-y-1 mt-2">
+            {payload.map((entry: any, index: number) => (
+              <div key={index} className="flex items-center gap-2">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: entry.color }}
+                ></div>
+                <span>{entry.name}: </span>
+                <span className="font-medium">
+                  {localizeNumber(entry.value?.toLocaleString() || "0", "ne")}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Custom tooltip component for pie chart
+  const CustomPieTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const { name, value, payload: originalPayload } = payload[0];
+      const percentage = originalPayload.percentage;
+      return (
+        <div className="bg-background p-3 border shadow-sm rounded-md">
+          <p className="font-medium">{name}</p>
+          <div className="flex justify-between gap-4 mt-1">
+            <span className="text-sm">जनसंख्या:</span>
+            <span className="font-medium">
+              {localizeNumber(value.toLocaleString(), "ne")}
+            </span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-sm">प्रतिशत:</span>
+            <span className="font-medium">{localizeNumber(percentage, "ne")}%</span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <>
       {/* Overall gender distribution */}
-      <div className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div
+        className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Household Head Gender Distribution in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content={`Gender distribution of household heads in Khajura with a total of ${totalPopulation} household heads`}
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">घरमूली लिङ्ग अनुसार वितरण</h3>
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            <strong>खजुरा गाउँपालिका</strong>मा घरमूली लिङ्ग अनुसार वितरण
+          </h3>
           <p className="text-sm text-muted-foreground">
-            कुल घरपरिवार: {totalPopulation.toLocaleString()}
+            कुल घरमूली संख्या: {localizeNumber(totalPopulation.toLocaleString(), "ne")}
           </p>
         </div>
 
@@ -91,56 +167,78 @@ export default function HouseheadGenderCharts({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <div className="h-[400px]">
-                  <GenderPieChart
-                    pieChartData={pieChartData}
-                    GENDER_NAMES={GENDER_NAMES}
-                    GENDER_COLORS={GENDER_COLORS}
-                  />
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieChartData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={true}
+                        label={({ name, percentage }) => `${name}: ${localizeNumber(percentage, "ne")}%`}
+                        outerRadius={140}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {pieChartData.map((entry, index) => {
+                          // Find the original gender key for color mapping
+                          const genderKey =
+                            Object.keys(GENDER_NAMES).find(
+                              (key) => GENDER_NAMES[key] === entry.name
+                            ) || "OTHER";
+
+                          return (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={GENDER_COLORS[genderKey as keyof typeof GENDER_COLORS] || "#94a3b8"}
+                            />
+                          );
+                        })}
+                      </Pie>
+                      <Tooltip content={<CustomPieTooltip />} />
+                      <Legend formatter={(value) => value} />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
 
               <div className="lg:col-span-1">
                 <div className="space-y-4">
-                  <h4 className="text-sm font-medium text-muted-foreground">
-                    घरमूली लिङ्ग वितरण
-                  </h4>
-                  {overallSummary.map((item, i) => (
-                    <div key={i} className="flex items-center gap-4">
-                      <div
-                        className="w-3 h-3 rounded-full flex-shrink-0"
-                        style={{
-                          backgroundColor:
-                            GENDER_COLORS[
-                              item.gender as keyof typeof GENDER_COLORS
-                            ] || "#888",
-                        }}
-                      ></div>
-                      <div className="flex-grow">
-                        <div className="flex justify-between items-center">
-                          <span>{item.genderName}</span>
-                          <span className="font-medium">
-                            {(
-                              (item.population / totalPopulation) *
-                              100
-                            ).toFixed(1)}
-                            %
-                          </span>
-                        </div>
-                        <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
-                          <div
-                            className="h-full rounded-full"
-                            style={{
-                              width: `${(item.population / totalPopulation) * 100}%`,
-                              backgroundColor:
-                                GENDER_COLORS[
-                                  item.gender as keyof typeof GENDER_COLORS
-                                ] || "#888",
-                            }}
-                          ></div>
+                  <h4 className="text-lg font-medium mb-4">घरमूली लिङ्ग अनुपात</h4>
+                  <div className="space-y-3">
+                    {overallSummary.map((item, i) => (
+                      <div key={i} className="flex items-center gap-4">
+                        <div
+                          className="w-3 h-3 rounded-full flex-shrink-0"
+                          style={{
+                            backgroundColor:
+                              GENDER_COLORS[
+                                item.gender as keyof typeof GENDER_COLORS
+                              ] || "#94a3b8",
+                          }}
+                        ></div>
+                        <div className="flex-grow">
+                          <div className="flex justify-between items-center">
+                            <span>{item.genderName}</span>
+                            <span className="font-medium">
+                              {localizeNumber(((item.population / totalPopulation) * 100).toFixed(1), "ne")}%
+                            </span>
+                          </div>
+                          <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${(item.population / totalPopulation) * 100}%`,
+                                backgroundColor:
+                                  GENDER_COLORS[
+                                    item.gender as keyof typeof GENDER_COLORS
+                                  ] || "#94a3b8",
+                              }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -153,34 +251,37 @@ export default function HouseheadGenderCharts({
                   <tr className="bg-muted sticky top-0">
                     <th className="border p-2 text-left">क्र.सं.</th>
                     <th className="border p-2 text-left">लिङ्ग</th>
-                    <th className="border p-2 text-right">घरपरिवार</th>
+                    <th className="border p-2 text-right">घरमूली संख्या</th>
                     <th className="border p-2 text-right">प्रतिशत</th>
                   </tr>
                 </thead>
                 <tbody>
                   {overallSummary.map((item, i) => (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                      <td className="border p-2">{i + 1}</td>
+                      <td className="border p-2">{localizeNumber((i + 1).toString(), "ne")}</td>
                       <td className="border p-2">{item.genderName}</td>
                       <td className="border p-2 text-right">
-                        {item.population.toLocaleString()}
+                        {localizeNumber(item.population.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {((item.population / totalPopulation) * 100).toFixed(2)}
-                        %
+                        {localizeNumber(((item.population / totalPopulation) * 100).toFixed(2), "ne")}%
                       </td>
                     </tr>
                   ))}
+                </tbody>
+                <tfoot>
                   <tr className="font-semibold bg-muted/70">
                     <td className="border p-2" colSpan={2}>
                       जम्मा
                     </td>
                     <td className="border p-2 text-right">
-                      {totalPopulation.toLocaleString()}
+                      {localizeNumber(totalPopulation.toLocaleString(), "ne")}
                     </td>
-                    <td className="border p-2 text-right">100.00%</td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber("100.00", "ne")}%
+                    </td>
                   </tr>
-                </tbody>
+                </tfoot>
               </table>
             </div>
             <div className="mt-4 flex justify-end">
@@ -194,10 +295,23 @@ export default function HouseheadGenderCharts({
       </div>
 
       {/* Ward-wise distribution */}
-      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div
+        className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Ward-wise Household Head Gender Distribution in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content="Gender distribution of household heads across wards in Khajura"
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">
-            वडा अनुसार घरमूली लिङ्ग वितरण
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            <strong>खजुरा गाउँपालिका</strong>को वडा अनुसार घरमूली लिङ्ग वितरण
           </h3>
           <p className="text-sm text-muted-foreground">
             वडा र लिङ्ग अनुसार घरमूली वितरण
@@ -206,127 +320,137 @@ export default function HouseheadGenderCharts({
 
         <div className="p-6">
           <div className="h-[500px]">
-            <GenderBarChart
-              wardWiseData={wardWiseData}
-              GENDER_COLORS={GENDER_COLORS}
-              GENDER_NAMES={GENDER_NAMES}
-            />
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={wardWiseData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                barSize={20}
+              >
+                <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                <XAxis
+                  dataKey="ward"
+                  scale="point"
+                  padding={{ left: 10, right: 10 }}
+                  tick={{ fontSize: 12 }}
+                />
+                <YAxis tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend
+                  wrapperStyle={{ paddingTop: 20 }}
+                  layout="horizontal"
+                  verticalAlign="bottom"
+                  align="center"
+                />
+                {Object.keys(GENDER_NAMES).map((gender) => (
+                  <Bar
+                    key={gender}
+                    dataKey={GENDER_NAMES[gender]}
+                    stackId="a"
+                    name={GENDER_NAMES[gender]}
+                    fill={GENDER_COLORS[gender as keyof typeof GENDER_COLORS] || "#94a3b8"}
+                  />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
-      </div>
 
-      {/* Detailed ward analysis */}
-      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
-        <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">
-            वडा अनुसार विस्तृत लिङ्गिक विश्लेषण
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            प्रत्येक वडाको विस्तृत घरमूली लिङ्ग संरचना
-          </p>
-        </div>
+        <div className="p-6 border-t">
+          <h4 className="text-lg font-medium mb-4">वडागत घरमूली लिङ्ग तालिका</h4>
+          <div className="overflow-auto max-h-[600px]">
+            <table className="w-full border-collapse min-w-[800px]">
+              <thead className="sticky top-0 z-10">
+                <tr className="bg-muted">
+                  <th className="border p-2">वडा नं.</th>
+                  {Object.values(GENDER_NAMES).map((name) => (
+                    <React.Fragment key={name}>
+                      <th className="border p-2 text-right">{name}</th>
+                      <th className="border p-2 text-right">प्रतिशत</th>
+                    </React.Fragment>
+                  ))}
+                  <th className="border p-2 text-right">जम्मा</th>
+                </tr>
+              </thead>
+              <tbody>
+                {wardNumbers.map((wardNumber, i) => {
+                  const wardItems = genderData.filter(
+                    (item) => item.wardNumber === wardNumber
+                  );
+                  const wardTotal = wardItems.reduce(
+                    (sum, item) => sum + (item.population || 0),
+                    0
+                  );
 
-        <Tabs defaultValue="table" className="w-full">
-          <div className="border-b bg-muted/40">
-            <div className="container">
-              <TabsList className="h-10 bg-transparent">
-                <TabsTrigger
-                  value="table"
-                  className="data-[state=active]:bg-background"
-                >
-                  तालिका
-                </TabsTrigger>
-                <TabsTrigger
-                  value="chart"
-                  className="data-[state=active]:bg-background"
-                >
-                  वडागत पाई चार्ट
-                </TabsTrigger>
-              </TabsList>
-            </div>
-          </div>
+                  return (
+                    <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
+                      <td className="border p-2">
+                        वडा {localizeNumber(wardNumber.toString(), "ne")}
+                      </td>
+                      {Object.entries(GENDER_NAMES).map(([genderKey, genderName]) => {
+                        const genderItem = wardItems.find(
+                          (item) => item.gender === genderKey
+                        );
+                        const genderPopulation = genderItem?.population || 0;
+                        const genderPercentage =
+                          wardTotal > 0
+                            ? (genderPopulation / wardTotal) * 100
+                            : 0;
 
-          <TabsContent value="table" className="p-6">
-            <div className="overflow-auto max-h-[600px]">
-              <table className="w-full border-collapse min-w-[800px]">
-                <thead className="sticky top-0 z-10">
-                  <tr className="bg-muted">
-                    <th className="border p-2">वडा नं.</th>
-                    <th className="border p-2">पुरुष घरमूली</th>
-                    <th className="border p-2 text-right">संख्या</th>
-                    <th className="border p-2 text-right">प्रतिशत</th>
-                    <th className="border p-2">महिला घरमूली</th>
-                    <th className="border p-2 text-right">संख्या</th>
-                    <th className="border p-2 text-right">प्रतिशत</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {wardNumbers.map((wardNumber, i) => {
-                    const wardItems = genderData.filter(
-                      (item) => item.wardNumber === wardNumber,
-                    );
-                    const wardTotal = wardItems.reduce(
-                      (sum, item) => sum + (item.population || 0),
-                      0,
-                    );
-
-                    // Find male and female data
-                    const maleData = wardItems.find(
-                      (item) => item.gender === "MALE",
-                    );
-                    const femaleData = wardItems.find(
-                      (item) => item.gender === "FEMALE",
-                    );
+                        return (
+                          <React.Fragment key={genderKey}>
+                            <td className="border p-2 text-right">
+                              {localizeNumber(genderPopulation.toLocaleString(), "ne")}
+                            </td>
+                            <td className="border p-2 text-right">
+                              {localizeNumber(genderPercentage.toFixed(2), "ne")}%
+                            </td>
+                          </React.Fragment>
+                        );
+                      })}
+                      <td className="border p-2 text-right font-medium">
+                        {localizeNumber(wardTotal.toLocaleString(), "ne")}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+              <tfoot>
+                <tr className="font-semibold bg-muted/70">
+                  <td className="border p-2">कुल</td>
+                  {Object.entries(GENDER_NAMES).map(([genderKey, genderName]) => {
+                    const genderTotal = overallSummary.find(
+                      (item) => item.gender === genderKey
+                    )?.population || 0;
+                    const genderPercentage =
+                      totalPopulation > 0
+                        ? (genderTotal / totalPopulation) * 100
+                        : 0;
 
                     return (
-                      <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                        <td className="border p-2">वडा {wardNumber}</td>
-                        <td className="border p-2">{GENDER_NAMES["MALE"]}</td>
+                      <React.Fragment key={genderKey}>
                         <td className="border p-2 text-right">
-                          {maleData?.population?.toLocaleString() || "0"}
+                          {localizeNumber(genderTotal.toLocaleString(), "ne")}
                         </td>
                         <td className="border p-2 text-right">
-                          {wardTotal > 0 && maleData?.population
-                            ? ((maleData.population / wardTotal) * 100).toFixed(
-                                2,
-                              ) + "%"
-                            : "0%"}
+                          {localizeNumber(genderPercentage.toFixed(2), "ne")}%
                         </td>
-                        <td className="border p-2">{GENDER_NAMES["FEMALE"]}</td>
-                        <td className="border p-2 text-right">
-                          {femaleData?.population?.toLocaleString() || "0"}
-                        </td>
-                        <td className="border p-2 text-right">
-                          {wardTotal > 0 && femaleData?.population
-                            ? (
-                                (femaleData.population / wardTotal) *
-                                100
-                              ).toFixed(2) + "%"
-                            : "0%"}
-                        </td>
-                      </tr>
+                      </React.Fragment>
                     );
                   })}
-                </tbody>
-              </table>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Excel डाउनलोड
-              </Button>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="chart" className="p-6">
-            <WardGenderPieCharts
-              wardNumbers={wardNumbers}
-              genderData={genderData}
-              GENDER_NAMES={GENDER_NAMES}
-              GENDER_COLORS={GENDER_COLORS}
-            />
-          </TabsContent>
-        </Tabs>
+                  <td className="border p-2 text-right">
+                    {localizeNumber(totalPopulation.toLocaleString(), "ne")}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button variant="outline" size="sm">
+              <FileDown className="mr-2 h-4 w-4" />
+              Excel डाउनलोड
+            </Button>
+          </div>
+        </div>
       </div>
     </>
   );

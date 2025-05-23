@@ -223,7 +223,7 @@ export default function IncomeSourcesAnalysisSection({
             <p className="text-3xl font-bold">{topTwoSourceRatio}</p>
             <p className="text-sm text-muted-foreground mt-2">
               {topSource && secondSource
-                ? `हरेक ${topTwoSourceRatio} ${topSource.incomeName} आयस्रोत भएका घरका लागि 1 ${secondSource.incomeName} आयस्रोत भएका घर`
+                ? `हरेक ${topTwoSourceRatio} ${topSource.incomeName} आयस्रोत भएका घरका लागि १ ${secondSource.incomeName} आयस्रोत भएका घर`
                 : ""}
               <span className="sr-only">
                 {topSource && secondSource

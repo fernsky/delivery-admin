@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface CasteSEOProps {
   overallSummary: Array<{
@@ -52,6 +53,20 @@ export default function CasteSEO({
       OTHER: "Other",
     };
 
+    // Get top 3 castes for description
+    const topCastes = overallSummary.slice(0, 3);
+    const topCastesDescription = topCastes
+      .map(
+        (caste) =>
+          `${CASTE_NAMES_EN[caste.casteType] || caste.casteType} (${
+            caste.casteTypeDisplay
+          }): ${caste.population} people (${(
+            (caste.population / totalPopulation) *
+            100
+          ).toFixed(2)}%)`
+      )
+      .join(", ");
+
     // Convert caste stats to structured data format
     const casteStats = overallSummary.map((item) => ({
       "@type": "Observation",
@@ -63,14 +78,16 @@ export default function CasteSEO({
         unitText: "people",
       },
       measuredValue: item.population,
-      description: `${item.population.toLocaleString()} people in Khajura Rural Municipality belong to ${CASTE_NAMES_EN[item.casteType] || item.casteType} caste (${((item.population / totalPopulation) * 100).toFixed(2)}% of total population)`,
+      description: `${item.population} people in Khajura Rural Municipality belong to ${
+        CASTE_NAMES_EN[item.casteType] || item.casteType
+      } caste (${((item.population / totalPopulation) * 100).toFixed(2)}% of total population)`,
     }));
 
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
       name: "Caste Demographics of Khajura Rural Municipality (खजुरा गाउँपालिका)",
-      description: `Caste distribution data across ${wardNumbers.length} wards of Khajura Rural Municipality with a total population of ${totalPopulation.toLocaleString()} people.`,
+      description: `Caste distribution data across ${wardNumbers.length} wards of Khajura Rural Municipality with a total population of ${totalPopulation.toLocaleString()} people. Main castes include ${topCastesDescription}.`,
       keywords: [
         "Khajura Rural Municipality",
         "खजुरा गाउँपालिका",
