@@ -108,7 +108,7 @@ const Hero: React.FC<HeroProps> = ({
             className="object-cover"
           />
           {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/50 z-10"></div>
+          <div className="absolute inset-0 bg-black/40 z-10"></div>
         </div>
 
         {/* Content Section */}
