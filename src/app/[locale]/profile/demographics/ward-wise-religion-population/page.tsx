@@ -9,9 +9,6 @@ import { api } from "@/trpc/server";
 import { ReligionType } from "@/server/api/routers/profile/demographics/ward-wise-religion-population.schema";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
-// Force dynamic rendering since we're using tRPC which relies on headers
-export const dynamic = "force-dynamic";
-
 // Define the locales for which this page should be statically generated
 export async function generateStaticParams() {
   // Generate the page for 'en' and 'ne' locales
