@@ -16,11 +16,55 @@ import {
   ReferenceLine,
   Line,
   LineChart,
+  Cell,
 } from "recharts";
+
+// Modern aesthetic color scheme for gender representation
+const GENDER_COLORS = {
+  MALE: "#3B82F6", // Blue
+  FEMALE: "#EC4899", // Pink
+  OTHER: "#10B981", // Emerald
+};
+
+// Modern aesthetic color palette for wards
+const WARD_COLORS = [
+  "#6366F1", // Indigo
+  "#8B5CF6", // Purple
+  "#EC4899", // Pink
+  "#F43F5E", // Rose
+  "#10B981", // Emerald
+  "#06B6D4", // Cyan
+  "#3B82F6", // Blue
+  "#F59E0B", // Amber
+  "#84CC16", // Lime
+  "#9333EA", // Fuchsia
+  "#14B8A6", // Teal
+  "#EF4444", // Red
+];
 
 // Custom formatter for Nepali numbers
 const CustomTooltipFormatter = (value: number) => {
   return localizeNumber(value.toLocaleString(), "ne");
+};
+
+// Custom tooltip component for better presentation
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-background p-3 border shadow-sm rounded-md">
+        <p className="font-medium mb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex justify-between gap-4">
+            <span className="text-sm">{entry.name}:</span>
+            <span className="font-medium">
+              {localizeNumber(entry.value.toFixed(1), "ne")}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return null;
 };
 
 interface GenderRatioChartsProps {
@@ -49,7 +93,6 @@ interface GenderRatioChartsProps {
     averageHouseholdSize: number;
     sexRatio: number;
   };
-  GENDER_COLORS: Record<string, string>;
   GENDER_NAMES: Record<string, string>;
 }
 
@@ -59,7 +102,6 @@ export default function GenderRatioCharts({
   wardPopulationData,
   municipalityStats,
   municipalityAverages,
-  GENDER_COLORS,
   GENDER_NAMES,
 }: GenderRatioChartsProps) {
   return (
@@ -82,24 +124,26 @@ export default function GenderRatioCharts({
                 domain={[0, "auto"]}
                 tickFormatter={CustomTooltipFormatter}
               />
-              <Tooltip formatter={CustomTooltipFormatter} />
+              <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Bar dataKey="sexRatio" name="लैङ्गिक अनुपात" fill="#FF6384" />
-              <Line
-                type="monotone"
-                dataKey="sexRatio"
-                stroke="#FF6384"
-                dot={false}
-                activeDot={false}
-              />
+              <Bar dataKey="sexRatio" name="लैङ्गिक अनुपात" fill="#FFB7B2">
+                {wardSexRatioData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={WARD_COLORS[index % WARD_COLORS.length]}
+                  />
+                ))}
+              </Bar>
               {/* Reference line for municipality average */}
               <ReferenceLine
                 y={municipalityAverages.sexRatio}
-                stroke="#FF6384"
+                stroke="#D5D0E5"
                 strokeDasharray="3 3"
                 label={{
-                  value: `खजुरा गाउँपालिका औसत: ${localizeNumber(municipalityAverages.sexRatio.toFixed(2), "ne")}`,
+                  value: `खजुरा गाउँपालिका औसत: ${localizeNumber(municipalityAverages.sexRatio.toFixed(1), "ne")}`,
                   position: "insideBottomRight",
+                  fill: "#6c6684",
+                  fontSize: 12,
                 }}
               />
             </BarChart>
@@ -122,7 +166,10 @@ export default function GenderRatioCharts({
                 padding={{ left: 10, right: 10 }}
               />
               <YAxis tickFormatter={CustomTooltipFormatter} />
-              <Tooltip formatter={CustomTooltipFormatter} />
+              <Tooltip
+                formatter={CustomTooltipFormatter}
+                labelFormatter={(value) => `${value}`}
+              />
               <Legend />
               <Bar
                 dataKey="malePopulation"

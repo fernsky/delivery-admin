@@ -10,11 +10,11 @@ import GenderRatioCharts from "./charts/gender-ratio-charts";
 import HouseholdCharts from "./charts/household-charts";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
-// Define colors for gender
+// Modern aesthetic color scheme for gender representation
 const GENDER_COLORS = {
-  MALE: "#36A2EB",
-  FEMALE: "#FF6384",
-  OTHER: "#FFCE56",
+  MALE: "#3B82F6", // Blue
+  FEMALE: "#EC4899", // Pink
+  OTHER: "#10B981", // Emerald
 };
 
 interface WardWiseChartsProps {

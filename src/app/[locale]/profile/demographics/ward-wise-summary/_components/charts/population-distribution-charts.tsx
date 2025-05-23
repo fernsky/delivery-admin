@@ -19,6 +19,22 @@ import {
   Label,
 } from "recharts";
 
+// Modern aesthetic color palette
+const WARD_COLORS = [
+  "#6366F1", // Indigo
+  "#8B5CF6", // Purple
+  "#EC4899", // Pink
+  "#F43F5E", // Rose
+  "#10B981", // Emerald
+  "#06B6D4", // Cyan
+  "#3B82F6", // Blue
+  "#F59E0B", // Amber
+  "#84CC16", // Lime
+  "#9333EA", // Fuchsia
+  "#14B8A6", // Teal
+  "#EF4444", // Red
+];
+
 // Create a custom formatter for Recharts tooltips that uses localizeNumber
 const CustomTooltipFormatter = (value: number) => {
   return localizeNumber(value.toLocaleString(), "ne");
@@ -33,6 +49,26 @@ const renderCustomizedPieLabel = ({
   percentage: string;
 }) => {
   return `${ward}: ${localizeNumber(percentage, "ne")}%`;
+};
+
+// Custom tooltip component for better presentation
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-background p-3 border shadow-sm rounded-md">
+        <p className="font-medium mb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex justify-between gap-4">
+            <span className="text-sm">{entry.name}:</span>
+            <span className="font-medium">
+              {localizeNumber(entry.value.toLocaleString(), "ne")}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return null;
 };
 
 interface PopulationDistributionChartsProps {
@@ -90,17 +126,21 @@ export default function PopulationDistributionCharts({
                   style={{ textAnchor: "middle" }}
                 />
               </YAxis>
-              <Tooltip
-                formatter={CustomTooltipFormatter}
-                labelFormatter={(value) => `${value}`}
-              />
+              <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Bar
                 dataKey="population"
                 name="जनसंख्या"
-                fill="#8884d8"
+                fill="#B5EAD7"
                 radius={[4, 4, 0, 0]}
-              />
+              >
+                {wardPopulationData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={WARD_COLORS[index % WARD_COLORS.length]}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -119,15 +159,21 @@ export default function PopulationDistributionCharts({
                 label={renderCustomizedPieLabel}
                 fill="#8884d8"
                 dataKey="population"
+                nameKey="ward"
               >
                 {wardPopulationData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={`hsl(${(index * 30) % 360}, 70%, 60%)`}
+                    fill={WARD_COLORS[index % WARD_COLORS.length]}
                   />
                 ))}
               </Pie>
               <Tooltip formatter={CustomTooltipFormatter} />
+              <Legend
+                formatter={(value, entry, index) => (
+                  <span className="text-sm">{value}</span>
+                )}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>

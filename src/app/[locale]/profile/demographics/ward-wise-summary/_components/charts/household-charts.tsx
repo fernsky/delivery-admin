@@ -16,11 +16,68 @@ import {
   Line,
   LineChart,
   ReferenceLine,
+  Cell,
 } from "recharts";
+
+// Modern aesthetic color palette
+const WARD_COLORS = [
+  "#6366F1", // Indigo
+  "#8B5CF6", // Purple
+  "#EC4899", // Pink
+  "#F43F5E", // Rose
+  "#10B981", // Emerald
+  "#06B6D4", // Cyan
+  "#3B82F6", // Blue
+  "#F59E0B", // Amber
+  "#84CC16", // Lime
+  "#9333EA", // Fuchsia
+  "#14B8A6", // Teal
+  "#EF4444", // Red
+];
 
 // Custom formatter for Nepali numbers
 const CustomTooltipFormatter = (value: number) => {
   return localizeNumber(value.toLocaleString(), "ne");
+};
+
+// Custom tooltip component for households
+const CustomHouseholdTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-background p-3 border shadow-sm rounded-md">
+        <p className="font-medium mb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex justify-between gap-4">
+            <span className="text-sm">{entry.name}:</span>
+            <span className="font-medium">
+              {localizeNumber(entry.value.toLocaleString(), "ne")}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+// Custom tooltip component for household size
+const CustomHouseholdSizeTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-background p-3 border shadow-sm rounded-md">
+        <p className="font-medium mb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex justify-between gap-4">
+            <span className="text-sm">{entry.name}:</span>
+            <span className="font-medium">
+              {localizeNumber(entry.value.toFixed(2), "ne")}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return null;
 };
 
 interface HouseholdChartsProps {
@@ -76,18 +133,21 @@ export default function HouseholdCharts({
                 padding={{ left: 10, right: 10 }}
               />
               <YAxis tickFormatter={CustomTooltipFormatter} />
-              <Tooltip
-                formatter={CustomTooltipFormatter}
-                labelFormatter={(value) => `${value} - घरधुरी संख्या`}
-              />
+              <Tooltip content={<CustomHouseholdTooltip />} />
               <Legend />
               <Bar
                 dataKey="households"
                 name="घरधुरी संख्या"
-                fill="#8884d8"
                 radius={[4, 4, 0, 0]}
                 aria-label="Bar chart showing household count across wards"
-              />
+              >
+                {wardHouseholdData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={WARD_COLORS[index % WARD_COLORS.length]}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -106,33 +166,32 @@ export default function HouseholdCharts({
                 scale="point"
                 padding={{ left: 10, right: 10 }}
               />
-              <YAxis tickFormatter={CustomTooltipFormatter} />
-              <Tooltip
-                formatter={(value) =>
-                  localizeNumber(Number(value).toFixed(2), "ne")
+              <YAxis
+                tickFormatter={(value) =>
+                  localizeNumber(value.toFixed(1), "ne")
                 }
-                labelFormatter={(value) => `${value} - औसत परिवार संख्या`}
               />
+              <Tooltip content={<CustomHouseholdSizeTooltip />} />
               <Legend />
               <Line
                 type="monotone"
                 dataKey="householdSize"
                 name="औसत परिवार संख्या"
-                stroke="#8884d8"
+                stroke="#8B5CF6"
                 strokeWidth={2}
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
+                dot={{ r: 4, fill: "#8B5CF6" }}
+                activeDot={{ r: 6, fill: "#6D28D9" }}
               />
+              {/* Reference line for municipality average */}
               <ReferenceLine
                 y={municipalityAverages.averageHouseholdSize}
-                stroke="#8884d8"
+                stroke="#6D28D9"
                 strokeDasharray="3 3"
                 label={{
-                  value: `खजुरा गाउँपालिका औसत: ${localizeNumber(
-                    municipalityAverages.averageHouseholdSize.toFixed(2),
-                    "ne",
-                  )}`,
+                  value: `खजुरा गाउँपालिका औसत: ${localizeNumber(municipalityAverages.averageHouseholdSize.toFixed(2), "ne")}`,
                   position: "insideBottomRight",
+                  fill: "#4C1D95",
+                  fontSize: 12,
                 }}
               />
             </LineChart>
