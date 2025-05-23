@@ -5,14 +5,14 @@ import Image from "next/image";
 import ReligionCharts from "./_components/religion-charts";
 import ReligionAnalysisSection from "./_components/religion-analysis-section";
 import ReligionSEO from "./_components/religion-seo";
-import { api } from "@/trpc/server";
-import { ReligionType } from "@/server/api/routers/profile/demographics/ward-wise-religion-population.schema";
+import { ReligionType } from "@/lib/api";
+import { wardWiseReligionPopulationService } from "@/lib/api";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Define the locales for which this page should be statically generated
 export async function generateStaticParams() {
   // Generate the page for 'en' and 'ne' locales
-  return [{ locale: "en" }];
+  return [{ locale: "en" }, { locale: "ne" }];
 }
 
 // Optional: Add revalidation period if you want to update the static pages periodically
@@ -21,8 +21,8 @@ export const revalidate = 86400; // Revalidate once per day (in seconds)
 // This function will generate metadata dynamically based on the actual data
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    // Fetch data for SEO using tRPC
-    const religionData = await api.profile.demographics.wardWiseReligionPopulation.getAll.query();
+    // Fetch data for SEO using our API service (not tRPC)
+    const religionData = await wardWiseReligionPopulationService.getAll();
     const municipalityName = "खजुरा गाउँपालिका"; // Khajura Rural Municipality
 
     // Process data for SEO
@@ -30,6 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
       (sum, item) => sum + (item.population || 0),
       0,
     );
+    
     // Group by religion type and calculate totals
     const religionCounts: Record<string, number> = {};
     religionData.forEach((item) => {
@@ -161,13 +162,13 @@ const RELIGION_NAMES: Record<string, string> = {
 };
 
 export default async function WardWiseReligionPopulationPage() {
-  // Fetch all religion population data using tRPC
-  const religionData = await api.profile.demographics.wardWiseReligionPopulation.getAll.query();
+  // Fetch all religion population data using our API service (not tRPC)
+  const religionData = await wardWiseReligionPopulationService.getAll();
   
   // Try to fetch summary data
   let summaryData = null;
   try {
-    summaryData = await api.profile.demographics.wardWiseReligionPopulation.summary.query();
+    summaryData = await wardWiseReligionPopulationService.getReligionSummary();
   } catch (error) {
     console.error("Could not fetch summary data", error);
   }
