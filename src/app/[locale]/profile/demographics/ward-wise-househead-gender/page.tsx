@@ -1,52 +1,99 @@
 import { Metadata } from "next";
 import { DocsLayout } from "@/components/layout/DocsLayout";
 import { TableOfContents } from "@/components/TableOfContents";
-import { api } from "@/trpc/server";
 import Image from "next/image";
+import { localizeNumber } from "@/lib/utils/localize-number";
 import HouseheadGenderCharts from "./_components/househead-gender-charts";
-import GenderAnalysisSection from "./_components/gender-analysis-section";
 import GenderSEO from "./_components/gender-seo";
+import GenderAnalysisSection from "./_components/gender-analysis-section";
+import { api } from "@/trpc/server";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "घरमूली लिङ्ग अनुसार जनसंख्या | पालिका प्रोफाइल",
-  description:
-    "वडा अनुसार घरमूलीको लिङ्ग वितरण, प्रवृत्ति र विश्लेषण। विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
-  keywords: [
-    "घरमूली",
-    "लिङ्ग",
-    "जनसंख्या",
-    "महिला",
-    "पुरुष",
-    "वडा",
-    "वितरण",
-    "तथ्याङ्क",
-    "जनगणना",
-  ],
-  openGraph: {
-    title: "घरमूली लिङ्ग अनुसार जनसंख्या | पालिका प्रोफाइल",
-    description:
-      "वडा अनुसार घरमूलीको लिङ्ग वितरण, प्रवृत्ति र विश्लेषण। विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
-    type: "article",
-    locale: "ne_NP",
-  },
-};
+// Define the locales for which this page should be statically generated
+export async function generateStaticParams() {
+  // Generate the page for 'en' and 'ne' locales
+  return [{ locale: "en" }];
+}
+
+// Optional: Add revalidation period if you want to update the static pages periodically
+export const revalidate = 86400; // Revalidate once per day (in seconds)
+
+// This function will generate metadata dynamically based on the actual data
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    // Fetch data for SEO using tRPC
+    const genderData = await api.profile.demographics.wardWiseHouseHeadGender.getAll.query();
+    const municipalityName = "खजुरा गाउँपालिका"; // Khajura Rural Municipality
+
+    // Process data for SEO
+    const totalPopulation = genderData.reduce(
+      (sum, item) => sum + (item.population || 0),
+      0
+    );
+    
+    // Group by gender and calculate totals
+    const genderCounts: Record<string, number> = {};
+    genderData.forEach((item) => {
+      if (!genderCounts[item.gender]) genderCounts[item.gender] = 0;
+      genderCounts[item.gender] += item.population || 0;
+    });
+
+    // Create rich keywords with actual data using localized numbers
+    const keywordsNP = [
+      "खजुरा गाउँपालिका घरमूली लिङ्ग वितरण",
+      "खजुरा वडागत घरमूली विश्लेषण",
+      "घरमूली महिला पुरुष अनुपात खजुरा",
+      "वडा अनुसार घरमूली संख्या",
+      "घरमूली लैङ्गिक विविधता",
+      `खजुरा कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")}`,
+    ];
+
+    // Create detailed description with actual data using localized numbers
+    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार घरमूली लिङ्ग वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")} मध्ये पुरुष घरमूली ${localizeNumber(genderCounts["MALE"]?.toString() || "0", "ne")} र महिला घरमूली ${localizeNumber(genderCounts["FEMALE"]?.toString() || "0", "ne")} रहेका छन्। विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
+
+    return {
+      title: `खजुरा गाउँपालिका | वडागत घरमूली लिङ्ग वितरण | डिजिटल प्रोफाइल`,
+      description: descriptionNP,
+      keywords: keywordsNP,
+      alternates: {
+        canonical: "/profile/demographics/ward-wise-househead-gender",
+        languages: {
+          en: "/en/profile/demographics/ward-wise-househead-gender",
+          ne: "/ne/profile/demographics/ward-wise-househead-gender",
+        },
+      },
+      openGraph: {
+        title: `खजुरा गाउँपालिका | वडागत घरमूली लिङ्ग वितरण`,
+        description: descriptionNP,
+        type: "article",
+        locale: "ne_NP",
+        alternateLocale: "en_US",
+        siteName: `खजुरा गाउँपालिका डिजिटल प्रोफाइल`,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `खजुरा गाउँपालिका | वडागत घरमूली लिङ्ग वितरण`,
+        description: descriptionNP,
+      },
+    };
+  } catch (error) {
+    // Fallback metadata if data fetching fails
+    return {
+      title: "खजुरा गाउँपालिका | वडागत घरमूली लिङ्ग वितरण | डिजिटल प्रोफाइल",
+      description: "खजुरा गाउँपालिकाको वडागत घरमूली लिङ्ग वितरण, प्रवृत्ति र विश्लेषण।",
+    };
+  }
+}
 
 const toc = [
   { level: 2, text: "परिचय", slug: "introduction" },
-  {
-    level: 2,
-    text: "घरमूली लिङ्ग अनुसार जनसंख्या",
-    slug: "gender-distribution",
-  },
-  { level: 2, text: "वडा अनुसार घरमूली लिङ्ग वितरण", slug: "ward-wise-gender" },
-  { level: 2, text: "लिङ्गिक अनुपात विश्लेषण", slug: "gender-ratio" },
-  { level: 2, text: "तथ्याङ्क स्रोत", slug: "data-source" },
+  { level: 2, text: "घरमूली लिङ्ग अनुसार जनसंख्या", slug: "gender-distribution" },
+  { level: 2, text: "वडागत विश्लेषण", slug: "ward-analysis" },
 ];
 
-// Define Nepali names for genders
+// Define Nepali names for gender
 const GENDER_NAMES: Record<string, string> = {
   MALE: "पुरुष",
   FEMALE: "महिला",
@@ -54,18 +101,15 @@ const GENDER_NAMES: Record<string, string> = {
 };
 
 export default async function WardWiseHouseheadGenderPage() {
-  // Fetch all househead gender data from tRPC route
-  const genderData =
-    await api.profile.demographics.wardWiseHouseHeadGender.getAll.query();
-
-  // Fetch summary statistics if available
-  let summaryData;
+  // Fetch all househead gender data using tRPC
+  const genderData = await api.profile.demographics.wardWiseHouseHeadGender.getAll.query();
+  
+  // Try to fetch summary data
+  let summaryData = null;
   try {
-    summaryData =
-      await api.profile.demographics.wardWiseHouseHeadGender.summary.query();
+    summaryData = await api.profile.demographics.wardWiseHouseHeadGender.summary.query();
   } catch (error) {
     console.error("Could not fetch summary data", error);
-    summaryData = null;
   }
 
   // Process data for overall summary
@@ -89,7 +133,7 @@ export default async function WardWiseHouseheadGenderPage() {
     0,
   );
 
-  // Prepare data for pie chart
+  // Create data for pie chart
   const pieChartData = overallSummary.map((item) => ({
     name: item.genderName,
     value: item.population,
@@ -99,7 +143,7 @@ export default async function WardWiseHouseheadGenderPage() {
   // Get unique ward numbers
   const wardNumbers = Array.from(
     new Set(genderData.map((item) => item.wardNumber)),
-  ).sort((a, b) => a - b);
+  ).sort((a, b) => a - b); // Sort numerically
 
   // Process data for ward-wise visualization
   const wardWiseData = wardNumbers.map((wardNumber) => {
@@ -107,11 +151,12 @@ export default async function WardWiseHouseheadGenderPage() {
       (item) => item.wardNumber === wardNumber,
     );
 
-    const result: Record<string, any> = { ward: `वडा ${wardNumber}` };
+    const result: Record<string, any> = { ward: `वडा ${localizeNumber(wardNumber.toString(), "ne")}` };
 
     // Add gender data
     wardData.forEach((item) => {
-      result[GENDER_NAMES[item.gender] || item.gender] = item.population;
+      result[GENDER_NAMES[item.gender] || item.gender] =
+        item.population;
     });
 
     return result;
@@ -141,18 +186,22 @@ export default async function WardWiseHouseheadGenderPage() {
           </div>
 
           <div className="prose prose-slate dark:prose-invert max-w-none">
+            <h1 className="scroll-m-20 tracking-tight mb-6">
+              <span className="font-bold">खजुरा गाउँपालिकामा</span> वडागत घरमूली लिङ्ग वितरण
+            </h1>
+
             <h2 id="introduction" className="scroll-m-20">
               परिचय
             </h2>
             <p>
-              यस खण्डमा पालिकाको विभिन्न वडाहरूमा घरमूलीको लिङ्ग अनुसार जनसंख्या
+              यस खण्डमा <strong>खजुरा गाउँपालिका</strong>को विभिन्न वडाहरूमा घरमूलीको लिङ्ग अनुसार जनसंख्या
               सम्बन्धी विस्तृत तथ्याङ्क प्रस्तुत गरिएको छ। घरमूली भनेको
               घरपरिवारको प्रमुख व्यक्ति हो, जसले घरायसी निर्णयहरूमा प्रमुख
               भूमिका निर्वाह गर्दछ।
             </p>
             <p>
               यो तथ्याङ्कले लैङ्गिक समानता, सामाजिक संरचना र परिवारको नेतृत्वमा
-              महिला सहभागिताको अवस्था बुझ्न मद्दत गर्दछ। यसले स्थानीय सरकारलाई
+              महिला सहभागिताको अवस्था बुझ्न मद्दत गर्दछ। यसले <strong>खजुरा गाउँपालिका</strong>लाई
               लैङ्गिक समानता सम्बन्धी नीति तथा कार्यक्रमहरू तर्जुमा गर्न
               महत्त्वपूर्ण आधार प्रदान गर्दछ।
             </p>
@@ -160,60 +209,33 @@ export default async function WardWiseHouseheadGenderPage() {
             <h2 id="gender-distribution" className="scroll-m-20 border-b pb-2">
               घरमूली लिङ्ग अनुसार जनसंख्या
             </h2>
-            <p>पालिकामा विभिन्न लिङ्गका घरमूलीहरूको वितरण निम्नानुसार छ:</p>
           </div>
-
-          {/* Client component for charts */}
           <HouseheadGenderCharts
             overallSummary={overallSummary}
             totalPopulation={totalPopulation}
             pieChartData={pieChartData}
             wardWiseData={wardWiseData}
             wardNumbers={wardNumbers}
-            //@ts-ignore
             genderData={genderData}
             GENDER_NAMES={GENDER_NAMES}
           />
-
+          
           <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
-            <h2 id="gender-ratio" className="scroll-m-20 border-b pb-2">
-              लिङ्गिक अनुपात विश्लेषण
+            <h2 id="ward-analysis" className="scroll-m-20 border-b pb-2">
+              <strong>खजुरा गाउँपालिका</strong>को वडागत विश्लेषण
             </h2>
             <p>
-              पालिकामा घरमूलीको रूपमा{" "}
-              {GENDER_NAMES[overallSummary[0]?.gender] || "पुरुष"} सबैभन्दा बढी
-              रहेको देखिन्छ, जसमा कुल घरपरिवारको{" "}
-              {(
-                ((overallSummary[0]?.population || 0) / totalPopulation) *
-                100
-              ).toFixed(2)}
-              % घरहरूमा {GENDER_NAMES[overallSummary[0]?.gender] || "पुरुष"}{" "}
-              घरमूली छन्।
+              <strong>खजुरा गाउँपालिका</strong>को वडा अनुसार घरमूली लिङ्ग वितरणको विश्लेषण निम्नानुसार रहेको छ:
             </p>
-
-            {/* Client component for gender analysis section */}
-            <GenderAnalysisSection
-              overallSummary={overallSummary}
-              totalPopulation={totalPopulation}
-              GENDER_NAMES={GENDER_NAMES}
-            />
-
-            <h2 id="data-source" className="scroll-m-20 border-b pb-2">
-              तथ्याङ्क स्रोत
-            </h2>
-            <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू नेपालको राष्ट्रिय जनगणना र
-              पालिकाको आफ्नै सर्वेक्षणबाट संकलन गरिएको हो। यी तथ्याङ्कहरूको
-              महत्व निम्न अनुसार छ:
-            </p>
-
-            <ul>
-              <li>लैङ्गिक समानता प्रवर्द्धन गर्न</li>
-              <li>महिला सशक्तीकरण कार्यक्रमहरू विकास गर्न</li>
-              <li>लैङ्गिक उत्तरदायी बजेट तथा कार्यक्रम तर्जुमा गर्न</li>
-              <li>समाजमा लिङ्ग आधारित भूमिकाको परिवर्तन पहिचान गर्न</li>
-            </ul>
           </div>
+          
+          <GenderAnalysisSection
+            overallSummary={overallSummary}
+            totalPopulation={totalPopulation}
+            GENDER_NAMES={GENDER_NAMES}
+            wardNumbers={wardNumbers}
+            genderData={genderData}
+          />
         </section>
       </div>
     </DocsLayout>

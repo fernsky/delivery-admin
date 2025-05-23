@@ -245,7 +245,7 @@ export const getWardWiseMotherTonguePopulationSummary = publicProcedure.query(
           language_type, 
           SUM(population) as total_population
         FROM 
-          ward_wise_mother_tongue_population
+          acme_ward_wise_mother_tongue_population
         GROUP BY 
           language_type
         ORDER BY 

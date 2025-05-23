@@ -226,7 +226,7 @@ export default function OccupationAnalysisSection({
             </h4>
             <p className="text-lg">
               {topOccupation && secondOccupation
-                ? `हरेक ${topTwoOccupationRatio} ${topOccupation.occupationName} कर्मचारीका लागि 1 ${secondOccupation.occupationName}`
+                ? `हरेक ${topTwoOccupationRatio} ${topOccupation.occupationName} कर्मचारीका लागि १ ${secondOccupation.occupationName}`
                 : ""}
               <span className="sr-only">
                 {topOccupation && secondOccupation

@@ -5,17 +5,14 @@ import Image from "next/image";
 import ReligionCharts from "./_components/religion-charts";
 import ReligionAnalysisSection from "./_components/religion-analysis-section";
 import ReligionSEO from "./_components/religion-seo";
-import { api } from "@/trpc/server";
-import { ReligionType } from "@/server/api/routers/profile/demographics/ward-wise-religion-population.schema";
+import { ReligionType } from "@/lib/api";
+import { wardWiseReligionPopulationService } from "@/lib/api";
 import { localizeNumber } from "@/lib/utils/localize-number";
-
-// Force dynamic rendering since we're using tRPC which relies on headers
-export const dynamic = "force-dynamic";
 
 // Define the locales for which this page should be statically generated
 export async function generateStaticParams() {
   // Generate the page for 'en' and 'ne' locales
-  return [{ locale: "en" }];
+  return [{ locale: "en" }, { locale: "ne" }];
 }
 
 // Optional: Add revalidation period if you want to update the static pages periodically
@@ -24,8 +21,8 @@ export const revalidate = 86400; // Revalidate once per day (in seconds)
 // This function will generate metadata dynamically based on the actual data
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    // Fetch data for SEO using tRPC
-    const religionData = await api.profile.demographics.wardWiseReligionPopulation.getAll.query();
+    // Fetch data for SEO using our API service (not tRPC)
+    const religionData = await wardWiseReligionPopulationService.getAll();
     const municipalityName = "खजुरा गाउँपालिका"; // Khajura Rural Municipality
 
     // Process data for SEO
@@ -33,6 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
       (sum, item) => sum + (item.population || 0),
       0,
     );
+    
     // Group by religion type and calculate totals
     const religionCounts: Record<string, number> = {};
     religionData.forEach((item) => {
@@ -107,7 +105,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const descriptionEN = `Ward-wise religious population distribution, trends and analysis for Khajura Rural Municipality. Out of a total population of ${totalPopulation}, ${RELIGION_NAMES_EN[topReligions[0] as ReligionType]} (${religionCounts[topReligions[0]]}) is the largest group, followed by ${RELIGION_NAMES_EN[topReligions[1] as ReligionType]} (${religionCounts[topReligions[1]]}) and ${RELIGION_NAMES_EN[topReligions[2] as ReligionType]} (${religionCounts[topReligions[2]]})। Detailed statistics and visualizations of various religious communities.`;
 
     return {
-      title: `धर्म अनुसार जनसंख्या | ${municipalityName} पालिका प्रोफाइल`,
+      title: `खजुरा गाउँपालिका | धर्म अनुसार जनसंख्या | डिजिटल प्रोफाइल`,
       description: descriptionNP,
       keywords: [...keywordsNP, ...keywordsEN],
       alternates: {
@@ -118,25 +116,25 @@ export async function generateMetadata(): Promise<Metadata> {
         },
       },
       openGraph: {
-        title: `धर्म अनुसार जनसंख्या | ${municipalityName}`,
+        title: `खजुरा गाउँपालिका | धर्म अनुसार जनसंख्या`,
         description: descriptionNP,
         type: "article",
         locale: "ne_NP",
         alternateLocale: "en_US",
-        siteName: `${municipalityName} डिजिटल प्रोफाइल`,
+        siteName: `खजुरा गाउँपालिका डिजिटल प्रोफाइल`,
       },
       twitter: {
         card: "summary_large_image",
-        title: `धर्म अनुसार जनसंख्या | ${municipalityName}`,
+        title: `खजुरा गाउँपालिका | धर्म अनुसार जनसंख्या`,
         description: descriptionNP,
       },
     };
   } catch (error) {
     // Fallback metadata if data fetching fails
     return {
-      title: "धर्म अनुसार जनसंख्या | पालिका प्रोफाइल",
+      title: "खजुरा गाउँपालिका | धर्म अनुसार जनसंख्या | डिजिटल प्रोफाइल",
       description:
-        "वडा अनुसार धार्मिक जनसंख्या वितरण, प्रवृत्ति र विश्लेषण। विभिन्न धर्मावलम्बीहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
+        "खजुरा गाउँपालिकाको प्रत्येक वडाको धार्मिक विवरण, धर्मावलम्बीहरूको संख्या र धार्मिक विविधताको विश्लेषण।",
     };
   }
 }
@@ -164,13 +162,13 @@ const RELIGION_NAMES: Record<string, string> = {
 };
 
 export default async function WardWiseReligionPopulationPage() {
-  // Fetch all religion population data using tRPC
-  const religionData = await api.profile.demographics.wardWiseReligionPopulation.getAll.query();
+  // Fetch all religion population data using our API service (not tRPC)
+  const religionData = await wardWiseReligionPopulationService.getAll();
   
   // Try to fetch summary data
   let summaryData = null;
   try {
-    summaryData = await api.profile.demographics.wardWiseReligionPopulation.summary.query();
+    summaryData = await wardWiseReligionPopulationService.getReligionSummary();
   } catch (error) {
     console.error("Could not fetch summary data", error);
   }
@@ -282,8 +280,8 @@ export default async function WardWiseReligionPopulationPage() {
           </div>
 
           <div className="prose prose-slate dark:prose-invert max-w-none">
-            <h1 className="scroll-m-20 tracking-tight  mb-6">
-              खजुरा गाउँपालिकामा धर्म अनुसार जनसंख्या
+            <h1 className="scroll-m-20 tracking-tight mb-6">
+              खजुरा गाउँपालिका | धर्म अनुसार जनसंख्या विश्लेषण
             </h1>
 
             <h2 id="introduction" className="scroll-m-20">
@@ -292,7 +290,7 @@ export default async function WardWiseReligionPopulationPage() {
             <p>
               यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा अवलम्बन गरिने
               धर्महरू र धर्मावलम्बीहरूको जनसंख्या सम्बन्धी विस्तृत तथ्याङ्क
-              प्रस्तुत गरिएको छ। यो तथ्याङ्कले धार्मिक विविधता, सांस्कृतिक
+              प्रस्तुत गरिएको छ। यो तथ्याङ्कले खजुरा गाउँपालिकाको धार्मिक विविधता, सांस्कृतिक
               पहिचान र स्थानीय समुदायको धार्मिक स्वरूपलाई प्रतिबिम्बित गर्दछ।
             </p>
             <p>
@@ -308,7 +306,7 @@ export default async function WardWiseReligionPopulationPage() {
                 ).toFixed(1),
                 "ne"
               )}
-              % रहेका छन्। यस तथ्याङ्कले धार्मिक नीति, सांस्कृतिक संरक्षण र
+              % रहेका छन्। यस तथ्याङ्कले खजुरा गाउँपालिकाको धार्मिक नीति, सांस्कृतिक संरक्षण र
               सामाजिक समानतामा सहयोग पुर्‍याउँछ।
             </p>
 
@@ -316,7 +314,7 @@ export default async function WardWiseReligionPopulationPage() {
               id="religion-distribution"
               className="scroll-m-20 border-b pb-2"
             >
-              धर्म अनुसार जनसंख्या
+              खजुरा गाउँपालिकामा धर्म अनुसार जनसंख्या
             </h2>
             <p>
               खजुरा गाउँपालिकामा विभिन्न धर्मावलम्बीहरूको कुल जनसंख्या
@@ -337,7 +335,7 @@ export default async function WardWiseReligionPopulationPage() {
 
           <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
             <h2 id="major-religions" className="scroll-m-20 border-b pb-2">
-              प्रमुख धर्महरूको विश्लेषण
+              खजुरा गाउँपालिकाको प्रमुख धर्महरूको विश्लेषण
             </h2>
             <p>
               खजुरा गाउँपालिकामा निम्न धर्महरू प्रमुख रूपमा अवलम्बन गरिन्छन्। यी

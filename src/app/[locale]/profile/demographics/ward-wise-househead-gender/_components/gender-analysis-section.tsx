@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface GenderAnalysisProps {
   overallSummary: Array<{
@@ -11,27 +11,56 @@ interface GenderAnalysisProps {
   }>;
   totalPopulation: number;
   GENDER_NAMES: Record<string, string>;
+  wardNumbers: number[];
+  genderData: Array<{
+    id?: string;
+    wardNumber: number;
+    gender: string;
+    population: number;
+    updatedAt?: Date;
+    createdAt?: Date;
+  }>;
 }
 
 export default function GenderAnalysisSection({
   overallSummary,
   totalPopulation,
   GENDER_NAMES,
+  wardNumbers,
+  genderData,
 }: GenderAnalysisProps) {
+  // Modern aesthetic color scheme for gender representation
   const GENDER_COLORS = {
-    MALE: "#36A2EB",
-    FEMALE: "#FF6384",
-    OTHER: "#FFCE56",
+    MALE: "#4F46E5", // Indigo
+    FEMALE: "#EC4899", // Pink
+    OTHER: "#06B6D4", // Cyan
   };
 
-  // Calculate male to female ratio if both exist
-  const maleData = overallSummary.find((item) => item.gender === "MALE");
-  const femaleData = overallSummary.find((item) => item.gender === "FEMALE");
+  // Calculate male-female ratio
+  const maleHouseheads = overallSummary.find((item) => item.gender === "MALE")?.population || 0;
+  const femaleHouseheads = overallSummary.find((item) => item.gender === "FEMALE")?.population || 0;
 
-  const maleToFemaleRatio =
-    maleData && femaleData && femaleData.population > 0
-      ? (maleData.population / femaleData.population).toFixed(2)
-      : "N/A";
+  const maleFemaleRatio = femaleHouseheads > 0 ? (maleHouseheads / femaleHouseheads).toFixed(2) : "N/A";
+
+  // Find ward with highest female household head percentage
+  const wardGenderData = wardNumbers.map((wardNumber) => {
+    const wardItems = genderData.filter((item) => item.wardNumber === wardNumber);
+    const wardTotal = wardItems.reduce((sum, item) => sum + (item.population || 0), 0);
+    
+    const femaleItem = wardItems.find((item) => item.gender === "FEMALE");
+    const femalePopulation = femaleItem?.population || 0;
+    const femalePercentage = wardTotal > 0 ? (femalePopulation / wardTotal) * 100 : 0;
+    
+    return {
+      wardNumber,
+      femalePercentage,
+      femalePopulation,
+      totalHouseheads: wardTotal
+    };
+  });
+
+  const highestFemaleWard = [...wardGenderData].sort((a, b) => b.femalePercentage - a.femalePercentage)[0];
+  const lowestFemaleWard = [...wardGenderData].sort((a, b) => a.femalePercentage - b.femalePercentage)[0];
 
   // Add SEO-friendly data attributes to enhance crawler understanding
   useEffect(() => {
@@ -49,48 +78,42 @@ export default function GenderAnalysisSection({
         "Khajura Rural Municipality / खजुरा गाउँपालिका",
       );
       document.body.setAttribute(
-        "data-total-households",
-        totalPopulation.toString(),
+        "data-total-househeads",
+        localizeNumber(totalPopulation.toString(), "ne"),
       );
 
-      // Add male househead data
-      if (maleData) {
-        const genderNameEN = GENDER_NAMES_EN[maleData.gender] || maleData.gender;
+      // Add gender proportions
+      overallSummary.forEach(item => {
+        const genderNameEN = GENDER_NAMES_EN[item.gender] || item.gender;
         document.body.setAttribute(
-          "data-male-househead",
-          `${genderNameEN} / ${maleData.genderName}`,
+          `data-${genderNameEN.toLowerCase()}-househeads`,
+          localizeNumber(item.population.toString(), "ne"),
         );
         document.body.setAttribute(
-          "data-male-househead-count",
-          maleData.population.toString(),
+          `data-${genderNameEN.toLowerCase()}-percentage`,
+          localizeNumber(((item.population / totalPopulation) * 100).toFixed(2), "ne"),
+        );
+      });
+
+      // Add male-female ratio
+      document.body.setAttribute(
+        "data-male-female-ratio",
+        localizeNumber(maleFemaleRatio, "ne"),
+      );
+
+      // Add highest female representation ward
+      if (highestFemaleWard) {
+        document.body.setAttribute(
+          "data-highest-female-ward",
+          localizeNumber(highestFemaleWard.wardNumber.toString(), "ne"),
         );
         document.body.setAttribute(
-          "data-male-househead-percentage",
-          ((maleData.population / totalPopulation) * 100).toFixed(2),
+          "data-highest-female-percentage",
+          localizeNumber(highestFemaleWard.femalePercentage.toFixed(2), "ne"),
         );
       }
-
-      // Add female househead data
-      if (femaleData) {
-        const genderNameEN = GENDER_NAMES_EN[femaleData.gender] || femaleData.gender;
-        document.body.setAttribute(
-          "data-female-househead",
-          `${genderNameEN} / ${femaleData.genderName}`,
-        );
-        document.body.setAttribute(
-          "data-female-househead-count",
-          femaleData.population.toString(),
-        );
-        document.body.setAttribute(
-          "data-female-househead-percentage",
-          ((femaleData.population / totalPopulation) * 100).toFixed(2),
-        );
-      }
-
-      // Add gender ratio data
-      document.body.setAttribute("data-gender-ratio", maleToFemaleRatio);
     }
-  }, [overallSummary, totalPopulation, maleData, femaleData, maleToFemaleRatio]);
+  }, [overallSummary, totalPopulation, maleFemaleRatio, highestFemaleWard]);
 
   return (
     <>
@@ -122,10 +145,13 @@ export default function GenderAnalysisSection({
               <div
                 className="absolute bottom-0 left-0 right-0"
                 style={{
-                  height: `${Math.min((item.population / overallSummary[0].population) * 100, 100)}%`,
+                  height: `${Math.min(
+                    (item.population / overallSummary[0].population) * 100,
+                    100,
+                  )}%`,
                   backgroundColor:
                     GENDER_COLORS[item.gender as keyof typeof GENDER_COLORS] ||
-                    "#888",
+                    "#94a3b8",
                   opacity: 0.2,
                   zIndex: 0,
                 }}
@@ -136,11 +162,14 @@ export default function GenderAnalysisSection({
                   {/* Hidden span for SEO with English name */}
                   <span className="sr-only">{genderEN}</span>
                 </h3>
-                <p className="text-2xl font-bold">{percentage}%</p>
+                <p className="text-2xl font-bold">
+                  {localizeNumber(percentage, "ne")}%
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  {item.population.toLocaleString()} घरपरिवार
+                  {localizeNumber(item.population.toLocaleString(), "ne")}{" "}
+                  व्यक्ति
                   <span className="sr-only">
-                    ({item.population.toLocaleString()} households)
+                    ({item.population.toLocaleString()} people)
                   </span>
                 </p>
               </div>
@@ -151,57 +180,65 @@ export default function GenderAnalysisSection({
 
       <div className="bg-muted/50 p-4 rounded-lg mt-8">
         <h3 className="text-xl font-medium mb-4">
-          लिङ्गिक अनुपात विश्लेषण
+          <strong>खजुरा गाउँपालिका</strong>को घरमूली लिङ्ग विश्लेषण
           <span className="sr-only">
-            Gender Ratio Analysis of Khajura
+            Household Head Gender Analysis of Khajura
           </span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
             className="bg-card p-4 rounded border"
             data-analysis-type="gender-ratio"
-            data-ratio={maleToFemaleRatio}
+            data-ratio={maleFemaleRatio}
           >
             <h4 className="font-medium mb-2">
               पुरुष-महिला घरमूली अनुपात
               <span className="sr-only">
-                Male to Female Househead Ratio in Khajura Rural Municipality
+                Male-Female Household Head Ratio in Khajura
               </span>
             </h4>
-            <p className="text-3xl font-bold">{maleToFemaleRatio}</p>
+            <p className="text-3xl font-bold">
+              {localizeNumber(maleFemaleRatio, "ne")}
+            </p>
             <p className="text-sm text-muted-foreground mt-2">
-              हरेक {maleToFemaleRatio} पुरुष घरमूलीका लागि 1 महिला घरमूली
+              हरेक {localizeNumber(maleFemaleRatio, "ne")} पुरुष घरमूलीका लागि १
+              महिला घरमूली
               <span className="sr-only">
-                For every {maleToFemaleRatio} male househeads, there is 1 female househead in Khajura Rural Municipality
+                For every {maleFemaleRatio} male household heads, there is 1
+                female household head in Khajura Rural Municipality
               </span>
             </p>
           </div>
 
           <div
             className="bg-card p-4 rounded border"
-            data-analysis-type="female-percentage"
-            data-percentage={
-              femaleData
-                ? ((femaleData.population / totalPopulation) * 100).toFixed(2)
-                : "0"
-            }
+            data-analysis-type="female-representation"
+            data-highest-ward={highestFemaleWard?.wardNumber}
+            data-highest-percentage={highestFemaleWard?.femalePercentage.toFixed(
+              2,
+            )}
           >
             <h4 className="font-medium mb-2">
-              महिला घरमूली प्रतिशत
+              महिला घरमूली प्रतिनिधित्व
               <span className="sr-only">
-                Female Househead Percentage in Khajura Rural Municipality
+                Female Household Head Representation in Khajura
               </span>
             </h4>
             <p className="text-3xl font-bold">
-              {femaleData
-                ? ((femaleData.population / totalPopulation) * 100).toFixed(2) +
-                  "%"
-                : "0%"}
+              वडा{" "}
+              {localizeNumber(highestFemaleWard.wardNumber.toString(), "ne")}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              कुल घरपरिवारको प्रतिशतमा महिला घरमूली
+              सबैभन्दा बढी महिला घरमूली प्रतिशत (
+              {localizeNumber(
+                highestFemaleWard.femalePercentage.toFixed(2),
+                "ne",
+              )}
+              %) भएको वडा
               <span className="sr-only">
-                Percentage of female househeads in total households of Khajura Rural Municipality
+                Ward with highest female household head percentage (
+                {highestFemaleWard.femalePercentage.toFixed(2)}%) in Khajura
+                Rural Municipality
               </span>
             </p>
           </div>
@@ -210,26 +247,142 @@ export default function GenderAnalysisSection({
 
       <div className="bg-muted/50 p-4 rounded-lg mt-6">
         <h3 className="text-xl font-medium mb-2">
-          थप जानकारी
+          <strong>खजुरा गाउँपालिका</strong>को वडागत घरमूली लिङ्ग विविधता
           <span className="sr-only">
-            Additional Information about Househead Gender Demographics in Khajura
+            Ward-wise Household Head Gender Diversity in Khajura
           </span>
         </h3>
-        <p>
-          पालिकाको घरमूली लिङ्ग वितरण सम्बन्धी थप जानकारी वा विस्तृत तथ्याङ्कको
-          लागि, कृपया{" "}
-          <Link href="/contact" className="text-primary hover:underline">
-            हामीलाई सम्पर्क
-          </Link>{" "}
-          गर्नुहोस् वा{" "}
-          <Link
-            href="/profile/demographics"
-            className="text-primary hover:underline"
-          >
-            जनसांख्यिकी तथ्याङ्क
-          </Link>{" "}
-          खण्डमा हेर्नुहोस्।
-        </p>
+        <div className="prose prose-slate dark:prose-invert max-w-none">
+          <p>
+            <strong>खजुरा गाउँपालिका</strong>को वडागत घरमूली लिङ्ग विश्लेषणबाट
+            निम्न निष्कर्षहरू निकाल्न सकिन्छ:
+          </p>
+
+          <ul itemScope itemType="https://schema.org/ItemList">
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+            >
+              <meta itemProp="position" content="1" />
+              <div itemProp="item">
+                <strong>पुरुष घरमूली:</strong> <strong>खजुरा गाउँपालिका</strong>
+                मा कुल घरमूलीको{" "}
+                {localizeNumber(
+                  ((maleHouseheads / totalPopulation) * 100).toFixed(2),
+                  "ne",
+                )}
+                % पुरुष घरमूली रहेका छन्, जुन नेपालको राष्ट्रिय औसत भन्दा{" "}
+                {(maleHouseheads / totalPopulation) * 100 > 80 ? "बढी" : "कम"}{" "}
+                हो।
+              </div>
+            </li>
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+            >
+              <meta itemProp="position" content="2" />
+              <div itemProp="item">
+                <strong>महिला घरमूली:</strong> <strong>खजुरा गाउँपालिका</strong>
+                मा{" "}
+                {localizeNumber(
+                  ((femaleHouseheads / totalPopulation) * 100).toFixed(2),
+                  "ne",
+                )}
+                % महिला घरमूली रहेका छन्। वडा{" "}
+                {localizeNumber(highestFemaleWard.wardNumber.toString(), "ne")}{" "}
+                मा सबैभन्दा बढी महिला घरमूली प्रतिशत (
+                {localizeNumber(
+                  highestFemaleWard.femalePercentage.toFixed(2),
+                  "ne",
+                )}
+                %) रहेको छ, भने वडा{" "}
+                {localizeNumber(lowestFemaleWard.wardNumber.toString(), "ne")}{" "}
+                मा सबैभन्दा कम महिला घरमूली प्रतिशत (
+                {localizeNumber(
+                  lowestFemaleWard.femalePercentage.toFixed(2),
+                  "ne",
+                )}
+                %) रहेको छ।
+              </div>
+            </li>
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+            >
+              <meta itemProp="position" content="3" />
+              <div itemProp="item">
+                <strong>वडागत भिन्नता:</strong>{" "}
+                <strong>खजुरा गाउँपालिका</strong>का विभिन्न वडाहरूमा महिला
+                घरमूलीको प्रतिशत{" "}
+                {localizeNumber(
+                  lowestFemaleWard.femalePercentage.toFixed(2),
+                  "ne",
+                )}
+                % देखि{" "}
+                {localizeNumber(
+                  highestFemaleWard.femalePercentage.toFixed(2),
+                  "ne",
+                )}
+                % सम्म भिन्नता देखिन्छ, जसले वडाहरू बीच सामाजिक-सांस्कृतिक
+                भिन्नता रहेको संकेत गर्दछ।
+              </div>
+            </li>
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+            >
+              <meta itemProp="position" content="4" />
+              <div itemProp="item">
+                <strong>समग्र अवस्था:</strong> <strong>खजुरा गाउँपालिका</strong>
+                मा हरेक {localizeNumber(maleFemaleRatio, "ne")} पुरुष घरमूलीका
+                लागि १ महिला घरमूली रहेको अवस्थाले महिला नेतृत्वमा सुधार गर्ने
+                आवश्यकता देखाउँछ।
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="bg-muted/50 p-4 rounded-lg mt-6">
+        <h3 className="text-xl font-medium mb-2">
+          नीतिगत सुझाव
+          <span className="sr-only">Policy Recommendations for Khajura</span>
+        </h3>
+        <div className="prose prose-slate dark:prose-invert max-w-none">
+          <p>
+            <strong>खजुरा गाउँपालिका</strong>को घरमूली लिङ्ग विश्लेषणका आधारमा
+            निम्न नीतिगत सुझावहरू प्रस्तुत गरिएका छन्:
+          </p>
+
+          <ul>
+            <li>
+              <strong>महिला सशक्तिकरण:</strong>{" "}
+              <strong>खजुरा गाउँपालिका</strong>मा महिला घरमूली प्रतिशत बढाउन
+              विशेष आर्थिक सशक्तिकरण र नेतृत्व विकास कार्यक्रमहरू संचालन गर्ने।
+            </li>
+            <li>
+              <strong>लैङ्गिक बजेट:</strong> <strong>खजुरा गाउँपालिका</strong>को
+              न्यून महिला घरमूली प्रतिशत भएका वडाहरूमा (विशेष गरी वडा{" "}
+              {localizeNumber(lowestFemaleWard.wardNumber.toString(), "ne")})
+              लैङ्गिक समानताका लागि लक्षित बजेट विनियोजन गर्ने।
+            </li>
+            <li>
+              <strong>प्रोत्साहन प्रणाली:</strong>{" "}
+              <strong>खजुरा गाउँपालिका</strong>मा महिला नेतृत्वका परिवारहरूलाई
+              विशेष प्रोत्साहन, सहुलियत र अवसरहरू प्रदान गर्ने नीति लागू गर्ने।
+            </li>
+            <li>
+              <strong>सफल अभ्यास प्रसार:</strong> वडा{" "}
+              {localizeNumber(highestFemaleWard.wardNumber.toString(), "ne")} मा
+              महिला घरमूली प्रतिशत बढी हुनुका कारणहरू अध्ययन गरी अन्य वडाहरूमा
+              त्यस्ता सफल अभ्यासहरू प्रसार गर्ने।
+            </li>
+          </ul>
+        </div>
       </div>
     </>
   );

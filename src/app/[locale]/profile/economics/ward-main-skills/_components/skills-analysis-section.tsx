@@ -297,7 +297,7 @@ export default function SkillsAnalysisSection({
             <p className="text-3xl font-bold">{topTwoSkillRatio}</p>
             <p className="text-sm text-muted-foreground mt-2">
               {topSkill && secondSkill
-                ? `हरेक ${topTwoSkillRatio} ${topSkill.skillName} सीप भएका व्यक्तिका लागि 1 ${secondSkill.skillName} सीप भएका व्यक्ति`
+                ? `हरेक ${topTwoSkillRatio} ${topSkill.skillName} सीप भएका व्यक्तिका लागि १ ${secondSkill.skillName} सीप भएका व्यक्ति`
                 : ""}
               <span className="sr-only">
                 {topSkill && secondSkill

@@ -73,7 +73,7 @@ export default function ReligionCharts({
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            धर्म अनुसार जनसंख्या वितरण
+            खजुरा गाउँपालिकामा धर्म अनुसार जनसंख्या वितरण
           </h3>
           <p className="text-sm text-muted-foreground">
             कुल जनसंख्या:{" "}
@@ -135,7 +135,9 @@ export default function ReligionCharts({
                     <td className="border p-2 text-right">
                       {localizeNumber(totalPopulation.toLocaleString(), "ne")}
                     </td>
-                    <td className="border p-2 text-right">१००.००%</td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber("100.00", "ne")}%
+                    </td>
                   </tr>
                 </tfoot>
               </table>
@@ -217,7 +219,7 @@ export default function ReligionCharts({
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            वडा अनुसार धर्म वितरण
+            खजुरा गाउँपालिकाको वडा अनुसार धर्म वितरण
           </h3>
           <p className="text-sm text-muted-foreground">
             वडा र धर्म अनुसार जनसंख्या वितरण
@@ -252,7 +254,7 @@ export default function ReligionCharts({
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            वडा अनुसार विस्तृत धार्मिक विश्लेषण
+            खजुरा गाउँपालिकाको वडा अनुसार विस्तृत धार्मिक विश्लेषण
           </h3>
           <p className="text-sm text-muted-foreground">
             प्रत्येक वडाको विस्तृत धार्मिक संरचना

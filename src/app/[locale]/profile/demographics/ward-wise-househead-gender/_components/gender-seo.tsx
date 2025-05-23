@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface GenderSEOProps {
   overallSummary: Array<{
@@ -19,7 +20,7 @@ export default function GenderSEO({
 }: GenderSEOProps) {
   // Create structured data for SEO
   const generateStructuredData = () => {
-    // Define English names for genders
+    // Define English names for gender
     const GENDER_NAMES_EN: Record<string, string> = {
       MALE: "Male",
       FEMALE: "Female",
@@ -29,36 +30,31 @@ export default function GenderSEO({
     // Convert gender stats to structured data format
     const genderStats = overallSummary.map((item) => ({
       "@type": "Observation",
-      name: `${GENDER_NAMES_EN[item.gender] || item.gender} househeads in Khajura Rural Municipality`,
+      name: `${GENDER_NAMES_EN[item.gender] || item.gender} household heads in Khajura Rural Municipality`,
       observationDate: new Date().toISOString().split("T")[0],
       measuredProperty: {
         "@type": "PropertyValue",
-        name: `${GENDER_NAMES_EN[item.gender] || item.gender} househeads`,
-        unitText: "households",
+        name: `${GENDER_NAMES_EN[item.gender] || item.gender} household heads`,
+        unitText: "people",
       },
       measuredValue: item.population,
-      description: `${item.population.toLocaleString()} households in Khajura Rural Municipality have ${GENDER_NAMES_EN[item.gender] || item.gender} househeads (${((item.population / totalPopulation) * 100).toFixed(2)}% of total households)`,
+      description: `${localizeNumber(item.population.toLocaleString(), "ne")} ${item.genderName} घरमूली खजुरा गाउँपालिकामा रहेका छन् (कुल घरमूलीको ${localizeNumber(((item.population / totalPopulation) * 100).toFixed(2), "ne")}%)`,
     }));
 
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      name: "Househead Gender Demographics of Khajura Rural Municipality (खजुरा गाउँपालिका)",
-      description: `Househead gender distribution data across ${wardNumbers.length} wards of Khajura Rural Municipality with a total of ${totalPopulation.toLocaleString()} households.`,
+      name: "Household Head Gender Distribution in Khajura Rural Municipality (खजुरा गाउँपालिका)",
+      description: `Ward-wise gender distribution of household heads across ${localizeNumber(wardNumbers.length.toString(), "ne")} wards of Khajura Rural Municipality with a total of ${localizeNumber(totalPopulation.toLocaleString(), "ne")} household heads.`,
       keywords: [
         "Khajura Rural Municipality",
         "खजुरा गाउँपालिका",
-        "Househead gender demographics",
-        "Gender statistics",
+        "Household head gender",
         "Ward-wise househead data",
-        "Nepal census",
-        "Female househeads",
-        "Male househeads",
-        "Gender equality",
-        "Household leadership",
-        "महिला घरमूली",
-        "पुरुष घरमूली",
-        "घरमूली लिङ्ग वितरण",
+        "Nepal demographics",
+        "Gender analysis",
+        "Female household heads",
+        "Male household heads",
       ],
       url: "https://khajuramun.digprofile.com/profile/demographics/ward-wise-househead-gender",
       creator: {
@@ -78,8 +74,8 @@ export default function GenderSEO({
       },
       variableMeasured: overallSummary.map((item) => ({
         "@type": "PropertyValue",
-        name: `${GENDER_NAMES_EN[item.gender] || item.gender} househeads`,
-        unitText: "households",
+        name: `${item.genderName} household heads`,
+        unitText: "people",
         value: item.population,
       })),
       observation: genderStats,
@@ -91,7 +87,7 @@ export default function GenderSEO({
   return (
     <>
       <Script
-        id="gender-demographics-jsonld"
+        id="househead-gender-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(structuredData),
