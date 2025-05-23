@@ -60,10 +60,10 @@ const navItems = [
         title: "उमेर अनुसार वैवाहिक स्थिति",
         href: "/profile/demographics/ward-age-wise-marital-status",
       },
-      {
-        title: "उमेर र लिङ्ग अनुसार जनसंख्या",
-        href: "/profile/demographics/ward-age-wise-population",
-      },
+      // {
+      //   title: "उमेर र लिङ्ग अनुसार जनसंख्या",
+      //   href: "/profile/demographics/ward-age-wise-population",
+      // },
       // {
       //   title: "वर्ष अनुसार जनसंख्या परिवर्तन",
       //   href: "/profile/demographics/ward-time-series-population",
@@ -79,6 +79,10 @@ const navItems = [
     href: "/profile/economics",
     icon: <PieChart className="w-4 h-4" />,
     items: [
+      {
+        title: "घरधुरी आय स्रोत",
+        href: "/profile/economics/ward-wise-household-income-source",
+      },
       // {
       //   title: "रोजगारी स्थिति",
       //   href: "/profile/economics/economic-status",
@@ -107,10 +111,7 @@ const navItems = [
         title: "वार्षिक आय र निर्वाह",
         href: "/profile/economics/ward-yearly-income-sustenance",
       },
-      {
-        title: "घरधुरी आय स्रोत",
-        href: "/profile/economics/ward-wise-household-income-source",
-      },
+
       {
         title: "जमिन स्वामित्व",
         href: "/profile/economics/ward-household-land-possessions",
