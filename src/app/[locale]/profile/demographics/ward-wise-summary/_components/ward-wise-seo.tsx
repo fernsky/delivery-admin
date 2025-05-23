@@ -38,7 +38,7 @@ export default function WardWiseSEO({
     // Convert ward stats to structured data format
     const wardObservations = processedWardData.map((ward) => ({
       "@type": "Observation",
-      name: `Ward ${ward.wardNumber} demographics in Khajura Rural Municipality`,
+      name: `खजुरा गाउँपालिका वडा ${ward.wardNumber} demographics`,
       observationDate: new Date().toISOString().split("T")[0],
       measuredProperty: [
         {
@@ -76,53 +76,53 @@ export default function WardWiseSEO({
           value: ward.sexRatio,
         },
       ],
-      description: `वडा ${localizeNumber(
+      description: `खजुरा गाउँपालिका वडा ${localizeNumber(
         ward.wardNumber,
         "ne",
-      )} (Ward ${ward.wardNumber}) of Khajura Rural Municipality has a population of ${localizeNumber(
+      )} मा जनसंख्या ${localizeNumber(
         ward.totalPopulation.toLocaleString(),
         "ne",
-      )} people with ${localizeNumber(
+      )} जना छन्, जसमा ${localizeNumber(
         ward.malePopulation.toLocaleString(),
         "ne",
-      )} males and ${localizeNumber(
+      )} पुरुष र ${localizeNumber(
         ward.femalePopulation.toLocaleString(),
         "ne",
-      )} females across ${localizeNumber(
+      )} महिला रहेका छन्, साथै यस वडामा ${localizeNumber(
         ward.totalHouseholds.toLocaleString(),
         "ne",
-      )} households.`,
+      )} घरधुरी छन्।`,
     }));
 
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      name: "Ward-wise Demographics of Khajura Rural Municipality (खजुरा गाउँपालिका)",
-      description: `Ward-wise population distribution data across ${localizeNumber(
+      name: "खजुरा गाउँपालिका - वडागत जनसांख्यिकी तथ्याङ्क",
+      description: `खजुरा गाउँपालिकाको ${localizeNumber(
         processedWardData.length,
         "ne",
-      )} wards of Khajura Rural Municipality with a total population of ${localizeNumber(
+      )} वडाहरूको जनसंख्या वितरण, जसमा कुल जनसंख्या ${localizeNumber(
         municipalityStats.totalPopulation.toLocaleString(),
         "ne",
-      )} people and ${localizeNumber(
+      )} र कुल ${localizeNumber(
         municipalityStats.totalHouseholds.toLocaleString(),
         "ne",
-      )} households.`,
+      )} घरधुरी रहेका छन्।`,
       keywords: [
-        "Khajura Rural Municipality",
         "खजुरा गाउँपालिका",
-        "Ward demographics",
-        "Khajura ward-wise population",
-        "Nepal census",
-        "Khajura population distribution",
-        "Khajura gender ratio",
-        "Khajura household data",
-        "Banke district population",
+        "Khajura Rural Municipality",
+        "वडागत जनसांख्यिकी",
+        "खजुरा वडा जनसंख्या",
+        "नेपाल जनगणना",
+        "खजुरा जनसंख्या वितरण",
+        "खजुरा लैङ्गिक अनुपात",
+        "खजुरा घरधुरी तथ्याङ्क",
+        "बाँके जिल्ला जनसंख्या",
       ],
       url: "https://khajuramun.digprofile.com/profile/demographics/ward-wise-summary",
       creator: {
         "@type": "Organization",
-        name: "Khajura Rural Municipality",
+        name: "खजुरा गाउँपालिका",
         url: "https://khajuramun.digprofile.com",
       },
       temporalCoverage: "2021/2023",

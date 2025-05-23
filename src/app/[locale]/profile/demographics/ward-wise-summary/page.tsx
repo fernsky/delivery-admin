@@ -99,41 +99,41 @@ export async function generateMetadata(): Promise<Metadata> {
     // Create rich keywords with actual data
     const keywordsNP = [
       "खजुरा गाउँपालिका वडागत जनसंख्या",
-      "खजुरा वडा विवरण",
-      "वडागत जनसांख्यिकी तथ्याङ्क",
-      "खजुरा घरधुरी विवरण",
-      `खजुरा कुल जनसंख्या ${totalPopulation.toLocaleString()}`,
-      `खजुरा कुल घरधुरी ${totalHouseholds.toLocaleString()}`,
-      "खजुरा वडागत लैङ्गिक अनुपात",
-      "खजुरा गाउँपालिकाको वडागत विश्लेषण",
-      `खजुरा वडा ${highestWardNumber} जनसंख्या ${highestPopulation.toLocaleString()}`,
-      `खजुरा पुरुष जनसंख्या ${malePopulation.toLocaleString()}`,
-      `खजुरा महिला जनसंख्या ${femalePopulation.toLocaleString()}`,
-      `खजुरा औसत परिवार संख्या ${averageHouseholdSize}`,
+      "खजुरा गाउँपालिका वडा विवरण",
+      "खजुरा गाउँपालिका जनसांख्यिकी तथ्याङ्क",
+      "खजुरा गाउँपालिका घरधुरी विवरण",
+      `खजुरा गाउँपालिका जनसंख्या ${localizeNumber(totalPopulation, "ne")}`,
+      `खजुरा गाउँपालिका घरधुरी ${localizeNumber(totalHouseholds, "ne")}`,
+      "खजुरा गाउँपालिका लैङ्गिक अनुपात",
+      "खजुरा गाउँपालिका वडागत विश्लेषण",
+      `खजुरा गाउँपालिका वडा ${localizeNumber(highestWardNumber, "ne")} जनसंख्या ${localizeNumber(highestPopulation, "ne")}`,
+      `खजुरा पुरुष जनसंख्या ${localizeNumber(malePopulation, "ne")}`,
+      `खजुरा महिला जनसंख्या ${localizeNumber(femalePopulation, "ne")}`,
+      `खजुरा औसत परिवार संख्या ${localizeNumber(averageHouseholdSize, "ne")}`,
     ];
 
     const keywordsEN = [
       "Khajura Rural Municipality ward-wise population",
-      "Khajura ward details",
-      "Ward demographics statistics",
+      "Khajura Rural Municipality ward details",
+      "Khajura demographics statistics",
       "Khajura household details",
       `Khajura total population ${totalPopulation.toLocaleString()}`,
       `Khajura total households ${totalHouseholds.toLocaleString()}`,
-      "Ward-wise gender ratio",
-      "Municipal ward analysis",
-      `Ward ${highestWardNumber} population ${highestPopulation.toLocaleString()}`,
+      "Khajura gender ratio",
+      "Khajura ward analysis",
+      `Khajura Ward ${highestWardNumber} population ${highestPopulation.toLocaleString()}`,
       `Khajura male population ${malePopulation.toLocaleString()}`,
       `Khajura female population ${femalePopulation.toLocaleString()}`,
-      `Average family size ${averageHouseholdSize}`,
+      `Khajura average family size ${averageHouseholdSize}`,
     ];
 
     // Create detailed description with actual data
-    const descriptionNP = `खजुरा गाउँपालिकाको वडागत जनसांख्यिकी सारांश। कुल जनसंख्या ${totalPopulation.toLocaleString()} (पुरुष: ${malePopulation.toLocaleString()}, महिला: ${femalePopulation.toLocaleString()}) र कुल घरधुरी ${totalHouseholds.toLocaleString()} रहेको छ। खजुरा गाउँपालिकाका ${wardCount} वडाहरूमध्ये वडा ${highestWardNumber} मा सबैभन्दा बढी जनसंख्या (${highestPopulation.toLocaleString()}) रहेको छ। खजुरा गाउँपालिकाको समग्र लैङ्गिक अनुपात ${overallSexRatio} र औसत परिवार संख्या ${averageHouseholdSize} रहेको छ। सबै वडाहरूको जनसंख्या वितरण, लैङ्गिक अनुपात, घरधुरी र परिवार संख्याको विस्तृत विश्लेषण प्रस्तुत गरिएको छ。`;
+    const descriptionNP = `खजुरा गाउँपालिकाको वडागत जनसांख्यिकी सारांश। कुल जनसंख्या ${localizeNumber(totalPopulation, "ne")} (पुरुष: ${localizeNumber(malePopulation, "ne")}, महिला: ${localizeNumber(femalePopulation, "ne")}) र कुल घरधुरी ${localizeNumber(totalHouseholds, "ne")} रहेको छ। खजुरा गाउँपालिकाका ${localizeNumber(wardCount, "ne")} वडाहरूमध्ये वडा ${localizeNumber(highestWardNumber, "ne")} मा सबैभन्दा बढी जनसंख्या (${localizeNumber(highestPopulation, "ne")}) रहेको छ। खजुरा गाउँपालिकाको समग्र लैङ्गिक अनुपात ${localizeNumber(overallSexRatio, "ne")} र औसत परिवार संख्या ${localizeNumber(averageHouseholdSize, "ne")} रहेको छ। सबै वडाहरूको जनसंख्या वितरण, लैङ्गिक अनुपात, घरधुरी र परिवार संख्याको विस्तृत विश्लेषण प्रस्तुत गरिएको छ।`;
 
     const descriptionEN = `Ward-wise demographic summary for Khajura Rural Municipality. Total population of ${totalPopulation.toLocaleString()} (Male: ${malePopulation.toLocaleString()}, Female: ${femalePopulation.toLocaleString()}) and total households of ${totalHouseholds.toLocaleString()}. Among ${wardCount} wards of Khajura, Ward ${highestWardNumber} has the highest population (${highestPopulation.toLocaleString()}). The Khajura municipality's overall gender ratio is ${overallSexRatio} and average family size is ${averageHouseholdSize}. Detailed analysis of population distribution, gender ratio, households and family size across all wards of Khajura Rural Municipality.`;
 
     return {
-      title: `वडागत जनसांख्यिकी सारांश | ${municipalityName} पालिका प्रोफाइल`,
+      title: `खजुरा गाउँपालिका | वडागत जनसांख्यिकी सारांश | डिजिटल प्रोफाइल`,
       description: descriptionNP,
       keywords: [...keywordsNP, ...keywordsEN],
       alternates: {
@@ -144,23 +144,23 @@ export async function generateMetadata(): Promise<Metadata> {
         },
       },
       openGraph: {
-        title: `वडागत जनसांख्यिकी सारांश | ${municipalityName}`,
+        title: `खजुरा गाउँपालिका | वडागत जनसांख्यिकी सारांश`,
         description: descriptionNP,
         type: "article",
         locale: "ne_NP",
         alternateLocale: "en_US",
-        siteName: `${municipalityName} डिजिटल प्रोफाइल`,
+        siteName: `खजुरा गाउँपालिका डिजिटल प्रोफाइल`,
       },
       twitter: {
         card: "summary_large_image",
-        title: `वडागत जनसांख्यिकी सारांश | ${municipalityName}`,
+        title: `खजुरा गाउँपालिका | वडागत जनसांख्यिकी सारांश`,
         description: descriptionNP,
       },
     };
   } catch (error) {
     // Fallback metadata if data fetching fails
     return {
-      title: "वडागत जनसांख्यिकी सारांश | खजुरा गाउँपालिका प्रोफाइल",
+      title: "खजुरा गाउँपालिका | वडागत जनसांख्यिकी सारांश | डिजिटल प्रोफाइल",
       description:
         "खजुरा गाउँपालिकाको प्रत्येक वडाको जनसांख्यिकी विवरण, लिङ्ग अनुपात, घरधुरी र जनसंख्या वितरणको विश्लेषण।",
     };
@@ -321,7 +321,7 @@ export default async function WardWiseSummaryPage() {
               src="/images/ward-demographics.svg"
               width={1200}
               height={400}
-              alt="वडागत जनसांख्यिकी सारांश - खजुरा गाउँपालिका (Ward Demographics Summary - Khajura Rural Municipality)"
+              alt="खजुरा गाउँपालिका | वडागत जनसांख्यिकी सारांश (Khajura Rural Municipality Ward Demographics Summary)"
               className="w-full h-[250px] object-cover rounded-sm"
               priority
             />
@@ -329,7 +329,7 @@ export default async function WardWiseSummaryPage() {
 
           <div className="prose prose-slate dark:prose-invert max-w-none">
             <h1 className="scroll-m-20 tracking-tight mb-6">
-              खजुरा गाउँपालिकाको वडागत जनसांख्यिकी सारांश
+              खजुरा गाउँपालिका | वडागत जनसांख्यिकी सारांश
             </h1>
 
             <h2 id="introduction" className="scroll-m-20">
@@ -352,7 +352,7 @@ export default async function WardWiseSummaryPage() {
               id="ward-population-distribution"
               className="scroll-m-20 border-b pb-2"
             >
-              वडागत जनसंख्या वितरण
+              खजुरा गाउँपालिकाको वडागत जनसंख्या वितरण
             </h2>
             <p>
               खजुरा गाउँपालिकाको कुल जनसंख्या{" "}
