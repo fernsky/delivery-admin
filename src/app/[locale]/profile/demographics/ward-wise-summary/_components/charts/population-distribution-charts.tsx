@@ -3,6 +3,7 @@
 import { TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 import {
   BarChart,
   Bar,
@@ -18,6 +19,22 @@ import {
   Label,
 } from "recharts";
 
+// Create a custom formatter for Recharts tooltips that uses localizeNumber
+const CustomTooltipFormatter = (value: number) => {
+  return localizeNumber(value.toLocaleString(), "ne");
+};
+
+// Customize the label for pie chart to use Nepali numbers
+const renderCustomizedPieLabel = ({
+  ward,
+  percentage,
+}: {
+  ward: string;
+  percentage: string;
+}) => {
+  return `${ward}: ${localizeNumber(percentage, "ne")}%`;
+};
+
 interface PopulationDistributionChartsProps {
   selectedTab: string;
   wardPopulationData: Array<{
@@ -28,7 +45,6 @@ interface PopulationDistributionChartsProps {
     otherPopulation: number;
     percentage: string;
     households: number;
-    
   }>;
   municipalityStats: {
     totalPopulation: number;
@@ -36,12 +52,10 @@ interface PopulationDistributionChartsProps {
     femalePopulation: number;
     otherPopulation: number;
     totalHouseholds: number;
-    
   };
   municipalityAverages: {
     averageHouseholdSize: number;
     sexRatio: number;
-   
   };
 }
 
@@ -68,7 +82,7 @@ export default function PopulationDistributionCharts({
                 padding={{ left: 10, right: 10 }}
                 tick={{ fontSize: 12 }}
               />
-              <YAxis>
+              <YAxis tickFormatter={CustomTooltipFormatter}>
                 <Label
                   value="जनसंख्या"
                   angle={-90}
@@ -77,7 +91,7 @@ export default function PopulationDistributionCharts({
                 />
               </YAxis>
               <Tooltip
-                formatter={(value) => Number(value).toLocaleString()}
+                formatter={CustomTooltipFormatter}
                 labelFormatter={(value) => `${value}`}
               />
               <Legend />
@@ -86,7 +100,6 @@ export default function PopulationDistributionCharts({
                 name="जनसंख्या"
                 fill="#8884d8"
                 radius={[4, 4, 0, 0]}
-                aria-label="Bar chart showing population distribution across wards"
               />
             </BarChart>
           </ResponsiveContainer>
@@ -96,14 +109,14 @@ export default function PopulationDistributionCharts({
       <TabsContent value="pie" className="p-4">
         <div className="h-[500px]">
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart aria-label="Pie chart showing population distribution across wards">
+            <PieChart>
               <Pie
                 data={wardPopulationData}
                 cx="50%"
                 cy="50%"
                 labelLine={true}
                 outerRadius={180}
-                label={({ ward, percentage }) => `${ward}: ${percentage}%`}
+                label={renderCustomizedPieLabel}
                 fill="#8884d8"
                 dataKey="population"
               >
@@ -114,10 +127,7 @@ export default function PopulationDistributionCharts({
                   />
                 ))}
               </Pie>
-              <Tooltip
-                formatter={(value) => Number(value).toLocaleString()}
-              />
-              <Legend />
+              <Tooltip formatter={CustomTooltipFormatter} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -125,14 +135,15 @@ export default function PopulationDistributionCharts({
 
       <TabsContent value="table" className="p-6">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse" aria-label="Ward-wise population data table">
+          <table className="w-full border-collapse">
             <thead>
               <tr className="bg-muted">
                 <th className="border p-2 text-left">वडा</th>
                 <th className="border p-2 text-right">जनसंख्या</th>
                 <th className="border p-2 text-right">प्रतिशत</th>
-                <th className="border p-2 text-right">घरधुरी</th>
-                <th className="border p-2 text-right">औसत परिवार संख्या</th>
+                <th className="border p-2 text-right">पुरुष</th>
+                <th className="border p-2 text-right">महिला</th>
+                <th className="border p-2 text-right">अन्य</th>
               </tr>
             </thead>
             <tbody>
@@ -140,32 +151,56 @@ export default function PopulationDistributionCharts({
                 <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
                   <td className="border p-2">{item.ward}</td>
                   <td className="border p-2 text-right">
-                    {item.population.toLocaleString()}
+                    {localizeNumber(item.population.toLocaleString(), "ne")}
                   </td>
                   <td className="border p-2 text-right">
-                    {item.percentage}%
+                    {localizeNumber(item.percentage, "ne")}%
                   </td>
                   <td className="border p-2 text-right">
-                    {item.households.toLocaleString()}
+                    {localizeNumber(item.malePopulation.toLocaleString(), "ne")}
                   </td>
                   <td className="border p-2 text-right">
-                    {item.households > 0
-                      ? (item.population / item.households).toFixed(2)
-                      : "0.00"}
+                    {localizeNumber(
+                      item.femalePopulation.toLocaleString(),
+                      "ne",
+                    )}
+                  </td>
+                  <td className="border p-2 text-right">
+                    {localizeNumber(
+                      item.otherPopulation.toLocaleString(),
+                      "ne",
+                    )}
                   </td>
                 </tr>
               ))}
               <tr className="font-semibold bg-muted/70">
                 <td className="border p-2">जम्मा</td>
                 <td className="border p-2 text-right">
-                  {municipalityStats.totalPopulation.toLocaleString()}
+                  {localizeNumber(
+                    municipalityStats.totalPopulation.toLocaleString(),
+                    "ne",
+                  )}
                 </td>
-                <td className="border p-2 text-right">100.00%</td>
                 <td className="border p-2 text-right">
-                  {municipalityStats.totalHouseholds.toLocaleString()}
+                  {localizeNumber("100.00", "ne")}%
                 </td>
                 <td className="border p-2 text-right">
-                  {municipalityAverages.averageHouseholdSize.toFixed(2)}
+                  {localizeNumber(
+                    municipalityStats.malePopulation.toLocaleString(),
+                    "ne",
+                  )}
+                </td>
+                <td className="border p-2 text-right">
+                  {localizeNumber(
+                    municipalityStats.femalePopulation.toLocaleString(),
+                    "ne",
+                  )}
+                </td>
+                <td className="border p-2 text-right">
+                  {localizeNumber(
+                    municipalityStats.otherPopulation.toLocaleString(),
+                    "ne",
+                  )}
                 </td>
               </tr>
             </tbody>

@@ -3,6 +3,7 @@
 import { TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 import {
   BarChart,
   Bar,
@@ -16,6 +17,11 @@ import {
   LineChart,
   ReferenceLine,
 } from "recharts";
+
+// Custom formatter for Nepali numbers
+const CustomTooltipFormatter = (value: number) => {
+  return localizeNumber(value.toLocaleString(), "ne");
+};
 
 interface HouseholdChartsProps {
   householdTab: string;
@@ -32,7 +38,6 @@ interface HouseholdChartsProps {
     otherPopulation: number;
     percentage: string;
     households: number;
-   
   }>;
   municipalityStats: {
     totalPopulation: number;
@@ -40,12 +45,10 @@ interface HouseholdChartsProps {
     femalePopulation: number;
     otherPopulation: number;
     totalHouseholds: number;
-   
   };
   municipalityAverages: {
     averageHouseholdSize: number;
     sexRatio: number;
-   
   };
 }
 
@@ -72,9 +75,9 @@ export default function HouseholdCharts({
                 scale="point"
                 padding={{ left: 10, right: 10 }}
               />
-              <YAxis />
+              <YAxis tickFormatter={CustomTooltipFormatter} />
               <Tooltip
-                formatter={(value) => Number(value).toLocaleString()}
+                formatter={CustomTooltipFormatter}
                 labelFormatter={(value) => `${value} - घरधुरी संख्या`}
               />
               <Legend />
@@ -103,9 +106,11 @@ export default function HouseholdCharts({
                 scale="point"
                 padding={{ left: 10, right: 10 }}
               />
-              <YAxis />
-              <Tooltip 
-                formatter={(value) => Number(value).toFixed(2)}
+              <YAxis tickFormatter={CustomTooltipFormatter} />
+              <Tooltip
+                formatter={(value) =>
+                  localizeNumber(Number(value).toFixed(2), "ne")
+                }
                 labelFormatter={(value) => `${value} - औसत परिवार संख्या`}
               />
               <Legend />
@@ -123,7 +128,10 @@ export default function HouseholdCharts({
                 stroke="#8884d8"
                 strokeDasharray="3 3"
                 label={{
-                  value: `पालिका औसत: ${municipalityAverages.averageHouseholdSize.toFixed(2)}`,
+                  value: `खजुरा गाउँपालिका औसत: ${localizeNumber(
+                    municipalityAverages.averageHouseholdSize.toFixed(2),
+                    "ne",
+                  )}`,
                   position: "insideBottomRight",
                 }}
               />
@@ -134,7 +142,10 @@ export default function HouseholdCharts({
 
       <TabsContent value="table" className="p-6">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse" aria-label="Ward-wise household data table">
+          <table
+            className="w-full border-collapse"
+            aria-label="Ward-wise household data table"
+          >
             <thead>
               <tr className="bg-muted">
                 <th className="border p-2 text-left">वडा</th>
@@ -153,13 +164,13 @@ export default function HouseholdCharts({
                   <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
                     <td className="border p-2">{item.ward}</td>
                     <td className="border p-2 text-right">
-                      {item.households.toLocaleString()}
+                      {localizeNumber(item.households.toLocaleString(), "ne")}
                     </td>
                     <td className="border p-2 text-right">
-                      {item.householdSize.toFixed(2)}
+                      {localizeNumber(item.householdSize.toFixed(2), "ne")}
                     </td>
                     <td className="border p-2 text-right">
-                      {population.toLocaleString()}
+                      {localizeNumber(population.toLocaleString(), "ne")}
                     </td>
                   </tr>
                 );
@@ -167,13 +178,22 @@ export default function HouseholdCharts({
               <tr className="font-semibold bg-muted/70">
                 <td className="border p-2">जम्मा</td>
                 <td className="border p-2 text-right">
-                  {municipalityStats.totalHouseholds.toLocaleString()}
+                  {localizeNumber(
+                    municipalityStats.totalHouseholds.toLocaleString(),
+                    "ne",
+                  )}
                 </td>
                 <td className="border p-2 text-right">
-                  {municipalityAverages.averageHouseholdSize.toFixed(2)}
+                  {localizeNumber(
+                    municipalityAverages.averageHouseholdSize.toFixed(2),
+                    "ne",
+                  )}
                 </td>
                 <td className="border p-2 text-right">
-                  {municipalityStats.totalPopulation.toLocaleString()}
+                  {localizeNumber(
+                    municipalityStats.totalPopulation.toLocaleString(),
+                    "ne",
+                  )}
                 </td>
               </tr>
             </tbody>

@@ -8,6 +8,7 @@ import { ReferenceLine } from "recharts";
 import PopulationDistributionCharts from "./charts/population-distribution-charts";
 import GenderRatioCharts from "./charts/gender-ratio-charts";
 import HouseholdCharts from "./charts/household-charts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Define colors for gender
 const GENDER_COLORS = {
@@ -25,7 +26,6 @@ interface WardWiseChartsProps {
     otherPopulation: number;
     percentage: string;
     households: number;
-   
   }>;
   wardSexRatioData: Array<{
     ward: string;
@@ -43,12 +43,10 @@ interface WardWiseChartsProps {
     femalePopulation: number;
     otherPopulation: number;
     totalHouseholds: number;
-   
   };
   municipalityAverages: {
     averageHouseholdSize: number;
     sexRatio: number;
-    
   };
   GENDER_NAMES: Record<string, string>;
 }
@@ -80,20 +78,20 @@ export default function WardWiseCharts({
         />
         <meta
           itemProp="description"
-          content={`Population distribution across wards with a total population of ${municipalityStats.totalPopulation}`}
+          content={`Population distribution across wards in Khajura with a total population of ${municipalityStats.totalPopulation}`}
         />
 
         <div className="border-b px-4 py-3">
-          <h3
-            className="text-xl font-semibold"
-            itemProp="headline"
-          >
-            वडागत जनसंख्या वितरण
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            खजुरा गाउँपालिकाको वडागत जनसंख्या वितरण
           </h3>
           <p className="text-sm text-muted-foreground">
             कुल जनसंख्या:{" "}
             <span itemProp="population">
-              {municipalityStats.totalPopulation.toLocaleString()}
+              {localizeNumber(
+                municipalityStats.totalPopulation.toLocaleString(),
+                "ne",
+              )}
             </span>
             व्यक्ति
           </p>
@@ -151,18 +149,16 @@ export default function WardWiseCharts({
         />
         <meta
           itemProp="description"
-          content={`Gender ratio distribution across wards with an average ratio of ${municipalityAverages.sexRatio}`}
+          content={`Gender ratio distribution across wards in Khajura with an average ratio of ${municipalityAverages.sexRatio}`}
         />
 
         <div className="border-b px-4 py-3">
-          <h3
-            className="text-xl font-semibold"
-            itemProp="headline"
-          >
-            वडागत लिङ्ग अनुपात
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            खजुरा गाउँपालिकाको वडागत लिङ्ग अनुपात
           </h3>
           <p className="text-sm text-muted-foreground">
-            प्रत्येक वडाको पुरुष-महिला अनुपात (प्रति १०० पुरुषमा महिलाको संख्या)
+            खजुरा गाउँपालिकाको प्रत्येक वडाको पुरुष-महिला अनुपात (प्रति १००
+            पुरुषमा महिलाको संख्या)
           </p>
         </div>
 
@@ -217,18 +213,15 @@ export default function WardWiseCharts({
         />
         <meta
           itemProp="description"
-          content={`Household count and size distribution across wards with an average household size of ${municipalityAverages.averageHouseholdSize}`}
+          content={`Household count and size distribution across wards in Khajura with an average household size of ${municipalityAverages.averageHouseholdSize}`}
         />
 
         <div className="border-b px-4 py-3">
-          <h3
-            className="text-xl font-semibold"
-            itemProp="headline"
-          >
-            वडागत घरधुरी र परिवार संख्या
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            खजुरा गाउँपालिकाको वडागत घरधुरी र परिवार संख्या
           </h3>
           <p className="text-sm text-muted-foreground">
-            प्रत्येक वडाको घरधुरी संख्या र औसत परिवार संख्या
+            खजुरा गाउँपालिकाको प्रत्येक वडाको घरधुरी संख्या र औसत परिवार संख्या
           </p>
         </div>
 

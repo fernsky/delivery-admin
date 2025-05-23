@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface WardData {
   wardNumber: number;
@@ -75,24 +76,48 @@ export default function WardWiseSEO({
           value: ward.sexRatio,
         },
       ],
-      description: `Ward ${ward.wardNumber} of Khajura Rural Municipality has a population of ${ward.totalPopulation.toLocaleString()} people with ${ward.malePopulation.toLocaleString()} males and ${ward.femalePopulation.toLocaleString()} females across ${ward.totalHouseholds.toLocaleString()} households.`,
+      description: `वडा ${localizeNumber(
+        ward.wardNumber,
+        "ne",
+      )} (Ward ${ward.wardNumber}) of Khajura Rural Municipality has a population of ${localizeNumber(
+        ward.totalPopulation.toLocaleString(),
+        "ne",
+      )} people with ${localizeNumber(
+        ward.malePopulation.toLocaleString(),
+        "ne",
+      )} males and ${localizeNumber(
+        ward.femalePopulation.toLocaleString(),
+        "ne",
+      )} females across ${localizeNumber(
+        ward.totalHouseholds.toLocaleString(),
+        "ne",
+      )} households.`,
     }));
 
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
       name: "Ward-wise Demographics of Khajura Rural Municipality (खजुरा गाउँपालिका)",
-      description: `Ward-wise population distribution data across ${processedWardData.length} wards of Khajura Rural Municipality with a total population of ${municipalityStats.totalPopulation.toLocaleString()} people and ${municipalityStats.totalHouseholds.toLocaleString()} households.`,
+      description: `Ward-wise population distribution data across ${localizeNumber(
+        processedWardData.length,
+        "ne",
+      )} wards of Khajura Rural Municipality with a total population of ${localizeNumber(
+        municipalityStats.totalPopulation.toLocaleString(),
+        "ne",
+      )} people and ${localizeNumber(
+        municipalityStats.totalHouseholds.toLocaleString(),
+        "ne",
+      )} households.`,
       keywords: [
         "Khajura Rural Municipality",
         "खजुरा गाउँपालिका",
         "Ward demographics",
-        "Ward-wise population",
+        "Khajura ward-wise population",
         "Nepal census",
-        "Population distribution",
-        "Gender ratio",
-        "Household data",
-        "Population statistics",
+        "Khajura population distribution",
+        "Khajura gender ratio",
+        "Khajura household data",
+        "Banke district population",
       ],
       url: "https://khajuramun.digprofile.com/profile/demographics/ward-wise-summary",
       creator: {

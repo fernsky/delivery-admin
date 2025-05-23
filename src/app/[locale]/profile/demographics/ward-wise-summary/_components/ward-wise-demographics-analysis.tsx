@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface WardData {
   wardNumber: number;
@@ -92,43 +93,54 @@ export default function WardWiseDemographicsAnalysis({
       );
       document.body.setAttribute(
         "data-total-population",
-        municipalityStats.totalPopulation.toString(),
+        localizeNumber(municipalityStats.totalPopulation.toString(), "ne"),
       );
       document.body.setAttribute(
         "data-total-households",
-        municipalityStats.totalHouseholds.toString(),
+        localizeNumber(municipalityStats.totalHouseholds.toString(), "ne"),
       );
       document.body.setAttribute(
         "data-ward-count",
-        wardData.length.toString(),
+        localizeNumber(wardData.length.toString(), "ne"),
       );
 
       // Add highest population ward data
       if (highestPopulationWard) {
         document.body.setAttribute(
           "data-highest-population-ward",
-          highestPopulationWard.wardNumber.toString(),
+          localizeNumber(highestPopulationWard.wardNumber.toString(), "ne"),
         );
         document.body.setAttribute(
           "data-highest-population-value",
-          highestPopulationWard.totalPopulation.toString(),
+          localizeNumber(
+            highestPopulationWard.totalPopulation.toString(),
+            "ne",
+          ),
         );
       }
-      
+
       // Add sex ratio data
       document.body.setAttribute(
         "data-sex-ratio",
-        municipalityAverages.sexRatio.toString(),
+        localizeNumber(municipalityAverages.sexRatio.toString(), "ne"),
       );
-      
+
       // Add household size data
       document.body.setAttribute(
         "data-average-household-size",
-        municipalityAverages.averageHouseholdSize.toString(),
+        localizeNumber(
+          municipalityAverages.averageHouseholdSize.toString(),
+          "ne",
+        ),
       );
     }
-  }, [wardData, municipalityStats, municipalityAverages, highestPopulationWard]);
-  
+  }, [
+    wardData,
+    municipalityStats,
+    municipalityAverages,
+    highestPopulationWard,
+  ]);
+
   return (
     <>
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -136,14 +148,16 @@ export default function WardWiseDemographicsAnalysis({
           <CardContent className="p-4 flex flex-col items-center">
             <div className="text-xs uppercase text-muted-foreground mb-1">
               वडा संख्या
-              <span className="sr-only">Ward Count</span>
+              <span className="sr-only">Ward Count of Khajura</span>
             </div>
             <div className="text-2xl font-bold text-primary">
-              {wardData.length}
+              {localizeNumber(wardData.length, "ne")}
             </div>
             <div className="text-sm text-muted-foreground mt-1">
-              पालिकामा रहेका वडाहरूको कुल संख्या
-              <span className="sr-only">Total number of wards in the municipality</span>
+              खजुरा गाउँपालिकामा रहेका वडाहरूको कुल संख्या
+              <span className="sr-only">
+                Total number of wards in Khajura Rural Municipality
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -152,16 +166,21 @@ export default function WardWiseDemographicsAnalysis({
           <CardContent className="p-4 flex flex-col items-center">
             <div className="text-xs uppercase text-muted-foreground mb-1">
               औसत जनसंख्या
-              <span className="sr-only">Average Population</span>
+              <span className="sr-only">Average Population in Khajura</span>
             </div>
             <div className="text-2xl font-bold text-green-500">
-              {Math.round(
-                municipalityStats.totalPopulation / wardData.length,
-              ).toLocaleString()}
+              {localizeNumber(
+                Math.round(
+                  municipalityStats.totalPopulation / wardData.length,
+                ).toLocaleString(),
+                "ne",
+              )}
             </div>
             <div className="text-sm text-muted-foreground mt-1">
-              प्रति वडाको औसत जनसंख्या
-              <span className="sr-only">Average population per ward</span>
+              खजुरा गाउँपालिकामा प्रति वडाको औसत जनसंख्या
+              <span className="sr-only">
+                Average population per ward in Khajura
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -170,16 +189,21 @@ export default function WardWiseDemographicsAnalysis({
           <CardContent className="p-4 flex flex-col items-center">
             <div className="text-xs uppercase text-muted-foreground mb-1">
               औसत घरधुरी
-              <span className="sr-only">Average Households</span>
+              <span className="sr-only">Average Households in Khajura</span>
             </div>
             <div className="text-2xl font-bold text-blue-500">
-              {Math.round(
-                municipalityStats.totalHouseholds / wardData.length,
-              ).toLocaleString()}
+              {localizeNumber(
+                Math.round(
+                  municipalityStats.totalHouseholds / wardData.length,
+                ).toLocaleString(),
+                "ne",
+              )}
             </div>
             <div className="text-sm text-muted-foreground mt-1">
-              प्रति वडामा रहेको औसत घरधुरी संख्या
-              <span className="sr-only">Average number of households per ward</span>
+              खजुरा गाउँपालिकामा प्रति वडामा रहेको औसत घरधुरी संख्या
+              <span className="sr-only">
+                Average number of households per ward in Khajura
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -188,14 +212,20 @@ export default function WardWiseDemographicsAnalysis({
           <CardContent className="p-4 flex flex-col items-center">
             <div className="text-xs uppercase text-muted-foreground mb-1">
               वितरण विविधता
-              <span className="sr-only">Distribution Diversity</span>
+              <span className="sr-only">Distribution Diversity in Khajura</span>
             </div>
             <div className="text-2xl font-bold text-orange-500">
-              {populationCoefficientOfVariation.toFixed(1)}%
+              {localizeNumber(
+                populationCoefficientOfVariation.toFixed(1),
+                "ne",
+              )}
+              %
             </div>
             <div className="text-sm text-muted-foreground mt-1">
-              वडागत जनसंख्या वितरणको विविधता सूचक
-              <span className="sr-only">Ward population distribution diversity index</span>
+              खजुरा गाउँपालिकाको वडागत जनसंख्या वितरणको विविधता सूचक
+              <span className="sr-only">
+                Ward population distribution diversity index in Khajura
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -203,111 +233,165 @@ export default function WardWiseDemographicsAnalysis({
 
       <div className="bg-muted/50 p-4 rounded-lg mt-8">
         <h3 className="text-xl font-medium mb-4">
-          वडागत अधिकतम र न्यूनतम सूचकहरू
-          <span className="sr-only">Ward-wise Maximum and Minimum Indicators</span>
+          खजुरा गाउँपालिकाको वडागत अधिकतम र न्यूनतम सूचकहरू
+          <span className="sr-only">
+            Ward-wise Maximum and Minimum Indicators in Khajura
+          </span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-card p-4 rounded border" data-analysis-type="population-distribution">
+          <div
+            className="bg-card p-4 rounded border"
+            data-analysis-type="population-distribution"
+          >
             <h4 className="font-medium mb-2">जनसंख्या अनुपात</h4>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span>सबैभन्दा बढी जनसंख्या:</span>
                 <span className="font-medium">
-                  {highestPopulationWard.wardName} (
-                  {highestPopulationWard.totalPopulation.toLocaleString()} जना)
+                  वडा {localizeNumber(highestPopulationWard.wardNumber, "ne")} (
+                  {localizeNumber(
+                    highestPopulationWard.totalPopulation.toLocaleString(),
+                    "ne",
+                  )}{" "}
+                  जना)
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>सबैभन्दा कम जनसंख्या:</span>
                 <span className="font-medium">
-                  {lowestPopulationWard.wardName} (
-                  {lowestPopulationWard.totalPopulation.toLocaleString()} जना)
+                  वडा {localizeNumber(lowestPopulationWard.wardNumber, "ne")} (
+                  {localizeNumber(
+                    lowestPopulationWard.totalPopulation.toLocaleString(),
+                    "ne",
+                  )}{" "}
+                  जना)
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>जनसंख्याको दायरा:</span>
                 <span className="font-medium">
-                  {populationRange.toLocaleString()} जना
+                  {localizeNumber(populationRange.toLocaleString(), "ne")} जना
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="bg-card p-4 rounded border" data-analysis-type="gender-ratio">
+          <div
+            className="bg-card p-4 rounded border"
+            data-analysis-type="gender-ratio"
+          >
             <h4 className="font-medium mb-2">लैङ्गिक अनुपात</h4>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span>उच्चतम लैङ्गिक अनुपात:</span>
                 <span className="font-medium">
-                  {highestSexRatioWard.wardName} (
-                  {highestSexRatioWard.sexRatio.toFixed(1)})
+                  वडा {localizeNumber(highestSexRatioWard.wardNumber, "ne")} (
+                  {localizeNumber(
+                    highestSexRatioWard.sexRatio.toFixed(1),
+                    "ne",
+                  )}
+                  )
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>न्यूनतम लैङ्गिक अनुपात:</span>
                 <span className="font-medium">
-                  {lowestSexRatioWard.wardName} (
-                  {lowestSexRatioWard.sexRatio.toFixed(1)})
+                  वडा {localizeNumber(lowestSexRatioWard.wardNumber, "ne")} (
+                  {localizeNumber(lowestSexRatioWard.sexRatio.toFixed(1), "ne")}
+                  )
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>पालिकाको औसत:</span>
                 <span className="font-medium">
-                  {municipalityAverages.sexRatio.toFixed(1)}
+                  {localizeNumber(
+                    municipalityAverages.sexRatio.toFixed(1),
+                    "ne",
+                  )}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="bg-card p-4 rounded border" data-analysis-type="household-count">
+          <div
+            className="bg-card p-4 rounded border"
+            data-analysis-type="household-count"
+          >
             <h4 className="font-medium mb-2">घरधुरी संख्या</h4>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span>सबैभन्दा बढी घरधुरी:</span>
                 <span className="font-medium">
-                  {highestHouseholdsWard.wardName} (
-                  {highestHouseholdsWard.totalHouseholds.toLocaleString()})
+                  वडा {localizeNumber(highestHouseholdsWard.wardNumber, "ne")} (
+                  {localizeNumber(
+                    highestHouseholdsWard.totalHouseholds.toLocaleString(),
+                    "ne",
+                  )}
+                  )
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>सबैभन्दा कम घरधुरी:</span>
                 <span className="font-medium">
-                  {lowestHouseholdsWard.wardName} (
-                  {lowestHouseholdsWard.totalHouseholds.toLocaleString()})
+                  वडा {localizeNumber(lowestHouseholdsWard.wardNumber, "ne")} (
+                  {localizeNumber(
+                    lowestHouseholdsWard.totalHouseholds.toLocaleString(),
+                    "ne",
+                  )}
+                  )
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>औसत घरधुरी प्रति वडा:</span>
                 <span className="font-medium">
-                  {Math.round(
-                    municipalityStats.totalHouseholds / wardData.length,
-                  ).toLocaleString()}
+                  {localizeNumber(
+                    Math.round(
+                      municipalityStats.totalHouseholds / wardData.length,
+                    ).toLocaleString(),
+                    "ne",
+                  )}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="bg-card p-4 rounded border" data-analysis-type="family-size">
+          <div
+            className="bg-card p-4 rounded border"
+            data-analysis-type="family-size"
+          >
             <h4 className="font-medium mb-2">परिवार संख्या</h4>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span>सबैभन्दा बढी परिवार संख्या:</span>
                 <span className="font-medium">
-                  {highestHouseholdSizeWard.wardName} (
-                  {highestHouseholdSizeWard.averageHouseholdSize.toFixed(2)})
+                  वडा{" "}
+                  {localizeNumber(highestHouseholdSizeWard.wardNumber, "ne")} (
+                  {localizeNumber(
+                    highestHouseholdSizeWard.averageHouseholdSize.toFixed(2),
+                    "ne",
+                  )}
+                  )
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>सबैभन्दा कम परिवार संख्या:</span>
                 <span className="font-medium">
-                  {lowestHouseholdSizeWard.wardName} (
-                  {lowestHouseholdSizeWard.averageHouseholdSize.toFixed(2)})
+                  वडा {localizeNumber(lowestHouseholdSizeWard.wardNumber, "ne")}{" "}
+                  (
+                  {localizeNumber(
+                    lowestHouseholdSizeWard.averageHouseholdSize.toFixed(2),
+                    "ne",
+                  )}
+                  )
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>पालिकाको औसत:</span>
                 <span className="font-medium">
-                  {municipalityAverages.averageHouseholdSize.toFixed(2)}
+                  {localizeNumber(
+                    municipalityAverages.averageHouseholdSize.toFixed(2),
+                    "ne",
+                  )}
                 </span>
               </div>
             </div>
@@ -317,58 +401,102 @@ export default function WardWiseDemographicsAnalysis({
 
       <div className="bg-muted/50 p-4 rounded-lg mt-6">
         <h3 className="text-xl font-medium mb-2">
-          वडागत विश्लेषण
-          <span className="sr-only">Ward-wise Analysis</span>
+          खजुरा गाउँपालिकाको वडागत विश्लेषण
+          <span className="sr-only">Ward-wise Analysis of Khajura</span>
         </h3>
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <p>
-            पालिकाको वडागत जनसंख्या वितरण विश्लेषणबाट निम्न निष्कर्षहरू निकाल्न
-            सकिन्छ:
+            खजुरा गाउँपालिकाको वडागत जनसंख्या वितरण विश्लेषणबाट निम्न
+            निष्कर्षहरू निकाल्न सकिन्छ:
           </p>
 
           <ul itemScope itemType="https://schema.org/ItemList">
-            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+            >
               <meta itemProp="position" content="1" />
               <div itemProp="item">
-                <strong>जनसंख्या वितरण:</strong> पालिकाभित्र वडाहरू बीच जनसंख्याको
-                विविधता सूचक {populationCoefficientOfVariation.toFixed(1)}% रहेको
-                छ, जुन{" "}
+                <strong>जनसंख्या वितरण:</strong> खजुरा गाउँपालिकाभित्र वडाहरू
+                बीच जनसंख्याको विविधता सूचक{" "}
+                {localizeNumber(
+                  populationCoefficientOfVariation.toFixed(1),
+                  "ne",
+                )}
+                % रहेको छ, जुन{" "}
                 {populationCoefficientOfVariation > 30
                   ? "उच्च"
                   : populationCoefficientOfVariation > 15
                     ? "मध्यम"
                     : "कम"}{" "}
-                स्तरको असमानता देखाउँछ。
+                स्तरको असमानता देखाउँछ।
               </div>
             </li>
-            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+            >
               <meta itemProp="position" content="2" />
               <div itemProp="item">
-                <strong>लैङ्गिक अनुपात:</strong> पालिकाका विभिन्न वडाहरूमा लैङ्गिक
-                अनुपात {lowestSexRatioWard.sexRatio.toFixed(1)} देखि{" "}
-                {highestSexRatioWard.sexRatio.toFixed(1)} सम्म रहेको छ। यस
-                अनुपातमा वडागत भिन्नता रहेको छ。
+                <strong>लैङ्गिक अनुपात:</strong> खजुरा गाउँपालिकाका विभिन्न
+                वडाहरूमा लैङ्गिक अनुपात{" "}
+                {localizeNumber(lowestSexRatioWard.sexRatio.toFixed(1), "ne")}{" "}
+                देखि{" "}
+                {localizeNumber(highestSexRatioWard.sexRatio.toFixed(1), "ne")}{" "}
+                सम्म रहेको छ। वडा{" "}
+                {localizeNumber(highestSexRatioWard.wardNumber, "ne")} मा
+                सबैभन्दा बढी र वडा{" "}
+                {localizeNumber(lowestSexRatioWard.wardNumber, "ne")} मा
+                सबैभन्दा कम लैङ्गिक अनुपात रहेको छ।
               </div>
             </li>
-            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+            >
               <meta itemProp="position" content="3" />
               <div itemProp="item">
-                <strong>घरधुरी:</strong> {highestHouseholdsWard.wardName} मा
+                <strong>घरधुरी:</strong> वडा{" "}
+                {localizeNumber(highestHouseholdsWard.wardNumber, "ne")} मा
                 सबैभन्दा बढी घरधुरी (
-                {highestHouseholdsWard.totalHouseholds.toLocaleString()}) छन्,
-                जबकि {lowestHouseholdsWard.wardName} मा सबैभन्दा कम घरधुरी (
-                {lowestHouseholdsWard.totalHouseholds.toLocaleString()}) रहेका
-                छन्。
+                {localizeNumber(
+                  highestHouseholdsWard.totalHouseholds.toLocaleString(),
+                  "ne",
+                )}
+                ) छन्, जबकि वडा{" "}
+                {localizeNumber(lowestHouseholdsWard.wardNumber, "ne")} मा
+                सबैभन्दा कम घरधुरी (
+                {localizeNumber(
+                  lowestHouseholdsWard.totalHouseholds.toLocaleString(),
+                  "ne",
+                )}
+                ) रहेका छन्।
               </div>
             </li>
-            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <li
+              itemProp="itemListElement"
+              itemScope
+              itemType="https://schema.org/ListItem"
+            >
               <meta itemProp="position" content="4" />
               <div itemProp="item">
-                <strong>परिवार संख्या:</strong> औसत परिवार संख्यामा पनि वडा अनुसार
-                भिन्नता देखिन्छ, जुन{" "}
-                {lowestHouseholdSizeWard.averageHouseholdSize.toFixed(2)} देखि{" "}
-                {highestHouseholdSizeWard.averageHouseholdSize.toFixed(2)} सम्म
-                रहेको छ。
+                <strong>परिवार संख्या:</strong> खजुरा गाउँपालिकामा औसत परिवार
+                संख्यामा पनि वडा अनुसार भिन्नता देखिन्छ, जुन वडा{" "}
+                {localizeNumber(lowestHouseholdSizeWard.wardNumber, "ne")} को{" "}
+                {localizeNumber(
+                  lowestHouseholdSizeWard.averageHouseholdSize.toFixed(2),
+                  "ne",
+                )}{" "}
+                देखि वडा{" "}
+                {localizeNumber(highestHouseholdSizeWard.wardNumber, "ne")} को{" "}
+                {localizeNumber(
+                  highestHouseholdSizeWard.averageHouseholdSize.toFixed(2),
+                  "ne",
+                )}{" "}
+                सम्म रहेको छ।
               </div>
             </li>
           </ul>
@@ -377,57 +505,42 @@ export default function WardWiseDemographicsAnalysis({
 
       <div className="bg-muted/50 p-4 rounded-lg mt-6">
         <h3 className="text-xl font-medium mb-2">
-          नीतिगत सुझाव
-          <span className="sr-only">Policy Recommendations</span>
+          खजुरा गाउँपालिकाको नीतिगत सुझाव
+          <span className="sr-only">Policy Recommendations for Khajura</span>
         </h3>
         <div className="prose prose-slate dark:prose-invert max-w-none">
           <p>
-            वडागत विश्लेषणका आधारमा निम्न नीतिगत सुझावहरू प्रस्तुत गरिएका छन्:
+            खजुरा गाउँपालिकाको वडागत विश्लेषणका आधारमा निम्न नीतिगत सुझावहरू
+            प्रस्तुत गरिएका छन्:
           </p>
 
           <ul>
             <li>
-              <strong>समतामूलक विकास:</strong> {highestPopulationWard.wardName}{" "}
-              र {lowestPopulationWard.wardName} बीचको जनसंख्या असमानतालाई
-              सम्बोधन गर्न विकास योजना र बजेट विनियोजनमा समतामूलक दृष्टिकोण
-              अपनाउने。
+              <strong>समतामूलक विकास:</strong> वडा{" "}
+              {localizeNumber(highestPopulationWard.wardNumber, "ne")} र वडा{" "}
+              {localizeNumber(lowestPopulationWard.wardNumber, "ne")} बीचको
+              जनसंख्या असमानतालाई सम्बोधन गर्न खजुरा गाउँपालिकाको विकास योजना र
+              बजेट विनियोजनमा समतामूलक दृष्टिकोण अपनाउने।
             </li>
             <li>
-              <strong>लैङ्गिक समानता:</strong> न्यून लैङ्गिक अनुपात भएका
-              वडाहरूमा लैङ्गिक समानता सम्बन्धी विशेष कार्यक्रमहरू सञ्चालन गर्ने。
+              <strong>लैङ्गिक समानता:</strong> खजुरा गाउँपालिकाको न्यून लैङ्गिक
+              अनुपात भएका वडाहरूमा (विशेष गरी वडा{" "}
+              {localizeNumber(lowestSexRatioWard.wardNumber, "ne")}) लैङ्गिक
+              समानता सम्बन्धी विशेष कार्यक्रमहरू सञ्चालन गर्ने।
             </li>
             <li>
-              <strong>घरधुरी सर्वेक्षण:</strong> उच्च परिवार संख्या भएका
-              वडाहरूमा परिवार नियोजन र सचेतना कार्यक्रम सञ्चालन गर्ने。
+              <strong>घरधुरी सर्वेक्षण:</strong> खजुरा गाउँपालिकाको उच्च परिवार
+              संख्या भएका वडाहरूमा (विशेष गरी वडा{" "}
+              {localizeNumber(highestHouseholdSizeWard.wardNumber, "ne")})
+              परिवार नियोजन र सचेतना कार्यक्रम सञ्चालन गर्ने।
             </li>
             <li>
-              <strong>वडागत योजना:</strong> प्रत्येक वडाको विशिष्ट जनसांख्यिकी
-              विशेषतालाई ध्यानमा राखेर वडागत विकास योजना तर्जुमा गर्ने。
+              <strong>वडागत योजना:</strong> खजुरा गाउँपालिकाको प्रत्येक वडाको
+              विशिष्ट जनसांख्यिकी विशेषतालाई ध्यानमा राखेर वडागत विकास योजना
+              तर्जुमा गर्ने।
             </li>
           </ul>
         </div>
-      </div>
-
-      <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">
-          थप जानकारी
-          <span className="sr-only">Additional Information</span>
-        </h3>
-        <p>
-          वडागत जनसांख्यिकी विवरण सम्बन्धी थप जानकारी वा विस्तृत तथ्याङ्कको
-          लागि, कृपया{" "}
-          <Link href="/contact" className="text-primary hover:underline">
-            हामीलाई सम्पर्क
-          </Link>{" "}
-          गर्नुहोस् वा{" "}
-          <Link
-            href="/profile/demographics/summary"
-            className="text-primary hover:underline"
-          >
-            जनसांख्यिकी सारांश
-          </Link>{" "}
-          खण्डमा हेर्नुहोस्。
-        </p>
       </div>
     </>
   );

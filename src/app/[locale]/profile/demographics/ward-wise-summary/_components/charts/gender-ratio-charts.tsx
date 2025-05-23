@@ -3,6 +3,7 @@
 import { TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 import {
   BarChart,
   Bar,
@@ -13,7 +14,14 @@ import {
   YAxis,
   CartesianGrid,
   ReferenceLine,
+  Line,
+  LineChart,
 } from "recharts";
+
+// Custom formatter for Nepali numbers
+const CustomTooltipFormatter = (value: number) => {
+  return localizeNumber(value.toLocaleString(), "ne");
+};
 
 interface GenderRatioChartsProps {
   genderTab: string;
@@ -29,8 +37,6 @@ interface GenderRatioChartsProps {
     femalePopulation: number;
     otherPopulation: number;
     percentage: string;
-    households: number;
-  
   }>;
   municipalityStats: {
     totalPopulation: number;
@@ -38,12 +44,10 @@ interface GenderRatioChartsProps {
     femalePopulation: number;
     otherPopulation: number;
     totalHouseholds: number;
-   
   };
   municipalityAverages: {
     averageHouseholdSize: number;
     sexRatio: number;
-    
   };
   GENDER_COLORS: Record<string, string>;
   GENDER_NAMES: Record<string, string>;
@@ -74,25 +78,27 @@ export default function GenderRatioCharts({
                 scale="point"
                 padding={{ left: 10, right: 10 }}
               />
-              <YAxis domain={[0, "auto"]} />
-              <Tooltip 
-                formatter={(value) => `${Number(value).toFixed(1)}`}
-                labelFormatter={(value) => `${value} - लैङ्गिक अनुपात`}
+              <YAxis
+                domain={[0, "auto"]}
+                tickFormatter={CustomTooltipFormatter}
               />
+              <Tooltip formatter={CustomTooltipFormatter} />
               <Legend />
-              <Bar
+              <Bar dataKey="sexRatio" name="लैङ्गिक अनुपात" fill="#FF6384" />
+              <Line
+                type="monotone"
                 dataKey="sexRatio"
-                name="लैङ्गिक अनुपात"
-                fill="#FF6384"
-                radius={[4, 4, 0, 0]}
-                aria-label="Bar chart showing gender ratio across wards"
+                stroke="#FF6384"
+                dot={false}
+                activeDot={false}
               />
+              {/* Reference line for municipality average */}
               <ReferenceLine
                 y={municipalityAverages.sexRatio}
                 stroke="#FF6384"
                 strokeDasharray="3 3"
                 label={{
-                  value: `पालिका औसत: ${municipalityAverages.sexRatio.toFixed(1)}`,
+                  value: `खजुरा गाउँपालिका औसत: ${localizeNumber(municipalityAverages.sexRatio.toFixed(2), "ne")}`,
                   position: "insideBottomRight",
                 }}
               />
@@ -107,7 +113,7 @@ export default function GenderRatioCharts({
             <BarChart
               data={wardPopulationData}
               margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
-              barSize={20}
+              barSize={30}
             >
               <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
               <XAxis
@@ -115,11 +121,8 @@ export default function GenderRatioCharts({
                 scale="point"
                 padding={{ left: 10, right: 10 }}
               />
-              <YAxis />
-              <Tooltip
-                formatter={(value) => Number(value).toLocaleString()}
-                labelFormatter={(value) => `${value}`}
-              />
+              <YAxis tickFormatter={CustomTooltipFormatter} />
+              <Tooltip formatter={CustomTooltipFormatter} />
               <Legend />
               <Bar
                 dataKey="malePopulation"
@@ -146,7 +149,7 @@ export default function GenderRatioCharts({
 
       <TabsContent value="table" className="p-6">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse" aria-label="Ward-wise gender ratio data table">
+          <table className="w-full border-collapse">
             <thead>
               <tr className="bg-muted">
                 <th className="border p-2 text-left">वडा</th>
@@ -157,41 +160,65 @@ export default function GenderRatioCharts({
               </tr>
             </thead>
             <tbody>
-              {wardPopulationData.map((item, i) => (
-                <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                  <td className="border p-2">{item.ward}</td>
-                  <td className="border p-2 text-right">
-                    {item.malePopulation.toLocaleString()}
-                  </td>
-                  <td className="border p-2 text-right">
-                    {item.femalePopulation.toLocaleString()}
-                  </td>
-                  <td className="border p-2 text-right">
-                    {item.otherPopulation.toLocaleString()}
-                  </td>
-                  <td className="border p-2 text-right">
-                    {item.malePopulation > 0
-                      ? (
-                          (item.femalePopulation / item.malePopulation) *
-                          100
-                        ).toFixed(2)
-                      : "0.00"}
-                  </td>
-                </tr>
-              ))}
+              {wardPopulationData.map((item, i) => {
+                const matchingSexRatio = wardSexRatioData.find(
+                  (w) => w.ward === item.ward,
+                );
+                return (
+                  <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
+                    <td className="border p-2">{item.ward}</td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber(
+                        item.malePopulation.toLocaleString(),
+                        "ne",
+                      )}
+                    </td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber(
+                        item.femalePopulation.toLocaleString(),
+                        "ne",
+                      )}
+                    </td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber(
+                        item.otherPopulation.toLocaleString(),
+                        "ne",
+                      )}
+                    </td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber(
+                        (matchingSexRatio?.sexRatio || 0).toFixed(2),
+                        "ne",
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
               <tr className="font-semibold bg-muted/70">
-                <td className="border p-2">जम्मा</td>
+                <td className="border p-2">कुल</td>
                 <td className="border p-2 text-right">
-                  {municipalityStats.malePopulation.toLocaleString()}
+                  {localizeNumber(
+                    municipalityStats.malePopulation.toLocaleString(),
+                    "ne",
+                  )}
                 </td>
                 <td className="border p-2 text-right">
-                  {municipalityStats.femalePopulation.toLocaleString()}
+                  {localizeNumber(
+                    municipalityStats.femalePopulation.toLocaleString(),
+                    "ne",
+                  )}
                 </td>
                 <td className="border p-2 text-right">
-                  {municipalityStats.otherPopulation.toLocaleString()}
+                  {localizeNumber(
+                    municipalityStats.otherPopulation.toLocaleString(),
+                    "ne",
+                  )}
                 </td>
                 <td className="border p-2 text-right">
-                  {municipalityAverages.sexRatio.toFixed(2)}
+                  {localizeNumber(
+                    municipalityAverages.sexRatio.toFixed(2),
+                    "ne",
+                  )}
                 </td>
               </tr>
             </tbody>
