@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect } from "react";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface ReligionAnalysisProps {
@@ -42,72 +39,6 @@ export default function ReligionAnalysisSection({
       ? (topReligion.population / secondReligion.population).toFixed(2)
       : "N/A";
 
-  // Add SEO-friendly data attributes to enhance crawler understanding
-  useEffect(() => {
-    // Create English translations for key data
-    const RELIGION_NAMES_EN: Record<string, string> = {
-      HINDU: "Hindu",
-      BUDDHIST: "Buddhist",
-      KIRANT: "Kirat",
-      CHRISTIAN: "Christian",
-      ISLAM: "Islam",
-      NATURE: "Nature Worship",
-      BON: "Bon",
-      JAIN: "Jain",
-      BAHAI: "Bahai",
-      SIKH: "Sikh",
-      OTHER: "Other",
-    };
-
-    // Add data to document.body for SEO (will be crawled but not visible to users)
-    if (document && document.body) {
-      document.body.setAttribute(
-        "data-municipality",
-        "Khajura Rural Municipality / खजुरा गाउँपालिका",
-      );
-      document.body.setAttribute(
-        "data-total-population",
-        localizeNumber(totalPopulation.toString(), "ne"),
-      );
-
-      // Add main religion data
-      if (topReligion) {
-        const religionNameEN =
-          RELIGION_NAMES_EN[topReligion.religion] || topReligion.religion;
-        document.body.setAttribute(
-          "data-main-religion",
-          `${religionNameEN} / ${topReligion.religionName}`,
-        );
-        document.body.setAttribute(
-          "data-main-religion-population",
-          localizeNumber(topReligion.population.toString(), "ne"),
-        );
-        document.body.setAttribute(
-          "data-main-religion-percentage",
-          localizeNumber(((topReligion.population / totalPopulation) * 100).toFixed(2), "ne"),
-        );
-      }
-
-      // Add second religion data
-      if (secondReligion) {
-        const religionNameEN =
-          RELIGION_NAMES_EN[secondReligion.religion] || secondReligion.religion;
-        document.body.setAttribute(
-          "data-second-religion",
-          `${religionNameEN} / ${secondReligion.religionName}`,
-        );
-        document.body.setAttribute(
-          "data-second-religion-population",
-          localizeNumber(secondReligion.population.toString(), "ne"),
-        );
-        document.body.setAttribute(
-          "data-second-religion-percentage",
-          localizeNumber(((secondReligion.population / totalPopulation) * 100).toFixed(2), "ne"),
-        );
-      }
-    }
-  }, [overallSummary, totalPopulation]);
-
   return (
     <>
       <div className="mt-6 flex flex-wrap gap-4 justify-center">
@@ -146,10 +77,6 @@ export default function ReligionAnalysisSection({
             <div
               key={index}
               className="bg-muted/50 rounded-lg p-4 text-center min-w-[200px] relative overflow-hidden"
-              // Add data attributes for SEO crawlers
-              data-religion={`${religionEN} / ${item.religionName}`}
-              data-population={item.population}
-              data-percentage={percentage}
             >
               <div
                 className="absolute bottom-0 left-0 right-0"
@@ -169,7 +96,6 @@ export default function ReligionAnalysisSection({
               <div className="relative z-10">
                 <h3 className="text-lg font-medium mb-2">
                   {item.religionName}
-                  {/* Hidden span for SEO with English name */}
                   <span className="sr-only">{religionEN}</span>
                 </h3>
                 <p className="text-2xl font-bold">
@@ -196,16 +122,7 @@ export default function ReligionAnalysisSection({
           </span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            className="bg-card p-4 rounded border"
-            data-analysis-type="main-religion"
-            data-religion-name={topReligion?.religion}
-            data-religion-percentage={
-              topReligion
-                ? ((topReligion.population / totalPopulation) * 100).toFixed(2)
-                : "0"
-            }
-          >
+          <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-2">
               खजुरा गाउँपालिकाको प्रमुख धर्म
               <span className="sr-only">
@@ -227,13 +144,7 @@ export default function ReligionAnalysisSection({
             </p>
           </div>
 
-          <div
-            className="bg-card p-4 rounded border"
-            data-analysis-type="religion-ratio"
-            data-ratio={topTwoReligionRatio}
-            data-primary-religion={topReligion?.religion}
-            data-secondary-religion={secondReligion?.religion}
-          >
+          <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-2">
               खजुरा गाउँपालिकाको प्रमुख-दोस्रो धर्म अनुपात
               <span className="sr-only">

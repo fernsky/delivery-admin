@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
 import ReligionPieChart from "./charts/religion-pie-chart";
 import ReligionBarChart from "./charts/religion-bar-chart";
 import WardReligionPieCharts from "./charts/ward-religion-pie-charts";
@@ -141,12 +139,6 @@ export default function ReligionCharts({
                   </tr>
                 </tfoot>
               </table>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Excel डाउनलोड
-              </Button>
             </div>
           </div>
         </div>
@@ -353,12 +345,6 @@ export default function ReligionCharts({
                 })}
               </tbody>
             </table>
-          </div>
-          <div className="mt-4 flex justify-end">
-            <Button variant="outline" size="sm">
-              <FileDown className="mr-2 h-4 w-4" />
-              Excel डाउनलोड
-            </Button>
           </div>
 
           {/* Ward pie charts (client component) */}
