@@ -22,16 +22,16 @@ export const revalidate = 86400; // Revalidate once per day (in seconds)
 
 // Define Nepali names for occupations
 const OCCUPATION_NAMES: Record<string, string> = {
-  GOVERNMENTAL_JOB: "सरकारी जागिर",
-  NON_GOVERNMENTAL_JOB: "गैरसरकारी जागिर",
-  LABOUR: "ज्यालादारी",
+  GOVERNMENTAL_JOB: "सरकारी नोकरी / जागिर",
+  NON_GOVERNMENTAL_JOB: "गैरसरकारी नोकरी / जागिर",
+  LABOUR: "ज्याला/ मजदुरी",
   FOREIGN_EMPLOYMENT: "वैदेशिक रोजगारी",
-  BUSINESS: "व्यापार/व्यवसाय",
+  BUSINESS: "व्यापार",
   OTHER_EMPLOYMENT: "अन्य रोजगारी",
   STUDENT: "विद्यार्थी",
   HOUSEHOLDER: "गृहणी",
   OTHER_UNEMPLOYMENT: "अन्य बेरोजगार",
-  INDUSTRY: "उद्योग",
+  INDUSTRY: "उद्योग, व्यापार, कृषि",
   ANIMAL_HUSBANDRY: "पशुपालन",
   OTHER_SELF_EMPLOYMENT: "अन्य स्वरोजगार",
 };
@@ -40,14 +40,14 @@ const OCCUPATION_NAMES: Record<string, string> = {
 const OCCUPATION_NAMES_EN: Record<string, string> = {
   GOVERNMENTAL_JOB: "Government Job",
   NON_GOVERNMENTAL_JOB: "Non-Government Job",
-  LABOUR: "Daily Labor",
+  LABOUR: "Daily Labor/Wage",
   FOREIGN_EMPLOYMENT: "Foreign Employment",
   BUSINESS: "Business",
   OTHER_EMPLOYMENT: "Other Employment",
   STUDENT: "Student",
-  HOUSEHOLDER: "Householder",
+  HOUSEHOLDER: "Housewife/Householder",
   OTHER_UNEMPLOYMENT: "Other Unemployed",
-  INDUSTRY: "Industry",
+  INDUSTRY: "Industry, Trade, and Agriculture",
   ANIMAL_HUSBANDRY: "Animal Husbandry",
   OTHER_SELF_EMPLOYMENT: "Other Self-Employment",
 };

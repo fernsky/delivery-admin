@@ -58,6 +58,7 @@ export default function SkillsAnalysisSection({
     "ELECTRICITY_INSTALLMENT_RELATED",
     "MECHANICS_RELATED",
     "FURNITURE_RELATED",
+    "RADIO_TELEVISION_ELECTRICAL_REPAIR",
   ];
   const professionalSkills = [
     "TEACHING_RELATED",
@@ -65,6 +66,7 @@ export default function SkillsAnalysisSection({
     "ANIMAL_HEALTH_RELATED",
     "COMPUTER_SCIENCE_RELATED",
     "ENGINEERING_DESIGN_RELATED",
+    "LAND_SURVEY_RELATED",
   ];
   const agriculturalSkills = ["AGRICULTURE_RELATED"];
   const serviceSkills = [
