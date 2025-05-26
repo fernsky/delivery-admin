@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Define gender colors for consistency
 const GENDER_COLORS = {
@@ -73,7 +74,7 @@ export default function GenderMaritalStatusChart({
           <TabsTrigger value="gender-dist">लैंगिक वितरण</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="horizontal" className="h-[450px]">
+        <TabsContent value="horizontal" className="h-[550px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={sortedData}
@@ -82,8 +83,8 @@ export default function GenderMaritalStatusChart({
             >
               <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
               <XAxis dataKey="statusName" />
-              <YAxis />
-              <Tooltip formatter={(value) => Number(value).toLocaleString()} />
+              <YAxis tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
+              <Tooltip formatter={(value) => localizeNumber(Number(value).toLocaleString(), "ne")} />
               <Legend />
               <Bar
                 dataKey="male"
@@ -104,7 +105,7 @@ export default function GenderMaritalStatusChart({
           </ResponsiveContainer>
         </TabsContent>
 
-        <TabsContent value="vertical" className="h-[450px]">
+        <TabsContent value="vertical" className="h-[550px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={sortedData}
@@ -113,14 +114,14 @@ export default function GenderMaritalStatusChart({
               barSize={25}
             >
               <CartesianGrid strokeDasharray="3 3" opacity={0.2} horizontal={false} />
-              <XAxis type="number" />
+              <XAxis type="number" tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
               <YAxis 
                 dataKey="statusName" 
                 type="category" 
                 width={100} 
                 tick={{ fontSize: 12 }}
               />
-              <Tooltip formatter={(value) => Number(value).toLocaleString()} />
+              <Tooltip formatter={(value) => localizeNumber(Number(value).toLocaleString(), "ne")} />
               <Legend layout="horizontal" verticalAlign="bottom" align="center" />
               <Bar
                 dataKey="male"
@@ -144,24 +145,22 @@ export default function GenderMaritalStatusChart({
           </ResponsiveContainer>
         </TabsContent>
 
-        <TabsContent value="gender-dist" className="h-[450px]">
+        <TabsContent value="gender-dist" >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <h4 className="text-center font-medium mb-2">पुरुष</h4>
-              <div className="h-[350px]">
+              <div className="h-[250px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={maleDistribution}
                       cx="50%"
                       cy="50%"
+                      innerRadius={30}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
                       nameKey="name"
-                      label={({ name, value }) => 
-                        totalMale > 0 ? `${name}: ${((value / totalMale) * 100).toFixed(1)}%` : ""
-                      }
                     >
                       {maleDistribution.map((entry, index) => (
                         <Cell 
@@ -172,31 +171,65 @@ export default function GenderMaritalStatusChart({
                     </Pie>
                     <Tooltip 
                       formatter={(value: number) => [
-                        `${value.toLocaleString()} (${totalMale > 0 ? ((value / totalMale) * 100).toFixed(1) : 0}%)`,
+                        `${localizeNumber(value.toLocaleString(), "ne")} (${totalMale > 0 ? localizeNumber(((value / totalMale) * 100).toFixed(1), "ne") : 0}%)`,
                         "पुरुष"
                       ]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
+              {/* Legend section with progress bars */}
+              <div className="mt-2">
+                <div className="grid grid-cols-1 gap-2">
+                  {maleDistribution.map((item, i) => {
+                    const percentage = totalMale > 0 ? (item.value / totalMale) * 100 : 0;
+                    
+                    return (
+                      <div key={i} className="flex items-center gap-2">
+                        <div
+                          className="w-3 h-3 rounded-full flex-shrink-0"
+                          style={{
+                            backgroundColor: `hsl(210, ${80 - (i * 5)}%, ${40 + (i * 5)}%)`
+                          }}
+                        ></div>
+                        <div className="flex-grow">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="truncate">{item.name}</span>
+                            <span className="font-medium">
+                              {localizeNumber(percentage.toFixed(1), "ne")}%
+                            </span>
+                          </div>
+                          <div className="w-full bg-muted h-1.5 rounded-full mt-0.5 overflow-hidden">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${percentage}%`,
+                                backgroundColor: `hsl(210, ${80 - (i * 5)}%, ${40 + (i * 5)}%)`
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
             <div>
               <h4 className="text-center font-medium mb-2">महिला</h4>
-              <div className="h-[350px]">
+              <div className="h-[250px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={femaleDistribution}
                       cx="50%"
                       cy="50%"
+                      innerRadius={30}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
                       nameKey="name"
-                      label={({ name, value }) => 
-                        totalFemale > 0 ? `${name}: ${((value / totalFemale) * 100).toFixed(1)}%` : ""
-                      }
                     >
                       {femaleDistribution.map((entry, index) => (
                         <Cell 
@@ -207,31 +240,65 @@ export default function GenderMaritalStatusChart({
                     </Pie>
                     <Tooltip 
                       formatter={(value: number) => [
-                        `${value.toLocaleString()} (${totalFemale > 0 ? ((value / totalFemale) * 100).toFixed(1) : 0}%)`,
+                        `${localizeNumber(value.toLocaleString(), "ne")} (${totalFemale > 0 ? localizeNumber(((value / totalFemale) * 100).toFixed(1), "ne") : 0}%)`,
                         "महिला"
                       ]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
+              {/* Legend section with progress bars */}
+              <div className="mt-2">
+                <div className="grid grid-cols-1 gap-2">
+                  {femaleDistribution.map((item, i) => {
+                    const percentage = totalFemale > 0 ? (item.value / totalFemale) * 100 : 0;
+                    
+                    return (
+                      <div key={i} className="flex items-center gap-2">
+                        <div
+                          className="w-3 h-3 rounded-full flex-shrink-0"
+                          style={{
+                            backgroundColor: `hsl(350, ${80 - (i * 5)}%, ${40 + (i * 5)}%)`
+                          }}
+                        ></div>
+                        <div className="flex-grow">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="truncate">{item.name}</span>
+                            <span className="font-medium">
+                              {localizeNumber(percentage.toFixed(1), "ne")}%
+                            </span>
+                          </div>
+                          <div className="w-full bg-muted h-1.5 rounded-full mt-0.5 overflow-hidden">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${percentage}%`,
+                                backgroundColor: `hsl(350, ${80 - (i * 5)}%, ${40 + (i * 5)}%)`
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
             <div>
               <h4 className="text-center font-medium mb-2">अन्य</h4>
-              <div className="h-[350px]">
+              <div className="h-[250px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={otherDistribution}
                       cx="50%"
                       cy="50%"
+                      innerRadius={30}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
                       nameKey="name"
-                      label={({ name, value }) => 
-                        totalOther > 0 ? `${name}: ${((value / totalOther) * 100).toFixed(1)}%` : ""
-                      }
                     >
                       {otherDistribution.map((entry, index) => (
                         <Cell 
@@ -242,12 +309,48 @@ export default function GenderMaritalStatusChart({
                     </Pie>
                     <Tooltip 
                       formatter={(value: number) => [
-                        `${value.toLocaleString()} (${totalOther > 0 ? ((value / totalOther) * 100).toFixed(1) : 0}%)`,
+                        `${localizeNumber(value.toLocaleString(), "ne")} (${totalOther > 0 ? localizeNumber(((value / totalOther) * 100).toFixed(1), "ne") : 0}%)`,
                         "अन्य"
                       ]}
                     />
                   </PieChart>
                 </ResponsiveContainer>
+              </div>
+              {/* Legend section with progress bars */}
+              <div className="mt-2">
+                <div className="grid grid-cols-1 gap-2">
+                  {otherDistribution.map((item, i) => {
+                    const percentage = totalOther > 0 ? (item.value / totalOther) * 100 : 0;
+                    
+                    return (
+                      <div key={i} className="flex items-center gap-2">
+                        <div
+                          className="w-3 h-3 rounded-full flex-shrink-0"
+                          style={{
+                            backgroundColor: `hsl(45, ${80 - (i * 5)}%, ${40 + (i * 5)}%)`
+                          }}
+                        ></div>
+                        <div className="flex-grow">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="truncate">{item.name}</span>
+                            <span className="font-medium">
+                              {localizeNumber(percentage.toFixed(1), "ne")}%
+                            </span>
+                          </div>
+                          <div className="w-full bg-muted h-1.5 rounded-full mt-0.5 overflow-hidden">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${percentage}%`,
+                                backgroundColor: `hsl(45, ${80 - (i * 5)}%, ${40 + (i * 5)}%)`
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

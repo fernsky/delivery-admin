@@ -208,7 +208,7 @@ export const getAgeWiseMaritalStatusSummary = publicProcedure.query(
           marital_status, 
           SUM(population) as total_population
         FROM 
-          ward_wise_marital_status
+          acme_ward_wise_marital_status
         GROUP BY 
           marital_status
         ORDER BY 

@@ -6,6 +6,7 @@ import Image from "next/image";
 import MaritalStatusCharts from "./_components/marital-status-charts";
 import MaritalStatusAnalysisSection from "./_components/marital-status-analysis-section";
 import MaritalStatusSEO from "./_components/marital-status-seo";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export const dynamic = "force-dynamic";
 // Define the locales for which this page should be statically generated
 export async function generateStaticParams() {
   // Generate the page for 'en' and 'ne' locales
-  return [{ locale: "en" }];
+  return [{ locale: "en" }, { locale: "ne" }];
 }
 
 // Optional: Add revalidation period if you want to update the static pages periodically
@@ -77,7 +78,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "वडा अनुसार वैवाहिक स्थिति",
       "उमेर अनुसार वैवाहिक स्थिति",
       "वैवाहिक स्थिति तथ्याङ्क",
-      `खजुरा कुल जनसंख्या ${totalPopulation}`,
+      `खजुरा कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")}`,
     ];
 
     const keywordsEN = [
@@ -94,12 +95,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ];
 
     // Create detailed description with actual data
-    const descriptionNP = `खजुरा गाउँपालिकाको वडा र उमेर अनुसार वैवाहिक स्थिति वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${totalPopulation} मध्ये ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[0]]} (${maritalCounts[topMaritalStatuses[0]]}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[1]]} (${maritalCounts[topMaritalStatuses[1]]}) र ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[2]]} (${maritalCounts[topMaritalStatuses[2]]})। विभिन्न उमेर समूह र वैवाहिक स्थितिको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
+    const descriptionNP = `खजुरा गाउँपालिकाको वडा र उमेर अनुसार वैवाहिक स्थिति वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")} मध्ये ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[0]]} (${localizeNumber(maritalCounts[topMaritalStatuses[0]].toString(), "ne")}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[1]]} (${localizeNumber(maritalCounts[topMaritalStatuses[1]].toString(), "ne")}) र ${MARITAL_STATUS_NAMES_NP[topMaritalStatuses[2]]} (${localizeNumber(maritalCounts[topMaritalStatuses[2]].toString(), "ne")})। विभिन्न उमेर समूह र वैवाहिक स्थितिको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
 
     const descriptionEN = `Ward-wise and age-wise marital status distribution, trends and analysis for Khajura Rural Municipality. Out of a total population of ${totalPopulation}, ${MARITAL_STATUS_NAMES_EN[topMaritalStatuses[0]]} (${maritalCounts[topMaritalStatuses[0]]}) is the largest group, followed by ${MARITAL_STATUS_NAMES_EN[topMaritalStatuses[1]]} (${maritalCounts[topMaritalStatuses[1]]}) and ${MARITAL_STATUS_NAMES_EN[topMaritalStatuses[2]]} (${maritalCounts[topMaritalStatuses[2]]})। Detailed statistics and visualizations of various marital status groups by age.`;
 
     return {
-      title: `उमेर अनुसार वैवाहिक स्थिति | ${municipalityName} पालिका प्रोफाइल`,
+      title: `उमेर अनुसार वैवाहिक स्थिति | ${municipalityName} डिजिटल प्रोफाइल`,
       description: descriptionNP,
       keywords: [...keywordsNP, ...keywordsEN],
       alternates: {
@@ -126,7 +127,7 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     // Fallback metadata if data fetching fails
     return {
-      title: "उमेर अनुसार वैवाहिक स्थिति | पालिका प्रोफाइल",
+      title: "उमेर अनुसार वैवाहिक स्थिति | खजुरा गाउँपालिका डिजिटल प्रोफाइल",
       description:
         "उमेर समूह अनुसार वैवाहिक स्थितिको वितरण, प्रवृत्ति र विश्लेषण। विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
     };
@@ -152,7 +153,6 @@ const toc = [
   },
   { level: 2, text: "वडा अनुसार विश्लेषण", slug: "ward-wise-analysis" },
   { level: 2, text: "सामाजिक सुचकांक", slug: "social-indicators" },
-  { level: 2, text: "तथ्याङ्क स्रोत", slug: "data-source" },
 ];
 
 // Define Nepali names for age groups
@@ -197,7 +197,13 @@ const AGE_CATEGORIES = {
   ELDERLY: ["AGE_60_64", "AGE_65_69", "AGE_70_74", "AGE_75_AND_ABOVE"],
 };
 
-export default async function AgeWiseMaritalStatusPage() {
+export default async function AgeWiseMaritalStatusPage({
+  params,
+}: {
+  params: { locale: string };
+}) {
+  const { locale } = params;
+  
   // Fetch all age-wise marital status data from tRPC route
   const maritalData =
     await api.profile.demographics.wardAgeWiseMaritalStatus.getAll.query();
@@ -281,7 +287,7 @@ export default async function AgeWiseMaritalStatusPage() {
 
     return {
       wardId,
-      wardNumber: `वडा ${wardId}`,
+      wardNumber: `वडा ${localizeNumber(wardId.toString(), locale)}`,
       ...counts,
       total: wardItems.reduce((sum, item) => sum + item.population, 0),
     };
@@ -368,15 +374,18 @@ export default async function AgeWiseMaritalStatusPage() {
               खजुरा गाउँपालिकामा विभिन्न उमेर समूहका व्यक्तिहरूको वैवाहिक
               स्थितिको जानकारीले सामाजिक सुरक्षा, स्वास्थ्य, शिक्षा र अन्य
               कल्याणकारी कार्यक्रमहरू निर्धारण गर्न महत्वपूर्ण आधार प्रदान
-              गर्दछ। कुल जनसंख्या
-              {totalPopulation.toLocaleString()} मध्ये{" "}
+              गर्दछ। कुल जनसंख्या{" "}
+              {localizeNumber(totalPopulation.toLocaleString(), "ne")} मध्ये{" "}
               {overallByMaritalStatus[0]?.statusName || ""} स्थिति भएका
               व्यक्तिहरू{" "}
-              {(
-                ((overallByMaritalStatus[0]?.population || 0) /
-                  totalPopulation) *
-                100
-              ).toFixed(1)}
+              {localizeNumber(
+                (
+                  ((overallByMaritalStatus[0]?.population || 0) /
+                    totalPopulation) *
+                  100
+                ).toFixed(1),
+                "ne",
+              )}
               % रहेका छन्।
             </p>
 
@@ -427,25 +436,6 @@ export default async function AgeWiseMaritalStatusPage() {
               AGE_GROUP_NAMES={AGE_GROUP_NAMES}
               AGE_CATEGORIES={AGE_CATEGORIES}
             />
-
-            <h2 id="data-source" className="scroll-m-20 border-b pb-2">
-              तथ्याङ्क स्रोत
-            </h2>
-            <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू नेपालको राष्ट्रिय जनगणना र खजुरा
-              गाउँपालिकाको आफ्नै सर्वेक्षणबाट संकलन गरिएको हो। यी तथ्याङ्कहरूको
-              महत्व निम्न अनुसार छ:
-            </p>
-
-            <ul>
-              <li>सामाजिक सुरक्षा कार्यक्रमहरू लक्षित गर्न</li>
-              <li>एकल महिला तथा पुरुषहरूका लागि विशेष कार्यक्रम बनाउन</li>
-              <li>बाल विवाह न्यूनीकरण रणनीति बनाउन</li>
-              <li>
-                परिवार नियोजन तथा प्रजनन स्वास्थ्य कार्यक्रमहरू निर्धारण गर्न
-              </li>
-              <li>वृद्ध एकल व्यक्तिहरूको हेरचाह र सहयोगको योजना बनाउन</li>
-            </ul>
           </div>
         </section>
       </div>

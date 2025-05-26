@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface AgeWiseMaritalStatusChartProps {
   ageWiseMaritalData: Array<Record<string, any>>;
@@ -113,9 +114,9 @@ export default function AgeWiseMaritalStatusChart({
                 interval={0}
                 fontSize={12}
               />
-              <YAxis />
+              <YAxis tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
               <Tooltip 
-                formatter={(value, name) => [Number(value).toLocaleString(), name]}
+                formatter={(value, name) => [localizeNumber(Number(value).toLocaleString(), "ne"), name]}
                 labelFormatter={(label) => `उमेर समूह: ${label}`}
               />
               <Legend 
@@ -156,9 +157,9 @@ export default function AgeWiseMaritalStatusChart({
                 interval={0}
                 fontSize={11}
               />
-              <YAxis />
+              <YAxis tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
               <Tooltip 
-                formatter={(value, name) => [Number(value).toLocaleString(), name]}
+                formatter={(value, name) => [localizeNumber(Number(value).toLocaleString(), "ne"), name]}
                 labelFormatter={(label) => `उमेर समूह: ${label}`}
               />
               <Legend 
@@ -197,9 +198,9 @@ export default function AgeWiseMaritalStatusChart({
                 interval={0}
                 fontSize={11}
               />
-              <YAxis tickFormatter={(value) => `${value}%`} />
+              <YAxis tickFormatter={(value) => `${localizeNumber(value.toString(), "ne")}%`} />
               <Tooltip 
-                formatter={(value) => [`${Number(value).toFixed(1)}%`]}
+                formatter={(value) => [`${localizeNumber(Number(value).toFixed(1), "ne")}%`]}
                 labelFormatter={(label) => `उमेर समूह: ${label}`}
               />
               <Legend />
@@ -226,10 +227,7 @@ export default function AgeWiseMaritalStatusChart({
           </ResponsiveContainer>
         </TabsContent>
       </Tabs>
-      
-      <p className="text-sm text-muted-foreground text-center">
-        उमेर समूह अनुसार वैवाहिक स्थिति वितरण चार्ट
-      </p>
+    
     </div>
   );
 }

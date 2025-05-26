@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { useMemo } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface MaritalStatusAnalysisProps {
   overallByMaritalStatus: Array<{
@@ -171,7 +172,7 @@ export default function MaritalStatusAnalysisSection({
               विवाह दर
             </div>
             <div className="text-2xl font-bold text-primary">
-              {indicators.marriageRate.toFixed(1)}%
+              {localizeNumber(indicators.marriageRate.toFixed(1), "ne")}%
             </div>
             <div className="text-sm text-muted-foreground">कुल जनसंख्याको</div>
             <div className="w-full bg-muted h-2 rounded-full mt-3 overflow-hidden">
@@ -191,7 +192,7 @@ export default function MaritalStatusAnalysisSection({
               सम्बन्ध विच्छेद दर
             </div>
             <div className="text-2xl font-bold text-orange-500">
-              {indicators.divorceRate.toFixed(1)}%
+              {localizeNumber(indicators.divorceRate.toFixed(1), "ne")}%
             </div>
             <div className="text-sm text-muted-foreground">
               विवाहित जनसंख्याको
@@ -211,7 +212,7 @@ export default function MaritalStatusAnalysisSection({
               विधवा/विधुर दर
             </div>
             <div className="text-2xl font-bold text-blue-500">
-              {indicators.widowhoodRate.toFixed(1)}%
+              {localizeNumber(indicators.widowhoodRate.toFixed(1), "ne")}%
             </div>
             <div className="text-sm text-muted-foreground">
               विवाहित जनसंख्याको
@@ -232,14 +233,21 @@ export default function MaritalStatusAnalysisSection({
           <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-2">अविवाहित जनसंख्या</h4>
             <p className="text-3xl font-bold">
-              {(
-                (indicators.unmarriedPopulation / totalPopulation) *
-                100
-              ).toFixed(1)}
+              {localizeNumber(
+                (
+                  (indicators.unmarriedPopulation / totalPopulation) *
+                  100
+                ).toFixed(1),
+                "ne",
+              )}
               %
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              कुल जनसंख्याको {indicators.unmarriedPopulation.toLocaleString()}{" "}
+              कुल जनसंख्याको{" "}
+              {localizeNumber(
+                indicators.unmarriedPopulation.toLocaleString(),
+                "ne",
+              )}{" "}
               व्यक्ति
             </p>
           </div>
@@ -247,7 +255,10 @@ export default function MaritalStatusAnalysisSection({
           <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-2">बाल विवाह</h4>
             <p className="text-3xl font-bold text-red-500">
-              {indicators.childMarriageCount.toLocaleString()}
+              {localizeNumber(
+                indicators.childMarriageCount.toLocaleString(),
+                "ne",
+              )}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               १५ वर्ष भन्दा कम उमेरमा विवाह भएका
@@ -257,7 +268,10 @@ export default function MaritalStatusAnalysisSection({
           <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-2">किशोर विवाह</h4>
             <p className="text-3xl font-bold text-amber-500">
-              {indicators.earlyMarriageCount.toLocaleString()}
+              {localizeNumber(
+                indicators.earlyMarriageCount.toLocaleString(),
+                "ne",
+              )}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               १५-१९ वर्ष उमेर समूहमा विवाहित जनसंख्या
@@ -267,7 +281,11 @@ export default function MaritalStatusAnalysisSection({
           <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-2">लैंगिक अन्तर</h4>
             <p className="text-3xl font-bold">
-              {Math.abs(indicators.genderGapInMarriage).toFixed(1)}%
+              {localizeNumber(
+                Math.abs(indicators.genderGapInMarriage).toFixed(1),
+                "ne",
+              )}
+              %
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {indicators.genderGapInMarriage > 0
@@ -279,12 +297,15 @@ export default function MaritalStatusAnalysisSection({
           <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-2">एकल महिला/पुरुष</h4>
             <p className="text-3xl font-bold">
-              {(
-                ((indicators.widowedPopulation +
-                  indicators.divorcedSeparatedPopulation) /
-                  totalPopulation) *
-                100
-              ).toFixed(1)}
+              {localizeNumber(
+                (
+                  ((indicators.widowedPopulation +
+                    indicators.divorcedSeparatedPopulation) /
+                    totalPopulation) *
+                  100
+                ).toFixed(1),
+                "ne",
+              )}
               %
             </p>
             <p className="text-sm text-muted-foreground mt-2">
@@ -295,13 +316,16 @@ export default function MaritalStatusAnalysisSection({
           <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-2">पुनर्विवाह दर</h4>
             <p className="text-3xl font-bold">
-              {(
-                ((overallByMaritalStatus.find(
-                  (item) => item.status === "REMARRIAGE",
-                )?.population || 0) /
-                  indicators.marriedPopulation) *
-                100
-              ).toFixed(1)}
+              {localizeNumber(
+                (
+                  ((overallByMaritalStatus.find(
+                    (item) => item.status === "REMARRIAGE",
+                  )?.population || 0) /
+                    indicators.marriedPopulation) *
+                  100
+                ).toFixed(1),
+                "ne",
+              )}
               %
             </p>
             <p className="text-sm text-muted-foreground mt-2">
@@ -327,7 +351,7 @@ export default function MaritalStatusAnalysisSection({
                 <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
                   <td className="border p-2">{item.ageGroupName}</td>
                   <td className="border p-2 text-right">
-                    {item.marriageRate.toFixed(1)}%
+                    {localizeNumber(item.marriageRate.toFixed(1), "ne")}%
                   </td>
                   <td className="border p-2">
                     {item.marriageRate > 80
@@ -356,9 +380,9 @@ export default function MaritalStatusAnalysisSection({
             <ul className="space-y-2 mt-3">
               {wardMarriageRates.slice(0, 3).map((ward, idx) => (
                 <li key={idx} className="flex justify-between items-center">
-                  <span>{ward.wardNumber}</span>
+                  <span>{localizeNumber(ward.wardNumber, "ne")}</span>
                   <span className="font-medium">
-                    {ward.marriageRate.toFixed(1)}%
+                    {localizeNumber(ward.marriageRate.toFixed(1), "ne")}%
                   </span>
                 </li>
               ))}
@@ -373,9 +397,9 @@ export default function MaritalStatusAnalysisSection({
                 .reverse()
                 .map((ward, idx) => (
                   <li key={idx} className="flex justify-between items-center">
-                    <span>{ward.wardNumber}</span>
+                    <span>{localizeNumber(ward.wardNumber, "ne")}</span>
                     <span className="font-medium">
-                      {ward.marriageRate.toFixed(1)}%
+                      {localizeNumber(ward.marriageRate.toFixed(1), "ne")}%
                     </span>
                   </li>
                 ))}
@@ -435,9 +459,12 @@ export default function MaritalStatusAnalysisSection({
               {indicators.childMarriageCount > 0 && (
                 <span>
                   <strong>बाल विवाह न्यूनीकरण:</strong>{" "}
-                  {indicators.childMarriageCount} जना बाल विवाह भएका
-                  व्यक्तिहरूलाई लक्षित गरी विशेष जनचेतनामूलक कार्यक्रम सञ्चालन
-                  गर्नुपर्ने देखिन्छ
+                  {localizeNumber(
+                    indicators.childMarriageCount.toString(),
+                    "ne",
+                  )}{" "}
+                  जना बाल विवाह भएका व्यक्तिहरूलाई लक्षित गरी विशेष जनचेतनामूलक
+                  कार्यक्रम सञ्चालन गर्नुपर्ने देखिन्छ
                 </span>
               )}
               {indicators.childMarriageCount === 0 && (
@@ -451,10 +478,13 @@ export default function MaritalStatusAnalysisSection({
             <li>
               <strong>एकल महिला/पुरुष सहायता:</strong> विधवा/विधुर तथा पारपाचुके
               भएकाहरू (
-              {(
-                indicators.widowedPopulation +
-                indicators.divorcedSeparatedPopulation
-              ).toLocaleString()}{" "}
+              {localizeNumber(
+                (
+                  indicators.widowedPopulation +
+                  indicators.divorcedSeparatedPopulation
+                ).toLocaleString(),
+                "ne",
+              )}{" "}
               जना) को लागि सामाजिक सुरक्षा तथा आर्थिक सशक्तीकरणका कार्यक्रम
             </li>
 

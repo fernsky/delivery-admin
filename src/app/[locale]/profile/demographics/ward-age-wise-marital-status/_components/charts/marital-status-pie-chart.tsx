@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface MaritalStatusPieChartProps {
   pieChartData: Array<{
@@ -32,7 +33,6 @@ export default function MaritalStatusPieChart({
           cx="50%"
           cy="50%"
           labelLine={true}
-          label={({ name, percentage }) => `${name}: ${percentage}%`}
           outerRadius={140}
           fill="#8884d8"
           dataKey="value"
@@ -56,7 +56,7 @@ export default function MaritalStatusPieChart({
             );
           })}
         </Pie>
-        <Tooltip formatter={(value) => Number(value).toLocaleString()} />
+        <Tooltip formatter={(value) => localizeNumber(Number(value).toLocaleString(), "ne")} />
         <Legend />
       </PieChart>
     </ResponsiveContainer>

@@ -1,21 +1,20 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
 import MaritalStatusPieChart from "./charts/marital-status-pie-chart";
 import MaritalStatusBarChart from "./charts/marital-status-bar-chart";
 import AgeWiseMaritalStatusChart from "./charts/age-wise-marital-status-chart";
 import WardMaritalStatusCharts from "./charts/ward-marital-status-charts";
 import GenderMaritalStatusChart from "./charts/gender-marital-status-chart";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
-// Define marital status colors for consistency
+// Define marital status colors with enhanced aesthetic
 const MARITAL_STATUS_COLORS = {
-  SINGLE: "#36A2EB", // Blue
-  MARRIED: "#4BC0C0", // Teal
-  DIVORCED: "#FF9F40", // Orange
-  WIDOWED: "#FF6384", // Pink/Red
-  SEPARATED: "#C9CBCF", // Grey
-  NOT_STATED: "#808080", // Dark Grey
+  SINGLE: "#4F46E5", // Indigo-600
+  MARRIED: "#10B981", // Emerald-500
+  DIVORCED: "#F59E0B", // Amber-500
+  WIDOWED: "#EC4899", // Pink-500
+  SEPARATED: "#6B7280", // Gray-500
+  NOT_STATED: "#94A3B8", // Slate-400
 };
 
 interface MaritalStatusChartsProps {
@@ -55,6 +54,7 @@ interface MaritalStatusChartsProps {
     updatedAt?: string;
     createdAt?: string;
   }>;
+
 }
 
 export default function MaritalStatusCharts({
@@ -68,6 +68,7 @@ export default function MaritalStatusCharts({
   pieChartData,
   wardNumbers,
   maritalData,
+
 }: MaritalStatusChartsProps) {
   return (
     <>
@@ -76,7 +77,7 @@ export default function MaritalStatusCharts({
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold">वैवाहिक स्थिति अनुसार जनसंख्या वितरण</h3>
           <p className="text-sm text-muted-foreground">
-            कुल जनसंख्या: {totalPopulation.toLocaleString()} व्यक्ति
+            कुल जनसंख्या: {localizeNumber(totalPopulation.toLocaleString(), "ne")} व्यक्ति
           </p>
         </div>
 
@@ -109,13 +110,13 @@ export default function MaritalStatusCharts({
                 <tbody>
                   {overallByMaritalStatus.map((item, i) => (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                      <td className="border p-2">{i + 1}</td>
+                      <td className="border p-2">{localizeNumber((i + 1).toString(), "ne")}</td>
                       <td className="border p-2">{item.statusName}</td>
                       <td className="border p-2 text-right">
-                        {item.population.toLocaleString()}
+                        {localizeNumber(item.population.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {((item.population / totalPopulation) * 100).toFixed(2)}
+                        {localizeNumber(((item.population / totalPopulation) * 100).toFixed(2), "ne")}
                         %
                       </td>
                     </tr>
@@ -127,18 +128,12 @@ export default function MaritalStatusCharts({
                       जम्मा
                     </td>
                     <td className="border p-2 text-right">
-                      {totalPopulation.toLocaleString()}
+                      {localizeNumber(totalPopulation.toLocaleString(), "ne")}
                     </td>
-                    <td className="border p-2 text-right">100.00%</td>
+                    <td className="border p-2 text-right">{localizeNumber("100.00", "ne")}%</td>
                   </tr>
                 </tfoot>
               </table>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Excel डाउनलोड
-              </Button>
             </div>
           </div>
         </div>
@@ -163,7 +158,7 @@ export default function MaritalStatusCharts({
                   <div className="flex justify-between items-center">
                     <span>{item.statusName}</span>
                     <span className="font-medium">
-                      {((item.population / totalPopulation) * 100).toFixed(1)}%
+                      {localizeNumber(((item.population / totalPopulation) * 100).toFixed(1), "ne")}%
                     </span>
                   </div>
                   <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -184,7 +179,7 @@ export default function MaritalStatusCharts({
           </div>
           <p className="text-sm text-muted-foreground pt-4">
             {overallByMaritalStatus.length > 5
-              ? `${overallByMaritalStatus.length - 5} अन्य वैवाहिक स्थितिहरू पनि छन्।`
+              ? `${localizeNumber((overallByMaritalStatus.length - 5).toString(), "ne")} अन्य वैवाहिक स्थितिहरू पनि छन्।`
               : ""}
           </p>
         </div>
@@ -203,13 +198,13 @@ export default function MaritalStatusCharts({
         </div>
 
         <div className="p-6">
-          <div className="h-[500px]">
+         
             <AgeWiseMaritalStatusChart 
               ageWiseMaritalData={ageWiseMaritalData}
               MARITAL_STATUS_COLORS={MARITAL_STATUS_COLORS}
               MARITAL_STATUS_NAMES={MARITAL_STATUS_NAMES}
+             
             />
-          </div>
         </div>
       </div>
 
@@ -226,11 +221,12 @@ export default function MaritalStatusCharts({
         </div>
 
         <div className="p-6">
-          <div className="h-[500px]">
+        
             <GenderMaritalStatusChart 
               genderWiseData={genderWiseData}
+             
             />
-          </div>
+     
 
           <div className="mt-6 overflow-x-auto">
             <h4 className="text-lg font-medium mb-4">
@@ -253,50 +249,56 @@ export default function MaritalStatusCharts({
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
                       <td className="border p-2">{item.statusName}</td>
                       <td className="border p-2 text-right">
-                        {item.male.toLocaleString()}
+                        {localizeNumber(item.male.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {item.female.toLocaleString()}
+                        {localizeNumber(item.female.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {item.other.toLocaleString()}
+                        {localizeNumber(item.other.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right font-medium">
-                        {item.total.toLocaleString()}
+                        {localizeNumber(item.total.toLocaleString(), "ne")}
                       </td>
                     </tr>
                   ))}
                 <tr className="font-semibold bg-muted/70">
                   <td className="border p-2">जम्मा</td>
                   <td className="border p-2 text-right">
-                    {genderWiseData
-                      .reduce((sum, item) => sum + item.male, 0)
-                      .toLocaleString()}
+                    {localizeNumber(
+                      genderWiseData
+                        .reduce((sum, item) => sum + item.male, 0)
+                        .toLocaleString(),
+                      "ne"
+                    )}
                   </td>
                   <td className="border p-2 text-right">
-                    {genderWiseData
-                      .reduce((sum, item) => sum + item.female, 0)
-                      .toLocaleString()}
+                    {localizeNumber(
+                      genderWiseData
+                        .reduce((sum, item) => sum + item.female, 0)
+                        .toLocaleString(),
+                      "ne"
+                    )}
                   </td>
                   <td className="border p-2 text-right">
-                    {genderWiseData
-                      .reduce((sum, item) => sum + item.other, 0)
-                      .toLocaleString()}
+                    {localizeNumber(
+                      genderWiseData
+                        .reduce((sum, item) => sum + item.other, 0)
+                        .toLocaleString(),
+                      "ne"
+                    )}
                   </td>
                   <td className="border p-2 text-right">
-                    {genderWiseData
-                      .reduce((sum, item) => sum + item.total, 0)
-                      .toLocaleString()}
+                    {localizeNumber(
+                      genderWiseData
+                        .reduce((sum, item) => sum + item.total, 0)
+                        .toLocaleString(),
+                      "ne"
+                    )}
                   </td>
                 </tr>
               </tbody>
             </table>
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Excel डाउनलोड
-              </Button>
-            </div>
           </div>
         </div>
       </div>
@@ -316,6 +318,7 @@ export default function MaritalStatusCharts({
               wardWiseData={wardWiseData}
               MARITAL_STATUS_COLORS={MARITAL_STATUS_COLORS}
               MARITAL_STATUS_NAMES={MARITAL_STATUS_NAMES}
+             
             />
           </div>
         </div>
@@ -374,7 +377,7 @@ export default function MaritalStatusCharts({
 
                   return (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                      <td className="border p-2">वडा {wardNumber}</td>
+                      <td className="border p-2">वडा {localizeNumber(wardNumber.toString(), "ne")}</td>
                       <td className="border p-2">
                         {primaryStatus
                           ? MARITAL_STATUS_NAMES[primaryStatus.status as keyof typeof MARITAL_STATUS_NAMES] ||
@@ -382,15 +385,17 @@ export default function MaritalStatusCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {primaryStatus?.population?.toLocaleString() || "0"}
+                        {primaryStatus?.population
+                          ? localizeNumber(primaryStatus.population.toLocaleString(), "ne")
+                          : localizeNumber("0", "ne")}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && primaryStatus?.population
-                          ? (
+                          ? localizeNumber((
                               (primaryStatus.population / wardTotal) *
                               100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                            ).toFixed(2), "ne") + "%"
+                          : localizeNumber("0", "ne") + "%"}
                       </td>
                       <td className="border p-2">
                         {secondaryStatus
@@ -399,27 +404,23 @@ export default function MaritalStatusCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {secondaryStatus?.population?.toLocaleString() || "0"}
+                        {secondaryStatus?.population
+                          ? localizeNumber(secondaryStatus.population.toLocaleString(), "ne")
+                          : localizeNumber("0", "ne")}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && secondaryStatus?.population
-                          ? (
+                          ? localizeNumber((
                               (secondaryStatus.population / wardTotal) *
                               100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                            ).toFixed(2), "ne") + "%"
+                          : localizeNumber("0", "ne") + "%"}
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-          </div>
-          <div className="mt-4 flex justify-end">
-            <Button variant="outline" size="sm">
-              <FileDown className="mr-2 h-4 w-4" />
-              Excel डाउनलोड
-            </Button>
           </div>
 
           {/* Ward pie charts (client component) */}

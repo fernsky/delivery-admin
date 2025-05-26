@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface MaritalStatusSEOProps {
   overallByMaritalStatus: Array<{
@@ -10,6 +11,7 @@ interface MaritalStatusSEOProps {
   MARITAL_STATUS_NAMES: Record<string, string>;
   wardNumbers: number[];
   AGE_GROUP_NAMES: Record<string, string>;
+
 }
 
 export default function MaritalStatusSEO({
@@ -59,14 +61,14 @@ export default function MaritalStatusSEO({
         unitText: "people",
       },
       measuredValue: item.population,
-      description: `${item.population.toLocaleString()} people in Khajura Rural Municipality are ${MARITAL_STATUS_NAMES_EN[item.status] || item.status} (${((item.population / totalPopulation) * 100).toFixed(2)}% of total population)`,
+      description: `${localizeNumber(item.population, "ne")} people in Khajura Rural Municipality are ${MARITAL_STATUS_NAMES_EN[item.status] || item.status} (${((item.population / totalPopulation) * 100).toFixed(2)}% of total population)`,
     }));
 
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
       name: "Marital Status Demographics of Khajura Rural Municipality (खजुरा गाउँपालिका)",
-      description: `Age-wise and ward-wise marital status distribution data across ${wardNumbers.length} wards of Khajura Rural Municipality with a total population of ${totalPopulation.toLocaleString()} people.`,
+      description: `Age-wise and ward-wise marital status distribution data across ${wardNumbers.length} wards of Khajura Rural Municipality with a total population of ${localizeNumber(totalPopulation, "ne")} people.`,
       keywords: [
         "Khajura Rural Municipality",
         "खजुरा गाउँपालिका",

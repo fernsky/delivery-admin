@@ -118,12 +118,12 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
                 <div className="sticky top-16 -mt-10 h-[calc(100vh-3.5rem)] pt-10">
                   <ScrollArea className="h-full pb-10">
                     <div className="pt-8 pb-12">
-                      <div className="space-y-3 bg-white/80 p-4 rounded-lg shadow-sm border border-[#123772]/10">
-                        <p className="font-medium text-[#123772] flex items-center gap-2">
-                          <ChevronRight className="w-4 h-4" />
-                          विषयसूची
-                        </p>
-                        <div className="border-l-2 border-[#123772]/10 pl-3">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2.5 text-[#123772]">
+                          
+                          <span className="font-medium pl-6">विषयसूची</span>
+                        </div>
+                        <div className="pl-4 border-l-2 border-[#123772]/10">
                           {toc}
                         </div>
                       </div>

@@ -10,6 +10,7 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface MaritalStatusBarChartProps {
   wardWiseData: Array<Record<string, any>>;
@@ -36,13 +37,13 @@ export default function MaritalStatusBarChart({
           padding={{ left: 10, right: 10 }}
           tick={{ fontSize: 12 }}
         />
-        <YAxis />
+        <YAxis tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
         <Tooltip
           content={({ active, payload }) => {
             if (active && payload && payload.length) {
               return (
                 <div className="bg-background p-3 border shadow-sm rounded-md">
-                  <p className="font-medium">{payload[0].payload.wardNumber}</p>
+                  <p className="font-medium">{localizeNumber(payload[0].payload.wardNumber, "ne")}</p>
                   <div className="space-y-1 mt-2">
                     {payload.map((entry, index) => (
                       <div key={index} className="flex items-center gap-2">
@@ -52,7 +53,7 @@ export default function MaritalStatusBarChart({
                         ></div>
                         <span>{entry.name}: </span>
                         <span className="font-medium">
-                          {entry.value?.toLocaleString()}
+                          {localizeNumber(entry.value as string, "ne")}
                         </span>
                       </div>
                     ))}
