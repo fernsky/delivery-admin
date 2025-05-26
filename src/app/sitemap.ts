@@ -57,6 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         "ward-wise-mother-tongue-population",
         "ward-wise-religion-population",
         "ward-wise-summary",
+        "ward-age-wise-marital-status",
       ];
 
       demographicPages.forEach((page) => {

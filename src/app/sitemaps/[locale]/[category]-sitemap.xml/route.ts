@@ -63,6 +63,7 @@ export async function GET(
         "ward-wise-mother-tongue-population",
         "ward-wise-religion-population",
         "ward-wise-summary",
+        "ward-age-wise-marital-status",
       ];
 
       // Add all demographic sub-pages
@@ -75,26 +76,6 @@ export async function GET(
         })),
       );
 
-      try {
-        // Fetch dynamic content for demographics
-        const religionData =
-          await api.profile.demographics.wardWiseReligionPopulation.getAll.query();
-        const wardNumbers = Array.from(
-          new Set(religionData.map((item) => item.wardNumber)),
-        ).sort((a, b) => a - b);
-
-        // Add ward-specific pages
-        for (const ward of wardNumbers) {
-          sitemapEntries.push({
-            loc: `${baseUrl}/${locale}/profile/demographics/ward-wise-religion-population/${ward}`,
-            lastmod: currentDate,
-            changefreq: "monthly",
-            priority: 0.6,
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching religion data for sitemap:", error);
-      }
       break;
 
     case "education-sitemap.xml":
