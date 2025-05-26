@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { Mountain, Sparkles } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Mountain, Sparkles, Menu } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { useSheetStore } from "@/hooks/use-sheet-store";
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
+  const { isOpen, setIsOpen } = useSheetStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,6 +52,18 @@ export function SiteHeader() {
           </Link>
 
           <div className="flex items-center gap-2">
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="border-[#123772]/20 text-[#123772] hover:bg-[#123772]/5 hover:text-[#123772]"
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle sidebar</span>
+                </Button>
+              </SheetTrigger>
+            </Sheet>
             <Link
               href="/profile"
               className={cn(
