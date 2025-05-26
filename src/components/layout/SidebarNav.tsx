@@ -220,12 +220,12 @@ export default function SidebarNav() {
   }, [pathname]);
 
   return (
-    <div className="w-full space-y-1.5 ">
-      <div className="text-sm text-muted-foreground font-medium mb-2 pl-2">
+    <div className="w-full space-y-2">
+      <div className="text-sm font-semibold text-[#123772] mb-3 pl-2">
         तथ्याङ्क वर्गहरू
       </div>
       {navItems.map((section) => (
-        <div key={section.title} className="mb-1.5">
+        <div key={section.title} className="mb-2">
           {section.items.length > 0 ? (
             <Collapsible
               open={openSections[section.title]}
@@ -233,38 +233,47 @@ export default function SidebarNav() {
             >
               <CollapsibleTrigger
                 className={cn(
-                  "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                  "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm transition-colors",
                   pathname.startsWith(section.href)
-                    ? "bg-accent text-accent-foreground font-medium"
-                    : "hover:bg-muted",
+                    ? "bg-gradient-to-r from-[#0b1f42]/10 to-[#1a4894]/10 text-[#123772] font-medium shadow-sm border border-[#123772]/10"
+                    : "hover:bg-[#123772]/5 text-gray-600",
                 )}
               >
-                <div className="flex items-center gap-2">
-                  {section.icon}
+                <div className="flex items-center gap-2.5">
+                  <div className={cn(
+                    "p-1.5 rounded-md transition-colors",
+                    pathname.startsWith(section.href)
+                      ? "bg-[#123772]/10"
+                      : "bg-gray-100"
+                  )}>
+                    {section.icon}
+                  </div>
                   <span>{section.title}</span>
                 </div>
                 <ChevronDown
-                  className="h-4 w-4 shrink-0 transition-transform duration-200"
-                  style={{
-                    transform: openSections[section.title]
-                      ? "rotate(-180deg)"
-                      : "rotate(0deg)",
-                  }}
+                  className={cn(
+                    "h-4 w-4 shrink-0 transition-transform duration-200",
+                    openSections[section.title] ? "rotate-180" : "rotate-0",
+                    pathname.startsWith(section.href) ? "text-[#123772]" : "text-gray-400"
+                  )}
                 />
               </CollapsibleTrigger>
-              <CollapsibleContent className="ml-2 pl-4 border-l mt-1">
+              <CollapsibleContent className="ml-2 pl-4 mt-1 border-l-2 border-[#123772]/10">
                 {section.items.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors mb-1",
+                      "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors mb-1",
                       pathname === item.href
-                        ? "bg-primary text-primary-foreground font-medium"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                        ? "bg-gradient-to-r from-[#123772] to-[#1a4894] text-white font-medium shadow-sm"
+                        : "text-gray-600 hover:bg-[#123772]/5 hover:text-[#123772]",
                     )}
                   >
-                    <FileText className="w-3 h-3 opacity-70" />
+                    <FileText className={cn(
+                      "w-3 h-3",
+                      pathname === item.href ? "text-white" : "text-[#123772] opacity-70"
+                    )} />
                     {item.title}
                   </Link>
                 ))}
@@ -274,13 +283,20 @@ export default function SidebarNav() {
             <Link
               href={section.href}
               className={cn(
-                "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors w-full",
+                "flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-colors w-full",
                 pathname === section.href
-                  ? "bg-primary text-primary-foreground font-medium"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  ? "bg-gradient-to-r from-[#123772] to-[#1a4894] text-white font-medium shadow-sm"
+                  : "text-gray-600 hover:bg-[#123772]/5 hover:text-[#123772]",
               )}
             >
-              {section.icon}
+              <div className={cn(
+                "p-1.5 rounded-md transition-colors",
+                pathname === section.href
+                  ? "bg-white/20"
+                  : "bg-gray-100"
+              )}>
+                {section.icon}
+              </div>
               {section.title}
             </Link>
           )}
