@@ -14,6 +14,9 @@ import {
   Sparkles,
   Mountain,
   ChevronRight,
+  Info,
+  FileText,
+  Map,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -38,29 +41,30 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
       href: `/profile`,
       label: "प्रोफाइल",
       icon: Book,
-      color: "from-emerald-500 to-green-600",
+      color: "from-[#123772] to-[#1a4894]",
       description: "इन्टर्याक्टिभ प्रोफाइल हेर्नुहोस्",
     },
+   
   ];
 
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white shadow-md" : "bg-transparent"
+        scrolled ? "bg-white/90 backdrop-blur-sm shadow-md" : "bg-transparent"
       }`}
     >
       <div
-        className={`transition-all duration-300 ${scrolled ? "py-4" : "py-4"}`}
+        className={`transition-all duration-300 ${scrolled ? "py-3" : "py-4"}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Enhanced Logo */}
             <Link href={`/profile`} className="flex items-center gap-3 group">
-              <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white group-hover:shadow-lg group-hover:shadow-green-500/25 transition-all duration-300">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#123772] to-[#0b1f42] text-white group-hover:shadow-lg group-hover:shadow-[#123772]/25 transition-all duration-300">
                 <Mountain className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
-                <span className={`font-bold tracking-tight group-hover:text-green-600 transition-colors ${
+                <span className={`font-bold tracking-tight ${
                   scrolled ? "text-gray-900" : "text-white"
                 }`}>
                   खजुरा
@@ -88,14 +92,14 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
                   >
                     <div className={`p-2 rounded-lg ${
                       scrolled 
-                        ? "border border-green-500/20 group-hover:border-green-500/40" 
+                        ? "border border-[#123772]/20" 
                         : "bg-white/20 backdrop-blur-sm border border-white/30"
-                    } transition-colors`}>
+                    } transition-all`}>
                       <item.icon className={`w-4 h-4 ${
-                        scrolled ? "text-green-600" : "text-white"
+                        scrolled ? "text-[#123772]" : "text-white"
                       }`} />
                     </div>
-                    <span className={`text-sm font-medium group-hover:text-green-600 transition-colors tracking-tight ${
+                    <span className={`text-sm font-medium tracking-tight ${
                       scrolled ? "text-gray-600" : "text-white"
                     }`}>
                       {item.label}
@@ -108,10 +112,10 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
             {/* Enhanced Mobile Menu Button */}
             <motion.button
               whileTap={{ scale: 0.95 }}
-              className={`md:hidden p-2 rounded-xl transition-colors ${
+              className={`md:hidden p-2 rounded-xl transition-all ${
                 scrolled 
-                  ? "bg-gradient-to-br from-green-500/10 to-emerald-600/10 text-green-700 hover:bg-green-50" 
-                  : "bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm"
+                  ? "bg-gradient-to-br from-[#123772]/10 to-[#0b1f42]/10 text-[#123772]" 
+                  : "bg-white/20 text-white backdrop-blur-sm"
               }`}
               onClick={() => setIsOpen(!isOpen)}
             >
@@ -127,10 +131,10 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-green-100/20 z-[500]"
+              className="md:hidden border-t border-[#123772]/10 z-[500]"
             >
               <div className={`px-4 pt-2 pb-3 z-[500] ${
-                scrolled ? "bg-gradient-to-b from-white to-green-50/30" : "bg-transparent backdrop-blur-sm"
+                scrolled ? "bg-gradient-to-b from-white to-[#123772]/5" : "bg-gradient-to-b from-[#0b1f42]/90 to-[#123772]/80 backdrop-blur-sm"
               }`}>
                 {menuItems.map((item, index) => (
                   <motion.div
@@ -143,23 +147,23 @@ const Navbar: React.FC<NavbarProps> = ({ lng }) => {
                       href={item.href}
                       className={`flex items-center gap-4 p-3 rounded-xl ${
                         scrolled 
-                          ? "hover:bg-gradient-to-br hover:from-green-500/10 hover:to-emerald-600/10" 
-                          : "hover:bg-white/20"
-                      } group transition-all duration-300`}
+                          ? "" 
+                          : ""
+                      } transition-all duration-300`}
                       onClick={() => setIsOpen(false)}
                     >
                       <div className={`p-2 rounded-lg ${
                         scrolled 
-                          ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white" 
+                          ? "bg-gradient-to-br from-[#123772] to-[#0b1f42] text-white" 
                           : "border border-white/30 bg-white/20 text-white"
-                      } shadow-sm group-hover:shadow-md transition-all`}>
+                      } shadow-sm transition-all`}>
                         <item.icon className="w-4 h-4" />
                       </div>
                       <div className="flex-1">
                         <h4 className={`text-sm font-medium ${
                           scrolled 
-                            ? "text-gray-900 group-hover:text-green-600" 
-                            : "text-white group-hover:text-white/80"
+                            ? "text-gray-900" 
+                            : "text-white"
                         } transition-colors`}>
                           {item.label}
                         </h4>

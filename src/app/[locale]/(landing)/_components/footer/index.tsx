@@ -11,6 +11,7 @@ import {
   Download,
   ExternalLink,
 } from "lucide-react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface FooterProps {
   lng: string;
@@ -18,9 +19,8 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ lng }) => {
   const resources = [
-    { label: "प्रोफाइल", icon: FileText, href: "/landing" },
-    { label: "नक्सा", icon: MapPin, href: "/map" },
-    { label: "डाउनलोड", icon: Download, href: "/downloads" },
+    { label: "प्रोफाइल", icon: FileText, href: "/profile" },
+    
   ];
 
   const socials = [
@@ -50,12 +50,12 @@ const Footer: React.FC<FooterProps> = ({ lng }) => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">खजुरा</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              खजुरा गाउँपालिका बाँके जिल्लाको प्रगतिशील नगरपालिका हो
+              हामी आफैँ बनाउँ हाम्रो खजुरा, आत्मनिर्भर र समृद्ध खजुरा
             </p>
             <div className="pt-2">
               <Link
-                href="https://digprofile.com/khajura"
-                className="inline-flex items-center gap-2 text-sm text-green-600 hover:text-green-700 transition-colors"
+                href="https://khajuramun.gov.np/"
+                className="inline-flex items-center gap-2 text-sm text-[#123772] hover:text-green-700 transition-colors"
               >
                 वेबसाइट हेर्नुहोस् <ExternalLink className="w-4 h-4" />
               </Link>
@@ -86,8 +86,6 @@ const Footer: React.FC<FooterProps> = ({ lng }) => {
             <div className="space-y-3 text-sm text-gray-600">
               <p>खजुरा, बाँके</p>
               <p>नेपाल</p>
-              <p>info@khajura.gov.np</p>
-              <p>+९७७-१-२३४५६७</p>
             </div>
           </div>
 
@@ -117,7 +115,7 @@ const Footer: React.FC<FooterProps> = ({ lng }) => {
             <div className="flex items-center gap-2">
               <Copyright className="w-4 h-4" />
               <span>
-                {new Date().getFullYear()} खजुरा गाउँपालिका । सर्वाधिकार
+                {localizeNumber(new Date().getFullYear(), "ne")} खजुरा गाउँपालिका । सर्वाधिकार
                 सुरक्षित
               </span>
             </div>

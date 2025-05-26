@@ -53,7 +53,7 @@ const Statistics = ({
       suffix: "वर्ग कि.मि.",
       icon: <MapPinned className="w-5 h-5" />,
       description: "कुल भूमि क्षेत्रफल",
-      color: "from-green-500 to-emerald-600",
+      color: "from-[#123772] to-[#0b1f42]",
     },
     {
       label: "जनसंख्या",
@@ -61,7 +61,7 @@ const Statistics = ({
       suffix: "+",
       icon: <Users className="w-5 h-5" />,
       description: "बासिन्दा संख्या",
-      color: "from-emerald-500 to-green-600",
+      color: "from-[#1a4894] to-[#123772]",
     },
     {
       label: "घरधुरी",
@@ -69,15 +69,15 @@ const Statistics = ({
       suffix: "",
       icon: <Home className="w-5 h-5" />,
       description: `प्रति घर ${localizeNumber(parseFloat(demographicData?.averageHouseholdSize as string)?.toFixed(1) || "4.4", "ne")} व्यक्ति`,
-      color: "from-green-400 to-emerald-500",
+      color: "from-[#0b1f42] to-[#123772]",
     },
     {
-      label: "प्रवासी जनसंख्या",
+      label: "अनुपस्थित जनसंख्या",
       value: demographicData?.populationAbsenteeTotal || 317,
       suffix: "",
       icon: <UserX className="w-5 h-5" />,
-      description: "विदेशिएका नागरिक",
-      color: "from-emerald-400 to-green-500",
+      description: "अनुपस्थित नागरिक",
+      color: "from-[#123772] to-[#0b1f42]",
     },
   ];
 
@@ -171,17 +171,13 @@ const Statistics = ({
 
       <section
         ref={ref}
-        className="py-16 relative overflow-hidden"
+        className="relative overflow-hidden"
         itemScope
         itemType="https://schema.org/Dataset"
       >
-        {/* Background with gradient - Updated to match WardInfo */}
-        <div className="absolute inset-0 bg-gradient-to-b from-green-50/80 to-white/90" />
-        <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-white to-transparent" />
-        <div className="absolute -top-32 right-0 w-96 h-96 bg-green-100/30 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-emerald-100/30 rounded-full blur-3xl" />
+    
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="py-16 relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -189,16 +185,16 @@ const Statistics = ({
           >
             <Badge
               variant="outline"
-              className="mb-2 px-3 py-1 bg-white/80 backdrop-blur-sm border-green-200 shadow-sm inline-flex items-center"
+              className="mb-2 px-3 py-1 bg-white/80 backdrop-blur-sm border-[#123772]/20 shadow-sm inline-flex items-center"
             >
-              <TrendingUp className="w-3 h-3 mr-1 text-emerald-600" />
-              <span className="text-xs text-emerald-800 font-medium">
-                नगरपालिका अवलोकन
+              <TrendingUp className="w-3 h-3 mr-1 text-[#1a4894]" />
+              <span className="text-xs text-[#0b1f42] font-medium">
+                गाउँपालिका अवलोकन
               </span>
             </Badge>
 
             <h2
-              className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-800 to-green-700 bg-clip-text text-transparent"
+              className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#0b1f42] to-[#1a4894] bg-clip-text text-transparent"
               itemProp="name"
             >
               प्रमुख जनसांख्यिकी
@@ -227,7 +223,7 @@ const Statistics = ({
               >
                 <Card className="border-0 overflow-hidden group hover:shadow-md transition-all duration-300 bg-white/95 backdrop-blur-sm">
                   <div className="relative h-full">
-                    {/* Gradient header - similar to WardInfo cards */}
+                    {/* Gradient header - updated to blue style */}
                     <div
                       className={`p-2 bg-gradient-to-r ${stat.color} relative`}
                     >
@@ -266,7 +262,7 @@ const Statistics = ({
                                   />
                                 )}
                               </span>
-                              <span className="text-sm font-medium text-emerald-700">
+                              <span className="text-sm font-medium text-[#123772]">
                                 {stat.suffix}
                               </span>
                             </>
@@ -291,9 +287,9 @@ const Statistics = ({
               className="mt-8"
             >
               <div className="overflow-hidden rounded-xl shadow-sm bg-white/90 backdrop-blur-sm">
-                <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-green-100">
-                  <div className="p-4 bg-gradient-to-br from-white to-green-50/50">
-                    <p className="text-xs text-emerald-700 font-medium mb-1 flex items-center">
+                <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-[#123772]/10">
+                  <div className="p-4 bg-gradient-to-br from-white to-[#123772]/5">
+                    <p className="text-xs text-[#123772] font-medium mb-1 flex items-center">
                       <Users className="w-3 h-3 mr-1 opacity-70" />
                       पुरुष जनसंख्या
                     </p>
@@ -306,8 +302,8 @@ const Statistics = ({
                         : "N/A"}
                     </p>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-white to-green-50/50">
-                    <p className="text-xs text-emerald-700 font-medium mb-1 flex items-center">
+                  <div className="p-4 bg-gradient-to-br from-white to-[#123772]/5">
+                    <p className="text-xs text-[#123772] font-medium mb-1 flex items-center">
                       <Users className="w-3 h-3 mr-1 opacity-70" />
                       महिला जनसंख्या
                     </p>
@@ -320,8 +316,8 @@ const Statistics = ({
                         : "N/A"}
                     </p>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-white to-green-50/50">
-                    <p className="text-xs text-emerald-700 font-medium mb-1 flex items-center">
+                  <div className="p-4 bg-gradient-to-br from-white to-[#123772]/5">
+                    <p className="text-xs text-[#123772] font-medium mb-1 flex items-center">
                       <ChevronRight className="w-3 h-3 mr-1 opacity-70" />
                       लैङ्गिक अनुपात
                     </p>
@@ -334,8 +330,8 @@ const Statistics = ({
                         : "N/A"}
                     </p>
                   </div>
-                  <div className="p-4 bg-gradient-to-br from-white to-green-50/50">
-                    <p className="text-xs text-emerald-700 font-medium mb-1 flex items-center">
+                  <div className="p-4 bg-gradient-to-br from-white to-[#123772]/5">
+                    <p className="text-xs text-[#123772] font-medium mb-1 flex items-center">
                       <TrendingUp className="w-3 h-3 mr-1 opacity-70" />
                       साक्षरता दर
                     </p>

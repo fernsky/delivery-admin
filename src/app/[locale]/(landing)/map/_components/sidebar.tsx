@@ -135,9 +135,9 @@ const sampleData = [
 
 // Map of division IDs to Nepali names
 const divisionNames: Record<string, string> = {
-  municipalityBoundaries: "नगरपालिका सीमा",
+  municipalityBoundaries: "गाउँपालिका सीमा",
   health: "स्वास्थ्य केन्द्र",
-  municipalityOffices: "नगरपालिका कार्यालय",
+  municipalityOffices: "गाउँपालिका कार्यालय",
   physicalInfrastructures: "भौतिक पूर्वाधार",
   touristPlaces: "पर्यटकीय स्थल",
   wardBoundaries: "वडा सीमाना",

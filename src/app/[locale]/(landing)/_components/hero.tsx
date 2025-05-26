@@ -96,33 +96,36 @@ const Hero: React.FC<HeroProps> = ({
         </script>
       </Head>
 
-      {/* Background Container with SVG Landscape */}
+      {/* Background Container with SVG Pattern */}
       <div className="relative w-full h-screen overflow-hidden">
-        {/* SVG Landscape */}
+        {/* Pattern Background */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/khajura-hero.jpg"
-            alt="Khajura Hero"
+            src="/patterns/gov-pattern.svg"
+            alt="Background Pattern"
             fill
-            priority={false}
+            priority={true}
             className="object-cover"
           />
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/40 z-10"></div>
+          {/* Enhanced overlay with better contrast and gradients */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0b1f42]/90 via-[#123772]/80 to-[#1a4894]/70 z-10"></div>
+
+          {/* Additional subtle texture */}
+          <div className="absolute inset-0 bg-[url('/patterns/topography.svg')] opacity-5 mix-blend-overlay z-10"></div>
         </div>
 
         {/* Content Section */}
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 pt-16">
-          {/* Hero Content Container with glass effect */}
-          <motion.div 
-            className="w-full max-w-4xl mx-auto rounded-2xl p-8 "
+          {/* Hero Content Container with improved text readability */}
+          <motion.div
+            className="w-full max-w-4xl mx-auto rounded-2xl p-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            {/* Municipality Name */}
+            {/* Municipality Name with text shadow for better contrast */}
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-2 text-center text-white"
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-2 text-center text-white drop-shadow-md"
               itemProp="name"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -131,25 +134,27 @@ const Hero: React.FC<HeroProps> = ({
               {municipalityName}
             </motion.h1>
 
-            {/* Location - District and Province */}
-            <motion.p
-              className="text-base sm:text-lg leading-relaxed mb-6 text-gray-100 max-w-2xl mx-auto text-center"
+            {/* Location with subtle text shadow */}
+            <motion.div
+              className="text-base sm:text-lg leading-relaxed mb-6 text-gray-100 max-w-2xl mx-auto text-center drop-shadow-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               बाँके जिल्ला, लुम्बिनी प्रदेश
-            </motion.p>
+              <div className="text-sm block"> हामी आफैँ बनाउँ हाम्रो खजुरा, आत्मनिर्भर र समृद्ध खजुरा</div>
+            </motion.div>
+          
 
-            {/* Key Metrics Cards */}
+            {/* Key Metrics Cards with enhanced contrast */}
             <motion.div
               className="flex flex-wrap gap-4 items-center justify-center mb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              {/* Area Card */}
-              <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm text-emerald-700 border border-green-100 border-l-4 border-l-emerald-500">
+              {/* Area Card - improved with stronger background */}
+              <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md text-[#123772] border border-[#123772]/20 border-l-4 border-l-[#1a4894]">
                 <Mountain className="w-4 h-4" />
                 <span
                   className="text-sm font-medium"
@@ -165,7 +170,7 @@ const Hero: React.FC<HeroProps> = ({
               </div>
 
               {/* Ward Count Card */}
-              <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm text-emerald-700 border border-green-100 border-l-4 border-l-emerald-500">
+              <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md text-[#123772] border border-[#123772]/20 border-l-4 border-l-[#1a4894]">
                 <MapPin className="w-4 h-4" />
                 <span className="text-sm font-medium">
                   {localizeNumber(wardCount.toString(), "ne")} वडा
@@ -174,7 +179,7 @@ const Hero: React.FC<HeroProps> = ({
 
               {/* Population Card */}
               {demographicData?.totalPopulation && (
-                <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm text-emerald-700 border border-green-100 border-l-4 border-l-emerald-500">
+                <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md text-[#123772] border border-[#123772]/20 border-l-4 border-l-[#1a4894]">
                   <Users className="w-4 h-4" />
                   <span className="text-sm font-medium">
                     {localizeNumber(
@@ -188,7 +193,7 @@ const Hero: React.FC<HeroProps> = ({
 
               {/* Households Card */}
               {demographicData?.totalHouseholds && (
-                <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm text-emerald-700 border border-green-100 border-l-4 border-l-emerald-500">
+                <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md text-[#123772] border border-[#123772]/20 border-l-4 border-l-[#1a4894]">
                   <Home className="w-4 h-4" />
                   <span className="text-sm font-medium">
                     {localizeNumber(
@@ -201,21 +206,21 @@ const Hero: React.FC<HeroProps> = ({
               )}
             </motion.div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons with improved visibility */}
             <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              {/* Profile Button */}
+              {/* Profile Button - enhanced with deeper shadow */}
               <Link href={`/profile`}>
                 <motion.button
-                  className="group px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl shadow-lg flex items-center gap-2 relative overflow-hidden"
+                  className="group px-8 py-4 bg-gradient-to-r from-[#0b1f42] to-[#1a4894] text-white rounded-xl shadow-xl flex items-center gap-2 relative overflow-hidden"
                   whileHover={{
                     scale: 1.03,
                     boxShadow:
-                      "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+                      "0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2)",
                   }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -229,8 +234,8 @@ const Hero: React.FC<HeroProps> = ({
               {/* Map Button */}
               <Link href={`/profile`}>
                 <motion.button
-                  className="px-8 py-4 border-2 border-green-600 text-green-700 rounded-xl transition-all flex items-center gap-2 bg-white/90 backdrop-blur-sm hover:bg-white/100"
-                  whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
+                  className="px-8 py-4 border-2 border-white text-white rounded-xl transition-all flex items-center gap-2 bg-white/20 backdrop-blur-sm hover:bg-white/30"
+                  whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.3)" }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
