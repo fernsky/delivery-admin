@@ -71,7 +71,7 @@ export async function generateMetadata(props: {
         "Nepal",
         "Government",
         "Citizen Portal",
-        "नागरिक पोर्टल",
+        "नागरिक प्रोफाइल",
         "डिजिटल प्रोफाइल",
         "नेपाल",
         "सरकार",

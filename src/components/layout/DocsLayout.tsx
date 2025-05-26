@@ -39,7 +39,7 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
   // Extract current section for breadcrumbs
   const getPageTitle = () => {
     const segments = pathname.split("/").filter(Boolean);
-    if (segments.length <= 1) return "तथ्याङ्क पोर्टल";
+    if (segments.length <= 1) return "तथ्याङ्क प्रोफाइल";
 
     const section = segments[segments.length - 1]
       .replace(/-/g, " ")

@@ -62,7 +62,7 @@ export function PageHeader({
       <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-1.5">
           <FileText className="h-4 w-4" />
-          <span>तथ्याङ्क पोर्टल</span>
+          <span>तथ्याङ्क प्रोफाइल</span>
         </div>
 
         <div className="flex items-center gap-1.5">
