@@ -13,13 +13,13 @@ BEGIN
 END
 $$;
 
--- Check if ward_wise_religion_population table exists, if not create it
+-- Check if acme_ward_wise_religion_population table exists, if not create it
 DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM pg_tables WHERE tablename = 'ward_wise_religion_population'
+        SELECT 1 FROM pg_tables WHERE tablename = 'acme_ward_wise_religion_population'
     ) THEN
-        CREATE TABLE ward_wise_religion_population (
+        CREATE TABLE acme_ward_wise_religion_population (
             id VARCHAR(36) PRIMARY KEY,
             ward_number INTEGER NOT NULL,
             religion_type religion_type_enum NOT NULL,
@@ -34,9 +34,9 @@ $$;
 -- Insert data only if table is empty
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM ward_wise_religion_population) THEN
+    IF NOT EXISTS (SELECT 1 FROM acme_ward_wise_religion_population) THEN
         -- Ward 1
-        INSERT INTO ward_wise_religion_population 
+        INSERT INTO acme_ward_wise_religion_population 
         (id, ward_number, religion_type, population, updated_at, created_at)
         VALUES 
         (gen_random_uuid(), 1, 'BUDDHIST', 48, NOW(), NOW()),
