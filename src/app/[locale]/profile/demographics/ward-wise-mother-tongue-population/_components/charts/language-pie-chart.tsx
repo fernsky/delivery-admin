@@ -64,7 +64,6 @@ export default function LanguagePieChart({
           cx="50%"
           cy="50%"
           labelLine={true}
-          label={({ name, payload }) => `${name}: ${localizeNumber(payload.percentage, "ne")}%`}
           outerRadius={140}
           fill="#8884d8"
           dataKey="value"

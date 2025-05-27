@@ -45,7 +45,7 @@ export default function LanguageBarChart({
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="font-medium">{label}</p>
+          <p className="font-medium">{localizeNumber(label, "ne")}</p>
           <div className="space-y-1 mt-2">
             {payload.map((entry: any, index: number) => (
               <div key={index} className="flex items-center gap-2">
@@ -79,6 +79,7 @@ export default function LanguageBarChart({
           scale="point"
           padding={{ left: 10, right: 10 }}
           tick={{ fontSize: 12 }}
+          tickFormatter={(value) => localizeNumber(value.toString(), "ne")}
         />
         <YAxis tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
         <Tooltip content={CustomTooltip} />
