@@ -3,27 +3,26 @@
 import { useState } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
 import AgeDistributionBarChart from "./charts/age-distribution-bar-chart";
 import AgeCategoryPieChart from "./charts/age-category-pie-chart";
 import GenderDistributionPieChart from "./charts/gender-distribution-pie-chart";
 import PopulationPyramidChart from "./charts/population-pyramid-chart";
 import WardAgeBarChart from "./charts/ward-age-bar-chart";
 import WardDetailedAgePieCharts from "./charts/ward-detailed-age-pie-charts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
-// Define colors for age groups and gender
+// Define colors for age groups and gender with improved aesthetics
 const GENDER_COLORS = {
-  MALE: "#36A2EB",
-  FEMALE: "#FF6384",
-  OTHER: "#FFCE56",
+  MALE: "#6366F1", // Indigo
+  FEMALE: "#EC4899", // Pink
+  OTHER: "#F59E0B", // Amber
 };
 
 const AGE_CATEGORY_COLORS = {
-  "बाल (०-१४)": "#4BC0C0",
-  "युवा (१५-२९)": "#FF9F40",
-  "वयस्क (३०-५९)": "#9966FF",
-  "वृद्ध (६० माथि)": "#FF6384",
+  "बाल (०-१४)": "#6366F1", // Indigo
+  "युवा (१५-२९)": "#10B981", // Emerald
+  "वयस्क (३०-५९)": "#8B5CF6", // Purple
+  "वृद्ध (६० माथि)": "#F59E0B", // Amber
 };
 
 interface AgeWiseChartsProps {
@@ -95,7 +94,7 @@ export default function AgeWiseCharts({
             उमेर समूह अनुसार जनसंख्या वितरण
           </h3>
           <p className="text-sm text-muted-foreground">
-            कुल जनसंख्या: {totalPopulation.toLocaleString()} व्यक्ति
+            कुल जनसंख्या: {localizeNumber(totalPopulation.toLocaleString(), "ne")} व्यक्ति
           </p>
         </div>
 
@@ -189,52 +188,55 @@ export default function AgeWiseCharts({
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
                       <td className="border p-2">{item.ageGroupName}</td>
                       <td className="border p-2 text-right">
-                        {item.male.toLocaleString()}
+                        {localizeNumber(item.male.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {item.female.toLocaleString()}
+                        {localizeNumber(item.female.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {item.other.toLocaleString()}
+                        {localizeNumber(item.other.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {item.total.toLocaleString()}
+                        {localizeNumber(item.total.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {((item.total / totalPopulation) * 100).toFixed(2)}%
+                        {localizeNumber(((item.total / totalPopulation) * 100).toFixed(2), "ne")}%
                       </td>
                     </tr>
                   ))}
                   <tr className="font-semibold bg-muted/70">
                     <td className="border p-2">जम्मा</td>
                     <td className="border p-2 text-right">
-                      {overallSummaryByAge
-                        .reduce((sum, item) => sum + item.male, 0)
-                        .toLocaleString()}
+                      {localizeNumber(
+                        overallSummaryByAge
+                          .reduce((sum, item) => sum + item.male, 0)
+                          .toLocaleString(),
+                        "ne"
+                      )}
                     </td>
                     <td className="border p-2 text-right">
-                      {overallSummaryByAge
-                        .reduce((sum, item) => sum + item.female, 0)
-                        .toLocaleString()}
+                      {localizeNumber(
+                        overallSummaryByAge
+                          .reduce((sum, item) => sum + item.female, 0)
+                          .toLocaleString(),
+                        "ne"
+                      )}
                     </td>
                     <td className="border p-2 text-right">
-                      {overallSummaryByAge
-                        .reduce((sum, item) => sum + item.other, 0)
-                        .toLocaleString()}
+                      {localizeNumber(
+                        overallSummaryByAge
+                          .reduce((sum, item) => sum + item.other, 0)
+                          .toLocaleString(),
+                        "ne"
+                      )}
                     </td>
                     <td className="border p-2 text-right">
-                      {totalPopulation.toLocaleString()}
+                      {localizeNumber(totalPopulation.toLocaleString(), "ne")}
                     </td>
-                    <td className="border p-2 text-right">100.00%</td>
+                    <td className="border p-2 text-right">{localizeNumber("100.00", "ne")}%</td>
                   </tr>
                 </tbody>
               </table>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Excel डाउनलोड
-              </Button>
             </div>
           </TabsContent>
         </Tabs>
@@ -357,38 +359,32 @@ export default function AgeWiseCharts({
 
                     return (
                       <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                        <td className="border p-2">वडा {wardNumber}</td>
+                        <td className="border p-2">वडा {localizeNumber(wardNumber.toString(), "ne")}</td>
                         <td className="border p-2">बाल जनसंख्या</td>
                         <td className="border p-2 text-right">
-                          {childPopulation.toLocaleString()}
+                          {localizeNumber(childPopulation.toLocaleString(), "ne")}
                         </td>
                         <td className="border p-2 text-right">
                           {wardTotal > 0
-                            ? ((childPopulation / wardTotal) * 100).toFixed(2) +
+                            ? localizeNumber(((childPopulation / wardTotal) * 100).toFixed(2), "ne") +
                               "%"
-                            : "0%"}
+                            : localizeNumber("0", "ne") + "%"}
                         </td>
                         <td className="border p-2">युवा जनसंख्या</td>
                         <td className="border p-2 text-right">
-                          {youthPopulation.toLocaleString()}
+                          {localizeNumber(youthPopulation.toLocaleString(), "ne")}
                         </td>
                         <td className="border p-2 text-right">
                           {wardTotal > 0
-                            ? ((youthPopulation / wardTotal) * 100).toFixed(2) +
+                            ? localizeNumber(((youthPopulation / wardTotal) * 100).toFixed(2), "ne") +
                               "%"
-                            : "0%"}
+                            : localizeNumber("0", "ne") + "%"}
                         </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Excel डाउनलोड
-              </Button>
             </div>
           </TabsContent>
 

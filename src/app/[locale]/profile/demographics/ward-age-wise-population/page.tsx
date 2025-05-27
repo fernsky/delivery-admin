@@ -6,6 +6,7 @@ import Image from "next/image";
 import AgeWiseCharts from "./_components/age-wise-charts";
 import AgeAnalysisSection from "./_components/age-analysis-section";
 import AgeSEO from "./_components/age-seo";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export const dynamic = "force-dynamic";
 // Define the locales for which this page should be statically generated
 export async function generateStaticParams() {
   // Generate the page for 'en' and 'ne' locales
-  return [{ locale: "en" }];
+  return [{ locale: "en" }, { locale: "ne" }];
 }
 
 // Optional: Add revalidation period if you want to update the static pages periodically
@@ -65,13 +66,13 @@ export async function generateMetadata(): Promise<Metadata> {
     const keywordsNP = [
       "खजुरा गाउँपालिका उमेर जनसंख्या",
       "खजुरा उमेरगत विविधता",
-      `खजुरा बाल जनसंख्या ${childrenPct}%`,
-      `खजुरा युवा जनसंख्या ${youthPct}%`,
+      `खजुरा बाल जनसंख्या ${localizeNumber(childrenPct, "ne")}%`,
+      `खजुरा युवा जनसंख्या ${localizeNumber(youthPct, "ne")}%`,
       "वडा अनुसार उमेर वितरण",
       "जनसांख्यिकीय पिरामिड",
       "जनसांख्यिक लाभांश",
       "निर्भरता अनुपात",
-      `खजुरा कुल जनसंख्या ${totalPopulation}`,
+      `खजुरा कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")}`,
     ];
 
     const keywordsEN = [
@@ -87,12 +88,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ];
 
     // Create detailed description with actual data
-    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार उमेर समूहको जनसंख्या वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${totalPopulation} मध्ये बाल जनसंख्या ${childrenPct}%, युवा जनसंख्या ${youthPct}% रहेको छ। उमेर समूह अनुसार विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
+    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार उमेर समूहको जनसंख्या वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")} मध्ये बाल जनसंख्या ${localizeNumber(childrenPct, "ne")}%, युवा जनसंख्या ${localizeNumber(youthPct, "ne")}% रहेको छ। उमेर समूह अनुसार विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
 
     const descriptionEN = `Ward-wise age group population distribution, trends and analysis for Khajura Rural Municipality. Out of a total population of ${totalPopulation}, children make up ${childrenPct}% and youth make up ${youthPct}%. Detailed statistics and visualizations of various age groups.`;
 
     return {
-      title: `उमेर अनुसार जनसंख्या | ${municipalityName} पालिका प्रोफाइल`,
+      title: `उमेर अनुसार जनसंख्या | खजुरा गाउँपालिका | डिजिटल प्रोफाइल`,
       description: descriptionNP,
       keywords: [...keywordsNP, ...keywordsEN],
       alternates: {
@@ -103,23 +104,23 @@ export async function generateMetadata(): Promise<Metadata> {
         },
       },
       openGraph: {
-        title: `उमेर अनुसार जनसंख्या | ${municipalityName}`,
+        title: `उमेर अनुसार जनसंख्या | खजुरा गाउँपालिका`,
         description: descriptionNP,
         type: "article",
         locale: "ne_NP",
         alternateLocale: "en_US",
-        siteName: `${municipalityName} डिजिटल प्रोफाइल`,
+        siteName: `खजुरा गाउँपालिका डिजिटल प्रोफाइल`,
       },
       twitter: {
         card: "summary_large_image",
-        title: `उमेर अनुसार जनसंख्या | ${municipalityName}`,
+        title: `उमेर अनुसार जनसंख्या | खजुरा गाउँपालिका`,
         description: descriptionNP,
       },
     };
   } catch (error) {
     // Fallback metadata if data fetching fails
     return {
-      title: "उमेर अनुसार जनसंख्या | पालिका प्रोफाइल",
+      title: "उमेर अनुसार जनसंख्या | खजुरा गाउँपालिका | डिजिटल प्रोफाइल",
       description:
         "वडा अनुसार उमेर समूहको जनसंख्या वितरण, प्रवृत्ति र विश्लेषण। विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
     };
@@ -132,7 +133,6 @@ const toc = [
   { level: 2, text: "जनसांख्यिकीय पिरामिड", slug: "demographic-pyramid" },
   { level: 2, text: "वडा अनुसार उमेर वितरण", slug: "ward-wise-age" },
   { level: 2, text: "जनसांख्यिकीय विश्लेषण", slug: "demographic-analysis" },
-  { level: 2, text: "तथ्याङ्क स्रोत", slug: "data-source" },
 ];
 
 // Define Nepali names for age groups
@@ -309,7 +309,7 @@ export default async function WardAgeWisePopulationPage() {
       .reduce((sum, item) => sum + item.population, 0);
 
     return {
-      ward: `वडा ${wardNumber}`,
+      ward: `वडा ${localizeNumber(wardNumber.toString(), "ne")}`,
       "बाल (०-१४)": childrenCount,
       "युवा (१५-२९)": youthCount,
       "वयस्क (३०-५९)": adultCount,
@@ -445,7 +445,7 @@ export default async function WardAgeWisePopulationPage() {
               गर्न सहयोग गर्दछ।
             </p>
             <p>
-              यो तथ्याङ्कले पालिकाको जनसांख्यिकीय लाभांश, निर्भरता अनुपात र
+              यो तथ्याङ्कले खजुरा गाउँपालिकाको जनसांख्यिकीय लाभांश, निर्भरता अनुपात र
               भविष्यको जनसंख्या वृद्धिको प्रक्षेपण गर्न महत्त्वपूर्ण आधार प्रदान
               गर्दछ। विभिन्न उमेर समूहको आवश्यकता अनुसार विकास योजना तर्जुमा
               गर्न यस तथ्याङ्कको विश्लेषण अत्यन्त महत्त्वपूर्ण हुन्छ।
@@ -475,23 +475,23 @@ export default async function WardAgeWisePopulationPage() {
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
                       <td className="border p-2">{item.ageGroupName}</td>
                       <td className="border p-2 text-right">
-                        {item.total.toLocaleString()}
+                        {localizeNumber(item.total.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {((item.total / totalPopulation) * 100).toFixed(2)}%
+                        {localizeNumber(((item.total / totalPopulation) * 100).toFixed(2), "ne")}%
                       </td>
                       <td className="border p-2 text-right">
-                        {item.male.toLocaleString()}
+                        {localizeNumber(item.male.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {item.female.toLocaleString()}
+                        {localizeNumber(item.female.toLocaleString(), "ne")}
                       </td>
                     </tr>
                   ))}
                   <tr className="font-semibold">
                     <td className="border p-2" colSpan={5}>
                       ... अन्य उमेर समूहहरू समेत गरेर कुल जनसंख्या{" "}
-                      {totalPopulation.toLocaleString()} रहेको छ
+                      {localizeNumber(totalPopulation.toLocaleString(), "ne")} रहेको छ
                     </td>
                   </tr>
                 </tbody>
@@ -504,44 +504,44 @@ export default async function WardAgeWisePopulationPage() {
                 <div className="text-xs uppercase text-muted-foreground mb-1">
                   बाल जनसंख्या (०-१४)
                 </div>
-                <div className="text-2xl font-bold text-primary">
-                  {demographicIndicators.childrenPercentage.toFixed(1)}%
+                <div className="text-2xl font-bold text-indigo-500">
+                  {localizeNumber(demographicIndicators.childrenPercentage.toFixed(1), "ne")}%
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  ({childrenPopulation.toLocaleString()} व्यक्ति)
+                  ({localizeNumber(childrenPopulation.toLocaleString(), "ne")} व्यक्ति)
                 </div>
               </div>
               <div className="bg-muted/50 p-4 rounded-lg text-center">
                 <div className="text-xs uppercase text-muted-foreground mb-1">
                   युवा जनसंख्या (१५-२९)
                 </div>
-                <div className="text-2xl font-bold text-green-500">
-                  {demographicIndicators.youthPercentage.toFixed(1)}%
+                <div className="text-2xl font-bold text-emerald-500">
+                  {localizeNumber(demographicIndicators.youthPercentage.toFixed(1), "ne")}%
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  ({youthPopulation.toLocaleString()} व्यक्ति)
+                  ({localizeNumber(youthPopulation.toLocaleString(), "ne")} व्यक्ति)
                 </div>
               </div>
               <div className="bg-muted/50 p-4 rounded-lg text-center">
                 <div className="text-xs uppercase text-muted-foreground mb-1">
                   वयस्क जनसंख्या (३०-५९)
                 </div>
-                <div className="text-2xl font-bold text-blue-500">
-                  {demographicIndicators.adultPercentage.toFixed(1)}%
+                <div className="text-2xl font-bold text-violet-500">
+                  {localizeNumber(demographicIndicators.adultPercentage.toFixed(1), "ne")}%
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  ({adultPopulation.toLocaleString()} व्यक्ति)
+                  ({localizeNumber(adultPopulation.toLocaleString(), "ne")} व्यक्ति)
                 </div>
               </div>
               <div className="bg-muted/50 p-4 rounded-lg text-center">
                 <div className="text-xs uppercase text-muted-foreground mb-1">
                   वृद्ध जनसंख्या (६० माथि)
                 </div>
-                <div className="text-2xl font-bold text-orange-500">
-                  {demographicIndicators.elderlyPercentage.toFixed(1)}%
+                <div className="text-2xl font-bold text-amber-500">
+                  {localizeNumber(demographicIndicators.elderlyPercentage.toFixed(1), "ne")}%
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  ({elderlyPopulation.toLocaleString()} व्यक्ति)
+                  ({localizeNumber(elderlyPopulation.toLocaleString(), "ne")} व्यक्ति)
                 </div>
               </div>
             </div>
@@ -577,26 +577,6 @@ export default async function WardAgeWisePopulationPage() {
               AGE_GROUP_NAMES={AGE_GROUP_NAMES}
               AGE_CATEGORIES={AGE_CATEGORIES}
             />
-
-            <h2 id="data-source" className="scroll-m-20 border-b pb-2">
-              तथ्याङ्क स्रोत
-            </h2>
-            <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू नेपालको राष्ट्रिय जनगणना र
-              खजुरा गाउँपालिकाको आफ्नै सर्वेक्षणबाट संकलन गरिएको हो। यी तथ्याङ्कहरूको
-              महत्व निम्न अनुसार छ:
-            </p>
-
-            <ul>
-              <li>विभिन्न उमेर समूहका लागि लक्षित कार्यक्रमहरू बनाउन</li>
-              <li>
-                विद्यालय, स्वास्थ्य संस्थाहरू र सामाजिक सुरक्षाको योजना बनाउन
-              </li>
-              <li>जनसांख्यिकीय लाभांश उपयोग गर्ने रणनीतिहरू विकास गर्न</li>
-              <li>
-                वृद्ध जनसंख्याको बढ्दो अनुपातलाई ध्यानमा राखेर नीति निर्माण गर्न
-              </li>
-            </ul>
           </div>
         </section>
       </div>

@@ -126,39 +126,7 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
         </div>
       </div>
 
-      <footer className="border-t py-6 bg-gradient-to-b from-white to-[#123772]/5 mt-auto">
-        <div className="container px-4 sm:px-6 max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-between py-4 md:h-16">
-            <p className="text-sm text-[#123772]/70">
-              &copy; {new Date().getFullYear()} खजुरा गाउँपालिका। सर्वाधिकार
-              सुरक्षित。
-            </p>
-            <div className="flex items-center space-x-4 mt-4 sm:mt-0">
-              <Link
-                href="/about"
-                className="text-sm flex items-center gap-1 text-[#123772]/70 hover:text-[#123772] transition-colors"
-              >
-                <Info className="w-3.5 h-3.5" />
-                हाम्रो बारेमा
-              </Link>
-              <Link
-                href="/contact"
-                className="text-sm flex items-center gap-1 text-[#123772]/70 hover:text-[#123772] transition-colors"
-              >
-                <Phone className="w-3.5 h-3.5" />
-                सम्पर्क
-              </Link>
-              <Link
-                href="/feedback"
-                className="text-sm flex items-center gap-1 text-[#123772]/70 hover:text-[#123772] transition-colors"
-              >
-                <Send className="w-3.5 h-3.5" />
-                सुझाव
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 }
