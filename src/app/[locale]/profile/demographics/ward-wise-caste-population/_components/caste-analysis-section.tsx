@@ -331,39 +331,7 @@ export default function CasteAnalysisSection({
         </div>
       </div>
 
-      <div className="mt-6 bg-card p-4 rounded-lg border">
-        <h3 className="text-xl font-medium mb-4">
-          प्रमुख जातिगत समूह
-          <span className="sr-only">Main Caste Groups</span>
-        </h3>
-        <div className="space-y-4">
-          {broadCategoryData.map((category, index) => (
-            <div
-              key={index}
-              data-category-name={category.category}
-              data-category-population={category.population}
-              data-category-percentage={category.percentage}
-            >
-              <div className="flex justify-between">
-                <span className="font-medium">{category.category}</span>
-                <span>{localizeNumber(category.percentage, "ne")}%</span>
-              </div>
-              <div className="w-full bg-muted h-3 rounded-full mt-1 overflow-hidden">
-                <div
-                  className="h-full rounded-full"
-                  style={{
-                    width: `${category.percentage}%`,
-                    backgroundColor: `hsl(${index * 60}, 70%, 60%)`,
-                  }}
-                ></div>
-              </div>
-              <p className="text-sm text-muted-foreground mt-1">
-                {localizeNumber(category.population.toLocaleString(), "ne")} व्यक्ति
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+      
     </>
   );
 }

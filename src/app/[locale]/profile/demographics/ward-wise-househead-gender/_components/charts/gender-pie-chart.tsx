@@ -32,7 +32,7 @@ export default function GenderPieChart({
           cx="50%"
           cy="50%"
           labelLine={true}
-          label={({ name, percentage }) => `${name}: ${percentage}%`}
+         
           outerRadius={140}
           fill="#8884d8"
           dataKey="value"

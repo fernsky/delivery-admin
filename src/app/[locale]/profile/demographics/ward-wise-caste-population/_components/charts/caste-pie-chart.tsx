@@ -15,6 +15,7 @@ interface CastePieChartProps {
     name: string;
     value: number;
     percentage: string;
+    casteType?: string; // Optional, might be present for direct casteType reference
   }>;
   CASTE_NAMES: Record<string, string>;
   CASTE_COLORS: Record<string, string>;
@@ -51,46 +52,41 @@ export default function CastePieChart({
     return null;
   };
 
-  // Custom label with Nepali numbers for percentages
-  const renderCustomizedLabel = ({ name, payload }: any) => {
-    return `${name}: ${localizeNumber(payload.percentage, "ne")}%`;
+  // Helper function to get consistent color for a caste
+  const getCasteColor = (casteName: string): string => {
+    // First try to find by looking up in reverse casteType
+    const casteKey = Object.keys(CASTE_NAMES).find(
+      (key) => CASTE_NAMES[key] === casteName,
+    );
+
+    if (casteKey && CASTE_COLORS[casteKey]) {
+      return CASTE_COLORS[casteKey];
+    }
+
+    // If the entry already has a casteType, use it directly
+    const entry = pieChartData.find((item) => item.name === casteName);
+    if (entry?.casteType && CASTE_COLORS[entry.casteType]) {
+      return CASTE_COLORS[entry.casteType];
+    }
+
+    // Fallback to OTHER or random color
+    return CASTE_COLORS.OTHER || "#64748B";
   };
+
+  // Enhance pieChartData with colors
+  const enhancedPieData = pieChartData.map((item) => ({
+    ...item,
+    color: getCasteColor(item.name),
+  }));
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <PieChart>
         <Pie
-          data={pieChartData}
+          data={enhancedPieData}
           cx="50%"
           cy="50%"
           labelLine={true}
-          label={renderCustomizedLabel}
           outerRadius={140}
           fill="#8884d8"
           dataKey="value"
-        >
-          {pieChartData.map((entry, index) => {
-            // Find the original caste key for color mapping
-            const casteKey =
-              Object.keys(CASTE_NAMES).find(
-                (key) => CASTE_NAMES[key] === entry.name,
-              ) || "OTHER";
-
-            return (
-              <Cell
-                key={`cell-${index}`}
-                fill={
-                  CASTE_COLORS[
-                    casteKey as keyof typeof CASTE_COLORS
-                  ] || `#${Math.floor(Math.random() * 16777215).toString(16)}`
-                }
-              />
-            );
-          })}
-        </Pie>
-        <Tooltip content={CustomTooltip} />
-        <Legend formatter={(value) => value} />
-      </PieChart>
-    </ResponsiveContainer>
-  );
-}

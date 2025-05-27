@@ -395,7 +395,7 @@ export default async function WardWiseCastePopulationPage() {
               सबैभन्दा धेरै व्यक्तिहरू भएको जाति हो, जसमा कुल जनसंख्याको{" "}
               {localizeNumber(
                 (((overallSummary[0]?.population || 0) / totalPopulation) *
-                100), "ne"
+                100).toFixed(2), "ne"
                
               )}
               % जनसंख्या रहेको छ।
