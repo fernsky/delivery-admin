@@ -13,22 +13,6 @@ import {
 } from "recharts";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
-// Modern aesthetic color palette for castes
-const CASTE_COLOR_PALETTE = [
-  "#6366F1", // Indigo
-  "#8B5CF6", // Purple
-  "#EC4899", // Pink
-  "#F43F5E", // Rose
-  "#10B981", // Emerald
-  "#06B6D4", // Cyan
-  "#3B82F6", // Blue
-  "#F59E0B", // Amber
-  "#84CC16", // Lime
-  "#9333EA", // Fuchsia
-  "#14B8A6", // Teal
-  "#EF4444", // Red
-];
-
 interface CasteBarChartProps {
   wardWiseData: Array<Record<string, any>>;
   CASTE_COLORS: Record<string, string>;
@@ -40,31 +24,94 @@ export default function CasteBarChart({
   CASTE_COLORS,
   CASTE_NAMES,
 }: CasteBarChartProps) {
-  // Custom tooltip component for better presentation with Nepali numbers
+  // Helper function to get proper display name for caste type
+  const getCasteDisplayName = (casteType: string): string => {
+    if (CASTE_NAMES[casteType]) {
+      return CASTE_NAMES[casteType];
+    }
+    return casteType === "OTHER" ? "अन्य" : casteType;
+  };
+
+  // Custom tooltip component with Nepali display names
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
           <p className="font-medium">{label}</p>
           <div className="space-y-1 mt-2">
-            {payload.map((entry: any, index: number) => (
-              <div key={index} className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: entry.color }}
-                ></div>
-                <span>{entry.name}: </span>
-                <span className="font-medium">
-                  {localizeNumber(entry.value?.toLocaleString() || "0", "ne")}
-                </span>
-              </div>
-            ))}
+            {payload.map((entry: any, index: number) => {
+              // Get proper display name for the caste
+              const displayName = getCasteDisplayName(entry.dataKey);
+
+              return (
+                <div key={index} className="flex items-center gap-2">
+                  <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: entry.color }}
+                  ></div>
+                  <span>{displayName}: </span>
+                  <span className="font-medium">
+                    {localizeNumber(entry.value?.toLocaleString() || "0", "ne")}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       );
     }
     return null;
   };
+
+  // Helper function to get consistent color for a caste
+  const getCasteColor = (casteName: string): string => {
+    // First try to find the caste key by looking up the display name in CASTE_NAMES
+    const casteKey = Object.entries(CASTE_NAMES).find(
+      ([key, value]) => value === casteName,
+    )?.[0];
+
+    // If found and there's a matching color, use it
+    if (casteKey && CASTE_COLORS[casteKey]) {
+      return CASTE_COLORS[casteKey];
+    }
+
+    // Otherwise, try direct lookup in CASTE_COLORS for casteType keys
+    if (CASTE_COLORS[casteName]) {
+      return CASTE_COLORS[casteName];
+    }
+
+    // Fall back to a default color
+    return CASTE_COLORS.OTHER || "#64748B";
+  };
+
+  // Create a color mapping for all caste names in the data
+  const casteColorMap: Record<string, string> = {};
+
+  // Create a mapping for display names
+  const casteDisplayMap: Record<string, string> = {};
+
+  // Populate both maps
+  wardWiseData.forEach((ward) => {
+    Object.keys(ward).forEach((key) => {
+      if (key !== "ward" && !casteColorMap[key]) {
+        casteColorMap[key] = getCasteColor(key);
+        casteDisplayMap[key] = getCasteDisplayName(key);
+      }
+    });
+  });
+
+  // Get unique caste names across all wards (excluding 'ward')
+  const uniqueCasteNames = Object.keys(
+    wardWiseData.reduce(
+      (acc, ward) => {
+        Object.keys(ward).forEach((key) => {
+          if (key !== "ward") acc[key] = true;
+        });
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    ),
+  );
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -87,50 +134,31 @@ export default function CasteBarChart({
           layout="horizontal"
           verticalAlign="bottom"
           align="center"
+          formatter={(value, entry) => {
+            // Return proper display name for legend items
+            const dataKey = entry?.dataKey?.toString();
+            return casteDisplayMap[dataKey as string] || value;
+          }}
         />
 
-        {/* Dynamically generate bars based on available castes in wardWiseData */}
-        {Object.keys(
-          wardWiseData.reduce(
-            (acc, ward) => {
-              Object.keys(ward).forEach((key) => {
-                if (key !== "ward") acc[key] = true;
-              });
-              return acc;
-            },
-            {} as Record<string, boolean>,
-          ),
-        ).map((casteName, index) => {
-          // Find the caste key for color mapping
-          const casteKey =
-            Object.keys(CASTE_NAMES).find(
-              (key) => CASTE_NAMES[key] === casteName,
-            ) || "OTHER";
-
-          return (
-            <Bar
-              key={casteName}
-              dataKey={casteName}
-              stackId="a"
-              name={casteName}
-              fill={
-                CASTE_COLORS[casteKey as keyof typeof CASTE_COLORS] ||
-                CASTE_COLOR_PALETTE[index % CASTE_COLOR_PALETTE.length]
-              }
-            >
-              {wardWiseData.map((entry, entryIndex) => (
-                <Cell
-                  key={`cell-${entryIndex}`}
-                  fill={
-                    CASTE_COLORS[casteKey as keyof typeof CASTE_COLORS] ||
-                    CASTE_COLOR_PALETTE[index % CASTE_COLOR_PALETTE.length]
-                  }
-                  fillOpacity={0.8 + (0.2 * index) / Object.keys(CASTE_NAMES).length}
-                />
-              ))}
-            </Bar>
-          );
-        })}
+        {/* Create bars for each caste type with consistent colors and proper names */}
+        {uniqueCasteNames.map((casteName) => (
+          <Bar
+            key={casteName}
+            dataKey={casteName}
+            stackId="a"
+            name={casteDisplayMap[casteName]}
+            fill={casteColorMap[casteName]}
+          >
+            {/* Apply consistent colors across all ward instances of this caste */}
+            {wardWiseData.map((_, index) => (
+              <Cell
+                key={`cell-${casteName}-${index}`}
+                fill={casteColorMap[casteName]}
+              />
+            ))}
+          </Bar>
+        ))}
       </BarChart>
     </ResponsiveContainer>
   );

@@ -51,6 +51,7 @@ export default function CasteSEO({
       MARWADI: "Marwadi",
       BANGALI: "Bengali",
       OTHER: "Other",
+      KAMI: "Kami"
     };
 
     // Get top 3 castes for description

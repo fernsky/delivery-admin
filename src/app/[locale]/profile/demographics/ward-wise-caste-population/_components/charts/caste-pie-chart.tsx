@@ -90,3 +90,23 @@ export default function CastePieChart({
           outerRadius={140}
           fill="#8884d8"
           dataKey="value"
+        >
+          {enhancedPieData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.color} />
+          ))}
+        </Pie>
+        <Tooltip content={CustomTooltip} />
+        <Legend
+          formatter={(value) => value}
+          payload={
+            enhancedPieData.map((item) => ({
+              value: item.name,
+              type: "circle",
+              color: item.color,
+            }))
+          }
+        />
+      </PieChart>
+    </ResponsiveContainer>
+  );
+}

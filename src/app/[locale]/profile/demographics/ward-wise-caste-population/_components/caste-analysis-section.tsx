@@ -30,6 +30,7 @@ export default function CasteAnalysisSection({
     BANIYA: "#F59E0B", // Amber
     NEWAR: "#84CC16", // Lime
     GURUNG: "#9333EA", // Fuchsia
+    KAMI: "#14B8A6", // Teal
     MAGAR: "#14B8A6", // Teal
     TAMANG: "#EF4444", // Red
     RAI: "#22D3EE", // Sky

@@ -21,6 +21,8 @@ const CASTE_COLORS = {
   BANIYA: "#F59E0B", // Amber
   NEWAR: "#84CC16", // Lime
   GURUNG: "#9333EA", // Fuchsia
+  KAMI: "#14B8A6", // Teal
+  DAMAI: "#EF4444", // Red
   MAGAR: "#14B8A6", // Teal
   TAMANG: "#0EA5E9", // Sky
   RAI: "#EF4444", // Red
@@ -76,7 +78,7 @@ export default function CasteCharts({
   CASTE_NAMES,
 }: CasteChartsProps) {
   const [selectedTab, setSelectedTab] = useState<string>("pie");
-
+  console.log(casteData)
   return (
     <>
       {/* Overall caste distribution */}
@@ -343,7 +345,7 @@ export default function CasteCharts({
                   </tr>
                 </thead>
                 <tbody>
-                  {wardNumbers.map((wardNumber, i) => {
+                    {wardNumbers.map((wardNumber, i) => {
                     const wardItems = casteData.filter(
                       (item) => item.wardNumber === wardNumber
                     );
@@ -361,46 +363,46 @@ export default function CasteCharts({
 
                     return (
                       <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                        <td className="border p-2">
-                          वडा {localizeNumber(wardNumber, "ne")}
-                        </td>
-                        <td className="border p-2">
-                          {primaryCaste ? primaryCaste.casteTypeDisplay : "-"}
-                        </td>
-                        <td className="border p-2 text-right">
-                          {primaryCaste?.population
-                            ? localizeNumber(primaryCaste.population.toLocaleString(), "ne")
-                            : "०"}
-                        </td>
-                        <td className="border p-2 text-right">
-                          {wardTotal > 0 && primaryCaste?.population
-                            ? localizeNumber(
-                                ((primaryCaste.population / wardTotal) * 100).toFixed(2),
-                                "ne"
-                              ) + "%"
-                            : "०%"}
-                        </td>
-                        <td className="border p-2">
-                          {secondaryCaste
-                            ? secondaryCaste.casteTypeDisplay
-                            : "-"}
-                        </td>
-                        <td className="border p-2 text-right">
-                          {secondaryCaste?.population
-                            ? localizeNumber(secondaryCaste.population.toLocaleString(), "ne")
-                            : "०"}
-                        </td>
-                        <td className="border p-2 text-right">
-                          {wardTotal > 0 && secondaryCaste?.population
-                            ? localizeNumber(
-                                ((secondaryCaste.population / wardTotal) * 100).toFixed(2),
-                                "ne"
-                              ) + "%"
-                            : "०%"}
-                        </td>
+                      <td className="border p-2">
+                        वडा {localizeNumber(wardNumber, "ne")}
+                      </td>
+                      <td className="border p-2">
+                        {primaryCaste ? CASTE_NAMES[primaryCaste.casteType] || primaryCaste.casteTypeDisplay : "-"}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {primaryCaste?.population
+                        ? localizeNumber(primaryCaste.population.toLocaleString(), "ne")
+                        : "०"}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {wardTotal > 0 && primaryCaste?.population
+                        ? localizeNumber(
+                          ((primaryCaste.population / wardTotal) * 100).toFixed(2),
+                          "ne"
+                          ) + "%"
+                        : "०%"}
+                      </td>
+                      <td className="border p-2">
+                        {secondaryCaste
+                        ? CASTE_NAMES[secondaryCaste.casteType] || secondaryCaste.casteTypeDisplay
+                        : "-"}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {secondaryCaste?.population
+                        ? localizeNumber(secondaryCaste.population.toLocaleString(), "ne")
+                        : "०"}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {wardTotal > 0 && secondaryCaste?.population
+                        ? localizeNumber(
+                          ((secondaryCaste.population / wardTotal) * 100).toFixed(2),
+                          "ne"
+                          ) + "%"
+                        : "०%"}
+                      </td>
                       </tr>
                     );
-                  })}
+                    })}
                 </tbody>
               </table>
             </div>

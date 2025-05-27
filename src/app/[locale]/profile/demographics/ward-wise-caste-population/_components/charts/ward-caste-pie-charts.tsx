@@ -52,6 +52,19 @@ export default function WardCastePieCharts({
            `#${Math.floor(Math.random() * 16777215).toString(16)}`);
   };
 
+  // Helper function to get the proper display name for a caste type
+  const getCasteDisplayName = (casteType: string, fallbackName?: string): string => {
+    if (CASTE_NAMES[casteType]) {
+      return CASTE_NAMES[casteType];
+    }
+    
+    if (casteType === "OTHER") {
+      return "अन्य";
+    }
+    
+    return fallbackName || casteType;
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {wardNumbers.map((wardNumber) => {
@@ -72,7 +85,7 @@ export default function WardCastePieCharts({
 
         let wardData = topCastes.map((item) => ({
           casteType: item.casteType,
-          name: item.casteTypeDisplay || CASTE_NAMES[item.casteType] || item.casteType,
+          name: getCasteDisplayName(item.casteType, item.casteTypeDisplay),
           value: item.population || 0,
           color: getCasteColor(item.casteType), // Pre-determine color to ensure consistency
         }));
