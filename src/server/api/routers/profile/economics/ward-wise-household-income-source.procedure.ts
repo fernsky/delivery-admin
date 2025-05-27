@@ -202,7 +202,7 @@ export const getWardWiseHouseholdIncomeSourceSummary = publicProcedure.query(
           income_source, 
           SUM(households) as total_households
         FROM 
-          ward_wise_household_income_source
+          acme_ward_wise_household_income_source
         GROUP BY 
           income_source
         ORDER BY 

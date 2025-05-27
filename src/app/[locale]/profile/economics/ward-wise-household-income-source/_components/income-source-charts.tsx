@@ -4,6 +4,7 @@ import IncomeSourcePieChart from "./charts/income-source-pie-chart";
 import IncomeSourceBarChart from "./charts/income-source-bar-chart";
 import WardIncomeSourcePieCharts from "./charts/ward-income-source-pie-charts";
 import { IncomeSourceEnum } from "@/server/api/routers/profile/economics/ward-wise-household-income-source.schema";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Define income source colors for consistency
 const INCOME_SOURCE_COLORS = {
@@ -57,7 +58,7 @@ export default function IncomeSourceCharts({
             आय स्रोत अनुसार घरपरिवार वितरण
           </h3>
           <p className="text-sm text-muted-foreground">
-            कुल घरपरिवार: {totalHouseholds.toLocaleString()}
+            कुल घरपरिवार: {localizeNumber(totalHouseholds.toLocaleString(), "ne")}
           </p>
         </div>
 
@@ -90,13 +91,13 @@ export default function IncomeSourceCharts({
                 <tbody>
                   {overallSummary.map((item, i) => (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                      <td className="border p-2">{i + 1}</td>
+                      <td className="border p-2">{localizeNumber(i + 1, "ne")}</td>
                       <td className="border p-2">{item.incomeSourceName}</td>
                       <td className="border p-2 text-right">
-                        {item.households.toLocaleString()}
+                        {localizeNumber(item.households.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {((item.households / totalHouseholds) * 100).toFixed(2)}
+                        {localizeNumber(((item.households / totalHouseholds) * 100).toFixed(2), "ne")}
                         %
                       </td>
                     </tr>
@@ -108,9 +109,9 @@ export default function IncomeSourceCharts({
                       जम्मा
                     </td>
                     <td className="border p-2 text-right">
-                      {totalHouseholds.toLocaleString()}
+                      {localizeNumber(totalHouseholds.toLocaleString(), "ne")}
                     </td>
-                    <td className="border p-2 text-right">100.00%</td>
+                    <td className="border p-2 text-right">{localizeNumber("100.00", "ne")}%</td>
                   </tr>
                 </tfoot>
               </table>
@@ -144,7 +145,7 @@ export default function IncomeSourceCharts({
                   <div className="flex justify-between items-center">
                     <span>{item.incomeSourceName}</span>
                     <span className="font-medium">
-                      {((item.households / totalHouseholds) * 100).toFixed(1)}%
+                      {localizeNumber(((item.households / totalHouseholds) * 100).toFixed(1), "ne")}%
                     </span>
                   </div>
                   <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -165,7 +166,7 @@ export default function IncomeSourceCharts({
           </div>
           <p className="text-sm text-muted-foreground pt-4">
             {overallSummary.length > 5
-              ? `${overallSummary.length - 5} अन्य आय स्रोतहरू पनि छन्।`
+              ? `${localizeNumber(overallSummary.length - 5, "ne")} अन्य आय स्रोतहरू पनि छन्।`
               : ""}
           </p>
         </div>
@@ -236,7 +237,7 @@ export default function IncomeSourceCharts({
 
                   return (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                      <td className="border p-2">वडा {wardNumber}</td>
+                      <td className="border p-2">वडा {localizeNumber(wardNumber, "ne")}</td>
                       <td className="border p-2">
                         {primaryIncomeSource
                           ? incomeSourceLabels[
@@ -245,16 +246,14 @@ export default function IncomeSourceCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {primaryIncomeSource?.households?.toLocaleString() ||
-                          "0"}
+                        {primaryIncomeSource?.households
+                          ? localizeNumber(primaryIncomeSource.households.toLocaleString(), "ne")
+                          : localizeNumber("0", "ne")}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && primaryIncomeSource?.households
-                          ? (
-                              (primaryIncomeSource.households / wardTotal) *
-                              100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                          ? localizeNumber(((primaryIncomeSource.households / wardTotal) * 100).toFixed(2), "ne") + "%"
+                          : localizeNumber("0", "ne") + "%"}
                       </td>
                       <td className="border p-2">
                         {secondaryIncomeSource
@@ -264,16 +263,14 @@ export default function IncomeSourceCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {secondaryIncomeSource?.households?.toLocaleString() ||
-                          "0"}
+                        {secondaryIncomeSource?.households
+                          ? localizeNumber(secondaryIncomeSource.households.toLocaleString(), "ne")
+                          : localizeNumber("0", "ne")}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && secondaryIncomeSource?.households
-                          ? (
-                              (secondaryIncomeSource.households / wardTotal) *
-                              100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                          ? localizeNumber(((secondaryIncomeSource.households / wardTotal) * 100).toFixed(2), "ne") + "%"
+                          : localizeNumber("0", "ne") + "%"}
                       </td>
                     </tr>
                   );

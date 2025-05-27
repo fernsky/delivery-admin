@@ -11,15 +11,19 @@ export const IncomeSourceEnum = z.enum([
   "OTHER",
 ]);
 
+
+
 export const incomeSourceLabels = {
-  JOB: "Job/Service",
-  AGRICULTURE: "Agriculture",
-  BUSINESS: "Business",
-  INDUSTRY: "Industry",
-  FOREIGN_EMPLOYMENT: "Foreign Employment",
-  LABOUR: "Daily Labour",
-  OTHER: "Other",
+  JOB: "नोकरी/जागिर",
+  AGRICULTURE: "कृषि",
+  BUSINESS: "व्यापार व्यवसाय",
+  INDUSTRY: "उद्योग",
+  FOREIGN_EMPLOYMENT: "वैदेशिक रोजगारी",
+  LABOUR: "ज्याला मजदुरी",
+  OTHER: "अन्य",
 };
+
+
 
 // Base schema for ward wise household income source
 export const wardWiseHouseholdIncomeSourceBaseSchema = z.object({

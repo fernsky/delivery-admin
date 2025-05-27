@@ -10,6 +10,7 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 import { IncomeSourceEnum } from "@/server/api/routers/profile/economics/ward-wise-household-income-source.schema";
 
 interface IncomeSourceBarChartProps {
@@ -36,8 +37,9 @@ export default function IncomeSourceBarChart({
           scale="point"
           padding={{ left: 10, right: 10 }}
           tick={{ fontSize: 12 }}
+          tickFormatter={(value) => localizeNumber(value.replace(/वडा /, ""), "ne")}
         />
-        <YAxis />
+        <YAxis tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
         <Tooltip
           content={({ active, payload }) => {
             if (active && payload && payload.length) {
@@ -53,7 +55,7 @@ export default function IncomeSourceBarChart({
                         ></div>
                         <span>{entry.name}: </span>
                         <span className="font-medium">
-                          {entry.value?.toLocaleString()}
+                          {localizeNumber(entry.value?.toLocaleString() || "0", "ne")}
                         </span>
                       </div>
                     ))}
@@ -93,6 +95,7 @@ export default function IncomeSourceBarChart({
               key={incomeSource}
               dataKey={incomeSource}
               stackId="a"
+              name={incomeSource}
               fill={
                 INCOME_SOURCE_COLORS[
                   incomeSourceKey as keyof typeof INCOME_SOURCE_COLORS

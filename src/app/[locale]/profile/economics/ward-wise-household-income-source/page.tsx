@@ -6,6 +6,7 @@ import IncomeSourceCharts from "./_components/income-source-charts";
 import IncomeAnalysisSection from "./_components/income-analysis-section";
 import IncomeSourceSEO from "./_components/income-source-seo";
 import { api } from "@/trpc/server";
+import { localizeNumber } from "@/lib/utils/localize-number";
 import {
   incomeSourceLabels,
   IncomeSourceEnum,
@@ -63,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "वडा अनुसार आय स्रोत",
       "आर्थिक गतिविधि तथ्याङ्क",
       "आय स्रोत सर्वेक्षण खजुरा",
-      `खजुरा कुल घरपरिवार संख्या ${totalHouseholds}`,
+      `खजुरा कुल घरपरिवार संख्या ${localizeNumber(totalHouseholds.toString(), "ne")}`,
     ];
     const keywordsEN = [
       "Khajura Rural Municipality household income sources",
@@ -80,17 +81,25 @@ export async function generateMetadata(): Promise<Metadata> {
     ];
 
     // Create detailed description with actual data
-    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार घरपरिवारको आय स्रोत वितरण, प्रवृत्ति र विश्लेषण। कुल घरपरिवार संख्या ${totalHouseholds} मध्ये ${
+    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार घरपरिवारको आय स्रोत वितरण, प्रवृत्ति र विश्लेषण। कुल घरपरिवार संख्या ${localizeNumber(
+      totalHouseholds.toString(), 
+      "ne"
+    )} मध्ये ${
       incomeSourceLabels[topIncomeSources[0] as keyof typeof incomeSourceLabels]
-    } (${
-      incomeSourceCounts[topIncomeSources[0]]
-    }) सबैभन्दा ठूलो समूह हो, त्यसपछि ${
+    } (${localizeNumber(
+      incomeSourceCounts[topIncomeSources[0]].toString(),
+      "ne"
+    )}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${
       incomeSourceLabels[topIncomeSources[1] as keyof typeof incomeSourceLabels]
-    } (${incomeSourceCounts[topIncomeSources[1]]}) र ${
+    } (${localizeNumber(
+      incomeSourceCounts[topIncomeSources[1]].toString(),
+      "ne"
+    )}) र ${
       incomeSourceLabels[topIncomeSources[2] as keyof typeof incomeSourceLabels]
-    } (${
-      incomeSourceCounts[topIncomeSources[2]]
-    })। विभिन्न आय स्रोतहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
+    } (${localizeNumber(
+      incomeSourceCounts[topIncomeSources[2]].toString(),
+      "ne"
+    )})। विभिन्न आय स्रोतहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
 
     const descriptionEN = `Ward-wise household income source distribution, trends and analysis for Khajura Rural Municipality. Out of a total of ${totalHouseholds} households, ${
       incomeSourceLabels[topIncomeSources[0] as keyof typeof incomeSourceLabels]
@@ -129,7 +138,7 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     // Fallback metadata if data fetching fails
     return {
-      title: "घरपरिवारको आय स्रोत | पालिका प्रोफाइल",
+      title: "घरपरिवारको आय स्रोत | खजुरा गाउँपालिका प्रोफाइल",
       description:
         "वडा अनुसार घरपरिवारको आय स्रोत वितरण, प्रवृत्ति र विश्लेषण। विभिन्न आय स्रोतहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
     };
@@ -153,7 +162,6 @@ const toc = [
     text: "प्रमुख आय स्रोतहरूको विश्लेषण",
     slug: "major-income-sources",
   },
-  { level: 2, text: "तथ्याङ्क स्रोत", slug: "data-source" },
 ];
 
 export default async function WardWiseHouseholdIncomeSourcePage() {
@@ -298,15 +306,16 @@ export default async function WardWiseHouseholdIncomeSourcePage() {
             <p>
               खजुरा गाउँपालिकामा विभिन्न आय स्रोतहरू मार्फत घरपरिवारहरू आफ्नो
               जीविकोपार्जन गर्दछन्। कुल घरपरिवार संख्या{" "}
-              {totalHouseholds.toLocaleString()} मध्ये{" "}
+              {localizeNumber(totalHouseholds.toLocaleString(), "ne")} मध्ये{" "}
               {overallSummary[0]?.incomeSourceName || ""} प्रमुख आय स्रोत भएका
               घरपरिवारहरू{" "}
-              {(
-                ((overallSummary[0]?.households || 0) / totalHouseholds) *
-                100
-              ).toFixed(1)}
+              {localizeNumber(
+                (((overallSummary[0]?.households || 0) / totalHouseholds) *
+                100).toFixed(1),
+                "ne"
+              )}
               % रहेका छन्। यस तथ्याङ्कले स्थानीय अर्थतन्त्रको बुझाई, रोजगारी
-              सृजना र आर्थिक विकासमा सहयोग पुर्‍याउँछ।
+              सृजना र आर्थिक विकासमा सहयोग पुर्‍याउँछ。
             </p>
 
             <h2
@@ -343,11 +352,12 @@ export default async function WardWiseHouseholdIncomeSourcePage() {
                 overallSummary[0]
                   ?.incomeSource as keyof typeof incomeSourceLabels
               ] || "कृषि"}{" "}
-              {(
-                ((overallSummary[0]?.households || 0) / totalHouseholds) *
-                100
-              ).toFixed(2)}
-              % मा देखिन्छ।
+              {localizeNumber(
+                (((overallSummary[0]?.households || 0) / totalHouseholds) *
+                100).toFixed(2),
+                "ne"
+              )}
+              % मा देखिन्छ。
             </p>
 
             {/* Client component for income source analysis section */}
@@ -356,22 +366,6 @@ export default async function WardWiseHouseholdIncomeSourcePage() {
               totalHouseholds={totalHouseholds}
               incomeSourceLabels={incomeSourceLabels}
             />
-
-            <h2 id="data-source" className="scroll-m-20 border-b pb-2">
-              तथ्याङ्क स्रोत
-            </h2>
-            <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू नेपालको राष्ट्रिय जनगणना र खजुरा
-              गाउँपालिकाको आफ्नै सर्वेक्षणबाट संकलन गरिएको हो। यी तथ्याङ्कहरूको
-              महत्व निम्न अनुसार छ:
-            </p>
-
-            <ul>
-              <li>स्थानीय अर्थतन्त्रको संरचना र प्रवृत्ति बुझ्न</li>
-              <li>आय स्रोत अनुसार नीति निर्माण र योजना तर्जुमा गर्न</li>
-              <li>रोजगारी सृजना र आर्थिक विकासका अवसरहरू पहिचान गर्न</li>
-              <li>उत्पादन र आयको वितरणमा सन्तुलन कायम गर्न</li>
-            </ul>
           </div>
         </section>
       </div>

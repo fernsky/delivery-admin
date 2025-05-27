@@ -20,7 +20,7 @@ export const incomeSourceTypeEnum = pgEnum("income_source_type", [
 ]);
 
 export const wardWiseHouseholdIncomeSource = pgTable(
-  "ward_wise_household_income_source",
+  "acme_ward_wise_household_income_source",
   {
     id: uuid("id").defaultRandom().primaryKey(),
     wardNumber: integer("ward_number").notNull(),

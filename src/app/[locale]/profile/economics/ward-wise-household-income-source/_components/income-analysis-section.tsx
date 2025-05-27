@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 import { IncomeSourceEnum } from "@/server/api/routers/profile/economics/ward-wise-household-income-source.schema";
 
 interface IncomeAnalysisProps {
@@ -158,9 +158,9 @@ export default function IncomeAnalysisSection({
                   {/* Hidden span for SEO with English name */}
                   <span className="sr-only">{incomeSourceEN}</span>
                 </h3>
-                <p className="text-2xl font-bold">{percentage}%</p>
+                <p className="text-2xl font-bold">{localizeNumber(percentage, "ne")}%</p>
                 <p className="text-sm text-muted-foreground">
-                  {item.households.toLocaleString()} घरपरिवार
+                  {localizeNumber(item.households.toLocaleString(), "ne")} घरपरिवार
                   <span className="sr-only">
                     ({item.households.toLocaleString()} households)
                   </span>
@@ -173,9 +173,9 @@ export default function IncomeAnalysisSection({
 
       <div className="bg-muted/50 p-4 rounded-lg mt-8">
         <h3 className="text-xl font-medium mb-4">
-          आय स्रोत विविधता विश्लेषण
+          खजुरा गाउँपालिकाको आय स्रोत विविधता विश्लेषण
           <span className="sr-only">
-            Income Source Diversity Analysis of Khajura
+            Income Source Diversity Analysis of Khajura Rural Municipality
           </span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -203,7 +203,7 @@ export default function IncomeAnalysisSection({
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {topIncomeSource
-                ? `कुल घरपरिवारको ${((topIncomeSource.households / totalHouseholds) * 100).toFixed(2)}%`
+                ? `कुल घरपरिवारको ${localizeNumber(((topIncomeSource.households / totalHouseholds) * 100).toFixed(2), "ne")}%`
                 : ""}
               <span className="sr-only">
                 {topIncomeSource
@@ -226,10 +226,10 @@ export default function IncomeAnalysisSection({
                 Primary to Secondary Income Source Ratio in Khajura
               </span>
             </h4>
-            <p className="text-3xl font-bold">{topTwoIncomeSourceRatio}</p>
+            <p className="text-3xl font-bold">{localizeNumber(topTwoIncomeSourceRatio, "ne")}</p>
             <p className="text-sm text-muted-foreground mt-2">
               {topIncomeSource && secondIncomeSource
-                ? `हरेक ${topTwoIncomeSourceRatio} ${topIncomeSource.incomeSourceName} आय स्रोत भएका घरपरिवारका लागि १ ${secondIncomeSource.incomeSourceName} आय स्रोत भएका घरपरिवार`
+                ? `हरेक ${localizeNumber(topTwoIncomeSourceRatio, "ne")} ${topIncomeSource.incomeSourceName} आय स्रोत भएका घरपरिवारका लागि १ ${secondIncomeSource.incomeSourceName} आय स्रोत भएका घरपरिवार`
                 : ""}
               <span className="sr-only">
                 {topIncomeSource && secondIncomeSource
@@ -239,30 +239,6 @@ export default function IncomeAnalysisSection({
             </p>
           </div>
         </div>
-      </div>
-
-      <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">
-          थप जानकारी
-          <span className="sr-only">
-            Additional Information about Household Income Sources in Khajura
-          </span>
-        </h3>
-        <p>
-          खजुरा गाउँपालिकाको आय स्रोत वितरण सम्बन्धी थप जानकारी वा विस्तृत
-          तथ्याङ्कको लागि, कृपया{" "}
-          <Link href="/contact" className="text-primary hover:underline">
-            हामीलाई सम्पर्क
-          </Link>{" "}
-          गर्नुहोस् वा{" "}
-          <Link
-            href="/profile/economics"
-            className="text-primary hover:underline"
-          >
-            आर्थिक तथ्याङ्क
-          </Link>{" "}
-          खण्डमा हेर्नुहोस्।
-        </p>
       </div>
     </>
   );
