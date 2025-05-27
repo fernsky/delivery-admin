@@ -228,7 +228,7 @@ export const getWardWiseMajorSkillsSummary = publicProcedure.query(
           skill,
           SUM(population) as total_population
         FROM 
-          ward_wise_major_skills
+          acme_ward_wise_major_skills
         GROUP BY
           skill
         ORDER BY

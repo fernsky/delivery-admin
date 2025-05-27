@@ -120,7 +120,7 @@ export default function ProfilePage() {
             <div className="absolute inset-0 flex items-center z-20">
               <div className="p-8">
                 <h1 className="text-4xl font-bold mb-3 text-white drop-shadow-lg">
-                  खजुरा प्रोफाइल प्रोफाइल
+                  खजुरा प्रोफाइल
                 </h1>
                 <p className="text-lg text-white/90 max-w-xl drop-shadow-lg">
                   तथ्य र तथ्याङ्क मार्फत खजुरा गाउँपालिकालाई चिन्नुहोस्।

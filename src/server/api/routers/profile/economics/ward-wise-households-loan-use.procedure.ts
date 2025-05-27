@@ -204,7 +204,7 @@ export const getWardWiseHouseholdsLoanUseSummary = publicProcedure.query(
           loan_use, 
           SUM(households) as total_households
         FROM 
-          ward_wise_households_loan_use
+          acme_ward_wise_households_loan_use
         GROUP BY 
           loan_use
         ORDER BY 

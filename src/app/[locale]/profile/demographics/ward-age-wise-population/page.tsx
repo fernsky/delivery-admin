@@ -471,7 +471,7 @@ export default async function WardAgeWisePopulationPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {overallSummaryByAge.slice(0, 5).map((item, i) => (
+                  {overallSummaryByAge.map((item, i) => (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
                       <td className="border p-2">{item.ageGroupName}</td>
                       <td className="border p-2 text-right">
@@ -490,7 +490,7 @@ export default async function WardAgeWisePopulationPage() {
                   ))}
                   <tr className="font-semibold">
                     <td className="border p-2" colSpan={5}>
-                      ... अन्य उमेर समूहहरू समेत गरेर कुल जनसंख्या{" "}
+                    सबै उमेर समूहहरू गरेर कुल जनसंख्या{" "}
                       {localizeNumber(totalPopulation.toLocaleString(), "ne")} रहेको छ
                     </td>
                   </tr>

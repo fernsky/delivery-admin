@@ -6,8 +6,8 @@ import {
   Cell,
   ResponsiveContainer,
   Tooltip,
-  Legend,
 } from "recharts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface AgeCategoryPieChartProps {
   totalPopulation: number;
@@ -63,39 +63,89 @@ export default function AgeCategoryPieChart({
     },
   ];
 
+  // Custom tooltip component for better presentation with Nepali numbers
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const { name, value } = payload[0];
+      return (
+        <div className="bg-background p-3 border shadow-sm rounded-md">
+          <p className="font-medium">{name}</p>
+          <div className="flex justify-between gap-4 mt-1">
+            <span className="text-sm">प्रतिशत:</span>
+            <span className="font-medium">
+              {localizeNumber(value.toFixed(2), "ne")}%
+            </span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <PieChart>
-        <Pie
-          data={pieData}
-          cx="50%"
-          cy="50%"
-          labelLine={false}
-          outerRadius={120}
-          label={({ name, percent }) =>
-            `${name}: ${(percent * 100).toFixed(1)}%`
-          }
-          fill="#8884d8"
-          dataKey="value"
-        >
-          {Object.entries(AGE_CATEGORY_COLORS).map(
-            ([name, color], index) => (
-              <Cell 
-                key={`cell-${index}`} 
-                fill={color} 
-              />
-            ),
-          )}
-        </Pie>
-        <Tooltip
-          formatter={(value) => `${Number(value).toFixed(2)}%`}
-        />
-        <Legend
-          layout="vertical"
-          verticalAlign="bottom"
-          align="center"
-        />
-      </PieChart>
-    </ResponsiveContainer>
+    <div className="flex flex-col h-full">
+      <div className="flex-grow">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={pieData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              outerRadius={120}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {Object.entries(AGE_CATEGORY_COLORS).map(
+                ([name, color], index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={color} 
+                  />
+                ),
+              )}
+            </Pie>
+            <Tooltip content={CustomTooltip} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Custom Legend with percentage bars */}
+      <div className="mt-4">
+        <div className="grid grid-cols-1 gap-2">
+          {pieData.map((item, i) => {
+            const percentage = item.value;
+            
+            return (
+              <div key={i} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{
+                    backgroundColor: AGE_CATEGORY_COLORS[item.name as keyof typeof AGE_CATEGORY_COLORS] || "#888"
+                  }}
+                ></div>
+                <div className="flex-grow">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="truncate">{item.name}</span>
+                    <span className="font-medium">
+                      {localizeNumber(percentage.toFixed(1), "ne")}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-muted h-1.5 rounded-full mt-0.5 overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${percentage}%`,
+                        backgroundColor: AGE_CATEGORY_COLORS[item.name as keyof typeof AGE_CATEGORY_COLORS] || "#888"
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }

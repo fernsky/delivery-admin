@@ -145,7 +145,7 @@ export default function AgeWiseCharts({
                 <h3 className="text-lg font-medium mb-2 text-center">
                   उमेरगत वर्गीकरण
                 </h3>
-                <div className="h-[320px]">
+                <div className="h-[420px]">
                   <AgeCategoryPieChart
                     totalPopulation={totalPopulation}
                     calculateAgeDistributionPercentage={calculateAgeDistributionPercentage}
@@ -159,7 +159,7 @@ export default function AgeWiseCharts({
                 <h3 className="text-lg font-medium mb-2 text-center">
                   लिङ्ग अनुसार वितरण
                 </h3>
-                <div className="h-[320px]">
+                <div className="h-[420px]">
                   <GenderDistributionPieChart
                     overallSummaryByGender={overallSummaryByGender}
                     totalPopulation={totalPopulation}

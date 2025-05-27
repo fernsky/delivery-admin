@@ -177,7 +177,7 @@ export const getWardWiseTrainedPopulationSummary = publicProcedure.query(
         SELECT 
           SUM(trained_population) as total_trained_population
         FROM 
-          ward_wise_trained_population
+          amce_ward_wise_trained_population
       `;
 
       const summaryData = await ctx.db.execute(summarySql);

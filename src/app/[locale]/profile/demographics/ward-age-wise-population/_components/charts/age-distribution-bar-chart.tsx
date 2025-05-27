@@ -10,6 +10,7 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface AgeDistributionBarChartProps {
   overallSummaryByAge: Array<{
@@ -29,6 +30,34 @@ export default function AgeDistributionBarChart({
   GENDER_NAMES,
   GENDER_COLORS,
 }: AgeDistributionBarChartProps) {
+  // Custom tooltip component with Nepali numbers
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-background p-3 border shadow-sm rounded-md">
+          <p className="font-medium">उमेर समूह: {label}</p>
+          <div className="space-y-1 mt-2">
+            {payload.map((entry: any, index: number) => (
+              <div key={index} className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: entry.color }}
+                  ></div>
+                  <span>{entry.name}: </span>
+                </div>
+                <span className="font-medium">
+                  {localizeNumber(Math.abs(entry.value).toLocaleString(), "ne")}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -37,17 +66,17 @@ export default function AgeDistributionBarChart({
         margin={{ top: 20, right: 30, left: 80, bottom: 10 }}
       >
         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-        <XAxis type="number" />
+        <XAxis
+          type="number"
+          tickFormatter={(value) => localizeNumber(value.toString(), "ne")}
+        />
         <YAxis
           dataKey="ageGroupName"
           type="category"
           tick={{ fontSize: 12 }}
           width={70}
         />
-        <Tooltip
-          formatter={(value) => Number(value).toLocaleString()}
-          labelFormatter={(value) => `उमेर समूह: ${value}`}
-        />
+        <Tooltip content={CustomTooltip} />
         <Legend />
         <Bar
           dataKey="male"

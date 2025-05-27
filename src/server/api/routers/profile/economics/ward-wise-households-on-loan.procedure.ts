@@ -151,7 +151,7 @@ export const getWardWiseHouseholdsOnLoanSummary = publicProcedure.query(
         SELECT 
           SUM(households) as total_households_on_loan
         FROM 
-          ward_wise_households_on_loan
+          acme_ward_wise_households_on_loan
       `;
 
       const summaryData = await ctx.db.execute(summarySql);

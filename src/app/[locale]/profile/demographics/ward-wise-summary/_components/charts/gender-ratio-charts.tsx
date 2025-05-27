@@ -271,12 +271,7 @@ export default function GenderRatioCharts({
             </tbody>
           </table>
         </div>
-        <div className="mt-4 flex justify-end">
-          <Button variant="outline" size="sm">
-            <FileDown className="mr-2 h-4 w-4" />
-            Excel डाउनलोड
-          </Button>
-        </div>
+      
       </TabsContent>
     </>
   );

@@ -236,7 +236,7 @@ export const getWardWiseMajorOccupationSummary = publicProcedure.query(
           occupation, 
           SUM(population) as total_population
         FROM 
-          ward_wise_major_occupation
+          acme_ward_wise_major_occupation
         GROUP BY 
           occupation
         ORDER BY 

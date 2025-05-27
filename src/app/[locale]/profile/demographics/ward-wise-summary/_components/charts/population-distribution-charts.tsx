@@ -71,6 +71,27 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+// Custom tooltip component for pie chart
+const CustomPieTooltip = ({ active, payload, totalPopulation }: any) => {
+  if (active && payload && payload.length) {
+    const { name, value } = payload[0];
+    const percentage = ((value / totalPopulation) * 100).toFixed(1);
+
+    return (
+      <div className="bg-background p-3 border shadow-sm rounded-md">
+        <p className="font-medium">{name}</p>
+        <div className="flex items-center justify-between gap-4 mt-1">
+          <span>जनसंख्या:</span>
+          <span className="font-medium">
+            {localizeNumber(value.toLocaleString(), "ne")} ({localizeNumber(percentage, "ne")}%)
+          </span>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 interface PopulationDistributionChartsProps {
   selectedTab: string;
   wardPopulationData: Array<{
@@ -101,6 +122,9 @@ export default function PopulationDistributionCharts({
   municipalityStats,
   municipalityAverages,
 }: PopulationDistributionChartsProps) {
+  // Calculate total population for percentage calculations
+  const totalPopulation = municipalityStats.totalPopulation;
+  
   return (
     <>
       <TabsContent value="bar" className="p-4">
@@ -147,35 +171,66 @@ export default function PopulationDistributionCharts({
       </TabsContent>
 
       <TabsContent value="pie" className="p-4">
-        <div className="h-[500px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={wardPopulationData}
-                cx="50%"
-                cy="50%"
-                labelLine={true}
-                outerRadius={180}
-                label={renderCustomizedPieLabel}
-                fill="#8884d8"
-                dataKey="population"
-                nameKey="ward"
-              >
-                {wardPopulationData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={WARD_COLORS[index % WARD_COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip formatter={CustomTooltipFormatter} />
-              <Legend
-                formatter={(value, entry, index) => (
-                  <span className="text-sm">{value}</span>
-                )}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+        <div className="h-[500px] flex flex-col">
+          <div className="h-[350px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={wardPopulationData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={140}
+                  innerRadius={30}
+                  fill="#8884d8"
+                  dataKey="population"
+                  nameKey="ward"
+                >
+                  {wardPopulationData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={WARD_COLORS[index % WARD_COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomPieTooltip totalPopulation={totalPopulation} />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          
+          {/* Custom Legend with percentage bars */}
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto max-h-[150px] px-4">
+            {wardPopulationData.map((item, i) => {
+              const percentage = (item.population / totalPopulation) * 100;
+              
+              return (
+                <div key={i} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full flex-shrink-0"
+                    style={{
+                      backgroundColor: WARD_COLORS[i % WARD_COLORS.length]
+                    }}
+                  ></div>
+                  <div className="flex-grow">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="truncate">{item.ward}</span>
+                      <span className="font-medium">
+                        {localizeNumber(percentage.toFixed(1), "ne")}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-muted h-1.5 rounded-full mt-0.5 overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${percentage}%`,
+                          backgroundColor: WARD_COLORS[i % WARD_COLORS.length]
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </TabsContent>
 
@@ -252,12 +307,7 @@ export default function PopulationDistributionCharts({
             </tbody>
           </table>
         </div>
-        <div className="mt-4 flex justify-end">
-          <Button variant="outline" size="sm">
-            <FileDown className="mr-2 h-4 w-4" />
-            Excel डाउनलोड
-          </Button>
-        </div>
+       
       </TabsContent>
     </>
   );

@@ -247,7 +247,7 @@ export const getWardWiseRemittanceExpensesSummary = publicProcedure.query(
           remittance_expense, 
           SUM(households) as total_households
         FROM 
-          ward_wise_remittance_expenses
+          acme_ward_wise_remittance_expenses
         GROUP BY 
           remittance_expense
         ORDER BY 
