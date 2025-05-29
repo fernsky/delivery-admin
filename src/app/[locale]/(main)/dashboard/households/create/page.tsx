@@ -5,10 +5,12 @@ import { HOUSEHOLD_STEPS, HouseholdStep } from "@/types/household";
 import { HouseholdForm } from "@/components/households/HouseholdForm";
 import StepIndicator from "@/components/households/StepIndicator";
 import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
 
 export default function NewHouseholdPage() {
   const [step, setStep] = useState<HouseholdStep>(HOUSEHOLD_STEPS[0]);
   const currentStepIndex = HOUSEHOLD_STEPS.findIndex((s) => s === step);
+  const form = useForm();
 
   const goToPreviousStep = () => {
     if (currentStepIndex > 0) {
@@ -16,16 +18,24 @@ export default function NewHouseholdPage() {
     }
   };
 
-  const goToNextStep = () => {
+  const goToNextStep = async () => {
+    // If we're on the last step, the submit button in ReviewStep will handle submission
     if (currentStepIndex < HOUSEHOLD_STEPS.length - 1) {
-      setStep(HOUSEHOLD_STEPS[currentStepIndex + 1]);
+      // Validate current step before proceeding
+      const isValid = await form.trigger();
+      if (isValid) {
+        setStep(HOUSEHOLD_STEPS[currentStepIndex + 1]);
+      }
     }
   };
+
+  const isLastStep = currentStepIndex === HOUSEHOLD_STEPS.length - 1;
+  const isSecondToLastStep = currentStepIndex === HOUSEHOLD_STEPS.length - 2;
 
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">New Household Registration</h1>
+        <h1 className="text-2xl font-bold mb-6">नयाँ घरधुरी दर्ता</h1>
 
         <StepIndicator
           steps={HOUSEHOLD_STEPS}
@@ -42,17 +52,14 @@ export default function NewHouseholdPage() {
               onClick={goToPreviousStep}
               disabled={currentStepIndex === 0}
             >
-              Previous
+              अघिल्लो
             </Button>
 
-            <Button
-              onClick={goToNextStep}
-              disabled={currentStepIndex === HOUSEHOLD_STEPS.length - 1}
-            >
-              {currentStepIndex === HOUSEHOLD_STEPS.length - 2
-                ? "Review"
-                : "Next"}
-            </Button>
+            {!isLastStep && (
+              <Button onClick={goToNextStep}>
+                {isSecondToLastStep ? "समीक्षा" : "अर्को"}
+              </Button>
+            )}
           </div>
         </div>
       </div>

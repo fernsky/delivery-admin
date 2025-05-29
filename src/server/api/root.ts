@@ -16,6 +16,7 @@ import { enumwiseRouter } from "./routers/enumwise/enumwise.procedure";
 import { profileRouter } from "./routers/profile";
 import { commonRouter } from "./routers/common";
 import { grazingAreaRouter } from "./routers/profile/agricultural/grazingAreas/grazingArea.router";
+import { householdRouter } from "./routers/households/households.procedure";
 
 export const appRouter = createTRPCRouter({
   user: userRouter,
@@ -35,6 +36,7 @@ export const appRouter = createTRPCRouter({
   profile: profileRouter,
   common: commonRouter,
   grazingArea: grazingAreaRouter,
+  households: householdRouter,
 });
 
 export type AppRouter = typeof appRouter;
