@@ -320,7 +320,6 @@ export default async function WardWiseDisabilityCausePage() {
               रहेको पाइन्छ।
             </p>
 
-            {/* Client component for disability analysis section */}
             <DisabilityCauseAnalysisSection
               overallSummary={overallSummary}
               totalPopulationWithDisability={totalPopulationWithDisability}

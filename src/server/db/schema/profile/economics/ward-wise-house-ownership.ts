@@ -1,8 +1,8 @@
-import { pgTable } from "../../../schema/basic";
+import { pgTable } from "../../basic";
 import { integer, timestamp, varchar, pgEnum } from "drizzle-orm/pg-core";
 
 // Define house ownership type enum
-export const ownershipTypeEnum = pgEnum("ownership_type", [
+export const ownershipTypeEnum = pgEnum("ownership_type_enum", [
   "PRIVATE",
   "RENT",
   "INSTITUTIONAL",

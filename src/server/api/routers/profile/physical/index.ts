@@ -13,7 +13,6 @@ import { wardWiseRoadStatusRouter } from "./ward-wise-road-status.procedure";
 import { wardWiseTimeToActiveRoadRouter } from "./ward-wise-time-to-active-road.procedure";
 import { wardWiseTimeToFinancialOrganizationRouter } from "./ward-wise-time-to-financial-organization.procedure";
 import { wardWiseTimeToHealthOrganizationRouter } from "./ward-wise-time-to-health-organization.procedure";
-import { wardWiseHouseOwnershipRouter } from "./ward-wise-house-ownership.procedure";
 
 export const physicalRouter = createTRPCRouter({
   wardWiseTimeToPublicTransport: wardWiseTimeToPublicTransportRouter,
@@ -31,6 +30,5 @@ export const physicalRouter = createTRPCRouter({
   wardWiseTimeToFinancialOrganization:
     wardWiseTimeToFinancialOrganizationRouter,
   wardWiseTimeToHealthOrganization: wardWiseTimeToHealthOrganizationRouter,
-  wardWiseHouseOwnership: wardWiseHouseOwnershipRouter,
   // Add other physical profile-related routers here in the future
 });

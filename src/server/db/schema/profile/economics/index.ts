@@ -35,3 +35,6 @@ export * from "./ward-wise-remittance-expenses";
 
 // Trained Population
 export * from "./ward-wise-trained-population";
+
+// House Ownership
+export * from "./ward-wise-house-ownership";

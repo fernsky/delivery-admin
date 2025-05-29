@@ -107,6 +107,10 @@ const navItems = [
         title: "विशेष सीप भएका मानव संशाधनको विवरण",
         href: "/profile/economics/ward-wise-household-income-source",
       },
+      {
+        title: "घरको स्वामित्वको आधारमा घरधुरी",
+        href: "/profile/economics/ward-wise-house-ownership",
+      },
       // {
       //   title: "रोजगारी स्थिति",
       //   href: "/profile/economics/economic-status",
