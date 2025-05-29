@@ -54,6 +54,12 @@ const menuConfig: Menu[] = [
     icon: LayoutGrid,
     roles: ["admin", "superadmin", "enumerator"],
   },
+  {
+    href: "/dashboard/households",
+    label: "घरधुरीहरू",
+    icon: Home,
+    roles: ["admin", "superadmin", "enumerator"],
+  },
   // Demographics submenu with children
   {
     href: "#",
