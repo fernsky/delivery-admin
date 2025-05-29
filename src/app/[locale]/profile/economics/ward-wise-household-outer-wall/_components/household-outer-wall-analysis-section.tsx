@@ -293,8 +293,8 @@ export default function HouseholdOuterWallAnalysisSection({
                     <div 
                       className="h-full bg-blue-500 rounded-full" 
                       style={{ 
-                        width: `${Math.min(parseFloat(wardWiseAnalysis.reduce((sum, ward) => 
-                          sum + parseFloat(ward.highQualityPercentage), 0) / wardWiseAnalysis.length), 100)}%` 
+                        width: `${Math.min(parseFloat((wardWiseAnalysis.reduce((sum, ward) => 
+                          sum + parseFloat(ward.highQualityPercentage), 0) / wardWiseAnalysis.length).toString()), 100)}%` 
                       }}
                     ></div>
                   </div>
@@ -316,8 +316,8 @@ export default function HouseholdOuterWallAnalysisSection({
                     <div 
                       className="h-full bg-orange-500 rounded-full" 
                       style={{ 
-                        width: `${Math.min(parseFloat(wardWiseAnalysis.reduce((sum, ward) => 
-                          sum + parseFloat(ward.mediumQualityPercentage), 0) / wardWiseAnalysis.length), 100)}%` 
+                        width: `${Math.min(parseFloat((wardWiseAnalysis.reduce((sum, ward) => 
+                          sum + parseFloat(ward.mediumQualityPercentage), 0) / wardWiseAnalysis.length).toString()), 100)}%` 
                       }}
                     ></div>
                   </div>
@@ -339,8 +339,8 @@ export default function HouseholdOuterWallAnalysisSection({
                     <div 
                       className="h-full bg-red-500 rounded-full" 
                       style={{ 
-                        width: `${Math.min(parseFloat(wardWiseAnalysis.reduce((sum, ward) => 
-                          sum + parseFloat(ward.lowQualityPercentage), 0) / wardWiseAnalysis.length), 100)}%` 
+                        width: `${Math.min(parseFloat((wardWiseAnalysis.reduce((sum, ward) => 
+                          sum + parseFloat(ward.lowQualityPercentage), 0) / wardWiseAnalysis.length).toString()), 100)}%` 
                       }}
                     ></div>
                   </div>
