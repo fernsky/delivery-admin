@@ -60,7 +60,9 @@ export const getAllWardWiseBirthCertificatePopulation = publicProcedure
           SELECT 
             id,
             ward_number,
-            birth_certificate_holders_below_5years
+            with_birth_certificate,
+            without_birth_certificate,
+            total_population_under_5
           FROM 
             acme_ward_wise_birth_certificate_population
           ORDER BY 
@@ -73,7 +75,9 @@ export const getAllWardWiseBirthCertificatePopulation = publicProcedure
           data = acmeResult.map((row) => ({
             id: row.id,
             wardNumber: parseInt(String(row.ward_number)),
-            birthCertificateHoldersBelow5years: parseInt(String(row.birth_certificate_holders_below_5years || "0")),
+            withBirthCertificate: parseInt(String(row.with_birth_certificate || "0")),
+            withoutBirthCertificate: parseInt(String(row.without_birth_certificate || "0")),
+            totalPopulationUnder5: parseInt(String(row.total_population_under_5 || "0")),
           }));
 
           // Apply filters if needed
@@ -150,7 +154,8 @@ export const createWardWiseBirthCertificatePopulation = protectedProcedure
       .values({
         id: input.id || uuidv4(),
         wardNumber: input.wardNumber,
-        birthCertificateHoldersBelow5years: input.birthCertificateHoldersBelow5years,
+        withBirthCertificate: input.withBirthCertificate,
+        withoutBirthCertificate: input.withoutBirthCertificate,
       });
 
     return { success: true };
@@ -194,7 +199,8 @@ export const updateWardWiseBirthCertificatePopulation = protectedProcedure
       .update(wardWiseBirthCertificatePopulation)
       .set({
         wardNumber: input.wardNumber,
-        birthCertificateHoldersBelow5years: input.birthCertificateHoldersBelow5years,
+        withBirthCertificate: input.withBirthCertificate,
+        withoutBirthCertificate: input.withoutBirthCertificate,
       })
       .where(eq(wardWiseBirthCertificatePopulation.id, input.id));
 
@@ -228,7 +234,9 @@ export const getWardWiseBirthCertificatePopulationSummary = publicProcedure
       // Get total counts across all wards
       const summarySql = sql`
         SELECT 
-          SUM(birth_certificate_holders_below_5years) as total_certificate_holders
+          SUM(with_birth_certificate) as total_with_birth_certificate,
+          SUM(without_birth_certificate) as total_without_birth_certificate,
+          SUM(total_population_under_5) as total_population_under_5
         FROM 
           acme_ward_wise_birth_certificate_population
       `;
@@ -236,7 +244,9 @@ export const getWardWiseBirthCertificatePopulationSummary = publicProcedure
       const summaryData = await ctx.db.execute(summarySql);
       
       return {
-        totalCertificateHolders: parseInt(String(summaryData[0]?.total_certificate_holders || "0"))
+        totalWithBirthCertificate: parseInt(String(summaryData[0]?.total_with_birth_certificate || "0")),
+        totalWithoutBirthCertificate: parseInt(String(summaryData[0]?.total_without_birth_certificate || "0")),
+        totalPopulationUnder5: parseInt(String(summaryData[0]?.total_population_under_5 || "0")),
       };
     } catch (error) {
       console.error(

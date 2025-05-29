@@ -6,8 +6,8 @@ import BirthCertificateComparison from "./charts/birth-certificate-comparison-ch
 
 // Define consistent chart colors
 const CHART_COLORS = {
-  primary: "#0891b2", // Teal color
-  secondary: "#7dd3fc", // Light blue
+  primary: "#0891b2", // Teal color - for with certificate
+  secondary: "#f97316", // Orange color - for without certificate
   accent: "#0369a1", // Darker blue
   muted: "#e0f2fe", // Very light blue
 };
@@ -16,46 +16,98 @@ interface BirthCertificateChartsProps {
   birthCertificateData: Array<{
     id?: string;
     wardNumber: number;
-    birthCertificateHoldersBelow5years: number;
+    withBirthCertificate: number;
+    withoutBirthCertificate: number;
+    totalPopulationUnder5?: number;
   }>;
-  totalCertificateHolders: number;
+  totalWithCertificate: number;
+  totalWithoutCertificate: number;
+  totalPopulation: number;
   wardNumbers: number[];
   wardWiseAnalysis: Array<{
     wardNumber: number;
-    birthCertificateHolders: number;
-    percentage: string;
+    withCertificate: number;
+    withoutCertificate: number;
+    total: number;
+    percentageWithCertificate: string;
+    percentageOfTotal: string;
+    coverageRate: string;
   }>;
   highestWard: {
     wardNumber: number;
-    birthCertificateHolders: number;
-    percentage: string;
+    withCertificate: number;
+    percentageWithCertificate: string;
+    coverageRate: string;
   };
   lowestWard: {
     wardNumber: number;
-    birthCertificateHolders: number;
-    percentage: string;
+    withCertificate: number;
+    percentageWithCertificate: string;
+    coverageRate: string;
+  };
+  highestCoverageWard: {
+    wardNumber: number;
+    coverageRate: string;
+  };
+  lowestCoverageWard: {
+    wardNumber: number;
+    coverageRate: string;
   };
 }
 
 export default function BirthCertificateCharts({
   birthCertificateData,
-  totalCertificateHolders,
+  totalWithCertificate,
+  totalWithoutCertificate,
+  totalPopulation,
   wardNumbers,
   wardWiseAnalysis,
   highestWard,
   lowestWard,
+  highestCoverageWard,
+  lowestCoverageWard,
 }: BirthCertificateChartsProps) {
-  // Prepare data for bar chart
+  // Calculate overall coverage rate
+  const overallCoverageRate = totalPopulation > 0
+    ? ((totalWithCertificate / totalPopulation) * 100).toFixed(2)
+    : "0";
+  
+  // Prepare data for stacked bar chart
   const barChartData = birthCertificateData.map((item) => ({
     ward: `वडा ${item.wardNumber}`,
-    value: item.birthCertificateHoldersBelow5years,
-    percentage: totalCertificateHolders > 0 
-      ? ((item.birthCertificateHoldersBelow5years / totalCertificateHolders) * 100).toFixed(2) 
+    withCertificate: item.withBirthCertificate,
+    withoutCertificate: item.withoutBirthCertificate,
+    total: (item.withBirthCertificate + item.withoutBirthCertificate),
+    coverageRate: item.withBirthCertificate + item.withoutBirthCertificate > 0
+      ? ((item.withBirthCertificate / (item.withBirthCertificate + item.withoutBirthCertificate)) * 100).toFixed(2)
       : "0",
   }));
 
   return (
     <>
+      {/* Summary cards for key stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="bg-card border rounded-lg p-6 flex flex-col items-center justify-center shadow-sm">
+          <span className="text-sm font-medium text-muted-foreground mb-2">कुल बालबालिका संख्या</span>
+          <span className="text-3xl font-bold">{localizeNumber(totalPopulation.toLocaleString(), "ne")}</span>
+          <span className="text-sm text-muted-foreground mt-2">पाँच वर्षमुनिका बालबालिकाहरू</span>
+        </div>
+        <div className="bg-card border rounded-lg p-6 flex flex-col items-center justify-center shadow-sm">
+          <span className="text-sm font-medium text-muted-foreground mb-2">जन्मदर्ता प्रमाणपत्र भएका</span>
+          <span className="text-3xl font-bold">{localizeNumber(totalWithCertificate.toLocaleString(), "ne")}</span>
+          <span className="text-sm text-muted-foreground mt-2">
+            ({localizeNumber(overallCoverageRate, "ne")}% कभरेज)
+          </span>
+        </div>
+        <div className="bg-card border rounded-lg p-6 flex flex-col items-center justify-center shadow-sm">
+          <span className="text-sm font-medium text-muted-foreground mb-2">जन्मदर्ता प्रमाणपत्र नभएका</span>
+          <span className="text-3xl font-bold">{localizeNumber(totalWithoutCertificate.toLocaleString(), "ne")}</span>
+          <span className="text-sm text-muted-foreground mt-2">
+            ({localizeNumber((100 - parseFloat(overallCoverageRate)).toFixed(2), "ne")}%)
+          </span>
+        </div>
+      </div>
+
       {/* Birth certificate distribution - with pre-rendered table and client-side chart */}
       <div 
         className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card"
@@ -64,55 +116,57 @@ export default function BirthCertificateCharts({
       >
         <meta
           itemProp="name"
-          content="Birth Certificate Holders Under 5 Years in Khajura Rural Municipality"
+          content="Birth Certificate Status for Children Under 5 Years in Khajura Rural Municipality"
         />
         <meta
           itemProp="description"
-          content={`Birth certificate distribution of children under 5 years in Khajura with a total of ${totalCertificateHolders} children`}
+          content={`Birth certificate distribution of children under 5 years in Khajura showing both with and without certificates`}
         />
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            पाँच वर्षमुनिका बालबालिकाहरूको जन्मदर्ता वितरण
+            पाँच वर्षमुनिका बालबालिकाहरूको जन्मदर्ता स्थिति
           </h3>
           <p className="text-sm text-muted-foreground">
-            कुल जन्मदर्ता प्रमाणपत्र धारक संख्या: {localizeNumber(totalCertificateHolders.toLocaleString(), "ne")} बालबालिका
+            कुल जन्मदर्ता कभरेज: {localizeNumber(overallCoverageRate, "ne")}% ({localizeNumber(totalWithCertificate.toLocaleString(), "ne")}/{localizeNumber(totalPopulation.toLocaleString(), "ne")})
           </p>
         </div>
 
         <div className="p-6">
           {/* Server-side pre-rendered table for SEO */}
           <div>
-            <h4 className="text-lg font-medium mb-4 text-center">तालिका</h4>
+            <h4 className="text-lg font-medium mb-4 text-center">वडागत जन्मदर्ता स्थिति</h4>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-muted sticky top-0">
                     <th className="border p-2 text-left">क्र.सं.</th>
                     <th className="border p-2 text-left">वडा नं.</th>
-                    <th className="border p-2 text-right">जन्मदर्ता प्रमाणपत्र धारक संख्या</th>
-                    <th className="border p-2 text-right">प्रतिशत</th>
+                    <th className="border p-2 text-right">जन्मदर्ता भएका</th>
+                    <th className="border p-2 text-right">जन्मदर्ता नभएका</th>
+                    <th className="border p-2 text-right">जम्मा जनसंख्या</th>
+                    <th className="border p-2 text-right">कभरेज दर (%)</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {birthCertificateData.map((item, i) => {
-                    const percentage = totalCertificateHolders > 0 
-                      ? ((item.birthCertificateHoldersBelow5years / totalCertificateHolders) * 100).toFixed(2) 
-                      : "0";
-                    
-                    return (
-                      <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                        <td className="border p-2">{localizeNumber(i + 1, "ne")}</td>
-                        <td className="border p-2">वडा {localizeNumber(item.wardNumber.toString(), "ne")}</td>
-                        <td className="border p-2 text-right">
-                          {localizeNumber(item.birthCertificateHoldersBelow5years.toLocaleString(), "ne")}
-                        </td>
-                        <td className="border p-2 text-right">
-                          {localizeNumber(percentage, "ne")}%
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {wardWiseAnalysis.map((item, i) => (
+                    <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
+                      <td className="border p-2">{localizeNumber(i + 1, "ne")}</td>
+                      <td className="border p-2">वडा {localizeNumber(item.wardNumber.toString(), "ne")}</td>
+                      <td className="border p-2 text-right">
+                        {localizeNumber(item.withCertificate.toLocaleString(), "ne")}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {localizeNumber(item.withoutCertificate.toLocaleString(), "ne")}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {localizeNumber(item.total.toLocaleString(), "ne")}
+                      </td>
+                      <td className="border p-2 text-right">
+                        {localizeNumber(item.coverageRate, "ne")}%
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
                 <tfoot>
                   <tr className="font-semibold bg-muted/70">
@@ -120,10 +174,16 @@ export default function BirthCertificateCharts({
                       जम्मा
                     </td>
                     <td className="border p-2 text-right">
-                      {localizeNumber(totalCertificateHolders.toLocaleString(), "ne")}
+                      {localizeNumber(totalWithCertificate.toLocaleString(), "ne")}
                     </td>
                     <td className="border p-2 text-right">
-                      {localizeNumber("100.00", "ne")}%
+                      {localizeNumber(totalWithoutCertificate.toLocaleString(), "ne")}
+                    </td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber(totalPopulation.toLocaleString(), "ne")}
+                    </td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber(overallCoverageRate, "ne")}%
                     </td>
                   </tr>
                 </tfoot>
@@ -142,11 +202,11 @@ export default function BirthCertificateCharts({
       >
         <meta
           itemProp="name"
-          content="Ward-wise Birth Certificate Holders in Khajura Rural Municipality"
+          content="Ward-wise Birth Certificate Distribution in Khajura Rural Municipality"
         />
         <meta
           itemProp="description"
-          content="Birth certificate distribution across wards in Khajura"
+          content="Birth certificate distribution across wards in Khajura showing both with and without certificates"
         />
 
         <div className="border-b px-4 py-3">
@@ -154,7 +214,7 @@ export default function BirthCertificateCharts({
             वडा अनुसार जन्मदर्ता प्रमाणपत्र वितरण
           </h3>
           <p className="text-sm text-muted-foreground">
-            वडा अनुसार पाँच वर्षमुनिका बालबालिकाहरूको जन्मदर्ता प्रमाणपत्र धारक वितरण
+            वडा अनुसार पाँच वर्षमुनिका बालबालिकाहरूको जन्मदर्ता स्थिति
           </p>
         </div>
 
@@ -164,6 +224,17 @@ export default function BirthCertificateCharts({
               barChartData={barChartData}
               CHART_COLORS={CHART_COLORS}
             />
+          </div>
+          
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-sm" style={{ backgroundColor: CHART_COLORS.primary }}></div>
+              <span className="text-sm">जन्मदर्ता प्रमाणपत्र भएका</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded-sm" style={{ backgroundColor: CHART_COLORS.secondary }}></div>
+              <span className="text-sm">जन्मदर्ता प्रमाणपत्र नभेका</span>
+            </div>
           </div>
         </div>
       </div>
@@ -176,19 +247,19 @@ export default function BirthCertificateCharts({
       >
         <meta
           itemProp="name"
-          content="Birth Certificate Comparison by Ward in Khajura Rural Municipality"
+          content="Birth Certificate Coverage by Ward in Khajura Rural Municipality"
         />
         <meta
           itemProp="description"
-          content="Ward-wise comparison of birth certificates for children under 5 years in Khajura"
+          content="Ward-wise coverage rates of birth certificates for children under 5 years in Khajura"
         />
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            वडागत तुलनात्मक जन्मदर्ता विवरण
+            वडागत जन्मदर्ता कभरेज दर
           </h3>
           <p className="text-sm text-muted-foreground">
-            विभिन्न वडाहरूमा जन्मदर्ता प्रमाणपत्र धारकहरूको तुलनात्मक अध्ययन
+            विभिन्न वडाहरूमा जन्मदर्ता प्रमाणपत्र कभरेज दरको तुलनात्मक अध्ययन
           </p>
         </div>
 
@@ -199,6 +270,10 @@ export default function BirthCertificateCharts({
               CHART_COLORS={CHART_COLORS}
               highestWard={highestWard}
               lowestWard={lowestWard}
+              highestCoverageWard={highestCoverageWard}
+              lowestCoverageWard={lowestCoverageWard}
+              totalWithCertificate={totalWithCertificate}
+              totalPopulation={totalPopulation}
             />
           </div>
         </div>
@@ -206,42 +281,34 @@ export default function BirthCertificateCharts({
         <div className="p-4 border-t">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-muted/50 p-4 rounded-lg">
-              <div className="text-sm font-medium text-muted-foreground mb-2">सबैभन्दा बढी जन्मदर्ता प्रमाणपत्र</div>
+              <div className="text-sm font-medium text-muted-foreground mb-2">सबैभन्दा बढी जन्मदर्ता कभरेज</div>
               <div className="text-2xl font-bold">
-                वडा {localizeNumber(highestWard.wardNumber.toString(), "ne")}
+                वडा {localizeNumber(highestCoverageWard.wardNumber.toString(), "ne")}
               </div>
               <div className="flex justify-between mt-2">
-                <span className="text-sm">जन्मदर्ता संख्या:</span>
-                <span className="font-medium">{localizeNumber(highestWard.birthCertificateHolders.toLocaleString(), "ne")}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm">प्रतिशत:</span>
-                <span className="font-medium">{localizeNumber(highestWard.percentage, "ne")}%</span>
+                <span className="text-sm">कभरेज दर:</span>
+                <span className="font-medium">{localizeNumber(highestCoverageWard.coverageRate, "ne")}%</span>
               </div>
             </div>
             
             <div className="bg-card p-4 rounded-lg border">
-              <div className="text-sm font-medium text-muted-foreground mb-2">कुल जन्मदर्ता प्रमाणपत्र धारक संख्या</div>
+              <div className="text-sm font-medium text-muted-foreground mb-2">समग्र जन्मदर्ता कभरेज दर</div>
               <div className="text-3xl font-bold text-center">
-                {localizeNumber(totalCertificateHolders.toLocaleString(), "ne")}
+                {localizeNumber(overallCoverageRate, "ne")}%
               </div>
               <div className="text-sm text-center text-muted-foreground mt-2">
-                पाँच वर्षमुनिका बालबालिकाहरू
+                {localizeNumber(totalWithCertificate.toLocaleString(), "ne")}/{localizeNumber(totalPopulation.toLocaleString(), "ne")} बालबालिका
               </div>
             </div>
             
             <div className="bg-muted/50 p-4 rounded-lg">
-              <div className="text-sm font-medium text-muted-foreground mb-2">सबैभन्दा कम जन्मदर्ता प्रमाणपत्र</div>
+              <div className="text-sm font-medium text-muted-foreground mb-2">सबैभन्दा कम जन्मदर्ता कभरेज</div>
               <div className="text-2xl font-bold">
-                वडा {localizeNumber(lowestWard.wardNumber.toString(), "ne")}
+                वडा {localizeNumber(lowestCoverageWard.wardNumber.toString(), "ne")}
               </div>
               <div className="flex justify-between mt-2">
-                <span className="text-sm">जन्मदर्ता संख्या:</span>
-                <span className="font-medium">{localizeNumber(lowestWard.birthCertificateHolders.toLocaleString(), "ne")}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm">प्रतिशत:</span>
-                <span className="font-medium">{localizeNumber(lowestWard.percentage, "ne")}%</span>
+                <span className="text-sm">कभरेज दर:</span>
+                <span className="font-medium">{localizeNumber(lowestCoverageWard.coverageRate, "ne")}%</span>
               </div>
             </div>
           </div>

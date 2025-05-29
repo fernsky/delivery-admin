@@ -11,14 +11,19 @@ import {
   Tooltip,
   Cell,
   ReferenceLine,
+  Legend,
 } from "recharts";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface BirthCertificateComparisonProps {
   wardWiseAnalysis: Array<{
     wardNumber: number;
-    birthCertificateHolders: number;
-    percentage: string;
+    withCertificate: number;
+    withoutCertificate: number;
+    total: number;
+    percentageWithCertificate: string;
+    percentageOfTotal: string;
+    coverageRate: string;
   }>;
   CHART_COLORS: {
     primary: string;
@@ -28,14 +33,26 @@ interface BirthCertificateComparisonProps {
   };
   highestWard: {
     wardNumber: number;
-    birthCertificateHolders: number;
-    percentage: string;
+    withCertificate: number;
+    percentageWithCertificate: string;
+    coverageRate: string;
   };
   lowestWard: {
     wardNumber: number;
-    birthCertificateHolders: number;
-    percentage: string;
+    withCertificate: number;
+    percentageWithCertificate: string;
+    coverageRate: string;
   };
+  highestCoverageWard: {
+    wardNumber: number;
+    coverageRate: string;
+  };
+  lowestCoverageWard: {
+    wardNumber: number;
+    coverageRate: string;
+  };
+  totalWithCertificate: number;
+  totalPopulation: number;
 }
 
 export default function BirthCertificateComparison({
@@ -43,49 +60,68 @@ export default function BirthCertificateComparison({
   CHART_COLORS,
   highestWard,
   lowestWard,
+  highestCoverageWard,
+  lowestCoverageWard,
+  totalWithCertificate,
+  totalPopulation,
 }: BirthCertificateComparisonProps) {
-  // Calculate average birth certificates per ward
-  const totalCertificates = wardWiseAnalysis.reduce(
-    (sum, ward) => sum + ward.birthCertificateHolders, 0
-  );
-  const averageCertificates = totalCertificates / wardWiseAnalysis.length;
+  // Calculate average coverage rate
+  const overallCoverageRate = totalPopulation > 0
+    ? (totalWithCertificate / totalPopulation) * 100
+    : 0;
 
   // Prepare data for comparison chart
   const comparisonData = wardWiseAnalysis.sort((a, b) => a.wardNumber - b.wardNumber).map(ward => ({
     ward: `वडा ${ward.wardNumber}`,
-    count: ward.birthCertificateHolders,
-    percentage: parseFloat(ward.percentage),
-    average: averageCertificates,
+    withCertificate: ward.withCertificate,
+    withoutCertificate: ward.withoutCertificate,
+    total: ward.total,
+    coverageRate: parseFloat(ward.coverageRate),
+    averageCoverageRate: overallCoverageRate,
   }));
 
   // Custom tooltip for better presentation
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
-      const { count, percentage, average } = payload[0].payload;
-      const aboveOrBelow = count >= average 
-        ? "औसत भन्दा माथि" 
-        : "औसत भन्दा तल";
-      const difference = Math.abs(count - average).toFixed(2);
+      const { withCertificate, withoutCertificate, total, coverageRate } = payload[0].payload;
       
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
           <p className="font-medium">{localizeNumber(label, "ne")}</p>
           <div className="flex justify-between gap-4 mt-1">
-            <span className="text-sm">जन्मदर्ता संख्या:</span>
+            <span className="text-sm">जन्मदर्ता भएका:</span>
             <span className="font-medium">
-              {localizeNumber(count.toLocaleString(), "ne")}
+              {localizeNumber(withCertificate.toLocaleString(), "ne")}
             </span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-sm">प्रतिशत:</span>
+            <span className="text-sm">जन्मदर्ता नभएका:</span>
             <span className="font-medium">
-              {localizeNumber(percentage.toFixed(2), "ne")}%
+              {localizeNumber(withoutCertificate.toLocaleString(), "ne")}
+            </span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-sm">कुल जनसंख्या:</span>
+            <span className="font-medium">
+              {localizeNumber(total.toLocaleString(), "ne")}
             </span>
           </div>
           <div className="flex justify-between gap-4 mt-1">
-            <span className="text-sm">{localizeNumber(aboveOrBelow, "ne")}:</span>
+            <span className="text-sm">कभरेज दर:</span>
             <span className="font-medium">
-              {localizeNumber(difference, "ne")}
+              {localizeNumber(coverageRate.toFixed(2), "ne")}%
+            </span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-sm">औसत कभरेज दर:</span>
+            <span className="font-medium">
+              {localizeNumber(overallCoverageRate.toFixed(2), "ne")}%
+            </span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-sm">अन्तर:</span>
+            <span className="font-medium">
+              {localizeNumber((coverageRate - overallCoverageRate).toFixed(2), "ne")}%
             </span>
           </div>
         </div>
@@ -122,9 +158,10 @@ export default function BirthCertificateComparison({
         <YAxis
           yAxisId="right"
           orientation="right"
+          domain={[0, 100]}
           tickFormatter={(value) => localizeNumber(value.toString() + '%', "ne")}
           label={{ 
-            value: 'प्रतिशत',
+            value: 'कभरेज दर',
             angle: 90,
             position: 'insideRight',
             style: { textAnchor: 'middle' }
@@ -134,43 +171,54 @@ export default function BirthCertificateComparison({
         
         {/* Average reference line */}
         <ReferenceLine 
-          y={averageCertificates} 
-          yAxisId="left"
+          y={overallCoverageRate} 
+          yAxisId="right"
           stroke={CHART_COLORS.accent}
           strokeDasharray="3 3"
           label={{ 
-            value: `औसत: ${localizeNumber(averageCertificates.toFixed(1), "ne")}`,
+            value: `औसत: ${localizeNumber(overallCoverageRate.toFixed(1), "ne")}%`,
             position: 'insideBottomLeft',
             fill: CHART_COLORS.accent,
             fontSize: 12
           }}
         />
         
-        {/* Bar chart for actual values */}
+        {/* Stacked bar chart for population */}
         <Bar
-          dataKey="count"
-          name="जन्मदर्ता संख्या"
+          dataKey="withCertificate"
+          name="जन्मदर्ता भएका"
+          stackId="a"
           fill={CHART_COLORS.primary}
           yAxisId="left"
-        >
-          {comparisonData.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={entry.count > averageCertificates ? CHART_COLORS.primary : CHART_COLORS.secondary}
-            />
-          ))}
-        </Bar>
+        />
+        <Bar
+          dataKey="withoutCertificate"
+          name="जन्मदर्ता नभएका"
+          stackId="a"
+          fill={CHART_COLORS.secondary}
+          yAxisId="left"
+        />
         
-        {/* Line for percentage */}
+        {/* Line for coverage rate */}
         <Line
           type="monotone"
-          dataKey="percentage"
+          dataKey="coverageRate"
           stroke={CHART_COLORS.accent}
           strokeWidth={2}
           yAxisId="right"
-          name="प्रतिशत"
+          name="कभरेज दर"
           dot={{ r: 4, fill: CHART_COLORS.accent }}
           activeDot={{ r: 6 }}
+        />
+
+        <Legend 
+          wrapperStyle={{ paddingTop: "10px" }}
+          formatter={(value) => {
+            if (value === "जन्मदर्ता भएका") return "जन्मदर्ता भएका";
+            if (value === "जन्मदर्ता नभएका") return "जन्मदर्ता नभएका";
+            if (value === "कभरेज दर") return "कभरेज दर (%)";
+            return value;
+          }}
         />
       </ComposedChart>
     </ResponsiveContainer>

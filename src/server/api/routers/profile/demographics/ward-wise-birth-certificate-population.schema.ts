@@ -4,7 +4,9 @@ import { z } from "zod";
 export const wardWiseBirthCertificatePopulationSchema = z.object({
   id: z.string().optional(),
   wardNumber: z.number().int().positive(),
-  birthCertificateHoldersBelow5years: z.number().int().nonnegative(),
+  withBirthCertificate: z.number().int().nonnegative(),
+  withoutBirthCertificate: z.number().int().nonnegative(),
+  totalPopulationUnder5: z.number().int().nonnegative().optional(),
 });
 
 // Schema for filtering ward-wise birth certificate population data

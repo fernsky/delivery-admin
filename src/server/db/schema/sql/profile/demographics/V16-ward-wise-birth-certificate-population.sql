@@ -7,7 +7,9 @@ BEGIN
         CREATE TABLE acme_ward_wise_birth_certificate_population (
             id VARCHAR(36) PRIMARY KEY,
             ward_number INTEGER NOT NULL,
-            birth_certificate_holders_below_5years INTEGER NOT NULL CHECK (birth_certificate_holders_below_5years >= 0),
+            with_birth_certificate INTEGER NOT NULL CHECK (with_birth_certificate >= 0),
+            without_birth_certificate INTEGER NOT NULL CHECK (without_birth_certificate >= 0),
+            total_population_under_5 INTEGER GENERATED ALWAYS AS (with_birth_certificate + without_birth_certificate) STORED,
             updated_at TIMESTAMP DEFAULT NOW(),
             created_at TIMESTAMP DEFAULT NOW()
         );
@@ -15,23 +17,22 @@ BEGIN
 END
 $$;
 
--- Insert seed data if table is empty
+-- Insert updated seed data if table is empty
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM acme_ward_wise_birth_certificate_population) THEN
         INSERT INTO acme_ward_wise_birth_certificate_population (
-            id, ward_number, birth_certificate_holders_below_5years
+            id, ward_number, with_birth_certificate, without_birth_certificate
         )
         VALUES
-        -- Sample data for each ward
-        (gen_random_uuid(), 1, 123),
-        (gen_random_uuid(), 2, 156),
-        (gen_random_uuid(), 3, 178),
-        (gen_random_uuid(), 4, 92),
-        (gen_random_uuid(), 5, 88),
-        (gen_random_uuid(), 6, 145),
-        (gen_random_uuid(), 7, 79),
-        (gen_random_uuid(), 8, 112);
+        (gen_random_uuid(), 1, 116, 12),
+        (gen_random_uuid(), 2, 322, 33),
+        (gen_random_uuid(), 3, 200, 20),
+        (gen_random_uuid(), 4, 193, 19),
+        (gen_random_uuid(), 5, 352, 36),
+        (gen_random_uuid(), 6, 348, 35),
+        (gen_random_uuid(), 7, 381, 38),
+        (gen_random_uuid(), 8, 302, 30);
     END IF;
 END
 $$;

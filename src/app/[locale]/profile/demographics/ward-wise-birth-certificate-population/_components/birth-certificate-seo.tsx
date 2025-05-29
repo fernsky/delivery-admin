@@ -5,47 +5,74 @@ interface BirthCertificateSEOProps {
   birthCertificateData: Array<{
     id?: string;
     wardNumber: number;
-    birthCertificateHoldersBelow5years: number;
+    withBirthCertificate: number;
+    withoutBirthCertificate: number;
+    totalPopulationUnder5?: number;
   }>;
-  totalCertificateHolders: number;
+  totalWithCertificate: number;
+  totalWithoutCertificate: number;
+  totalPopulation: number;
   wardNumbers: number[];
 }
 
 export default function BirthCertificateSEO({
   birthCertificateData,
-  totalCertificateHolders,
+  totalWithCertificate,
+  totalWithoutCertificate,
+  totalPopulation,
   wardNumbers,
 }: BirthCertificateSEOProps) {
   // Create structured data for SEO
   const generateStructuredData = () => {
     // Convert birth certificate stats to structured data format
-    const wardObservations = birthCertificateData.map((item) => ({
-      "@type": "Observation",
-      name: `Birth Certificate Holders Under 5 Years in Ward ${item.wardNumber} of Khajura Rural Municipality`,
-      observationDate: new Date().toISOString().split("T")[0],
-      measuredProperty: {
-        "@type": "PropertyValue",
-        name: "Birth Certificate Holders Under 5 Years",
-        unitText: "children",
-      },
-      measuredValue: item.birthCertificateHoldersBelow5years,
-      description: `${item.birthCertificateHoldersBelow5years.toLocaleString()} children under 5 years in Ward ${item.wardNumber} of Khajura Rural Municipality hold birth certificates`,
-    }));
+    const wardObservations = birthCertificateData.map((item) => {
+      const total = (item.withBirthCertificate || 0) + (item.withoutBirthCertificate || 0);
+      const coverageRate = total > 0 
+        ? ((item.withBirthCertificate / total) * 100).toFixed(2)
+        : "0";
+        
+      return {
+        "@type": "Observation",
+        name: `Birth Certificate Status for Children Under 5 Years in Ward ${item.wardNumber} of Khajura Rural Municipality`,
+        observationDate: new Date().toISOString().split("T")[0],
+        measuredProperty: [
+          {
+            "@type": "PropertyValue",
+            name: "Children With Birth Certificates",
+            unitText: "children",
+            value: item.withBirthCertificate
+          },
+          {
+            "@type": "PropertyValue",
+            name: "Children Without Birth Certificates",
+            unitText: "children",
+            value: item.withoutBirthCertificate
+          },
+          {
+            "@type": "PropertyValue",
+            name: "Birth Certificate Coverage Rate",
+            unitText: "percentage",
+            value: coverageRate
+          }
+        ],
+        description: `Ward ${item.wardNumber} of Khajura Rural Municipality has ${item.withBirthCertificate} children with birth certificates and ${item.withoutBirthCertificate} without birth certificates, representing a ${coverageRate}% coverage rate.`
+      }
+    });
 
     // Find ward with highest birth certificate registration
     const highestWard = [...birthCertificateData].sort(
-      (a, b) => b.birthCertificateHoldersBelow5years - a.birthCertificateHoldersBelow5years
-    )[0] || { wardNumber: 0, birthCertificateHoldersBelow5years: 0 };
+      (a, b) => b.withBirthCertificate - a.withBirthCertificate
+    )[0] || { wardNumber: 0, withBirthCertificate: 0, withoutBirthCertificate: 0 };
     
-    const highestWardPercentage = totalCertificateHolders > 0 
-      ? ((highestWard.birthCertificateHoldersBelow5years / totalCertificateHolders) * 100).toFixed(2)
+    const overallCoverageRate = totalPopulation > 0 
+      ? ((totalWithCertificate / totalPopulation) * 100).toFixed(2)
       : "0";
 
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      name: "Birth Certificate Holders Under 5 Years in Khajura Rural Municipality (खजुरा गाउँपालिका)",
-      description: `Birth certificate data for children under 5 years across ${wardNumbers.length} wards of Khajura Rural Municipality with a total of ${totalCertificateHolders.toLocaleString()} children having birth certificates. Ward ${highestWard.wardNumber} has the highest number with ${highestWard.birthCertificateHoldersBelow5years.toLocaleString()} birth certificates (${highestWardPercentage}%).`,
+      name: "Birth Certificate Status for Children Under 5 Years in Khajura Rural Municipality (खजुरा गाउँपालिका)",
+      description: `Birth certificate data for children under 5 years across ${wardNumbers.length} wards of Khajura Rural Municipality. Total population: ${totalPopulation.toLocaleString()} children, with ${totalWithCertificate.toLocaleString()} having birth certificates (${overallCoverageRate}% coverage) and ${totalWithoutCertificate.toLocaleString()} without birth certificates.`,
       keywords: [
         "Khajura Rural Municipality",
         "खजुरा गाउँपालिका",
@@ -54,6 +81,7 @@ export default function BirthCertificateSEO({
         "Ward-wise birth registration data",
         "Nepal vital statistics",
         "Birth registration statistics",
+        "Birth certificate coverage",
       ],
       url: "https://digital.khajuramun.gov.np/profile/demographics/ward-wise-birth-certificate-population",
       creator: {
@@ -74,18 +102,44 @@ export default function BirthCertificateSEO({
       variableMeasured: [
         ...wardNumbers.map((wardNumber) => {
           const wardData = birthCertificateData.find((item) => item.wardNumber === wardNumber);
-          return {
-            "@type": "PropertyValue",
-            name: `Ward ${wardNumber} Birth Certificate Holders`,
-            unitText: "children",
-            value: wardData?.birthCertificateHoldersBelow5years || 0,
-          };
-        }),
+          return [
+            {
+              "@type": "PropertyValue",
+              name: `Ward ${wardNumber} Children With Birth Certificates`,
+              unitText: "children",
+              value: wardData?.withBirthCertificate || 0,
+            },
+            {
+              "@type": "PropertyValue",
+              name: `Ward ${wardNumber} Children Without Birth Certificates`,
+              unitText: "children",
+              value: wardData?.withoutBirthCertificate || 0,
+            }
+          ];
+        }).flat(),
         {
           "@type": "PropertyValue",
-          name: "Total Birth Certificate Holders Under 5 Years",
+          name: "Total Children With Birth Certificates",
           unitText: "children",
-          value: totalCertificateHolders,
+          value: totalWithCertificate,
+        },
+        {
+          "@type": "PropertyValue",
+          name: "Total Children Without Birth Certificates",
+          unitText: "children",
+          value: totalWithoutCertificate,
+        },
+        {
+          "@type": "PropertyValue",
+          name: "Total Children Under 5 Years",
+          unitText: "children",
+          value: totalPopulation,
+        },
+        {
+          "@type": "PropertyValue",
+          name: "Overall Birth Certificate Coverage Rate",
+          unitText: "percentage",
+          value: overallCoverageRate,
         }
       ],
       observation: wardObservations,
