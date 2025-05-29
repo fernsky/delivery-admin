@@ -92,6 +92,45 @@ const WardInfo: React.FC<WardInfoProps> = ({
       });
   }, [wardData]);
 
+  // Calculate totals for the summary row
+  const wardTotals = useMemo(() => {
+    if (!processedWards || processedWards.length === 0) {
+      return {
+        totalPopulation: 0,
+        totalHouseholds: 0,
+        totalArea: 0,
+        avgDensity: 0,
+        avgSexRatio: 0,
+      };
+    }
+
+    const totalPopulation = processedWards.reduce(
+      (sum, ward) => sum + ward.population,
+      0,
+    );
+    const totalHouseholds = processedWards.reduce(
+      (sum, ward) => sum + ward.households,
+      0,
+    );
+    const totalArea = processedWards.reduce((sum, ward) => sum + ward.area, 0);
+
+    // Calculate weighted average density and sex ratio
+    const avgDensity = totalPopulation / totalArea || 0;
+
+    // For sex ratio, take the average of all wards
+    const avgSexRatio =
+      processedWards.reduce((sum, ward) => sum + ward.sexRatio, 0) /
+        processedWards.length || 0;
+
+    return {
+      totalPopulation,
+      totalHouseholds,
+      totalArea,
+      avgDensity: parseFloat(avgDensity.toFixed(2)),
+      avgSexRatio: parseFloat(avgSexRatio.toFixed(2)),
+    };
+  }, [processedWards]);
+
   // Create structured data for SEO
   const structuredData = {
     "@context": "https://schema.org",
@@ -274,6 +313,48 @@ const WardInfo: React.FC<WardInfoProps> = ({
                         </td>
                       </motion.tr>
                     ))}
+                    
+                    {/* Totals Row */}
+                    <motion.tr 
+                      variants={itemVariants}
+                      className="bg-[#123772]/10 font-medium"
+                    >
+                      <td className="py-3 px-4 border-t border-[#123772]/20">
+                        <div className="flex items-center gap-2">
+                          <div className="text-[#0b1f42] font-semibold">जम्मा</div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 border-t border-[#123772]/20 text-[#0b1f42] font-semibold">
+                        {localizeNumber(
+                          wardTotals.totalPopulation.toLocaleString(),
+                          "ne",
+                        )}
+                      </td>
+                      <td className="py-3 px-4 border-t border-[#123772]/20 text-[#0b1f42] font-semibold">
+                        {localizeNumber(
+                          wardTotals.totalHouseholds.toLocaleString(),
+                          "ne",
+                        )}
+                      </td>
+                      <td className="py-3 px-4 border-t border-[#123772]/20 text-[#0b1f42] font-semibold">
+                        {localizeNumber(
+                          wardTotals.totalArea.toFixed(2),
+                          "ne",
+                        )}
+                      </td>
+                      <td className="py-3 px-4 border-t border-[#123772]/20 text-[#0b1f42] font-semibold">
+                        {localizeNumber(
+                          wardTotals.avgDensity.toFixed(2),
+                          "ne",
+                        )}
+                      </td>
+                      <td className="py-3 px-4 border-t border-[#123772]/20 text-[#0b1f42] font-semibold">
+                        {localizeNumber(
+                          wardTotals.avgSexRatio.toFixed(2),
+                          "ne",
+                        )}
+                      </td>
+                    </motion.tr>
                   </tbody>
                 </table>
               </div>

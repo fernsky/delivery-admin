@@ -33,12 +33,16 @@ const navItems = [
     icon: <Users className="w-4 h-4" />,
     items: [
       {
-        title: "जनसंख्या सारांश",
+        title: "जनसंख्याको सारांश",
         href: "/profile/demographics/ward-wise-summary",
       },
       {
-        title: "वडा अनुसार जनसंख्या",
+        title: "उमेर र लिङ्ग अनुसार जनसंख्या",
         href: "/profile/demographics/ward-age-wise-population",
+      },
+      {
+        title: "मातृभाषा अनुसार जनसंख्या",
+        href: "/profile/demographics/ward-wise-mother-tongue-population",
       },
       {
         title: "जात/जनजाति अनुसार जनसंख्या",
@@ -48,10 +52,7 @@ const navItems = [
         title: "घरमुलीको लिङ्ग अनुसार घरधुरी",
         href: "/profile/demographics/ward-wise-househead-gender",
       },
-      {
-        title: "मातृभाषा अनुसार जनसंख्या",
-        href: "/profile/demographics/ward-wise-mother-tongue-population",
-      },
+
       {
         title: "धर्म अनुसार जनसंख्या",
         href: "/profile/demographics/ward-wise-religion-population",
@@ -60,10 +61,6 @@ const navItems = [
         title: "उमेर अनुसार वैवाहिक स्थिति",
         href: "/profile/demographics/ward-age-wise-marital-status",
       },
-      // {
-      //   title: "उमेर र लिङ्ग अनुसार जनसंख्या",
-      //   href: "/profile/demographics/ward-age-wise-population",
-      // },
       // {
       //   title: "वर्ष अनुसार जनसंख्या परिवर्तन",
       //   href: "/profile/demographics/ward-time-series-population",
