@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface OccupationAnalysisSectionProps {
   overallSummary: Array<{
@@ -20,35 +21,36 @@ export default function OccupationAnalysisSection({
   OCCUPATION_NAMES,
   OCCUPATION_NAMES_EN,
 }: OccupationAnalysisSectionProps) {
+  // Updated modern aesthetic color palette for occupations
   const OCCUPATION_COLORS = {
-    GOVERNMENTAL_JOB: "#FF5733", // Red-orange
-    NON_GOVERNMENTAL_JOB: "#FFC300", // Yellow
-    LABOUR: "#36A2EB", // Blue
-    FOREIGN_EMPLOYMENT: "#4BC0C0", // Cyan
-    BUSINESS: "#9966FF", // Purple
-    OTHER_EMPLOYMENT: "#3CB371", // Green
-    STUDENT: "#FF6384", // Pink
-    HOUSEHOLDER: "#FFCE56", // Light orange
-    OTHER_UNEMPLOYMENT: "#607D8B", // Grey
-    INDUSTRY: "#E91E63", // Magenta
-    ANIMAL_HUSBANDRY: "#8BC34A", // Light green
-    OTHER_SELF_EMPLOYMENT: "#FF9F40", // Orange
+    GOVERNMENT_SERVICE: "#6366F1", // Indigo
+    NON_GOVERNMENT_SERVICE: "#8B5CF6", // Purple
+    DAILY_WAGE: "#EC4899", // Pink
+    FOREIGN_EMPLOYMENT: "#F43F5E", // Rose
+    BUSINESS: "#10B981", // Emerald
+    OTHERS: "#14B8A6", // Teal
+    STUDENT: "#06B6D4", // Cyan
+    HOUSEHOLD_WORK: "#3B82F6", // Blue
+    UNEMPLOYED: "#F59E0B", // Amber
+    INDUSTRY_WORK: "#84CC16", // Lime
+    ANIMAL_HUSBANDRY: "#9333EA", // Fuchsia
+    SELF_EMPLOYED: "#EF4444", // Red
   };
 
   // Calculate employment categories
   const employedCategories = [
-    "GOVERNMENTAL_JOB",
-    "NON_GOVERNMENTAL_JOB",
-    "LABOUR",
+    "GOVERNMENT_SERVICE",
+    "NON_GOVERNMENT_SERVICE",
+    "DAILY_WAGE",
     "FOREIGN_EMPLOYMENT",
     "BUSINESS",
-    "INDUSTRY",
+    "INDUSTRY_WORK",
     "ANIMAL_HUSBANDRY",
-    "OTHER_SELF_EMPLOYMENT",
-    "OTHER_EMPLOYMENT",
+    "SELF_EMPLOYED",
+    "OTHERS",
   ];
 
-  const unemployedCategories = ["STUDENT", "HOUSEHOLDER", "OTHER_UNEMPLOYMENT"];
+  const unemployedCategories = ["STUDENT", "HOUSEHOLD_WORK", "UNEMPLOYED"];
 
   const employedPopulation = overallSummary
     .filter((item) => employedCategories.includes(item.occupation))
@@ -172,9 +174,11 @@ export default function OccupationAnalysisSection({
                     {OCCUPATION_NAMES_EN[item.occupation] || item.occupation}
                   </span>
                 </h3>
-                <p className="text-2xl font-bold">{percentage}%</p>
+                <p className="text-2xl font-bold">
+                  {localizeNumber(percentage, "ne")}%
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  {item.population.toLocaleString()} व्यक्ति
+                  {localizeNumber(item.population.toLocaleString(), "ne")} व्यक्ति
                   <span className="sr-only">
                     ({item.population.toLocaleString()} people)
                   </span>
@@ -202,9 +206,11 @@ export default function OccupationAnalysisSection({
                 Employment Rate in Khajura Rural Municipality
               </span>
             </h4>
-            <p className="text-3xl font-bold">{employmentRate}%</p>
+            <p className="text-3xl font-bold">
+              {localizeNumber(employmentRate, "ne")}%
+            </p>
             <p className="text-sm text-muted-foreground mt-2">
-              {employedPopulation.toLocaleString()} व्यक्ति कुनै न कुनै पेशामा
+              {localizeNumber(employedPopulation.toLocaleString(), "ne")} व्यक्ति कुनै न कुनै पेशामा
               संलग्न
               <span className="sr-only">
                 {employedPopulation.toLocaleString()} people are engaged in some
@@ -226,7 +232,7 @@ export default function OccupationAnalysisSection({
             </h4>
             <p className="text-lg">
               {topOccupation && secondOccupation
-                ? `हरेक ${topTwoOccupationRatio} ${topOccupation.occupationName} कर्मचारीका लागि १ ${secondOccupation.occupationName}`
+                ? `हरेक ${localizeNumber(topTwoOccupationRatio, "ne")} ${topOccupation.occupationName} कर्मचारीका लागि १ ${secondOccupation.occupationName}`
                 : ""}
               <span className="sr-only">
                 {topOccupation && secondOccupation
@@ -235,7 +241,7 @@ export default function OccupationAnalysisSection({
               </span>
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              {overallSummary.length} विभिन्न पेशाहरू अभिलेख गरिएको
+              {localizeNumber(overallSummary.length.toString(), "ne")} विभिन्न पेशाहरू अभिलेख गरिएको
             </p>
           </div>
         </div>
@@ -249,67 +255,67 @@ export default function OccupationAnalysisSection({
             <div>
               <h5 className="text-sm font-medium">सरकारी/निजी क्षेत्र</h5>
               <p className="text-sm text-muted-foreground">
-                {(overallSummary.find(
-                  (item) => item.occupation === "GOVERNMENTAL_JOB",
+                {localizeNumber(((overallSummary.find(
+                  (item) => item.occupation === "GOVERNMENT_SERVICE",
                 )?.population || 0) +
                   (overallSummary.find(
-                    (item) => item.occupation === "NON_GOVERNMENTAL_JOB",
-                  )?.population || 0)}{" "}
+                    (item) => item.occupation === "NON_GOVERNMENT_SERVICE",
+                  )?.population || 0)).toLocaleString(), "ne")}{" "}
                 (
-                {(
+                {localizeNumber((
                   (((overallSummary.find(
-                    (item) => item.occupation === "GOVERNMENTAL_JOB",
+                    (item) => item.occupation === "GOVERNMENT_SERVICE",
                   )?.population || 0) +
                     (overallSummary.find(
-                      (item) => item.occupation === "NON_GOVERNMENTAL_JOB",
+                      (item) => item.occupation === "NON_GOVERNMENT_SERVICE",
                     )?.population || 0)) /
                     totalPopulation) *
                   100
-                ).toFixed(1)}
+                ).toFixed(1), "ne")}
                 %)
               </p>
             </div>
             <div>
               <h5 className="text-sm font-medium">स्वरोजगार</h5>
               <p className="text-sm text-muted-foreground">
-                {(overallSummary.find((item) => item.occupation === "BUSINESS")
+                {localizeNumber(((overallSummary.find((item) => item.occupation === "BUSINESS")
                   ?.population || 0) +
-                  (overallSummary.find((item) => item.occupation === "INDUSTRY")
+                  (overallSummary.find((item) => item.occupation === "INDUSTRY_WORK")
                     ?.population || 0) +
                   (overallSummary.find(
-                    (item) => item.occupation === "OTHER_SELF_EMPLOYMENT",
-                  )?.population || 0)}{" "}
+                    (item) => item.occupation === "SELF_EMPLOYED",
+                  )?.population || 0)).toLocaleString(), "ne")}{" "}
                 (
-                {(
+                {localizeNumber((
                   (((overallSummary.find(
                     (item) => item.occupation === "BUSINESS",
                   )?.population || 0) +
                     (overallSummary.find(
-                      (item) => item.occupation === "INDUSTRY",
+                      (item) => item.occupation === "INDUSTRY_WORK",
                     )?.population || 0) +
                     (overallSummary.find(
-                      (item) => item.occupation === "OTHER_SELF_EMPLOYMENT",
+                      (item) => item.occupation === "SELF_EMPLOYED",
                     )?.population || 0)) /
                     totalPopulation) *
                   100
-                ).toFixed(1)}
+                ).toFixed(1), "ne")}
                 %)
               </p>
             </div>
             <div>
               <h5 className="text-sm font-medium">कृषि तथा पशुपालन</h5>
               <p className="text-sm text-muted-foreground">
-                {overallSummary.find(
+                {localizeNumber((overallSummary.find(
                   (item) => item.occupation === "ANIMAL_HUSBANDRY",
-                )?.population || 0}{" "}
+                )?.population || 0).toLocaleString(), "ne")}{" "}
                 (
-                {(
+                {localizeNumber((
                   ((overallSummary.find(
                     (item) => item.occupation === "ANIMAL_HUSBANDRY",
                   )?.population || 0) /
                     totalPopulation) *
                   100
-                ).toFixed(1)}
+                ).toFixed(1), "ne")}
                 %)
               </p>
             </div>
@@ -317,29 +323,7 @@ export default function OccupationAnalysisSection({
         </div>
       </div>
 
-      <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">
-          थप जानकारी
-          <span className="sr-only">
-            Additional Information about Occupational Demographics in Khajura
-          </span>
-        </h3>
-        <p>
-          खजुरा गाउँपालिकाको पेशागत वितरण सम्बन्धी थप जानकारी वा विस्तृत
-          तथ्याङ्कको लागि, कृपया{" "}
-          <Link href="/contact" className="text-primary hover:underline">
-            हामीलाई सम्पर्क
-          </Link>{" "}
-          गर्नुहोस् वा{" "}
-          <Link
-            href="/profile/economics"
-            className="text-primary hover:underline"
-          >
-            आर्थिक तथ्याङ्क
-          </Link>{" "}
-          खण्डमा हेर्नुहोस्।
-        </p>
-      </div>
+     
     </>
   );
 }

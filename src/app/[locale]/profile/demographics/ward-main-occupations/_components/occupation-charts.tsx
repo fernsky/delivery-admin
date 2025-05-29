@@ -3,6 +3,7 @@ import { FileDown } from "lucide-react";
 import OccupationPieChart from "./charts/occupation-pie-chart";
 import OccupationBarChart from "./charts/occupation-bar-chart";
 import WardOccupationPieCharts from "./charts/ward-occupation-pie-charts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Define occupation colors for consistency
 const OCCUPATION_COLORS = {
@@ -55,11 +56,26 @@ export default function OccupationCharts({
   return (
     <>
       {/* Overall occupation distribution - with pre-rendered table and client-side chart */}
-      <div className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div 
+        className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Occupation Distribution in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content={`Occupational composition of Khajura with a total population of ${totalPopulation}`}
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">पेशा अनुसार जनसंख्या वितरण</h3>
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            पेशा अनुसार जनसंख्या वितरण
+          </h3>
           <p className="text-sm text-muted-foreground">
-            कुल जनसंख्या: {totalPopulation.toLocaleString()} व्यक्ति
+            कुल जनसंख्या: {localizeNumber(totalPopulation.toLocaleString(), "ne")} व्यक्ति
           </p>
         </div>
 
@@ -92,14 +108,13 @@ export default function OccupationCharts({
                 <tbody>
                   {overallSummary.map((item, i) => (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                      <td className="border p-2">{i + 1}</td>
+                      <td className="border p-2">{localizeNumber(i + 1, "ne")}</td>
                       <td className="border p-2">{item.occupationName}</td>
                       <td className="border p-2 text-right">
-                        {item.population.toLocaleString()}
+                        {localizeNumber(item.population.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {((item.population / totalPopulation) * 100).toFixed(2)}
-                        %
+                        {localizeNumber(((item.population / totalPopulation) * 100).toFixed(2), "ne")}%
                       </td>
                     </tr>
                   ))}
@@ -110,19 +125,16 @@ export default function OccupationCharts({
                       जम्मा
                     </td>
                     <td className="border p-2 text-right">
-                      {totalPopulation.toLocaleString()}
+                      {localizeNumber(totalPopulation.toLocaleString(), "ne")}
                     </td>
-                    <td className="border p-2 text-right">100.00%</td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber("100.00", "ne")}%
+                    </td>
                   </tr>
                 </tfoot>
               </table>
             </div>
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Excel डाउनलोड
-              </Button>
-            </div>
+            
           </div>
         </div>
 
@@ -146,7 +158,7 @@ export default function OccupationCharts({
                   <div className="flex justify-between items-center">
                     <span>{item.occupationName}</span>
                     <span className="font-medium">
-                      {((item.population / totalPopulation) * 100).toFixed(1)}%
+                      {localizeNumber(((item.population / totalPopulation) * 100).toFixed(1), "ne")}%
                     </span>
                   </div>
                   <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -167,16 +179,31 @@ export default function OccupationCharts({
           </div>
           <p className="text-sm text-muted-foreground pt-4">
             {overallSummary.length > 5
-              ? `${overallSummary.length - 5} अन्य पेशाहरू पनि छन्।`
+              ? `${localizeNumber(overallSummary.length - 5, "ne")} अन्य पेशाहरू पनि छन्।`
               : ""}
           </p>
         </div>
       </div>
 
       {/* Ward-wise distribution - pre-rendered table with client-side chart */}
-      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div 
+        className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Ward-wise Occupation Distribution in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content="Occupation distribution across wards in Khajura"
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">वडा अनुसार पेशागत वितरण</h3>
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            वडा अनुसार पेशागत वितरण
+          </h3>
           <p className="text-sm text-muted-foreground">
             वडा र पेशा अनुसार जनसंख्या वितरण
           </p>
@@ -194,9 +221,22 @@ export default function OccupationCharts({
       </div>
 
       {/* Detailed ward analysis - with pre-rendered HTML table for SEO */}
-      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div 
+        className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Detailed Occupational Analysis by Ward in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content="Detailed occupational composition of each ward in Khajura"
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">
+          <h3 className="text-xl font-semibold" itemProp="headline">
             वडा अनुसार विस्तृत पेशागत विश्लेषण
           </h3>
           <p className="text-sm text-muted-foreground">
@@ -238,7 +278,7 @@ export default function OccupationCharts({
 
                   return (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                      <td className="border p-2">वडा {wardNumber}</td>
+                      <td className="border p-2">वडा {localizeNumber(wardNumber, "ne")}</td>
                       <td className="border p-2">
                         {primaryOccupation
                           ? OCCUPATION_NAMES[primaryOccupation.occupation] ||
@@ -246,15 +286,17 @@ export default function OccupationCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {primaryOccupation?.population?.toLocaleString() || "0"}
+                        {primaryOccupation?.population
+                          ? localizeNumber(primaryOccupation.population.toLocaleString(), "ne")
+                          : "०"}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && primaryOccupation?.population
-                          ? (
-                              (primaryOccupation.population / wardTotal) *
-                              100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                          ? localizeNumber(
+                              ((primaryOccupation.population / wardTotal) * 100).toFixed(2),
+                              "ne"
+                            ) + "%"
+                          : "०%"}
                       </td>
                       <td className="border p-2">
                         {secondaryOccupation
@@ -263,16 +305,17 @@ export default function OccupationCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {secondaryOccupation?.population?.toLocaleString() ||
-                          "0"}
+                        {secondaryOccupation?.population
+                          ? localizeNumber(secondaryOccupation.population.toLocaleString(), "ne")
+                          : "०"}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && secondaryOccupation?.population
-                          ? (
-                              (secondaryOccupation.population / wardTotal) *
-                              100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                          ? localizeNumber(
+                              ((secondaryOccupation.population / wardTotal) * 100).toFixed(2),
+                              "ne"
+                            ) + "%"
+                          : "०%"}
                       </td>
                     </tr>
                   );
@@ -280,12 +323,7 @@ export default function OccupationCharts({
               </tbody>
             </table>
           </div>
-          <div className="mt-4 flex justify-end">
-            <Button variant="outline" size="sm">
-              <FileDown className="mr-2 h-4 w-4" />
-              Excel डाउनलोड
-            </Button>
-          </div>
+         
 
           {/* Ward pie charts (client component) */}
           <h4 className="text-lg font-medium mt-8 mb-4">वडागत पाई चार्ट</h4>

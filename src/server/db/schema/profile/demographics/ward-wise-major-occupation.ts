@@ -7,7 +7,7 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-export const wardWiseMajorOccupation = pgTable("ward_wise_major_occupation", {
+export const wardWiseMajorOccupation = pgTable("acme_ward_wise_major_occupation", {
   id: uuid("id").defaultRandom().primaryKey(),
   wardNumber: integer("ward_number").notNull(),
   occupation: text("occupation").notNull(),

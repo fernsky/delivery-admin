@@ -7,6 +7,7 @@ import OccupationAnalysisSection from "./_components/occupation-analysis-section
 import OccupationSEO from "./_components/occupation-seo";
 import { api } from "@/trpc/server";
 import { OccupationType } from "@/server/api/routers/profile/demographics/ward-wise-major-occupation.schema";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
@@ -19,37 +20,36 @@ export async function generateStaticParams() {
 
 // Optional: Add revalidation period if you want to update the static pages periodically
 export const revalidate = 86400; // Revalidate once per day (in seconds)
-
 // Define Nepali names for occupations
 const OCCUPATION_NAMES: Record<string, string> = {
-  GOVERNMENTAL_JOB: "सरकारी नोकरी / जागिर",
-  NON_GOVERNMENTAL_JOB: "गैरसरकारी नोकरी / जागिर",
-  LABOUR: "ज्याला/ मजदुरी",
+  GOVERNMENT_SERVICE: "सरकारी नोकरी / जागिर",
+  NON_GOVERNMENT_SERVICE: "गैरसरकारी नोकरी / जागिर",
+  DAILY_WAGE: "ज्याला/ मजदुरी",
   FOREIGN_EMPLOYMENT: "वैदेशिक रोजगारी",
   BUSINESS: "व्यापार",
-  OTHER_EMPLOYMENT: "अन्य रोजगारी",
+  OTHERS: "अन्य",
   STUDENT: "विद्यार्थी",
-  HOUSEHOLDER: "गृहणी",
-  OTHER_UNEMPLOYMENT: "अन्य बेरोजगार",
-  INDUSTRY: "उद्योग, व्यापार, कृषि",
+  HOUSEHOLD_WORK: "गृहणी",
+  UNEMPLOYED: "बेरोजगार",
+  INDUSTRY_WORK: "उद्योग, व्यापार, कृषि",
   ANIMAL_HUSBANDRY: "पशुपालन",
-  OTHER_SELF_EMPLOYMENT: "अन्य स्वरोजगार",
+  SELF_EMPLOYED: "स्वरोजगार",
 };
 
 // Define English names for occupations (for SEO)
 const OCCUPATION_NAMES_EN: Record<string, string> = {
-  GOVERNMENTAL_JOB: "Government Job",
-  NON_GOVERNMENTAL_JOB: "Non-Government Job",
-  LABOUR: "Daily Labor/Wage",
+  GOVERNMENT_SERVICE: "Government Service",
+  NON_GOVERNMENT_SERVICE: "Non-Government Service",
+  DAILY_WAGE: "Daily Wage/Labor",
   FOREIGN_EMPLOYMENT: "Foreign Employment",
   BUSINESS: "Business",
-  OTHER_EMPLOYMENT: "Other Employment",
+  OTHERS: "Others",
   STUDENT: "Student",
-  HOUSEHOLDER: "Housewife/Householder",
-  OTHER_UNEMPLOYMENT: "Other Unemployed",
-  INDUSTRY: "Industry, Trade, and Agriculture",
+  HOUSEHOLD_WORK: "Household Work",
+  UNEMPLOYED: "Unemployed",
+  INDUSTRY_WORK: "Industry Work",
   ANIMAL_HUSBANDRY: "Animal Husbandry",
-  OTHER_SELF_EMPLOYMENT: "Other Self-Employment",
+  SELF_EMPLOYED: "Self-Employed",
 };
 
 // This function will generate metadata dynamically based on the actual data
@@ -91,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "वडा अनुसार पेशागत वितरण",
       "आर्थिक गतिविधि तथ्याङ्क",
       "पेशागत सर्वेक्षण खजुरा",
-      `खजुरा कुल जनसंख्या ${totalPopulation}`,
+      `खजुरा कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")}`,
     ];
 
     const keywordsEN = [
@@ -109,12 +109,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ];
 
     // Create detailed description with actual data
-    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार मुख्य पेशागत वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${totalPopulation} मध्ये ${OCCUPATION_NAMES[topOccupations[0] as OccupationType]} (${occupationCounts[topOccupations[0]]}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${OCCUPATION_NAMES[topOccupations[1] as OccupationType]} (${occupationCounts[topOccupations[1]]}) र ${OCCUPATION_NAMES[topOccupations[2] as OccupationType]} (${occupationCounts[topOccupations[2]]})। विभिन्न पेशाहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
+    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार मुख्य पेशागत वितरण, प्रवृत्ति र विश्लेषण। कुल जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")} मध्ये ${OCCUPATION_NAMES[topOccupations[0] as OccupationType]} (${localizeNumber(occupationCounts[topOccupations[0]].toString(), "ne")}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${OCCUPATION_NAMES[topOccupations[1] as OccupationType]} (${localizeNumber(occupationCounts[topOccupations[1]].toString(), "ne")}) र ${OCCUPATION_NAMES[topOccupations[2] as OccupationType]} (${localizeNumber(occupationCounts[topOccupations[2]].toString(), "ne")})। विभिन्न पेशाहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
 
     const descriptionEN = `Ward-wise main occupation distribution, trends and analysis for Khajura Rural Municipality. Out of a total population of ${totalPopulation}, ${OCCUPATION_NAMES_EN[topOccupations[0] as OccupationType]} (${occupationCounts[topOccupations[0]]}) is the largest group, followed by ${OCCUPATION_NAMES_EN[topOccupations[1] as OccupationType]} (${occupationCounts[topOccupations[1]]}) and ${OCCUPATION_NAMES_EN[topOccupations[2] as OccupationType]} (${occupationCounts[topOccupations[2]]})। Detailed statistics and visualizations of various occupational categories.`;
 
     return {
-      title: `मुख्य पेशागत वितरण | ${municipalityName} पालिका प्रोफाइल`,
+      title: `मुख्य पेशागत वितरण | ${municipalityName} डिजिटल प्रोफाइल`,
       description: descriptionNP,
       keywords: [...keywordsNP, ...keywordsEN],
       alternates: {
@@ -141,7 +141,7 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     // Fallback metadata if data fetching fails
     return {
-      title: "मुख्य पेशागत वितरण | पालिका प्रोफाइल",
+      title: "मुख्य पेशागत वितरण | खजुरा गाउँपालिका डिजिटल प्रोफाइल",
       description:
         "वडा अनुसार मुख्य पेशागत वितरण, प्रवृत्ति र विश्लेषण। विभिन्न पेशाहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।",
     };
@@ -153,7 +153,6 @@ const toc = [
   { level: 2, text: "पेशा अनुसार जनसंख्या", slug: "occupation-distribution" },
   { level: 2, text: "वडा अनुसार पेशागत विविधता", slug: "ward-wise-occupation" },
   { level: 2, text: "प्रमुख पेशाहरूको विश्लेषण", slug: "major-occupations" },
-  { level: 2, text: "तथ्याङ्क स्रोत", slug: "data-source" },
 ];
 
 export default async function WardMainOccupationsPage() {
@@ -297,12 +296,12 @@ export default async function WardMainOccupationsPage() {
             </p>
             <p>
               खजुरा गाउँपालिकामा विभिन्न प्रकारका पेशाहरूमा मानिसहरू संलग्न छन्।
-              कुल जनसंख्या {totalPopulation.toLocaleString()} मध्ये{" "}
+              कुल जनसंख्या {localizeNumber(totalPopulation.toLocaleString(), "ne")} मध्ये{" "}
               {overallSummary[0]?.occupationName || ""} गर्ने व्यक्तिहरू{" "}
-              {(
+              {localizeNumber((
                 ((overallSummary[0]?.population || 0) / totalPopulation) *
                 100
-              ).toFixed(1)}
+              ).toFixed(1), "ne")}
               % रहेका छन्। यस तथ्याङ्कले रोजगारी सृजना, सीप विकास र आर्थिक
               योजनामा महत्वपूर्ण भूमिका खेल्दछ।
             </p>
@@ -341,10 +340,10 @@ export default async function WardMainOccupationsPage() {
                 overallSummary[0]?.occupation as keyof typeof OCCUPATION_NAMES
               ] || "कृषि"}{" "}
               सबैभन्दा धेरै व्यक्तिहरूले अपनाएको पेशा हो, जसमा कुल जनसंख्याको{" "}
-              {(
+              {localizeNumber((
                 ((overallSummary[0]?.population || 0) / totalPopulation) *
                 100
-              ).toFixed(2)}
+              ).toFixed(2), "ne")}
               % संलग्न छन्।
             </p>
 
@@ -355,22 +354,6 @@ export default async function WardMainOccupationsPage() {
               OCCUPATION_NAMES={OCCUPATION_NAMES}
               OCCUPATION_NAMES_EN={OCCUPATION_NAMES_EN}
             />
-
-            <h2 id="data-source" className="scroll-m-20 border-b pb-2">
-              तथ्याङ्क स्रोत
-            </h2>
-            <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू नेपालको राष्ट्रिय जनगणना र खजुरा
-              गाउँपालिकाको आफ्नै सर्वेक्षणबाट संकलन गरिएको हो। यी तथ्याङ्कहरूको
-              महत्व निम्न अनुसार छ:
-            </p>
-
-            <ul>
-              <li>स्थानीय रोजगारीको अवस्था र श्रम बजारको बुझाई</li>
-              <li>व्यावसायिक तालिम र सीप विकास कार्यक्रम लक्षित गर्न</li>
-              <li>स्थानीय आर्थिक विकासका अवसरहरू पहिचान गर्न</li>
-              <li>रोजगारी सृजना र आय वृद्धिका रणनीतिहरू निर्माण गर्न</li>
-            </ul>
           </div>
         </section>
       </div>

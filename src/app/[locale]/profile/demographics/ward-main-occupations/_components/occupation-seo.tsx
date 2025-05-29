@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface OccupationSEOProps {
   overallSummary: Array<{
@@ -52,11 +53,11 @@ export default function OccupationSEO({
         ),
         ...Object.values(OCCUPATION_NAMES).map((name) => `${name} तथ्याङ्क`),
       ],
-      url: "https://khajura-rm.gov.np/profile/economics/ward-main-occupations",
+      url: "https://digital.khajuramun.gov.np/profile/demographics/ward-main-occupations",
       creator: {
         "@type": "Organization",
         name: "Khajura Rural Municipality",
-        url: "https://khajura-rm.gov.np",
+        url: "https://digital.khajuramun.gov.np",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {
