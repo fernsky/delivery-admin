@@ -49,8 +49,8 @@ export default function HomePageSEO({
     name: municipalityName,
     alternateName: municipalityNameEn,
     description: `${municipalityName} (${municipalityNameEn}) ${districtName} जिल्लामा अवस्थित एक स्थानीय सरकार हो। यहाँ ${totalPopulation.toLocaleString()} जनसंख्या र ${totalHouseholds.toLocaleString()} घरधुरी छन्।`,
-    url: "https://khajuramun.digprofile.com",
-    logo: "https://khajuramun.digprofile.com/images/municipality-logo.png",
+    url: "https://digital.khajuramun.gov.np",
+    logo: "https://digital.khajuramun.gov.np/images/municipality-logo.png",
     address: {
       "@type": "PostalAddress",
       addressLocality: "खजुरा",
@@ -61,7 +61,7 @@ export default function HomePageSEO({
       "@type": "ContactPoint",
       telephone: "+977-000000000",
       contactType: "customer service",
-      email: "info@khajuramun.digprofile.com",
+      email: "info@digital.khajuramun.gov.np",
     },
     sameAs: [
       "https://www.facebook.com/khajuraruralmun/",
@@ -88,7 +88,7 @@ export default function HomePageSEO({
     "@type": "Dataset",
     name: `${municipalityName} जनसांख्यिकीय तथ्याङ्क`,
     description: `${municipalityName}को प्रमुख जनसांख्यिकीय तथ्याङ्क, जनगणना अनुसार`,
-    url: "https://khajuramun.digprofile.com/profile/demographics",
+    url: "https://digital.khajuramun.gov.np/profile/demographics",
     keywords: [
       "खजुरा गाउँपालिका जनसंख्या",
       "Khajura Rural Municipality demographics",
@@ -99,7 +99,7 @@ export default function HomePageSEO({
     creator: {
       "@type": "Organization",
       name: municipalityName,
-      url: "https://khajuramun.digprofile.com",
+      url: "https://digital.khajuramun.gov.np",
     },
     includedInDataCatalog: {
       "@type": "DataCatalog",
@@ -107,7 +107,7 @@ export default function HomePageSEO({
     },
     distribution: {
       "@type": "DataDownload",
-      contentUrl: "https://khajuramun.digprofile.com/data/demographics.csv",
+      contentUrl: "https://digital.khajuramun.gov.np/data/demographics.csv",
       encodingFormat: "CSV",
     },
     temporalCoverage: "2021/2023",
@@ -191,7 +191,7 @@ export default function HomePageSEO({
     name: municipalityName,
     alternateName: municipalityNameEn,
     description: `${municipalityName} (${municipalityNameEn}) ${districtName} जिल्लामा अवस्थित एक स्थानीय तह हो।`,
-    hasMap: "https://khajuramun.digprofile.com/map",
+    hasMap: "https://digital.khajuramun.gov.np/map",
     geo: {
       "@type": "GeoCoordinates",
       latitude: "28.1356",
@@ -206,7 +206,7 @@ export default function HomePageSEO({
         name: provinceName,
       },
     },
-    photo: "https://khajuramun.digprofile.com/images/municipality-photo.jpg",
+    photo: "https://digital.khajuramun.gov.np/images/municipality-photo.jpg",
   };
 
   // Create WebSite structured data
@@ -215,10 +215,10 @@ export default function HomePageSEO({
     "@type": "WebSite",
     name: `${municipalityName} अधिकारिक वेबसाइट`,
     alternateName: `${municipalityNameEn} Official Website`,
-    url: "https://khajuramun.digprofile.com",
+    url: "https://digital.khajuramun.gov.np",
     potentialAction: {
       "@type": "SearchAction",
-      target: "https://khajuramun.digprofile.com/search?q={search_term_string}",
+      target: "https://digital.khajuramun.gov.np/search?q={search_term_string}",
       "query-input": "required name=search_term_string",
     },
     inLanguage: ["ne-NP", "en-US"],
@@ -233,7 +233,7 @@ export default function HomePageSEO({
         "@type": "ListItem",
         position: 1,
         name: "मुख्य पृष्ठ",
-        item: "https://khajuramun.digprofile.com",
+        item: "https://digital.khajuramun.gov.np",
       },
     ],
   };

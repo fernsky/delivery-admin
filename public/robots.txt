@@ -3,8 +3,8 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://khajuramun.digprofile.com
+Host: https://digital.khajuramun.gov.np
 
 # Sitemaps
-Sitemap: https://khajuramun.digprofile.com/sitemap.xml
-Sitemap: https://khajuramun.digprofile.com/sitemap-index.xml
+Sitemap: https://digital.khajuramun.gov.np/sitemap.xml
+Sitemap: https://digital.khajuramun.gov.np/sitemap-index.xml

@@ -119,11 +119,11 @@ export default function WardWiseSEO({
         "खजुरा घरधुरी तथ्याङ्क",
         "बाँके जिल्ला जनसंख्या",
       ],
-      url: "https://khajuramun.digprofile.com/profile/demographics/ward-wise-summary",
+      url: "https://digital.khajuramun.gov.np/profile/demographics/ward-wise-summary",
       creator: {
         "@type": "Organization",
         name: "खजुरा गाउँपालिका",
-        url: "https://khajuramun.digprofile.com",
+        url: "https://digital.khajuramun.gov.np",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {

@@ -88,7 +88,7 @@ const Statistics = ({
     name: `${municipalityName} जनसांख्यिकीय तथ्याङ्क`,
     description:
       "खजुरा गाउँपालिकाको प्रमुख जनसांख्यिकीय तथ्याङ्क, जनगणना अनुसार",
-    url: "https://khajuramun.digprofile.com",
+    url: "https://digital.khajuramun.gov.np",
     keywords: [
       "खजुरा गाउँपालिका जनसंख्या",
       "Khajura Rural Municipality demographics",

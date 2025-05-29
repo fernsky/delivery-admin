@@ -6,7 +6,7 @@ import { locales } from '@/i18n/config';
 import { api } from "@/trpc/server";
 
 // Base URL from environment or default
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://khajuramun.digprofile.com';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://digital.khajuramun.gov.np';
 
 interface SitemapRoute {
   url: string;

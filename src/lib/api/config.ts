@@ -6,8 +6,8 @@
 const API_URLS = {
   development: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
   test: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
-  staging: process.env.NEXT_PUBLIC_API_URL || 'https://staging-api.khajuramun.digprofile.com/api',
-  production: process.env.NEXT_PUBLIC_API_URL || 'https://api.khajuramun.digprofile.com/api',
+  staging: process.env.NEXT_PUBLIC_API_URL || 'https://staging-api.digital.khajuramun.gov.np/api',
+  production: process.env.NEXT_PUBLIC_API_URL || 'https://api.digital.khajuramun.gov.np/api',
 };
 
 // Determine current environment

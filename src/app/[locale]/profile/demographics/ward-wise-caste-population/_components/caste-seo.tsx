@@ -99,11 +99,11 @@ export default function CasteSEO({
         ...Object.values(CASTE_NAMES_EN).map((name) => `${name} population`),
         ...Object.values(CASTE_NAMES).map((name) => `${name} जनसंख्या`),
       ],
-      url: "https://khajuramun.digprofile.com/profile/demographics/ward-wise-caste-population",
+      url: "https://digital.khajuramun.gov.np/profile/demographics/ward-wise-caste-population",
       creator: {
         "@type": "Organization",
         name: "Khajura Rural Municipality",
-        url: "https://khajuramun.digprofile.com",
+        url: "https://digital.khajuramun.gov.np",
       },
       temporalCoverage: "2021/2023",
       spatialCoverage: {

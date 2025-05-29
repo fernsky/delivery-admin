@@ -4,7 +4,7 @@ import { api } from "@/trpc/server";
 
 // Base URL from environment or default
 const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL || "https://khajuramun.digprofile.com";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://digital.khajuramun.gov.np";
 
 // Define static routes that should appear in the sitemap
 const staticRoutes = [
