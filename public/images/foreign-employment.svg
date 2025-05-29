@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <!-- Gradients for background and elements -->
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+    
+    <linearGradient id="country-gradient-1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8e44ad" />
+      <stop offset="100%" stop-color="#9b59b6" />
+    </linearGradient>
+    
+    <linearGradient id="country-gradient-2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#27ae60" />
+      <stop offset="100%" stop-color="#2ecc71" />
+    </linearGradient>
+    
+    <linearGradient id="country-gradient-3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c" />
+      <stop offset="100%" stop-color="#f1948a" />
+    </linearGradient>
+    
+    <linearGradient id="remittance-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f1c40f" />
+      <stop offset="100%" stop-color="#f39c12" />
+    </linearGradient>
+    
+    <!-- Path for curved text -->
+    <path id="curved-text-path" d="M200,350 Q600,280 1000,350" fill="none" />
+    
+    <!-- Person silhouette -->
+    <path id="person-silhouette" d="M40,0 C62,0 80,18 80,40 C80,62 62,80 40,80 C18,80 0,62 0,40 C0,18 18,0 40,0 Z M20,95 L60,95 L70,220 L60,220 L60,160 L20,160 L20,220 L10,220 Z" />
+    
+    <!-- Passport shape -->
+    <path id="passport" d="M0,0 L100,0 L100,140 L0,140 Z" />
+    
+    <!-- Airplane shape -->
+    <path id="airplane" d="M25,0 L100,30 L100,60 L25,90 L40,60 L0,60 L0,30 L40,30 Z" />
+    
+    <!-- Building/Skyscraper -->
+    <path id="building" d="M10,0 L50,0 L50,100 L55,100 L55,30 L85,30 L85,100 L90,100 L90,20 L100,20 L100,140 L0,140 L0,100 L10,100 Z" />
+    
+    <!-- Money/Remittance icons -->
+    <path id="money" d="M90,40 L90,60 L10,60 L10,40 Z M100,0 L100,100 L0,100 L0,0 Z M50,30 C61,30 70,39 70,50 C70,61 61,70 50,70 C39,70 30,61 30,50 C30,39 39,30 50,30 Z" />
+    
+    <!-- Flag shape -->
+    <path id="flag" d="M0,0 L60,0 L60,40 L0,40 Z" />
+    
+    <!-- Speech bubble for country names -->
+    <path id="country-bubble" 
+          d="M0,0 Q5,-15 20,-15 L80,-15 Q95,-15 100,0 L100,40 Q100,55 85,55 L60,55 L45,70 L30,55 L15,55 Q0,55 0,40 Z" />
+    
+    <!-- World map simplified outline -->
+    <path id="world-map" d="M10,50 C30,40 60,60 80,50 C100,40 120,60 140,50 C160,40 180,60 200,50 
+                          C220,40 240,60 260,50 C280,40 300,60 320,50 C340,40 360,60 380,50 
+                          C400,60 420,40 440,50 C460,60 480,40 500,50 C520,40 540,60 560,50
+                          C580,60 600,40 620,50 C640,40 660,60 680,50 C700,60 720,40 740,50" />
+  </defs>
+  
+  <!-- Background with gradient -->
+  <rect width="1200" height="400" fill="url(#bg-gradient)" />
+  
+  <!-- Stars/dots in the background representing global connectivity -->
+  <g opacity="0.3">
+    <circle cx="100" cy="80" r="2" fill="white" />
+    <circle cx="200" cy="120" r="1" fill="white" />
+    <circle cx="300" cy="70" r="1.5" fill="white" />
+    <circle cx="400" cy="90" r="1" fill="white" />
+    <circle cx="500" cy="60" r="2" fill="white" />
+    <circle cx="600" cy="100" r="1.5" fill="white" />
+    <circle cx="700" cy="80" r="1" fill="white" />
+    <circle cx="800" cy="70" r="2" fill="white" />
+    <circle cx="900" cy="110" r="1" fill="white" />
+    <circle cx="1000" cy="90" r="1.5" fill="white" />
+    <circle cx="1100" cy="60" r="1" fill="white" />
+    
+    <circle cx="150" cy="200" r="1" fill="white" />
+    <circle cx="250" cy="180" r="1.5" fill="white" />
+    <circle cx="350" cy="220" r="1" fill="white" />
+    <circle cx="450" cy="190" r="2" fill="white" />
+    <circle cx="550" cy="210" r="1" fill="white" />
+    <circle cx="650" cy="170" r="1.5" fill="white" />
+    <circle cx="750" cy="230" r="1" fill="white" />
+    <circle cx="850" cy="200" r="2" fill="white" />
+    <circle cx="950" cy="180" r="1" fill="white" />
+    <circle cx="1050" cy="220" r="1.5" fill="white" />
+  </g>
+  
+  <!-- Connection lines representing migration paths -->
+  <g opacity="0.4">
+    <path d="M150,280 C300,100 700,120 850,180" stroke="white" stroke-width="1" fill="none" />
+    <path d="M200,290 C400,150 650,200 800,170" stroke="white" stroke-width="1" fill="none" />
+    <path d="M250,300 C450,180 600,150 750,160" stroke="white" stroke-width="1" fill="none" />
+    <path d="M300,280 C500,80 800,100 900,180" stroke="white" stroke-width="1" fill="none" />
+  </g>
+  
+  <!-- Simplified world map in the background -->
+  <g transform="translate(250, 40)">
+    <use href="#world-map" stroke="white" stroke-width="1" fill="none" opacity="0.2" />
+  </g>
+  
+  <!-- Main destination countries with icons -->
+  <g>
+    <!-- Gulf Countries (Qatar, Saudi, UAE) -->
+    <g transform="translate(700, 90) scale(1.1)">
+      <use href="#country-bubble" fill="url(#country-gradient-1)" />
+      <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">खाडी मुलुक</text>
+    </g>
+    
+    <!-- Malaysia -->
+    <g transform="translate(850, 120) scale(1)">
+      <use href="#country-bubble" fill="url(#country-gradient-2)" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">मलेशिया</text>
+    </g>
+    
+    <!-- India -->
+    <g transform="translate(550, 150) scale(1.05)">
+      <use href="#country-bubble" fill="url(#country-gradient-3)" />
+      <text x="50" y="25" font-family="Arial" font-size="15" fill="white" text-anchor="middle">भारत</text>
+    </g>
+    
+    <!-- Japan/Korea -->
+    <g transform="translate(950, 80) scale(0.9)">
+      <use href="#country-bubble" fill="#3498db" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">जापान/कोरिया</text>
+    </g>
+    
+    <!-- Western Countries -->
+    <g transform="translate(750, 200) scale(0.95)">
+      <use href="#country-bubble" fill="#2ecc71" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">पश्चिमी देशहरू</text>
+    </g>
+  </g>
+  
+  <!-- Iconic illustrations -->
+  <!-- Passports and travel documents -->
+  <g transform="translate(100, 100) scale(0.4) rotate(-15)">
+    <rect x="0" y="0" width="100" height="140" fill="#1a5276" />
+    <rect x="10" y="30" width="80" height="60" fill="#2874a6" />
+    <text x="50" y="20" font-family="Arial" font-size="14" fill="white" text-anchor="middle">PASSPORT</text>
+    <text x="50" y="110" font-family="Arial" font-size="14" fill="white" text-anchor="middle">नेपाल</text>
+  </g>
+  
+  <g transform="translate(150, 120) scale(0.35) rotate(10)">
+    <rect x="0" y="0" width="100" height="140" fill="#117864" />
+    <rect x="10" y="30" width="80" height="60" fill="#16a085" />
+    <text x="50" y="20" font-family="Arial" font-size="14" fill="white" text-anchor="middle">PASSPORT</text>
+    <text x="50" y="110" font-family="Arial" font-size="14" fill="white" text-anchor="middle">नेपाल</text>
+  </g>
+  
+  <!-- Airplanes -->
+  <g transform="translate(300, 70) scale(0.4) rotate(15)">
+    <use href="#airplane" fill="white" opacity="0.7" />
+  </g>
+  
+  <g transform="translate(400, 120) scale(0.3) rotate(-20)">
+    <use href="#airplane" fill="white" opacity="0.7" />
+  </g>
+  
+  <g transform="translate(650, 60) scale(0.5) rotate(10)">
+    <use href="#airplane" fill="white" opacity="0.5" />
+  </g>
+  
+  <!-- Buildings representing foreign cities -->
+  <!-- Gulf skyline -->
+  <g transform="translate(680, 140) scale(0.5)">
+    <use href="#building" fill="#8e44ad" opacity="0.9" />
+  </g>
+  
+  <g transform="translate(720, 150) scale(0.4)">
+    <use href="#building" fill="#9b59b6" opacity="0.9" />
+  </g>
+  
+  <g transform="translate(750, 145) scale(0.45)">
+    <use href="#building" fill="#8e44ad" opacity="0.9" />
+  </g>
+  
+  <!-- Malaysia buildings -->
+  <g transform="translate(830, 160) scale(0.4)">
+    <use href="#building" fill="#27ae60" opacity="0.9" />
+  </g>
+  
+  <g transform="translate(865, 155) scale(0.5)">
+    <use href="#building" fill="#2ecc71" opacity="0.9" />
+  </g>
+  
+  <!-- Western style buildings -->
+  <g transform="translate(950, 120) scale(0.35)">
+    <use href="#building" fill="#3498db" opacity="0.9" />
+  </g>
+  
+  <g transform="translate(980, 125) scale(0.45)">
+    <use href="#building" fill="#2980b9" opacity="0.9" />
+  </g>
+  
+  <!-- Remittance/Money icons -->
+  <g transform="translate(200, 200) scale(0.5) rotate(-5)">
+    <use href="#money" fill="url(#remittance-gradient)" stroke="white" stroke-width="1" />
+  </g>
+  
+  <g transform="translate(280, 230) scale(0.4) rotate(5)">
+    <use href="#money" fill="url(#remittance-gradient)" stroke="white" stroke-width="1" />
+  </g>
+  
+  <g transform="translate(360, 210) scale(0.35) rotate(-8)">
+    <use href="#money" fill="url(#remittance-gradient)" stroke="white" stroke-width="1" />
+  </g>
+  
+  <!-- Flags of major destination countries -->
+  <!-- Qatar flag (simplified) -->
+  <g transform="translate(640, 50) scale(0.3)">
+    <rect x="0" y="0" width="60" height="40" fill="#8d1b3d" />
+    <path d="M0,0 L20,0 L20,40 L0,40 Z M0,0 L18,20 L0,40" fill="white" />
+  </g>
+  
+  <!-- Saudi flag (simplified) -->
+  <g transform="translate(700, 40) scale(0.3)">
+    <rect x="0" y="0" width="60" height="40" fill="#006c35" />
+    <path d="M15,10 Q25,5 35,10 L35,30 Q25,35 15,30 Z" fill="white" />
+    <text x="25" y="25" font-family="Arial" font-size="10" fill="#006c35" text-anchor="middle">الله</text>
+  </g>
+  
+  <!-- Malaysia flag (simplified) -->
+  <g transform="translate(840, 45) scale(0.3)">
+    <rect x="0" y="0" width="60" height="40" fill="#cc0001" />
+    <rect x="0" y="0" width="30" height="20" fill="#000095" />
+    <circle cx="15" cy="10" r="5" fill="#ffcc00" />
+  </g>
+  
+  <!-- Nepal flag (origin) -->
+  <g transform="translate(100, 220) scale(0.3)">
+    <path d="M0,0 L40,0 L20,30 L40,30 L0,60 L0,0 Z" fill="#dc143c" />
+    <circle cx="20" cy="15" r="5" fill="white" />
+    <circle cx="20" cy="45" r="5" fill="white" />
+  </g>
+  
+  <!-- People silhouettes representing migrant workers -->
+  <g transform="translate(50, 300)">
+    <g transform="scale(0.4)">
+      <use href="#person-silhouette" fill="#8e44ad" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(100, 300)">
+    <g transform="scale(0.4)">
+      <use href="#person-silhouette" fill="#27ae60" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(150, 300)">
+    <g transform="scale(0.4)">
+      <use href="#person-silhouette" fill="#e74c3c" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(200, 300)">
+    <g transform="scale(0.4)">
+      <use href="#person-silhouette" fill="#f39c12" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(250, 300)">
+    <g transform="scale(0.4)">
+      <use href="#person-silhouette" fill="#3498db" opacity="0.8" />
+    </g>
+  </g>
+  
+  <!-- More silhouettes on the right side -->
+  <g transform="translate(950, 300)">
+    <g transform="scale(0.4)">
+      <use href="#person-silhouette" fill="#1abc9c" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(1000, 300)">
+    <g transform="scale(0.4)">
+      <use href="#person-silhouette" fill="#d35400" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(1050, 300)">
+    <g transform="scale(0.4)">
+      <use href="#person-silhouette" fill="#8e44ad" opacity="0.8" />
+    </g>
+  </g>
+  
+  <g transform="translate(1100, 300)">
+    <g transform="scale(0.4)">
+      <use href="#person-silhouette" fill="#27ae60" opacity="0.8" />
+    </g>
+  </g>
+  
+  <!-- Houses in Nepal symbolizing remittance being used for building homes -->
+  <g transform="translate(450, 310)">
+    <path d="M0,30 L30,0 L60,30 L60,60 L0,60 Z" fill="#e74c3c" opacity="0.7" />
+    <rect x="20" y="40" width="10" height="20" fill="#f39c12" />
+  </g>
+  
+  <g transform="translate(520, 320)">
+    <path d="M0,30 L25,5 L50,30 L50,60 L0,60 Z" fill="#3498db" opacity="0.7" />
+    <rect x="20" y="40" width="10" height="20" fill="#2980b9" />
+  </g>
+  
+  <!-- Title text at bottom -->
+  <text font-family="Arial" font-size="24" fill="white" text-anchor="middle" font-weight="bold">
+    <textPath href="#curved-text-path" startOffset="50%">वैदेशिक रोजगारीका गन्तव्य देशहरू</textPath>
+  </text>
+</svg>

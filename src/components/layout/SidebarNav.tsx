@@ -119,6 +119,10 @@ const navItems = [
         title: "बाहिरी गारोको आधारमा घरधुरी",
         href: "/profile/economics/ward-wise-household-outer-wall",
       },
+      {
+        title: "वैदेशिक रोजगारीमा गएकाहरूको विवरण",
+        href: "/profile/economics/ward-wise-foreign-employment-countries",
+      },
       // {
       //   title: "रोजगारी स्थिति",
       //   href: "/profile/economics/economic-status",
