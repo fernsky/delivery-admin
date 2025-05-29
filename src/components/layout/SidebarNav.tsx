@@ -68,6 +68,10 @@ const navItems = [
         title: "अपाङ्गता कारणका आधारमा जनसंख्या",
         href: "/profile/demographics/ward-wise-disability-cause",
       },
+      {
+        title: "जन्म स्थानको आधारमा घरधुरी",
+        href: "/profile/demographics/ward-wise-birthplace-households",
+      },
       // {
       //   title: "उमेर अनुसार वैवाहिक स्थिति",
       //   href: "/profile/demographics/ward-age-wise-marital-status",
