@@ -259,7 +259,7 @@ export const getWardWiseBirthplaceHouseholdsSummary = publicProcedure
           birth_place, 
           SUM(households) as total_households
         FROM 
-          ward_wise_birthplace_households
+          acme_ward_wise_birthplace_households
         GROUP BY 
           birth_place
         ORDER BY 
