@@ -99,12 +99,12 @@ const navItems = [
     ],
   },
   {
-    title: "अर्थतन्त्र",
+    title: "आर्थिक अवस्था",
     href: "/profile/economics",
     icon: <PieChart className="w-4 h-4" />,
     items: [
       {
-        title: "घरधुरी आय स्रोत",
+        title: "विशेष सीप भएका मानव संशाधनको विवरण",
         href: "/profile/economics/ward-wise-household-income-source",
       },
       // {
@@ -115,55 +115,55 @@ const navItems = [
       //   title: "आय स्रोतहरू",
       //   href: "/profile/economics/income-sources",
       // },
-      {
-        title: "निर्यात उत्पादनहरू",
-        href: "/profile/economics/exported-products",
-      },
-      {
-        title: "आयात उत्पादनहरू",
-        href: "/profile/economics/imported-products",
-      },
-      {
-        title: "आर्थिक रूपमा सक्रिय जनसंख्या",
-        href: "/profile/economics/ward-economically-active-population",
-      },
-      {
-        title: "घरायसी कामको समय वितरण",
-        href: "/profile/economics/ward-household-chores",
-      },
-      {
-        title: "वार्षिक आय र निर्वाह",
-        href: "/profile/economics/ward-yearly-income-sustenance",
-      },
+      // {
+      //   title: "निर्यात उत्पादनहरू",
+      //   href: "/profile/economics/exported-products",
+      // },
+      // {
+      //   title: "आयात उत्पादनहरू",
+      //   href: "/profile/economics/imported-products",
+      // },
+      // {
+      //   title: "आर्थिक रूपमा सक्रिय जनसंख्या",
+      //   href: "/profile/economics/ward-economically-active-population",
+      // },
+      // {
+      //   title: "घरायसी कामको समय वितरण",
+      //   href: "/profile/economics/ward-household-chores",
+      // },
+      // {
+      //   title: "वार्षिक आय र निर्वाह",
+      //   href: "/profile/economics/ward-yearly-income-sustenance",
+      // },
 
-      {
-        title: "जमिन स्वामित्व",
-        href: "/profile/economics/ward-household-land-possessions",
-      },
-      {
-        title: "ऋणको उपयोग",
-        href: "/profile/economics/ward-households-loan-usage",
-      },
-      {
-        title: "ऋणमा रहेका घरधुरी",
-        href: "/profile/economics/ward-households-in-loan",
-      },
-      {
-        title: "प्रमुख पेशा",
-        href: "/profile/economics/ward-main-occupations",
-      },
-      {
-        title: "प्रमुख सीपहरू",
-        href: "/profile/economics/ward-main-skills",
-      },
-      {
-        title: "रेमिट्यान्स खर्च",
-        href: "/profile/economics/ward-remittance-expenses",
-      },
-      {
-        title: "तालिम प्राप्त जनसंख्या",
-        href: "/profile/economics/ward-trained-population",
-      },
+      // {
+      //   title: "जमिन स्वामित्व",
+      //   href: "/profile/economics/ward-household-land-possessions",
+      // },
+      // {
+      //   title: "ऋणको उपयोग",
+      //   href: "/profile/economics/ward-households-loan-usage",
+      // },
+      // {
+      //   title: "ऋणमा रहेका घरधुरी",
+      //   href: "/profile/economics/ward-households-in-loan",
+      // },
+      // {
+      //   title: "प्रमुख पेशा",
+      //   href: "/profile/economics/ward-main-occupations",
+      // },
+      // {
+      //   title: "प्रमुख सीपहरू",
+      //   href: "/profile/economics/ward-main-skills",
+      // },
+      // {
+      //   title: "रेमिट्यान्स खर्च",
+      //   href: "/profile/economics/ward-remittance-expenses",
+      // },
+      // {
+      //   title: "तालिम प्राप्त जनसंख्या",
+      //   href: "/profile/economics/ward-trained-population",
+      // },
     ],
   },
   {

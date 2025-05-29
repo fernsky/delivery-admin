@@ -39,7 +39,7 @@ export const skillTypeEnum = pgEnum("skill_type", [
   "NONE",
 ]);
 
-export const wardWiseMajorSkills = pgTable("ward_wise_major_skills", {
+export const wardWiseMajorSkills = pgTable("acme_ward_wise_major_skills", {
   id: uuid("id").defaultRandom().primaryKey(),
   wardNumber: integer("ward_number").notNull(),
   skill: skillTypeEnum("skill").notNull(),
