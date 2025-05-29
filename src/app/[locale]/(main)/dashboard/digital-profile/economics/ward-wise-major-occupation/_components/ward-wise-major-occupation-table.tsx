@@ -79,10 +79,10 @@ export default function WardWiseMajorOccupationTable({
 
   const utils = api.useContext();
   const deleteWardWiseMajorOccupation =
-    api.profile.economics.wardWiseMajorOccupation.delete.useMutation({
+    api.profile.demographics.wardWiseMajorOccupation.delete.useMutation({
       onSuccess: () => {
         toast.success("डाटा सफलतापूर्वक मेटियो");
-        utils.profile.economics.wardWiseMajorOccupation.getAll.invalidate();
+        utils.profile.demographics.wardWiseMajorOccupation.getAll.invalidate();
       },
       onError: (err) => {
         toast.error(`त्रुटि: ${err.message}`);
