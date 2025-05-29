@@ -72,6 +72,10 @@ const navItems = [
         title: "जन्म स्थानको आधारमा घरधुरी",
         href: "/profile/demographics/ward-wise-birthplace-households",
       },
+      {
+        title: "पाँच वर्षमुनिका बालबालिकाको जन्मदर्ताको आधारमा जनसंख्या",
+        href: "/profile/demographics/ward-wise-birth-certificate-population",
+      },
       // {
       //   title: "उमेर अनुसार वैवाहिक स्थिति",
       //   href: "/profile/demographics/ward-age-wise-marital-status",

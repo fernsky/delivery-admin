@@ -22,3 +22,6 @@ export * from "./ward-wise-birthplace-households";
 
 // Migrated Households
 export * from "./ward-wise-migrated-households";
+
+// Birth Certificate Population
+export * from "./ward-wise-birth-certificate-population";
