@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 400" width="1200" height="400">
+  <!-- Background with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3f4f6" />
+      <stop offset="100%" stop-color="#e5e7eb" />
+    </linearGradient>
+    
+    <!-- Disability cause icons -->
+    <symbol id="iconCongenital" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="36" fill="#fcd34d" stroke="#f59e0b" stroke-width="2"/>
+      <path d="M40,15 Q55,30 55,45 T40,75 Q25,60 25,45 T40,15" fill="#f59e0b" opacity="0.7"/>
+      <circle cx="40" cy="30" r="6" fill="#f59e0b"/>
+    </symbol>
+    
+    <symbol id="iconAccident" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="36" fill="#93c5fd" stroke="#3b82f6" stroke-width="2"/>
+      <path d="M30,20 L50,60 M50,20 L30,60" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="40" cy="40" r="8" fill="#3b82f6"/>
+    </symbol>
+    
+    <symbol id="iconMalnutrition" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="36" fill="#a7f3d0" stroke="#10b981" stroke-width="2"/>
+      <path d="M30,35 Q40,25 50,35 Q60,45 50,55 Q40,65 30,55 Q20,45 30,35" fill="#10b981" opacity="0.7"/>
+      <circle cx="35" cy="40" r="4" fill="#10b981"/>
+      <circle cx="45" cy="40" r="4" fill="#10b981"/>
+    </symbol>
+    
+    <symbol id="iconDisease" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="36" fill="#fca5a5" stroke="#ef4444" stroke-width="2"/>
+      <circle cx="40" cy="40" r="20" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="5,5"/>
+      <circle cx="40" cy="40" r="10" fill="#ef4444"/>
+    </symbol>
+    
+    <symbol id="iconConflict" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="36" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="2"/>
+      <path d="M30,30 L50,50 M50,30 L30,50" stroke="#8b5cf6" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="40" cy="40" r="8" fill="#8b5cf6"/>
+    </symbol>
+    
+    <symbol id="iconOther" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="36" fill="#bfdbfe" stroke="#60a5fa" stroke-width="2"/>
+      <circle cx="30" cy="35" r="5" fill="#60a5fa"/>
+      <circle cx="50" cy="35" r="5" fill="#60a5fa"/>
+      <path d="M30,50 Q40,60 50,50" stroke="#60a5fa" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Wave pattern for dynamic background -->
+    <pattern id="wavyPattern" width="100" height="20" patternUnits="userSpaceOnUse">
+      <path d="M0,10 Q25,0 50,10 T100,10" fill="none" stroke="#4f46e5" stroke-width="0.5" stroke-opacity="0.2"/>
+    </pattern>
+
+    <!-- Filter for soft drop shadow -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#0005" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="100%" height="100%" fill="url(#bgGradient)"/>
+  <rect width="100%" height="100%" fill="url(#wavyPattern)" opacity="0.4"/>
+  
+  <!-- Title and subtitle -->
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="60" font-size="36" font-weight="bold" fill="#1e293b">अपाङ्गताका कारणहरू</text>
+    <text x="600" y="100" font-size="24" fill="#475569">खजुरा गाउँपालिका</text>
+    <text x="600" y="130" font-size="20" fill="#475569" font-style="italic">Disability Causes in Khajura Rural Municipality</text>
+  </g>
+
+  <!-- Decorative elements -->
+  <g opacity="0.2">
+    <circle cx="150" cy="320" r="80" fill="#3b82f6"/>
+    <circle cx="1050" cy="80" r="60" fill="#8b5cf6"/>
+    <circle cx="900" cy="350" r="30" fill="#10b981"/>
+    <circle cx="300" cy="80" r="40" fill="#f59e0b"/>
+  </g>
+  
+  <!-- Disability cause icons with labels -->
+  <g filter="url(#shadow)">
+    <use xlink:href="#iconCongenital" x="100" y="160" width="80" height="80"/>
+    <use xlink:href="#iconAccident" x="280" y="160" width="80" height="80"/>
+    <use xlink:href="#iconMalnutrition" x="460" y="160" width="80" height="80"/>
+    <use xlink:href="#iconDisease" x="640" y="160" width="80" height="80"/>
+    <use xlink:href="#iconConflict" x="820" y="160" width="80" height="80"/>
+    <use xlink:href="#iconOther" x="1000" y="160" width="80" height="80"/>
+  </g>
+  
+  <!-- Labels for icons -->
+  <g font-family="Arial, sans-serif" text-anchor="middle" font-size="16" font-weight="bold">
+    <text x="140" y="270" fill="#92400e">जन्मजात</text>
+    <text x="140" y="290" fill="#666" font-size="14">(Congenital)</text>
+    
+    <text x="320" y="270" fill="#1d4ed8">दुर्घटना</text>
+    <text x="320" y="290" fill="#666" font-size="14">(Accident)</text>
+    
+    <text x="500" y="270" fill="#047857">कुपोषण</text>
+    <text x="500" y="290" fill="#666" font-size="14">(Malnutrition)</text>
+    
+    <text x="680" y="270" fill="#b91c1c">रोगको कारण</text>
+    <text x="680" y="290" fill="#666" font-size="14">(Disease)</text>
+    
+    <text x="860" y="270" fill="#5b21b6">द्वन्द्वको कारण</text>
+    <text x="860" y="290" fill="#666" font-size="14">(Conflict)</text>
+    
+    <text x="1040" y="270" fill="#1d4ed8">अन्य कारण</text>
+    <text x="1040" y="290" fill="#666" font-size="14">(Other causes)</text>
+  </g>
+  
+  <!-- Connection lines between icons -->
+  <g stroke="#64748b" stroke-width="2" stroke-dasharray="5,5" opacity="0.6">
+    <line x1="180" y1="200" x2="280" y2="200"/>
+    <line x1="360" y1="200" x2="460" y2="200"/>
+    <line x1="540" y1="200" x2="640" y2="200"/>
+    <line x1="720" y1="200" x2="820" y2="200"/>
+    <line x1="900" y1="200" x2="1000" y2="200"/>
+  </g>
+  
+  <!-- Footer with data note -->
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <rect x="350" y="320" width="500" height="50" rx="25" fill="#1e40af" opacity="0.8"/>
+    <text x="600" y="350" font-size="18" fill="white">श्रोत: खजुरा गाउँपालिकाको डिजिटल प्रोफाइल २०८०</text>
+  </g>
+</svg>

@@ -14,3 +14,5 @@ export * from "./ward-wise-major-occupation";
 // Economically Active Population
 export * from "./ward-age-wise-economically-active-population";
 
+// Disability Cause
+export * from "./ward-wise-disability-cause";

@@ -64,7 +64,10 @@ const navItems = [
         title: "आर्थिक रुपले सक्रिय जनसंख्या",
         href: "/profile/demographics/ward-age-wise-economically-active-population",
       },
-
+      {
+        title: "अपाङ्गता कारणका आधारमा जनसंख्या",
+        href: "/profile/demographics/ward-wise-disability-cause",
+      },
       // {
       //   title: "उमेर अनुसार वैवाहिक स्थिति",
       //   href: "/profile/demographics/ward-age-wise-marital-status",
