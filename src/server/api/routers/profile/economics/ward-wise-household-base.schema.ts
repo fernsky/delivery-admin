@@ -38,16 +38,16 @@ export type WardWiseHouseholdBaseFilter = z.infer<
 export const householdBaseOptions = [
   {
     value: "CONCRETE_PILLAR",
-    label: "Concrete pillar construction (ढलान पिल्लरसहितको)",
+    label: "ढलान पिल्लरसहितको",
   },
   {
     value: "CEMENT_JOINED",
-    label: "Cement-bonded brick/stone (सिमेन्टको जोडाइ भएको इँटा/ढुङ्गा)",
+    label: "सिमेन्टको जोडाइ भएको इँटा/ढुङ्गा",
   },
   {
     value: "MUD_JOINED",
-    label: "Mud-bonded brick/stone (माटोको जोडाइ भएको इँटा/ढुङ्गा)",
+    label: "माटोको जोडाइ भएको इँटा/ढुङ्गा",
   },
-  { value: "WOOD_POLE", label: "Wooden pole foundation (काठको खम्बा गाडेको)" },
-  { value: "OTHER", label: "Other materials (अन्य)" },
+  { value: "WOOD_POLE", label: "काठको खम्बा गाडेको" },
+  { value: "OTHER", label: "अन्य" },
 ];

@@ -38,3 +38,9 @@ export * from "./ward-wise-trained-population";
 
 // House Ownership
 export * from "./ward-wise-house-ownership";
+
+// House Base
+export * from "./ward-wise-household-base";
+
+// House Outer wall
+export *  from "./ward-wise-household-outer-wall";

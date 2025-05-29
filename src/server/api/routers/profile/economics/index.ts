@@ -12,6 +12,10 @@ import {exportedProductsRouter} from "./exported-products.procedure"
 import { importedProductsRouter } from "./imported-products.procedure";
 import { wardWiseHouseholdLandPossessionsRouter } from "./ward-wise-household-land-possessions.procedure";
 import { wardWiseHouseOwnershipRouter } from "./ward-wise-house-ownership.procedure";
+import { wardWiseHouseholdBaseRouter } from "./ward-wise-household-base.procedure";
+import { wardWiseHouseholdOuterWallRouter } from "../economics/ward-wise-household-outer-wall.procedure";
+
+
 
 export const economicsRouter = createTRPCRouter({
   wardAgeGenderWiseEconomicallyActivePopulation:
@@ -28,6 +32,10 @@ export const economicsRouter = createTRPCRouter({
   exportedProducts: exportedProductsRouter,
   wardWiseHouseholdLandPossessions: wardWiseHouseholdLandPossessionsRouter,
   wardWiseHouseOwnership: wardWiseHouseOwnershipRouter,
+    wardWiseHouseholdBase: wardWiseHouseholdBaseRouter,
+      wardWiseHouseholdOuterWall: wardWiseHouseholdOuterWallRouter,
+    
+
 });
 
 

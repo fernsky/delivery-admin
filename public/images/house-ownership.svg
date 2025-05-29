@@ -106,31 +106,26 @@
     <rect x="100" y="110" width="180" height="180" rx="15" fill="white"/>
     <use xlink:href="#iconPrivate" x="140" y="120" width="100" height="100"/>
     <text x="190" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#1d4ed8">निजी</text>
-    <text x="190" y="260" font-size="14" font-weight="400" text-anchor="middle" font-family="system-ui, sans-serif" fill="#64748b">Private Ownership</text>
     
     <!-- Rent -->
     <rect x="310" y="110" width="180" height="180" rx="15" fill="white"/>
     <use xlink:href="#iconRent" x="350" y="120" width="100" height="100"/>
     <text x="400" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#b91c1c">भाडामा</text>
-    <text x="400" y="260" font-size="14" font-weight="400" text-anchor="middle" font-family="system-ui, sans-serif" fill="#64748b">Rented</text>
     
     <!-- Institutional -->
     <rect x="520" y="110" width="180" height="180" rx="15" fill="white"/>
     <use xlink:href="#iconInstitutional" x="560" y="120" width="100" height="100"/>
     <text x="610" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#047857">संस्थागत</text>
-    <text x="610" y="260" font-size="14" font-weight="400" text-anchor="middle" font-family="system-ui, sans-serif" fill="#64748b">Institutional</text>
     
     <!-- Village Block -->
     <rect x="730" y="110" width="180" height="180" rx="15" fill="white"/>
     <use xlink:href="#iconVillageBlock" x="770" y="120" width="100" height="100"/>
     <text x="820" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#92400e">गाउँ ब्लक</text>
-    <text x="820" y="260" font-size="14" font-weight="400" text-anchor="middle" font-family="system-ui, sans-serif" fill="#64748b">Village Block</text>
     
     <!-- Other -->
     <rect x="940" y="110" width="160" height="180" rx="15" fill="white"/>
     <use xlink:href="#iconOther" x="970" y="120" width="100" height="100"/>
     <text x="1020" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#475569">अन्य</text>
-    <text x="1020" y="260" font-size="14" font-weight="400" text-anchor="middle" font-family="system-ui, sans-serif" fill="#64748b">Other</text>
   </g>
   
   <!-- Enhanced connecting lines with animated-like effect -->

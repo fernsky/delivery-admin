@@ -43,16 +43,16 @@ export type WardWiseHouseholdOuterWallFilter = z.infer<
 export const outerWallOptions = [
   {
     value: "CEMENT_JOINED",
-    label: "Cement-bonded brick/stone (सिमेन्टको जोडाइ भएको इँटा/ढुङ्गा)",
+    label: "सिमेन्टको जोडाइ भएको इँटा/ढुङ्गा",
   },
-  { value: "UNBAKED_BRICK", label: "Unbaked brick (काँचो इँटा)" },
+  { value: "UNBAKED_BRICK", label: "काँचो इँटा" },
   {
     value: "MUD_JOINED",
-    label: "Mud-bonded brick/stone (माटोको जोडाइ भएको इँटा/ढुङ्गा)",
+    label: "माटोको जोडाइ भएको इँटा/ढुङ्गा",
   },
-  { value: "TIN", label: "Tin/Metal sheet (जस्ता/टिन/च्यादर)" },
-  { value: "BAMBOO", label: "Bamboo materials (बाँसजन्य सामग्री)" },
-  { value: "WOOD", label: "Wood/Plank (काठ/फल्याक)" },
-  { value: "PREFAB", label: "Prefabricated (प्रि फ्याब)" },
-  { value: "OTHER", label: "Other materials (अन्य)" },
+  { value: "TIN", label: "जस्ता/टिन/च्यादर" },
+  { value: "BAMBOO", label: "बाँसजन्य सामग्री" },
+  { value: "WOOD", label: "काठ/फल्याक" },
+  { value: "PREFAB", label: "प्रि फ्याब" },
+  { value: "OTHER", label: "अन्य" },
 ];

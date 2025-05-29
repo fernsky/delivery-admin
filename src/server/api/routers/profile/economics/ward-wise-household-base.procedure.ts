@@ -3,21 +3,21 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { wardWiseHouseholdOuterWall } from "@/server/db/schema/profile/physical/ward-wise-household-outer-wall";
+import { wardWiseHouseholdBase } from "@/server/db/schema/profile/economics/ward-wise-household-base";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
-  wardWiseHouseholdOuterWallSchema,
-  wardWiseHouseholdOuterWallFilterSchema,
-  updateWardWiseHouseholdOuterWallSchema,
-  OuterWallTypeEnum,
-} from "./ward-wise-household-outer-wall.schema";
+  wardWiseHouseholdBaseSchema,
+  wardWiseHouseholdBaseFilterSchema,
+  updateWardWiseHouseholdBaseSchema,
+  HouseholdBaseTypeEnum,
+} from "./ward-wise-household-base.schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 
-// Get all ward-wise household outer wall data with optional filtering
-export const getAllWardWiseHouseholdOuterWall = publicProcedure
-  .input(wardWiseHouseholdOuterWallFilterSchema.optional())
+// Get all ward-wise household base data with optional filtering
+export const getAllWardWiseHouseholdBase = publicProcedure
+  .input(wardWiseHouseholdBaseFilterSchema.optional())
   .query(async ({ ctx, input }) => {
     try {
       // Set UTF-8 encoding explicitly before running query
@@ -27,30 +27,28 @@ export const getAllWardWiseHouseholdOuterWall = publicProcedure
       let data: any[];
       try {
         // Build query with conditions
-        const baseQuery = ctx.db.select().from(wardWiseHouseholdOuterWall);
+        const baseQuery = ctx.db.select().from(wardWiseHouseholdBase);
 
         let conditions = [];
 
         if (input?.wardNumber) {
           conditions.push(
-            eq(wardWiseHouseholdOuterWall.wardNumber, input.wardNumber),
+            eq(wardWiseHouseholdBase.wardNumber, input.wardNumber),
           );
         }
 
-        if (input?.wallType) {
-          conditions.push(
-            eq(wardWiseHouseholdOuterWall.wallType, input.wallType),
-          );
+        if (input?.baseType) {
+          conditions.push(eq(wardWiseHouseholdBase.baseType, input.baseType));
         }
 
         const queryWithFilters = conditions.length
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward number and wall type
+        // Sort by ward number and base type
         data = await queryWithFilters.orderBy(
-          wardWiseHouseholdOuterWall.wardNumber,
-          wardWiseHouseholdOuterWall.wallType,
+          wardWiseHouseholdBase.wardNumber,
+          wardWiseHouseholdBase.baseType,
         );
       } catch (err) {
         console.log("Failed to query main schema, trying ACME table:", err);
@@ -63,14 +61,14 @@ export const getAllWardWiseHouseholdOuterWall = publicProcedure
           SELECT 
             id,
             ward_number,
-            wall_type,
+            base_type,
             households,
             updated_at,
             created_at
           FROM 
-            acme_ward_wise_household_outer_wall
+            acme_ward_wise_household_base
           ORDER BY 
-            ward_number, wall_type
+            ward_number, base_type
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
 
@@ -79,7 +77,7 @@ export const getAllWardWiseHouseholdOuterWall = publicProcedure
           data = acmeResult.map((row) => ({
             id: row.id,
             wardNumber: parseInt(String(row.ward_number)),
-            wallType: row.wall_type,
+            baseType: row.base_type,
             households: parseInt(String(row.households || "0")),
             updatedAt: row.updated_at,
             createdAt: row.created_at,
@@ -90,18 +88,15 @@ export const getAllWardWiseHouseholdOuterWall = publicProcedure
             data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
 
-          if (input?.wallType) {
-            data = data.filter((item) => item.wallType === input.wallType);
+          if (input?.baseType) {
+            data = data.filter((item) => item.baseType === input.baseType);
           }
         }
       }
 
       return data;
     } catch (error) {
-      console.error(
-        "Error fetching ward-wise household outer wall data:",
-        error,
-      );
+      console.error("Error fetching ward-wise household base data:", error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -110,39 +105,38 @@ export const getAllWardWiseHouseholdOuterWall = publicProcedure
   });
 
 // Get data for a specific ward
-export const getWardWiseHouseholdOuterWallByWard = publicProcedure
+export const getWardWiseHouseholdBaseByWard = publicProcedure
   .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
-      .from(wardWiseHouseholdOuterWall)
-      .where(eq(wardWiseHouseholdOuterWall.wardNumber, input.wardNumber))
-      .orderBy(wardWiseHouseholdOuterWall.wallType);
+      .from(wardWiseHouseholdBase)
+      .where(eq(wardWiseHouseholdBase.wardNumber, input.wardNumber))
+      .orderBy(wardWiseHouseholdBase.baseType);
 
     return data;
   });
 
-// Create a new ward-wise household outer wall entry
-export const createWardWiseHouseholdOuterWall = protectedProcedure
-  .input(wardWiseHouseholdOuterWallSchema)
+// Create a new ward-wise household base entry
+export const createWardWiseHouseholdBase = protectedProcedure
+  .input(wardWiseHouseholdBaseSchema)
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can create ward-wise household outer wall data",
+        message: "Only administrators can create ward-wise household base data",
       });
     }
 
-    // Check if entry already exists for this ward and wall type
+    // Check if entry already exists for this ward and base type
     const existing = await ctx.db
-      .select({ id: wardWiseHouseholdOuterWall.id })
-      .from(wardWiseHouseholdOuterWall)
+      .select({ id: wardWiseHouseholdBase.id })
+      .from(wardWiseHouseholdBase)
       .where(
         and(
-          eq(wardWiseHouseholdOuterWall.wardNumber, input.wardNumber),
-          eq(wardWiseHouseholdOuterWall.wallType, input.wallType),
+          eq(wardWiseHouseholdBase.wardNumber, input.wardNumber),
+          eq(wardWiseHouseholdBase.baseType, input.baseType),
         ),
       )
       .limit(1);
@@ -150,31 +144,30 @@ export const createWardWiseHouseholdOuterWall = protectedProcedure
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward Number ${input.wardNumber} and wall type ${input.wallType} already exists`,
+        message: `Data for Ward Number ${input.wardNumber} and base type ${input.baseType} already exists`,
       });
     }
 
     // Create new record
-    await ctx.db.insert(wardWiseHouseholdOuterWall).values({
+    await ctx.db.insert(wardWiseHouseholdBase).values({
       id: input.id || uuidv4(),
       wardNumber: input.wardNumber,
-      wallType: input.wallType,
+      baseType: input.baseType,
       households: input.households,
     });
 
     return { success: true };
   });
 
-// Update an existing ward-wise household outer wall entry
-export const updateWardWiseHouseholdOuterWall = protectedProcedure
-  .input(updateWardWiseHouseholdOuterWallSchema)
+// Update an existing ward-wise household base entry
+export const updateWardWiseHouseholdBase = protectedProcedure
+  .input(updateWardWiseHouseholdBaseSchema)
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can update ward-wise household outer wall data",
+        message: "Only administrators can update ward-wise household base data",
       });
     }
 
@@ -187,9 +180,9 @@ export const updateWardWiseHouseholdOuterWall = protectedProcedure
 
     // Check if the record exists
     const existing = await ctx.db
-      .select({ id: wardWiseHouseholdOuterWall.id })
-      .from(wardWiseHouseholdOuterWall)
-      .where(eq(wardWiseHouseholdOuterWall.id, input.id))
+      .select({ id: wardWiseHouseholdBase.id })
+      .from(wardWiseHouseholdBase)
+      .where(eq(wardWiseHouseholdBase.id, input.id))
       .limit(1);
 
     if (existing.length === 0) {
@@ -201,74 +194,73 @@ export const updateWardWiseHouseholdOuterWall = protectedProcedure
 
     // Update the record
     await ctx.db
-      .update(wardWiseHouseholdOuterWall)
+      .update(wardWiseHouseholdBase)
       .set({
         wardNumber: input.wardNumber,
-        wallType: input.wallType,
+        baseType: input.baseType,
         households: input.households,
       })
-      .where(eq(wardWiseHouseholdOuterWall.id, input.id));
+      .where(eq(wardWiseHouseholdBase.id, input.id));
 
     return { success: true };
   });
 
-// Delete a ward-wise household outer wall entry
-export const deleteWardWiseHouseholdOuterWall = protectedProcedure
+// Delete a ward-wise household base entry
+export const deleteWardWiseHouseholdBase = protectedProcedure
   .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can delete ward-wise household outer wall data",
+        message: "Only administrators can delete ward-wise household base data",
       });
     }
 
     // Delete the record
     await ctx.db
-      .delete(wardWiseHouseholdOuterWall)
-      .where(eq(wardWiseHouseholdOuterWall.id, input.id));
+      .delete(wardWiseHouseholdBase)
+      .where(eq(wardWiseHouseholdBase.id, input.id));
 
     return { success: true };
   });
 
 // Get summary statistics
-export const getWardWiseHouseholdOuterWallSummary = publicProcedure.query(
+export const getWardWiseHouseholdBaseSummary = publicProcedure.query(
   async ({ ctx }) => {
     try {
-      // Get total counts by wall type across all wards
+      // Get total counts by base type across all wards
       const summarySql = sql`
         SELECT 
-          wall_type, 
+          base_type, 
           SUM(households) as total_households
         FROM 
-          ward_wise_household_outer_wall
+          ward_wise_household_base
         GROUP BY 
-          wall_type
+          base_type
         ORDER BY 
-          wall_type
+          base_type
       `;
 
       const summaryData = await ctx.db.execute(summarySql);
 
       return summaryData;
     } catch (error) {
-      console.error("Error in getWardWiseHouseholdOuterWallSummary:", error);
+      console.error("Error in getWardWiseHouseholdBaseSummary:", error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to retrieve ward-wise household outer wall summary",
+        message: "Failed to retrieve ward-wise household base summary",
       });
     }
   },
 );
 
 // Export the router with all procedures
-export const wardWiseHouseholdOuterWallRouter = createTRPCRouter({
-  getAll: getAllWardWiseHouseholdOuterWall,
-  getByWard: getWardWiseHouseholdOuterWallByWard,
-  create: createWardWiseHouseholdOuterWall,
-  update: updateWardWiseHouseholdOuterWall,
-  delete: deleteWardWiseHouseholdOuterWall,
-  summary: getWardWiseHouseholdOuterWallSummary,
+export const wardWiseHouseholdBaseRouter = createTRPCRouter({
+  getAll: getAllWardWiseHouseholdBase,
+  getByWard: getWardWiseHouseholdBaseByWard,
+  create: createWardWiseHouseholdBase,
+  update: updateWardWiseHouseholdBase,
+  delete: deleteWardWiseHouseholdBase,
+  summary: getWardWiseHouseholdBaseSummary,
 });

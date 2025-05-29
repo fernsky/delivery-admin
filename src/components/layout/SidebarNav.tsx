@@ -111,6 +111,14 @@ const navItems = [
         title: "घरको स्वामित्वको आधारमा घरधुरी",
         href: "/profile/economics/ward-wise-house-ownership",
       },
+      {
+        title: "जगको आधारमा घरधुरी",
+        href: "/profile/economics/ward-wise-household-base",
+      },
+      {
+        title: "बाहिरी गारोको आधारमा घरधुरी",
+        href: "/profile/economics/ward-wise-household-outer-wall",
+      },
       // {
       //   title: "रोजगारी स्थिति",
       //   href: "/profile/economics/economic-status",

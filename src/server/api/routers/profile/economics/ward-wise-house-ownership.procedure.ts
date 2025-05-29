@@ -242,7 +242,7 @@ export const getWardWiseHouseOwnershipSummary = publicProcedure.query(
           ownership_type, 
           SUM(households) as total_households
         FROM 
-          ward_wise_house_ownership
+          acme_ward_wise_house_ownership
         GROUP BY 
           ownership_type
         ORDER BY 
