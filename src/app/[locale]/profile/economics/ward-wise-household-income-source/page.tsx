@@ -315,7 +315,7 @@ export default async function WardWiseHouseholdIncomeSourcePage() {
                 "ne"
               )}
               % रहेका छन्। यस तथ्याङ्कले स्थानीय अर्थतन्त्रको बुझाई, रोजगारी
-              सृजना र आर्थिक विकासमा सहयोग पुर्‍याउँछ。
+              सृजना र आर्थिक विकासमा सहयोग पुर्‍याउँछ।
             </p>
 
             <h2
@@ -357,7 +357,7 @@ export default async function WardWiseHouseholdIncomeSourcePage() {
                 100).toFixed(2),
                 "ne"
               )}
-              % मा देखिन्छ。
+              % मा देखिन्छ।
             </p>
 
             {/* Client component for income source analysis section */}

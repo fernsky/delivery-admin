@@ -6,6 +6,7 @@ import SkillsCharts from "./_components/skills-charts";
 import SkillsSEO from "./_components/skills-seo";
 import SkillsAnalysisSection from "./_components/skills-analysis-section";
 import { api } from "@/trpc/server";
+import { localizeNumber } from "@/lib/utils/localize-number";
 import {
   skillLabels,
   SkillType,
@@ -91,7 +92,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "वडा अनुसार सीप वितरण",
       "आर्थिक दक्षता तथ्याङ्क",
       "सीप सर्वेक्षण खजुरा",
-      `खजुरा कुल दक्ष जनसंख्या ${totalPopulation}`,
+      `खजुरा कुल दक्ष जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")}`,
     ];
 
     const keywordsEN = [
@@ -106,7 +107,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ];
 
     // Create detailed description with actual data
-    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार प्रमुख सीप र दक्षताहरूको वितरण, प्रवृत्ति र विश्लेषण। कुल दक्ष जनसंख्या ${totalPopulation} मध्ये ${skillLabels[topSkills[0]]} (${skillCounts[topSkills[0]]}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${skillLabels[topSkills[1]]} (${skillCounts[topSkills[1]]}) र ${skillLabels[topSkills[2]]} (${skillCounts[topSkills[2]]})। विभिन्न सीपहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
+    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार प्रमुख सीप र दक्षताहरूको वितरण, प्रवृत्ति र विश्लेषण। कुल दक्ष जनसंख्या ${localizeNumber(totalPopulation.toString(), "ne")} मध्ये ${skillLabels[topSkills[0]]} (${localizeNumber(skillCounts[topSkills[0]].toString(), "ne")}) सबैभन्दा ठूलो समूह हो, त्यसपछि ${skillLabels[topSkills[1]]} (${localizeNumber(skillCounts[topSkills[1]].toString(), "ne")}) र ${skillLabels[topSkills[2]]} (${localizeNumber(skillCounts[topSkills[2]].toString(), "ne")})। विभिन्न सीपहरूको विस्तृत तथ्याङ्क र विजुअलाइजेसन।`;
 
     const descriptionEN = `Ward-wise major skills distribution, trends and analysis for Khajura Rural Municipality. Out of a total skilled population of ${totalPopulation}, ${SKILL_NAMES_EN[topSkills[0]]} (${skillCounts[topSkills[0]]}) is the largest group, followed by ${SKILL_NAMES_EN[topSkills[1]]} (${skillCounts[topSkills[1]]}) and ${SKILL_NAMES_EN[topSkills[2]]} (${skillCounts[topSkills[2]]})। Detailed statistics and visualizations of various skills.`;
 
@@ -289,13 +290,13 @@ export default async function WardMainSkillsPage() {
             </p>
             <p>
               खजुरा गाउँपालिकामा विभिन्न प्रकारका सीप र दक्षता भएका नागरिकहरू
-              बसोबास गर्दछन्। कुल जनसंख्या {totalPopulation.toLocaleString()}{" "}
+              बसोबास गर्दछन्। कुल जनसंख्या {localizeNumber(totalPopulation.toLocaleString(), "ne")}{" "}
               मध्ये {overallSummary[0]?.skillName || ""} क्षेत्रमा सीप भएका
               व्यक्तिहरू{" "}
-              {(
+              {localizeNumber((
                 ((overallSummary[0]?.population || 0) / totalPopulation) *
                 100
-              ).toFixed(1)}
+              ).toFixed(1), "ne")}
               % रहेका छन्। यस तथ्याङ्कले स्थानीय रोजगारी सृजना, सीप विकास
               कार्यक्रम र व्यावसायिक तालिमको दिशानिर्देशमा सहयोग पुर्‍याउँछ।
             </p>
@@ -333,10 +334,10 @@ export default async function WardMainSkillsPage() {
               ] || "कृषि"}{" "}
               सम्बन्धी सीप सबैभन्दा धेरै नागरिकहरूसँग रहेको छ, जुन कुल दक्ष
               जनसंख्याको{" "}
-              {(
+              {localizeNumber((
                 ((overallSummary[0]?.population || 0) / totalPopulation) *
                 100
-              ).toFixed(2)}
+              ).toFixed(2), "ne")}
               % हो।
             </p>
 
@@ -348,21 +349,7 @@ export default async function WardMainSkillsPage() {
               SKILL_NAMES_EN={SKILL_NAMES_EN}
             />
 
-            <h2 id="data-source" className="scroll-m-20 border-b pb-2">
-              तथ्याङ्क स्रोत
-            </h2>
-            <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू नेपालको राष्ट्रिय जनगणना र खजुरा
-              गाउँपालिकाको आफ्नै सर्वेक्षणबाट संकलन गरिएको हो। यी तथ्याङ्कहरूको
-              महत्व निम्न अनुसार छ:
-            </p>
-
-            <ul>
-              <li>स्थानीय श्रम बजारको संरचना र आवश्यकता बुझ्न</li>
-              <li>रोजगार सृजना र सीप विकास कार्यक्रम तयार गर्न</li>
-              <li>स्थानीय आर्थिक विकासका सम्भावनाहरू पहिचान गर्न</li>
-              <li>व्यावसायिक तालिम र शिक्षा कार्यक्रमहरू निर्माण गर्न</li>
-            </ul>
+           
           </div>
         </section>
       </div>
