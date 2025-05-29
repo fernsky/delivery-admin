@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { OccupationTypeEnum } from "@/server/api/routers/profile/economics/ward-wise-major-occupation.schema";
+import { OccupationTypeEnum } from "@/server/api/routers/profile/demographics/ward-wise-major-occupation.schema";
 
 // Create a schema for the form matching the backend schema
 const formSchema = z.object({

@@ -45,6 +45,10 @@ const navItems = [
         href: "/profile/demographics/ward-wise-mother-tongue-population",
       },
       {
+        title: "धर्म अनुसार जनसंख्या",
+        href: "/profile/demographics/ward-wise-religion-population",
+      },
+      {
         title: "जात/जनजाति अनुसार जनसंख्या",
         href: "/profile/demographics/ward-wise-caste-population",
       },
@@ -52,15 +56,14 @@ const navItems = [
         title: "घरमुलीको लिङ्ग अनुसार घरधुरी",
         href: "/profile/demographics/ward-wise-househead-gender",
       },
-
       {
-        title: "धर्म अनुसार जनसंख्या",
-        href: "/profile/demographics/ward-wise-religion-population",
+        title: "पेशाको आधारमा जनसंख्या",
+        href: "/profile/demographics/ward-main-occupations",
       },
-      {
-        title: "उमेर अनुसार वैवाहिक स्थिति",
-        href: "/profile/demographics/ward-age-wise-marital-status",
-      },
+      // {
+      //   title: "उमेर अनुसार वैवाहिक स्थिति",
+      //   href: "/profile/demographics/ward-age-wise-marital-status",
+      // },
       // {
       //   title: "वर्ष अनुसार जनसंख्या परिवर्तन",
       //   href: "/profile/demographics/ward-time-series-population",

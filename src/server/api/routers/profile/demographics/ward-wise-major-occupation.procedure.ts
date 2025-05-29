@@ -3,7 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { wardWiseMajorOccupation } from "@/server/db/schema/profile/economics/ward-wise-major-occupation";
+import { wardWiseMajorOccupation } from "@/server/db/schema/profile/demographics/ward-wise-major-occupation";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
   wardWiseMajorOccupationSchema,

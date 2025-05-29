@@ -6,7 +6,7 @@ import OccupationCharts from "./_components/occupation-charts";
 import OccupationAnalysisSection from "./_components/occupation-analysis-section";
 import OccupationSEO from "./_components/occupation-seo";
 import { api } from "@/trpc/server";
-import { OccupationType } from "@/server/api/routers/profile/economics/ward-wise-major-occupation.schema";
+import { OccupationType } from "@/server/api/routers/profile/demographics/ward-wise-major-occupation.schema";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
@@ -57,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     // Fetch data for SEO using tRPC
     const occupationData =
-      await api.profile.economics.wardWiseMajorOccupation.getAll.query();
+      await api.profile.demographics.wardWiseMajorOccupation.getAll.query();
     const municipalityName = "खजुरा गाउँपालिका"; // Khajura Rural Municipality
 
     // Process data for SEO
@@ -159,13 +159,13 @@ const toc = [
 export default async function WardMainOccupationsPage() {
   // Fetch all occupation data using tRPC
   const occupationData =
-    await api.profile.economics.wardWiseMajorOccupation.getAll.query();
+    await api.profile.demographics.wardWiseMajorOccupation.getAll.query();
 
   // Try to fetch summary data
   let summaryData = null;
   try {
     summaryData =
-      await api.profile.economics.wardWiseMajorOccupation.summary.query();
+      await api.profile.demographics.wardWiseMajorOccupation.summary.query();
   } catch (error) {
     console.error("Could not fetch summary data", error);
   }

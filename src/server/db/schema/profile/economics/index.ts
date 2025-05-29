@@ -27,8 +27,7 @@ export * from "./ward-wise-households-on-loan";
 // Imported Products
 export * from "./imported-products";
 
-// Major Occupation
-export * from "./ward-wise-major-occupation";
+
 
 // Major Skills
 export * from "./ward-wise-major-skills";

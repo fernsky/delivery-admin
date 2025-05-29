@@ -1,6 +1,5 @@
 import { createTRPCRouter } from "@/server/api/trpc";
 import {wardAgeGenderWiseEconomicallyActivePopulationRouter} from "./ward-age-gender-wise-economically-active-population.procedure"
-import { wardWiseMajorOccupationRouter } from "./ward-wise-major-occupation.procedure";
 import { wardTimeWiseHouseholdChoresRouter } from "./ward-time-wise-household-chores.procedure";
 import { wardWiseHouseholdIncomeSourceRouter } from "./ward-wise-household-income-source.procedure";
 import { wardWiseRemittanceExpensesRouter } from "./ward-wise-remittance-expenses.procedure";
@@ -15,7 +14,6 @@ import { wardWiseHouseholdLandPossessionsRouter } from "./ward-wise-household-la
 
 export const economicsRouter = createTRPCRouter({
   wardAgeGenderWiseEconomicallyActivePopulation: wardAgeGenderWiseEconomicallyActivePopulationRouter,
-  wardWiseMajorOccupation: wardWiseMajorOccupationRouter,
   wardTimeWiseHouseholdChores: wardTimeWiseHouseholdChoresRouter,
   wardWiseHouseholdIncomeSource: wardWiseHouseholdIncomeSourceRouter,
   wardWiseRemittanceExpenses: wardWiseRemittanceExpensesRouter,
