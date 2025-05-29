@@ -73,8 +73,12 @@ const navItems = [
         href: "/profile/demographics/ward-wise-birthplace-households",
       },
       {
-        title: "पाँच वर्षमुनिका बालबालिकाको जन्मदर्ताको आधारमा जनसंख्या",
+        title: "बालबालिकाको जन्मदर्ताको आधारमा जनसंख्या",
         href: "/profile/demographics/ward-wise-birth-certificate-population",
+      },
+      {
+        title: "विगत १२ महिनामा मृत्यु भएकाको विवरण",
+        href: "/profile/demographics/ward-age-gender-wise-deceased-population",
       },
       // {
       //   title: "उमेर अनुसार वैवाहिक स्थिति",
