@@ -12,7 +12,7 @@ export const disabilityCauseEnum = pgEnum("disability_cause", [
 ]);
 
 export const wardWiseDisabilityCause = pgTable(
-  "ward_wise_disability_cause",
+  "acme_ward_wise_disability_cause",
   {
     id: varchar("id", { length: 36 }).primaryKey(),
 
