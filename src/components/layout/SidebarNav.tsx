@@ -22,7 +22,7 @@ import {
 
 const navItems = [
   {
-    title: "पालिका प्रोफाइल",
+    title: "खजुरा प्रोफाइल",
     href: "/profile",
     icon: <Layout className="w-4 h-4" />,
     items: [],
@@ -60,6 +60,11 @@ const navItems = [
         title: "पेशाको आधारमा जनसंख्या",
         href: "/profile/demographics/ward-main-occupations",
       },
+      {
+        title: "आर्थिक रुपले सक्रिय जनसंख्या",
+        href: "/profile/demographics/ward-age-wise-economically-active-population",
+      },
+
       // {
       //   title: "उमेर अनुसार वैवाहिक स्थिति",
       //   href: "/profile/demographics/ward-age-wise-marital-status",

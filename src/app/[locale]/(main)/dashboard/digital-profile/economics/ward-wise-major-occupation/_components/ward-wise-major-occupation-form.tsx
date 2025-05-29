@@ -65,10 +65,10 @@ export default function WardWiseMajorOccupationForm({
     });
 
   const createMutation =
-    api.profile.economics.wardWiseMajorOccupation.create.useMutation({
+    api.profile.demographics.wardWiseMajorOccupation.create.useMutation({
       onSuccess: () => {
         toast.success("नयाँ वडा अनुसार प्रमुख पेशा डाटा सफलतापूर्वक थपियो");
-        utils.profile.economics.wardWiseMajorOccupation.getAll.invalidate();
+        utils.profile.demographics.wardWiseMajorOccupation.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },
@@ -79,10 +79,10 @@ export default function WardWiseMajorOccupationForm({
     });
 
   const updateMutation =
-    api.profile.economics.wardWiseMajorOccupation.update.useMutation({
+    api.profile.demographics.wardWiseMajorOccupation.update.useMutation({
       onSuccess: () => {
         toast.success("वडा अनुसार प्रमुख पेशा डाटा सफलतापूर्वक अपडेट गरियो");
-        utils.profile.economics.wardWiseMajorOccupation.getAll.invalidate();
+        utils.profile.demographics.wardWiseMajorOccupation.getAll.invalidate();
         setIsSubmitting(false);
         onClose();
       },
