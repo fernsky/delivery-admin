@@ -7,18 +7,18 @@ import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Define occupation colors for consistency
 const OCCUPATION_COLORS = {
-  GOVERNMENTAL_JOB: "#FF5733", // Red-orange
-  NON_GOVERNMENTAL_JOB: "#FFC300", // Yellow
-  LABOUR: "#36A2EB", // Blue
+  GOVERNMENT_SERVICE: "#FF5733", // Red-orange
+  NON_GOVERNMENT_SERVICE: "#FFC300", // Yellow
+  DAILY_WAGE: "#36A2EB", // Blue
   FOREIGN_EMPLOYMENT: "#4BC0C0", // Cyan
   BUSINESS: "#9966FF", // Purple
-  OTHER_EMPLOYMENT: "#3CB371", // Green
+  OTHERS: "#3CB371", // Green
   STUDENT: "#FF6384", // Pink
-  HOUSEHOLDER: "#FFCE56", // Light orange
-  OTHER_UNEMPLOYMENT: "#607D8B", // Grey
-  INDUSTRY: "#E91E63", // Magenta
+  HOUSEHOLD_WORK: "#FFCE56", // Light orange
+  UNEMPLOYED: "#607D8B", // Grey
+  INDUSTRY_WORK: "#E91E63", // Magenta
   ANIMAL_HUSBANDRY: "#8BC34A", // Light green
-  OTHER_SELF_EMPLOYMENT: "#FF9F40", // Orange
+  SELF_EMPLOYED: "#FF9F40", // Orange
 };
 
 interface OccupationChartsProps {
@@ -83,7 +83,7 @@ export default function OccupationCharts({
           {/* Client-side pie chart */}
           <div className="lg:col-span-1">
             <h4 className="text-lg font-medium mb-4 text-center">पाई चार्ट</h4>
-            <div className="h-[400px]">
+            <div className="h-[420px]">
               <OccupationPieChart
                 pieChartData={pieChartData}
                 OCCUPATION_NAMES={OCCUPATION_NAMES}

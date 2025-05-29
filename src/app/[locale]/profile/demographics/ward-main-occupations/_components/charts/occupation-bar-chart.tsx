@@ -9,7 +9,25 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
+  Cell,
 } from "recharts";
+import { localizeNumber } from "@/lib/utils/localize-number";
+
+// Define a color palette for consistency (similar to religion chart)
+const OCCUPATION_COLOR_PALETTE = [
+  "#FF5733", // Red-orange
+  "#FFC300", // Yellow
+  "#36A2EB", // Blue
+  "#4BC0C0", // Cyan
+  "#9966FF", // Purple
+  "#3CB371", // Green
+  "#FF6384", // Pink
+  "#FFCE56", // Light orange
+  "#607D8B", // Grey
+  "#E91E63", // Magenta
+  "#8BC34A", // Light green
+  "#FF9F40", // Orange
+];
 
 interface OccupationBarChartProps {
   wardWiseData: Array<Record<string, any>>;
@@ -22,6 +40,32 @@ export default function OccupationBarChart({
   OCCUPATION_COLORS,
   OCCUPATION_NAMES,
 }: OccupationBarChartProps) {
+  // Custom tooltip component for better presentation with Nepali numbers
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-background p-3 border shadow-sm rounded-md">
+          <p className="font-medium">{localizeNumber(label, "ne")}</p>
+          <div className="space-y-1 mt-2">
+            {payload.map((entry: any, index: number) => (
+              <div key={index} className="flex items-center gap-2">
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: entry.color }}
+                ></div>
+                <span>{entry.name}: </span>
+                <span className="font-medium">
+                  {localizeNumber(entry.value?.toLocaleString() || "0", "ne")}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -35,34 +79,10 @@ export default function OccupationBarChart({
           scale="point"
           padding={{ left: 10, right: 10 }}
           tick={{ fontSize: 12 }}
+          tickFormatter={(value) => localizeNumber(value.toString(), "ne")}
         />
-        <YAxis />
-        <Tooltip
-          content={({ active, payload }) => {
-            if (active && payload && payload.length) {
-              return (
-                <div className="bg-background p-3 border shadow-sm rounded-md">
-                  <p className="font-medium">{payload[0].payload.ward}</p>
-                  <div className="space-y-1 mt-2">
-                    {payload.map((entry, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <div
-                          className="w-2 h-2"
-                          style={{ backgroundColor: entry.color }}
-                        ></div>
-                        <span>{entry.name}: </span>
-                        <span className="font-medium">
-                          {entry.value?.toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            }
-            return null;
-          }}
-        />
+        <YAxis tickFormatter={(value) => localizeNumber(value.toString(), "ne")} />
+        <Tooltip content={CustomTooltip} />
         <Legend
           wrapperStyle={{ paddingTop: 20 }}
           layout="horizontal"
@@ -80,7 +100,7 @@ export default function OccupationBarChart({
             },
             {} as Record<string, boolean>,
           ),
-        ).map((occupation) => {
+        ).map((occupation, index) => {
           // Find the occupation key for color mapping
           const occupationKey =
             Object.keys(OCCUPATION_NAMES).find(
@@ -96,9 +116,20 @@ export default function OccupationBarChart({
               fill={
                 OCCUPATION_COLORS[
                   occupationKey as keyof typeof OCCUPATION_COLORS
-                ] || `#${Math.floor(Math.random() * 16777215).toString(16)}`
+                ] || OCCUPATION_COLOR_PALETTE[index % OCCUPATION_COLOR_PALETTE.length]
               }
-            />
+            >
+              {wardWiseData.map((entry, entryIndex) => (
+                <Cell
+                  key={`cell-${entryIndex}`}
+                  fill={
+                    OCCUPATION_COLORS[occupationKey as keyof typeof OCCUPATION_COLORS] ||
+                    OCCUPATION_COLOR_PALETTE[index % OCCUPATION_COLOR_PALETTE.length]
+                  }
+                  fillOpacity={0.8 + (0.2 * index) / Object.keys(OCCUPATION_NAMES).length}
+                />
+              ))}
+            </Bar>
           );
         })}
       </BarChart>
