@@ -130,11 +130,11 @@ export default function RemittanceCharts({
       const sum = remittanceData
         .filter(d => d.amountGroup === option.value)
         .reduce((acc, curr) => acc + curr.sendingPopulation, 0);
-      summaryRow.push(sum);
+      summaryRow.push(sum.toString());
     });
-    summaryRow.push(totalSendingPopulation);
+    summaryRow.push(totalSendingPopulation.toString());
     
-    rows.push(summaryRow);
+    rows.push(summaryRow as unknown as number[]);
     
     // Convert to CSV format
     const csvContent = 

@@ -9,6 +9,22 @@ import RemittanceAnalysisSection from "./_components/remittance-analysis-section
 import RemittanceSEO from "./_components/remittance-seo";
 import { remittanceAmountGroupOptions } from "@/server/api/routers/profile/economics/ward-wise-remittance.schema";
 
+// Define the interface for total remittance data
+interface TotalRemittanceData {
+  totalSendingPopulation: number;
+  highRemittanceSendingPopulation: number;
+  mediumRemittanceSendingPopulation: number;
+  lowRemittanceSendingPopulation: number;
+  veryHighRemittanceSendingPopulation: number;
+  totalEstimatedRemittance: number;
+  highRemittancePercentage: string;
+  mediumRemittancePercentage: string;
+  lowRemittancePercentage: string;
+  veryHighRemittancePercentage: string;
+  averageRemittance: number;
+  estimatedAnnualRemittanceCrores: string;
+}
+
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
 
@@ -400,7 +416,7 @@ export default async function WardWiseRemittancePage() {
   });
 
   // Calculate remittance statistics for the entire municipality
-  const totalData = wardWiseAnalysis.reduce((acc, ward) => {
+  const totalData = wardWiseAnalysis.reduce<TotalRemittanceData>((acc, ward) => {
     acc.totalSendingPopulation += ward.totalSendingPopulation;
     acc.highRemittanceSendingPopulation += ward.highRemittanceSendingPopulation;
     acc.mediumRemittanceSendingPopulation += ward.mediumRemittanceSendingPopulation;
@@ -415,6 +431,12 @@ export default async function WardWiseRemittancePage() {
     lowRemittanceSendingPopulation: 0,
     veryHighRemittanceSendingPopulation: 0,
     totalEstimatedRemittance: 0,
+    highRemittancePercentage: "0",
+    mediumRemittancePercentage: "0",
+    lowRemittancePercentage: "0",
+    veryHighRemittancePercentage: "0",
+    averageRemittance: 0,
+    estimatedAnnualRemittanceCrores: "0"
   });
   
   // Calculate percentages for municipality

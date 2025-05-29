@@ -48,6 +48,62 @@ export default function RemittanceRangeBarChart({
     }
     return null;
   };
+  
+  // Format X-axis labels to use Nepali currency terms (हजार, लाख)
+  const formatAxisLabel = (value: string) => {
+    // Replace numeric ranges with Nepali numerals and appropriate units
+    let formattedValue = value;
+    
+    // Replace ranges with हजार (thousand) and लाख (hundred thousand) format
+    formattedValue = formattedValue
+      .replace(/(\d+)k-(\d+)k/g, (_, min, max) => {
+        const minValue = parseInt(min);
+        const maxValue = parseInt(max);
+        
+        // Format based on value range
+        if (minValue < 100 && maxValue < 100) {
+          // Format as thousands (हजार)
+          return `${localizeNumber(minValue.toString(), "ne")}-${localizeNumber(maxValue.toString(), "ne")} हजार`;
+        } else if (minValue >= 100 || maxValue >= 100) {
+          // Format as lakhs (लाख)
+          const minLakh = minValue / 100;
+          const maxLakh = maxValue / 100;
+          return `${localizeNumber(minLakh.toString(), "ne")}-${localizeNumber(maxLakh.toString(), "ne")} लाख`;
+        }
+        return `${localizeNumber(minValue.toString(), "ne")}-${localizeNumber(maxValue.toString(), "ne")}`;
+      })
+      .replace(/(\d+)k\+/g, (_, value) => {
+        const numValue = parseInt(value);
+        if (numValue >= 100) {
+          const lakhValue = numValue / 100;
+          return `${localizeNumber(lakhValue.toString(), "ne")} लाख+`;
+        }
+        return `${localizeNumber(value, "ne")} हजार+`;
+      })
+      .replace(/(\d+)k/g, (_, value) => {
+        const numValue = parseInt(value);
+        if (numValue >= 100) {
+          const lakhValue = numValue / 100;
+          return `${localizeNumber(lakhValue.toString(), "ne")} लाख`;
+        }
+        return `${localizeNumber(value, "ne")} हजार`;
+      });
+      
+    // Convert any remaining numbers to Nepali numerals
+    const numericValues = formattedValue.match(/\d+/g);
+    if (numericValues && numericValues.length > 0) {
+      numericValues.forEach((num) => {
+        formattedValue = formattedValue.replace(num, localizeNumber(num, "ne"));
+      });
+    }
+    
+    // Add Rs. (रू.) prefix if not already present
+    if (!formattedValue.includes("रू.") && !formattedValue.includes("<")) {
+      formattedValue = "रू. " + formattedValue;
+    }
+    
+    return formattedValue;
+  };
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -65,6 +121,7 @@ export default function RemittanceRangeBarChart({
           angle={-45}
           textAnchor="end"
           height={60}
+          tickFormatter={formatAxisLabel}
         />
         <YAxis
           tickFormatter={(value) => localizeNumber(value.toString(), "ne")}
