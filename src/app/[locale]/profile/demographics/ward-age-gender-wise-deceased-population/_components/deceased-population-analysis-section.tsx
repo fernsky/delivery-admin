@@ -341,23 +341,7 @@ export default function DeceasedPopulationAnalysisSection({
         </div>
       </div>
 
-      <div className="bg-muted/50 p-4 rounded-lg mt-8">
-        <h3 className="text-xl font-medium mb-4">निष्कर्ष</h3>
-        <p>
-          खजुरा गाउँपालिकामा उमेर र लिङ्ग अनुसार मृत्युदरको यस विश्लेषणले स्थानीय स्वास्थ्य कार्यक्रम 
-          तथा नीतिहरूमा व्यापक सुधार गर्न सहयोग पुर्‍याउने अपेक्षा गरिएको छ। विशेष गरी 
-          {ageGroupsAnalysis.elderlyPercentage && parseFloat(ageGroupsAnalysis.elderlyPercentage) > 50 
-            ? " जेष्ठ नागरिक" 
-            : ageGroupsAnalysis.childrenPercentage && parseFloat(ageGroupsAnalysis.childrenPercentage) > 20
-            ? " बालबालिका"
-            : ""} स्वास्थ्य सेवाहरूमा विशेष ध्यान दिनुपर्ने देखिन्छ।
-        </p>
-        <p className="mt-4">
-          यस विश्लेषणको तथ्याङ्क नेपाल सरकारको स्वास्थ्य तथा जनसंख्या मन्त्रालय र खजुरा गाउँपालिकाको 
-          स्वास्थ्य शाखाको पछिल्लो रिपोर्टहरूमा आधारित छ। थप जानकारीका लागि कृपया स्थानीय स्वास्थ्य 
-          केन्द्रमा सम्पर्क गर्नुहोला।
-        </p>
-      </div>
+    
     </>
   );
 }

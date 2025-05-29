@@ -28,7 +28,7 @@ const navItems = [
     items: [],
   },
   {
-    title: "जनसांख्यिकी",
+    title: "जनसांख्यिक विवरण",
     href: "/profile/demographics",
     icon: <Users className="w-4 h-4" />,
     items: [
@@ -79,6 +79,10 @@ const navItems = [
       {
         title: "विगत १२ महिनामा मृत्यु भएकाको विवरण",
         href: "/profile/demographics/ward-age-gender-wise-deceased-population",
+      },
+      {
+        title: "मृत्युको कारण अनुसार मृतकको संख्या",
+        href: "/profile/demographics/ward-death-causes",
       },
       // {
       //   title: "उमेर अनुसार वैवाहिक स्थिति",

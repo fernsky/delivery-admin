@@ -3,24 +3,24 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
-interface WardSkillsPieChartsProps {
+interface WardDeathCausePieChartsProps {
   wardNumbers: number[];
-  skillsData: Array<{
+  deathCauseData: Array<{
     id?: string;
     wardNumber: number;
-    skill: string;
+    deathCause: string;
     population: number;
   }>;
-  skillLabels: Record<string, string>;
-  SKILL_COLORS: Record<string, string>;
+  deathCauseLabels: Record<string, string>;
+  DEATH_CAUSE_COLORS: Record<string, string>;
 }
 
-export default function WardSkillsPieCharts({
+export default function WardDeathCausePieCharts({
   wardNumbers,
-  skillsData,
-  skillLabels,
-  SKILL_COLORS,
-}: WardSkillsPieChartsProps) {
+  deathCauseData,
+  deathCauseLabels,
+  DEATH_CAUSE_COLORS,
+}: WardDeathCausePieChartsProps) {
   // Custom tooltip component with Nepali numbers
   const CustomTooltip = ({ active, payload, totalPopulation }: any) => {
     if (active && payload && payload.length) {
@@ -41,21 +41,21 @@ export default function WardSkillsPieCharts({
     }
     return null;
   };
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {wardNumbers.map((wardNumber) => {
-        const wardItems = skillsData.filter(
+        const wardItems = deathCauseData.filter(
           (item) => item.wardNumber === wardNumber,
         );
 
-        // Sort by population and take top 5 skills, group others
+        // Sort by population and take top 5 death causes, group others
         const sortedItems = [...wardItems].sort(
           (a, b) => (b.population || 0) - (a.population || 0),
         );
-        const topSkills = sortedItems.slice(0, 5);
-        const otherSkills = sortedItems.slice(5);
-        const otherTotal = otherSkills.reduce(
+        const topDeathCauses = sortedItems.slice(0, 5);
+        const otherDeathCauses = sortedItems.slice(5);
+        const otherTotal = otherDeathCauses.reduce(
           (sum, item) => sum + (item.population || 0),
           0,
         );
@@ -66,17 +66,17 @@ export default function WardSkillsPieCharts({
           0,
         );
 
-        let wardData = topSkills.map((item) => ({
-          name: skillLabels[item.skill] || item.skill,
+        let wardData = topDeathCauses.map((item) => ({
+          name: deathCauseLabels[item.deathCause] || item.deathCause,
           value: item.population || 0,
-          skill: item.skill,
+          deathCause: item.deathCause,
         }));
 
         if (otherTotal > 0) {
           wardData.push({
             name: "अन्य",
             value: otherTotal,
-            skill: "OTHER",
+            deathCause: "OTHER",
           });
         }
 
@@ -86,7 +86,7 @@ export default function WardSkillsPieCharts({
               वडा {localizeNumber(wardNumber.toString(), "ne")}
             </h3>
             <p className="text-xs text-center text-muted-foreground mb-2">
-              कुल संख्या: {localizeNumber(wardTotal.toLocaleString(), "ne")}
+              कुल मृत्यु संख्या: {localizeNumber(wardTotal.toLocaleString(), "ne")}
             </p>
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -104,8 +104,8 @@ export default function WardSkillsPieCharts({
                       <Cell
                         key={`cell-${index}`}
                         fill={
-                          SKILL_COLORS[
-                            entry.skill as keyof typeof SKILL_COLORS
+                          DEATH_CAUSE_COLORS[
+                            entry.deathCause as keyof typeof DEATH_CAUSE_COLORS
                           ] ||
                           `#${Math.floor(Math.random() * 16777215).toString(16)}`
                         }
@@ -131,8 +131,8 @@ export default function WardSkillsPieCharts({
                         className="w-3 h-3 rounded-full flex-shrink-0"
                         style={{
                           backgroundColor:
-                            SKILL_COLORS[
-                              item.skill as keyof typeof SKILL_COLORS
+                            DEATH_CAUSE_COLORS[
+                              item.deathCause as keyof typeof DEATH_CAUSE_COLORS
                             ] || "#888",
                         }}
                       ></div>
@@ -149,8 +149,8 @@ export default function WardSkillsPieCharts({
                             style={{
                               width: `${percentage}%`,
                               backgroundColor:
-                                SKILL_COLORS[
-                                  item.skill as keyof typeof SKILL_COLORS
+                                DEATH_CAUSE_COLORS[
+                                  item.deathCause as keyof typeof DEATH_CAUSE_COLORS
                                 ] || "#888",
                             }}
                           ></div>
