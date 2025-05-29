@@ -1,0 +1,219 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 400" width="1200" height="400">
+  <defs>
+    <!-- Modern gradient backgrounds -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+    
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#34A0A4" />
+      <stop offset="100%" stop-color="#76C893" />
+    </linearGradient>
+    
+    <!-- Decorative gradients -->
+    <linearGradient id="decorGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34A0A4" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#76C893" stop-opacity="0.08" />
+    </linearGradient>
+    
+    <linearGradient id="decorGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D9ED92" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#34A0A4" stop-opacity="0.08" />
+    </linearGradient>
+    
+    <!-- Migration origin icons -->
+    <symbol id="iconSameDistrict" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M30,75 L30,40 L50,25 L70,40 L70,75 Z" fill="#B5E48C" stroke="#34A0A4" stroke-width="3" stroke-linejoin="round" />
+      <path d="M38,55 L48,55 L48,75 L38,75 Z" fill="#34A0A4" />
+      <path d="M52,45 L62,45 L62,55 L52,55 Z" fill="#34A0A4" />
+      <path d="M25,53 L25,75 L35,75 L35,62 Q35,53 25,53 Z" fill="#D9ED92" stroke="#34A0A4" stroke-width="1.5" stroke-linejoin="round" />
+      <path d="M75,58 L75,75 L65,75 L65,62 Q65,58 75,58 Z" fill="#D9ED92" stroke="#34A0A4" stroke-width="1.5" stroke-linejoin="round" />
+    </symbol>
+    
+    <symbol id="iconAnotherDistrict" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M25,30 L45,30 L45,70 L25,70 Z" fill="#B5E48C" stroke="#34A0A4" stroke-width="2" stroke-linejoin="round" />
+      <path d="M55,30 Q65,30 75,40 L75,70 L55,70 Z" fill="#D9ED92" stroke="#34A0A4" stroke-width="2" stroke-linejoin="round" />
+      <path d="M30,40 L40,40 L40,50 L30,50 Z" fill="#34A0A4" />
+      <path d="M30,55 L40,55 L40,65 L30,65 Z" fill="#34A0A4" />
+      <path d="M60,50 L70,50 L70,60 L60,60 Z" fill="#34A0A4" />
+      <path d="M20,30 L20,25 L50,10 L50,30 M20,70 L20,80 L75,80 L75,70" stroke="#76C893" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      <path d="M45,50 L55,50" stroke="#34A0A4" stroke-width="2" stroke-linecap="round" stroke-dasharray="2,2" />
+    </symbol>
+    
+    <symbol id="iconAbroad" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <circle cx="50" cy="50" r="25" fill="#D9ED92" stroke="#34A0A4" stroke-width="2.5" />
+      <path d="M50,25 L50,75 M25,50 L75,50" stroke="#34A0A4" stroke-width="1.5" stroke-linecap="round" />
+      <path d="M35,35 Q50,20 65,35 Q80,50 65,65 Q50,80 35,65 Q20,50 35,35" fill="#B5E48C" stroke="#34A0A4" stroke-width="1.5" stroke-linejoin="round" />
+      <path d="M38,45 L43,45 M57,45 L62,45" stroke="#34A0A4" stroke-width="2" stroke-linecap="round" />
+      <path d="M45,55 C48,58 52,58 55,55" stroke="#34A0A4" stroke-width="2" fill="none" stroke-linecap="round" />
+    </symbol>
+    
+    <!-- Family/people silhouettes -->
+    <symbol id="iconFamily" viewBox="0 0 100 100">
+      <circle cx="50" cy="30" r="15" fill="#34A0A4" />
+      <path d="M35,90 L35,55 L65,55 L65,90" fill="none" stroke="#34A0A4" stroke-width="5" stroke-linejoin="round" />
+      <circle cx="30" cy="36" r="10" fill="#76C893" />
+      <path d="M20,80 L20,50 L40,50 L40,80" fill="none" stroke="#76C893" stroke-width="4" stroke-linejoin="round" />
+      <circle cx="70" cy="36" r="10" fill="#76C893" />
+      <path d="M60,80 L60,50 L80,50 L80,80" fill="none" stroke="#76C893" stroke-width="4" stroke-linejoin="round" />
+    </symbol>
+    
+    <!-- House icon -->
+    <symbol id="iconHouse" viewBox="0 0 100 100">
+      <path d="M15,85 L15,40 L50,15 L85,40 L85,85 Z" fill="#B5E48C" stroke="#34A0A4" stroke-width="4" stroke-linejoin="round" />
+      <path d="M35,55 L50,55 L50,85 L35,85 Z" fill="#34A0A4" />
+      <path d="M60,45 L75,45 L75,60 L60,60 Z" fill="#34A0A4" />
+    </symbol>
+    
+    <!-- Migration arrow -->
+    <symbol id="iconArrow" viewBox="0 0 100 50">
+      <path d="M5,25 L85,25 M70,10 L90,25 L70,40" fill="none" stroke="#34A0A4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    
+    <!-- Wavy pattern -->
+    <pattern id="wavyPattern" width="100" height="40" patternUnits="userSpaceOnUse">
+      <path d="M0,20 Q20,5 40,20 T80,20 T120,20" fill="none" stroke="#34A0A4" stroke-width="1" stroke-opacity="0.1"/>
+      <path d="M0,40 Q20,25 40,40 T80,40 T120,40" fill="none" stroke="#76C893" stroke-width="1" stroke-opacity="0.1"/>
+    </pattern>
+
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#334155" flood-opacity="0.15"/>
+    </filter>
+    
+    <!-- Arrows for migration flow -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34A0A4" />
+    </marker>
+    
+    <!-- Dot pattern for background texture -->
+    <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#cbd5e1" fill-opacity="0.5"/>
+    </pattern>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="100%" height="100%" fill="url(#bgGradient)"/>
+  <rect width="100%" height="100%" fill="url(#wavyPattern)" opacity="0.6"/>
+  <rect width="100%" height="100%" fill="url(#dotPattern)"/>
+  
+  <!-- Decorative elements -->
+  <path d="M0,0 L1200,0 L1200,400 L0,400 Z" fill="url(#decorGradient1)"/>
+  <path d="M1200,0 L0,0 L0,400 L1200,400 Z" fill="url(#decorGradient2)"/>
+  <circle cx="100" cy="50" r="150" fill="#34A0A4" opacity="0.03"/>
+  <circle cx="1100" cy="350" r="120" fill="#76C893" opacity="0.03"/>
+  
+  <!-- Abstract flowing lines representing migration roads -->
+  <path d="M-50,120 C200,150 400,70 600,100 S900,200 1300,140" fill="none" stroke="#34A0A4" stroke-width="6" stroke-opacity="0.1"/>
+  <path d="M-50,160 C200,190 400,110 600,140 S900,240 1300,180" fill="none" stroke="#76C893" stroke-width="4" stroke-opacity="0.08"/>
+  <path d="M-50,340 C200,310 400,370 600,340 S900,270 1300,300" fill="none" stroke="#D9ED92" stroke-width="5" stroke-opacity="0.1"/>
+  
+  <!-- Mountain ranges in background -->
+  <path d="M0,220 L80,160 L120,180 L170,140 L230,190 L260,170 L320,210 L380,150 L450,190 L500,160 L550,200 L630,140 L700,180 L780,150 L850,190 L900,160 L950,180 L1000,150 L1080,190 L1150,160 L1200,180 L1200,220 Z" fill="#D9ED92" opacity="0.2" />
+  
+  <!-- Migration flow paths -->
+  <g>
+    <!-- District to district migration -->
+    <path d="M250,230 C350,210 450,250 550,230" fill="none" stroke="#34A0A4" stroke-width="3" stroke-opacity="0.5" marker-end="url(#arrowhead)" />
+    <path d="M270,260 C370,280 470,240 570,260" fill="none" stroke="#76C893" stroke-width="2" stroke-opacity="0.5" marker-end="url(#arrowhead)" />
+    
+    <!-- Abroad to district migration -->
+    <path d="M950,230 C850,210 750,250 650,230" fill="none" stroke="#34A0A4" stroke-width="3" stroke-opacity="0.5" marker-end="url(#arrowhead)" />
+    <path d="M930,260 C830,280 730,240 630,260" fill="none" stroke="#76C893" stroke-width="2" stroke-opacity="0.5" marker-end="url(#arrowhead)" />
+  </g>
+  
+  <!-- Main cards showing migration origins -->
+  <g filter="url(#shadow)" transform="translate(0, 15)">
+    <!-- Same District Another Municipality -->
+    <rect x="200" y="110" width="180" height="190" rx="15" fill="white"/>
+    <use xlink:href="#iconSameDistrict" x="240" y="120" width="100" height="100"/>
+    <text x="290" y="240" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#34A0A4">यही जिल्लाको अर्को स्थानीय तह</text>
+    
+    <!-- Another District -->
+    <rect x="510" y="110" width="180" height="190" rx="15" fill="white"/>
+    <use xlink:href="#iconAnotherDistrict" x="550" y="120" width="100" height="100"/>
+    <text x="600" y="240" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#34A0A4">नेपालको अर्को जिल्ला</text>
+    
+    <!-- Abroad -->
+    <rect x="820" y="110" width="180" height="190" rx="15" fill="white"/>
+    <use xlink:href="#iconAbroad" x="860" y="120" width="100" height="100"/>
+    <text x="910" y="240" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#34A0A4">विदेश</text>
+  </g>
+  
+  <!-- Migration families -->
+  <g>
+    <!-- Family migrating from same district -->
+    <g transform="translate(170, 320) scale(0.4)">
+      <use xlink:href="#iconFamily" />
+      <path d="M110,60 L160,60" stroke="#34A0A4" stroke-width="2" stroke-dasharray="4,2" />
+      <use xlink:href="#iconArrow" x="170" y="35" />
+    </g>
+    
+    <!-- Family migrating from another district -->
+    <g transform="translate(480, 320) scale(0.4)">
+      <use xlink:href="#iconFamily" />
+      <path d="M110,60 L160,60" stroke="#34A0A4" stroke-width="2" stroke-dasharray="4,2" />
+      <use xlink:href="#iconArrow" x="170" y="35" />
+    </g>
+    
+    <!-- Family migrating from abroad -->
+    <g transform="translate(790, 320) scale(0.4)">
+      <use xlink:href="#iconFamily" />
+      <path d="M110,60 L160,60" stroke="#34A0A4" stroke-width="2" stroke-dasharray="4,2" />
+      <use xlink:href="#iconArrow" x="170" y="35" />
+    </g>
+    
+    <!-- Destination houses -->
+    <g transform="translate(300, 320) scale(0.4)">
+      <use xlink:href="#iconHouse" />
+    </g>
+    
+    <g transform="translate(610, 320) scale(0.4)">
+      <use xlink:href="#iconHouse" />
+    </g>
+    
+    <g transform="translate(920, 320) scale(0.4)">
+      <use xlink:href="#iconHouse" />
+    </g>
+  </g>
+  
+  <!-- Connecting lines between origin cards -->
+  <g>
+    <path d="M380,170 C415,170 475,170 510,170" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,6" stroke-opacity="0.8"/>
+    <path d="M690,170 C725,170 785,170 820,170" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,6" stroke-opacity="0.8"/>
+    
+    <!-- Additional connecting dotted lines -->
+    <path d="M380,200 C415,210 475,210 510,200" stroke="#34A0A4" stroke-width="1.5" stroke-dasharray="1,3" stroke-opacity="0.5"/>
+    <path d="M690,200 C725,210 785,210 820,200" stroke="#34A0A4" stroke-width="1.5" stroke-dasharray="1,3" stroke-opacity="0.5"/>
+  </g>
+  
+  <!-- Small village groups with people movings -->
+  <g transform="translate(400, 30)">
+    <g transform="scale(0.3)">
+      <use xlink:href="#iconHouse" x="0" y="0" />
+      <use xlink:href="#iconHouse" x="120" y="20" />
+      <use xlink:href="#iconHouse" x="60" y="50" />
+      <circle cx="40" cy="130" r="10" fill="#34A0A4" />
+      <circle cx="70" cy="150" r="8" fill="#34A0A4" />
+      <circle cx="100" cy="140" r="9" fill="#34A0A4" />
+      <path d="M40,130 L120,180" stroke="#34A0A4" stroke-width="2" fill="none" stroke-dasharray="5,3" />
+      <path d="M70,150 L150,200" stroke="#34A0A4" stroke-width="2" fill="none" stroke-dasharray="5,3" />
+      <path d="M100,140 L180,190" stroke="#34A0A4" stroke-width="2" fill="none" stroke-dasharray="5,3" />
+    </g>
+  </g>
+  
+  <!-- Subtle geometric decorative elements -->
+  <g opacity="0.15">
+    <path d="M50,350 L120,320 L85,280 Z" fill="#34A0A4"/>
+    <path d="M1150,50 L1100,100 L1180,120 Z" fill="#76C893"/>
+    <circle cx="200" cy="320" r="15" fill="#B5E48C"/>
+    <circle cx="950" cy="330" r="12" fill="#D9ED92"/>
+    <circle cx="1100" cy="290" r="10" fill="#76C893"/>
+    <rect x="180" y="60" width="20" height="20" rx="4" fill="#34A0A4"/>
+    <rect x="960" y="80" width="15" height="15" rx="3" fill="#76C893"/>
+  </g>
+</svg>

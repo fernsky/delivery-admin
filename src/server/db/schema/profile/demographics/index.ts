@@ -16,3 +16,9 @@ export * from "./ward-age-wise-economically-active-population";
 
 // Disability Cause
 export * from "./ward-wise-disability-cause";
+
+// Birthplace Households
+export * from "./ward-wise-birthplace-households";
+
+// Migrated Households
+export * from "./ward-wise-migrated-households";

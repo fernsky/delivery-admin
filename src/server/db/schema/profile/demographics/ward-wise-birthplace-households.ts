@@ -10,7 +10,7 @@ export const birthPlaceEnum = pgEnum("birth_place", [
 ]);
 
 export const wardWiseBirthplaceHouseholds = pgTable(
-  "acme_ward_wise_birthplace_households",
+  "ward_wise_birthplace_households",
   {
     id: varchar("id", { length: 36 }).primaryKey(),
 

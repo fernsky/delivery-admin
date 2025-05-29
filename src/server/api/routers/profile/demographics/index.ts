@@ -20,6 +20,7 @@ import { wardWiseMajorSubjectRouter } from "../education/ward-wise-major-subject
 import { wardWiseSchoolDropoutRouter } from "../education/ward-wise-school-dropout.procedure";
 import { wardWiseDisabilityCauseRouter } from "./ward-wise-disability-cause.procedure";
 import { wardWiseBirthplaceHouseholdsRouter } from "./ward-wise-birthplace-households.procedure";
+import { wardWiseMigratedHouseholdsRouter } from "./ward-wise-migrated-households.procedure";
 
 export const demographicsRouter = createTRPCRouter({
   summary: demographicSummaryRouter,
@@ -45,4 +46,5 @@ export const demographicsRouter = createTRPCRouter({
     wardAgeWiseEconomicallyActivePopulationRouter,
   wardWiseDisabilityCause: wardWiseDisabilityCauseRouter,
   wardWiseBirthplaceHouseholds: wardWiseBirthplaceHouseholdsRouter,
+  wardWiseMigratedHouseholds: wardWiseMigratedHouseholdsRouter,
 });
