@@ -1,264 +1,289 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 400" width="1200" height="400">
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-    <!-- Modern gradient backgrounds -->
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f8fafc" />
-      <stop offset="100%" stop-color="#e2e8f0" />
+    <!-- Gradients for background and elements -->
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#334155" />
     </linearGradient>
     
-    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#3b82f6" />
-      <stop offset="100%" stop-color="#6366f1" />
+    <linearGradient id="wall-gradient-1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8e44ad" />
+      <stop offset="100%" stop-color="#9b59b6" />
     </linearGradient>
     
-    <!-- Additional decorative gradients -->
-    <linearGradient id="decorGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.05" />
-      <stop offset="100%" stop-color="#6366f1" stop-opacity="0.05" />
+    <linearGradient id="wall-gradient-2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#27ae60" />
+      <stop offset="100%" stop-color="#2ecc71" />
     </linearGradient>
     
-    <linearGradient id="decorGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.05" />
-      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05" />
+    <linearGradient id="wall-gradient-3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e74c3c" />
+      <stop offset="100%" stop-color="#f1948a" />
     </linearGradient>
     
-    <!-- Modern stylized house wall icons -->
-    <symbol id="iconCementJoined" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="45" fill="#fff" />
-      <!-- House with cement-joined wall -->
-      <rect x="20" y="30" width="60" height="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" />
-      <rect x="30" y="40" width="15" height="15" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1" />
-      <rect x="55" y="40" width="15" height="15" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1" />
-      <rect x="40" y="65" width="20" height="15" rx="1" fill="#3b82f6" />
-      <!-- Cement-joined wall pattern -->
-      <pattern id="cementPattern" patternUnits="userSpaceOnUse" width="20" height="10" patternTransform="rotate(0)">
-        <rect width="19" height="9" x="0.5" y="0.5" fill="#dbeafe" stroke="#3b82f6" stroke-width="0.5"/>
-      </pattern>
-      <rect x="17" y="30" width="66" height="50" fill="url(#cementPattern)" fill-opacity="0.3" />
+    <linearGradient id="wall-gradient-4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3498db" />
+      <stop offset="100%" stop-color="#2980b9" />
+    </linearGradient>
+    
+    <!-- Path for curved text -->
+    <path id="curved-text-path" d="M200,350 Q600,280 1000,350" fill="none" />
+    
+    <!-- House shapes -->
+    <symbol id="house-shape" viewBox="0 0 100 100">
+      <path d="M10,40 L50,10 L90,40 L90,90 L10,90 Z" />
+      <rect x="40" y="65" width="20" height="25" />
+      <rect x="20" y="50" width="15" height="15" />
+      <rect x="65" y="50" width="15" height="15" />
     </symbol>
     
-    <symbol id="iconMudJoined" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="45" fill="#fff" />
-      <!-- House with mud-joined wall -->
-      <rect x="20" y="30" width="60" height="50" fill="#fef3c7" stroke="#d97706" stroke-width="2" />
-      <rect x="30" y="40" width="15" height="15" fill="#fde68a" stroke="#d97706" stroke-width="1" />
-      <rect x="55" y="40" width="15" height="15" fill="#fde68a" stroke="#d97706" stroke-width="1" />
-      <rect x="40" y="65" width="20" height="15" rx="1" fill="#d97706" />
-      <!-- Mud-joined wall pattern -->
-      <pattern id="mudPattern" patternUnits="userSpaceOnUse" width="20" height="10" patternTransform="rotate(0)">
-        <rect width="19" height="9" x="0.5" y="0.5" fill="#fef3c7" stroke="#d97706" stroke-width="0.5"/>
-        <path d="M5,5 Q10,2 15,5" stroke="#b45309" stroke-width="0.5" fill="none"/>
-      </pattern>
-      <rect x="17" y="30" width="66" height="50" fill="url(#mudPattern)" fill-opacity="0.4" />
-    </symbol>
-    
-    <symbol id="iconUnbakedBrick" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="45" fill="#fff" />
-      <!-- House with unbaked brick wall -->
-      <rect x="20" y="30" width="60" height="50" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
-      <rect x="30" y="40" width="15" height="15" fill="#fecaca" stroke="#dc2626" stroke-width="1" />
-      <rect x="55" y="40" width="15" height="15" fill="#fecaca" stroke="#dc2626" stroke-width="1" />
-      <rect x="40" y="65" width="20" height="15" rx="1" fill="#dc2626" />
-      <!-- Unbaked brick wall pattern -->
-      <pattern id="unbakeBrickPattern" patternUnits="userSpaceOnUse" width="20" height="10" patternTransform="rotate(0)">
-        <rect width="19" height="9" x="0.5" y="0.5" fill="#fee2e2" stroke="#dc2626" stroke-width="0.5"/>
-      </pattern>
-      <rect x="17" y="30" width="66" height="50" fill="url(#unbakeBrickPattern)" fill-opacity="0.3" />
-    </symbol>
-    
-    <symbol id="iconWood" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="45" fill="#fff" />
-      <!-- House with wooden wall -->
-      <rect x="20" y="30" width="60" height="50" fill="#f3e8ff" stroke="#a855f7" stroke-width="2" />
-      <rect x="30" y="40" width="15" height="15" fill="#e9d5ff" stroke="#a855f7" stroke-width="1" />
-      <rect x="55" y="40" width="15" height="15" fill="#e9d5ff" stroke="#a855f7" stroke-width="1" />
-      <rect x="40" y="65" width="20" height="15" rx="1" fill="#a855f7" />
-      <!-- Wooden wall pattern -->
-      <pattern id="woodPattern" patternUnits="userSpaceOnUse" width="20" height="5" patternTransform="rotate(0)">
-        <rect width="20" height="4" x="0" y="0.5" fill="#f3e8ff" stroke="#a855f7" stroke-width="0.5"/>
-      </pattern>
-      <rect x="17" y="30" width="66" height="50" fill="url(#woodPattern)" fill-opacity="0.5" />
-    </symbol>
-
-    <symbol id="iconBamboo" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="45" fill="#fff" />
-      <!-- House with bamboo wall -->
-      <rect x="20" y="30" width="60" height="50" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
-      <rect x="30" y="40" width="15" height="15" fill="#bbf7d0" stroke="#16a34a" stroke-width="1" />
-      <rect x="55" y="40" width="15" height="15" fill="#bbf7d0" stroke="#16a34a" stroke-width="1" />
-      <rect x="40" y="65" width="20" height="15" rx="1" fill="#16a34a" />
-      <!-- Bamboo wall pattern -->
-      <pattern id="bambooPattern" patternUnits="userSpaceOnUse" width="10" height="20" patternTransform="rotate(90)">
-        <line x1="0" y1="5" x2="10" y2="5" stroke="#16a34a" stroke-width="3" stroke-dasharray="1,2"/>
-        <line x1="0" y1="15" x2="10" y2="15" stroke="#16a34a" stroke-width="3" stroke-dasharray="1,2"/>
-      </pattern>
-      <rect x="17" y="30" width="66" height="50" fill="url(#bambooPattern)" fill-opacity="0.3" />
-    </symbol>
-
-    <symbol id="iconTin" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="45" fill="#fff" />
-      <!-- House with tin wall -->
-      <rect x="20" y="30" width="60" height="50" fill="#e2e8f0" stroke="#64748b" stroke-width="2" />
-      <rect x="30" y="40" width="15" height="15" fill="#cbd5e1" stroke="#64748b" stroke-width="1" />
-      <rect x="55" y="40" width="15" height="15" fill="#cbd5e1" stroke="#64748b" stroke-width="1" />
-      <rect x="40" y="65" width="20" height="15" rx="1" fill="#64748b" />
-      <!-- Tin wall pattern -->
-      <pattern id="tinPattern" patternUnits="userSpaceOnUse" width="15" height="10" patternTransform="rotate(0)">
-        <rect width="15" height="5" x="0" y="0" fill="#cbd5e1" stroke="#64748b" stroke-width="0.5"/>
-        <rect width="15" height="5" x="0" y="5" fill="#e2e8f0" stroke="#64748b" stroke-width="0.5"/>
-      </pattern>
-      <rect x="17" y="30" width="66" height="50" fill="url(#tinPattern)" fill-opacity="0.5" />
-    </symbol>
-
-    <symbol id="iconPrefab" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="45" fill="#fff" />
-      <!-- House with prefab wall -->
-      <rect x="20" y="30" width="60" height="50" fill="#fef9c3" stroke="#ca8a04" stroke-width="2" />
-      <rect x="30" y="40" width="15" height="15" fill="#fef08a" stroke="#ca8a04" stroke-width="1" />
-      <rect x="55" y="40" width="15" height="15" fill="#fef08a" stroke="#ca8a04" stroke-width="1" />
-      <rect x="40" y="65" width="20" height="15" rx="1" fill="#ca8a04" />
-      <!-- Prefab wall pattern -->
-      <pattern id="prefabPattern" patternUnits="userSpaceOnUse" width="30" height="20" patternTransform="rotate(0)">
-        <rect width="30" height="20" x="0" y="0" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.5"/>
-        <path d="M0,10 L30,10" stroke="#ca8a04" stroke-width="0.5" stroke-dasharray="2,1"/>
-        <path d="M15,0 L15,20" stroke="#ca8a04" stroke-width="0.5" stroke-dasharray="2,1"/>
-      </pattern>
-      <rect x="17" y="30" width="66" height="50" fill="url(#prefabPattern)" fill-opacity="0.3" />
-    </symbol>
-
-    <symbol id="iconOther" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="45" fill="#fff" />
-      <!-- House with other type of wall -->
-      <rect x="20" y="30" width="60" height="50" fill="#e2e8f0" stroke="#64748b" stroke-width="2" />
-      <rect x="30" y="40" width="15" height="15" fill="#cbd5e1" stroke="#64748b" stroke-width="1" />
-      <rect x="55" y="40" width="15" height="15" fill="#cbd5e1" stroke="#64748b" stroke-width="1" />
-      <rect x="40" y="65" width="20" height="15" rx="1" fill="#64748b" />
-      <!-- Other wall pattern - abstract representation -->
-      <pattern id="otherPattern" patternUnits="userSpaceOnUse" width="20" height="20" patternTransform="rotate(45)">
-        <path d="M10,0 L10,20 M0,10 L20,10" stroke="#64748b" stroke-width="0.5" stroke-opacity="0.5"/>
-      </pattern>
-      <rect x="17" y="30" width="66" height="50" fill="url(#otherPattern)" fill-opacity="0.3" />
-    </symbol>
-
-    <!-- Modern wavy pattern -->
-    <pattern id="modernPattern" width="100" height="40" patternUnits="userSpaceOnUse">
-      <path d="M0,20 Q20,5 40,20 T80,20 T120,20" fill="none" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.1"/>
-      <path d="M0,40 Q20,25 40,40 T80,40 T120,40" fill="none" stroke="#60a5fa" stroke-width="1" stroke-opacity="0.1"/>
+    <!-- Wall pattern: Cement Joined -->
+    <pattern id="cement-pattern" patternUnits="userSpaceOnUse" width="20" height="10" patternTransform="rotate(0)">
+      <rect width="19" height="9" x="0.5" y="0.5" fill="#dbeafe" stroke="#3b82f6" stroke-width="0.5" fill-opacity="0.6" stroke-opacity="0.8"/>
     </pattern>
-
-    <!-- Filter for elegant shadows -->
-    <filter id="modernShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#334155" flood-opacity="0.15"/>
-    </filter>
     
-    <!-- Dot patterns for background -->
-    <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
-      <circle cx="3" cy="3" r="1" fill="#cbd5e1" fill-opacity="0.5"/>
+    <!-- Wall pattern: Mud Joined -->
+    <pattern id="mud-pattern" patternUnits="userSpaceOnUse" width="20" height="10" patternTransform="rotate(0)">
+      <rect width="19" height="9" x="0.5" y="0.5" fill="#fef3c7" stroke="#d97706" stroke-width="0.5" fill-opacity="0.6" stroke-opacity="0.8"/>
+      <path d="M5,5 Q10,2 15,5" stroke="#b45309" stroke-width="0.5" fill="none" stroke-opacity="0.8"/>
     </pattern>
+    
+    <!-- Wall pattern: Unbaked Brick -->
+    <pattern id="unbaked-brick-pattern" patternUnits="userSpaceOnUse" width="20" height="10" patternTransform="rotate(0)">
+      <rect width="19" height="9" x="0.5" y="0.5" fill="#fee2e2" stroke="#dc2626" stroke-width="0.5" fill-opacity="0.6" stroke-opacity="0.8"/>
+    </pattern>
+    
+    <!-- Wall pattern: Wood -->
+    <pattern id="wood-pattern" patternUnits="userSpaceOnUse" width="20" height="5" patternTransform="rotate(0)">
+      <rect width="20" height="4" x="0" y="0.5" fill="#f3e8ff" stroke="#a855f7" stroke-width="0.5" fill-opacity="0.6" stroke-opacity="0.8"/>
+    </pattern>
+    
+    <!-- Wall pattern: Bamboo -->
+    <pattern id="bamboo-pattern" patternUnits="userSpaceOnUse" width="10" height="20" patternTransform="rotate(90)">
+      <line x1="0" y1="5" x2="10" y2="5" stroke="#16a34a" stroke-width="3" stroke-dasharray="1,2" stroke-opacity="0.8"/>
+      <line x1="0" y1="15" x2="10" y2="15" stroke="#16a34a" stroke-width="3" stroke-dasharray="1,2" stroke-opacity="0.8"/>
+    </pattern>
+    
+    <!-- Wall pattern: Tin -->
+    <pattern id="tin-pattern" patternUnits="userSpaceOnUse" width="15" height="10" patternTransform="rotate(0)">
+      <rect width="15" height="5" x="0" y="0" fill="#cbd5e1" stroke="#64748b" stroke-width="0.5" fill-opacity="0.6" stroke-opacity="0.8"/>
+      <rect width="15" height="5" x="0" y="5" fill="#e2e8f0" stroke="#64748b" stroke-width="0.5" fill-opacity="0.6" stroke-opacity="0.8"/>
+    </pattern>
+    
+    <!-- Wall pattern: Prefab -->
+    <pattern id="prefab-pattern" patternUnits="userSpaceOnUse" width="30" height="20" patternTransform="rotate(0)">
+      <rect width="30" height="20" x="0" y="0" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.5" fill-opacity="0.6" stroke-opacity="0.8"/>
+      <path d="M0,10 L30,10" stroke="#ca8a04" stroke-width="0.5" stroke-dasharray="2,1" stroke-opacity="0.8"/>
+      <path d="M15,0 L15,20" stroke="#ca8a04" stroke-width="0.5" stroke-dasharray="2,1" stroke-opacity="0.8"/>
+    </pattern>
+    
+    <!-- Wall pattern: Other -->
+    <pattern id="other-pattern" patternUnits="userSpaceOnUse" width="20" height="20" patternTransform="rotate(45)">
+      <path d="M10,0 L10,20 M0,10 L20,10" stroke="#64748b" stroke-width="0.5" stroke-opacity="0.8"/>
+    </pattern>
+    
+    <!-- Speech bubble for wall type names -->
+    <path id="wall-bubble" 
+          d="M0,0 Q5,-15 20,-15 L80,-15 Q95,-15 100,0 L100,40 Q100,55 85,55 L60,55 L45,70 L30,55 L15,55 Q0,55 0,40 Z" />
   </defs>
   
-  <!-- Main background -->
-  <rect width="100%" height="100%" fill="url(#bgGradient)"/>
-  <rect width="100%" height="100%" fill="url(#modernPattern)" opacity="0.6"/>
-  <rect width="100%" height="100%" fill="url(#dotPattern)"/>
+  <!-- Background with gradient -->
+  <rect width="1200" height="400" fill="url(#bg-gradient)" />
   
-  <!-- Enhanced decorative elements to provide visual interest without titles -->
-  <path d="M0,0 L1200,0 L1200,400 L0,400 Z" fill="url(#decorGradient1)"/>
-  <path d="M1200,0 L0,0 L0,400 L1200,400 Z" fill="url(#decorGradient2)"/>
-  <circle cx="100" cy="50" r="150" fill="#3b82f6" opacity="0.03"/>
-  <circle cx="1100" cy="350" r="120" fill="#60a5fa" opacity="0.03"/>
-  <path d="M-50,300 Q300,250 600,320 T1300,280" fill="none" stroke="#3b82f6" stroke-width="40" stroke-opacity="0.04"/>
-  
-  <!-- Abstract flowing lines -->
-  <path d="M-50,100 C200,130 400,50 600,80 S900,180 1300,120" fill="none" stroke="#3b82f6" stroke-width="2" stroke-opacity="0.1"/>
-  <path d="M-50,140 C200,170 400,90 600,120 S900,220 1300,160" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.08"/>
-  <path d="M-50,320 C200,290 400,350 600,320 S900,250 1300,280" fill="none" stroke="#60a5fa" stroke-width="2" stroke-opacity="0.1"/>
-  
-  <!-- House wall type cards - top row -->
-  <g filter="url(#modernShadow)" transform="translate(15, 0)">
-    <!-- Cement Joined -->
-    <rect x="40" y="80" width="210" height="180" rx="15" fill="white"/>
-    <use xlink:href="#iconCementJoined" x="95" y="90" width="100" height="100"/>
-    <text x="145" y="210" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#3b82f6">सिमेन्टको जोडाइ भएको इँटा/ढुंगा</text>
-
-    <!-- Mud Joined -->
-    <rect x="300" y="80" width="210" height="180" rx="15" fill="white"/>
-    <use xlink:href="#iconMudJoined" x="355" y="90" width="100" height="100"/>
-    <text x="405" y="210" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#d97706">माटोको जोडाइ भएको इँटा/ढुंगा</text>
-
-    <!-- Unbaked Brick -->
-    <rect x="560" y="80" width="150" height="180" rx="15" fill="white"/>
-    <use xlink:href="#iconUnbakedBrick" x="585" y="90" width="100" height="100"/>
-    <text x="635" y="210" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#dc2626">काँचो इँटा</text>
-
-    <!-- Wood -->
-    <rect x="760" y="80" width="150" height="180" rx="15" fill="white"/>
-    <use xlink:href="#iconWood" x="785" y="90" width="100" height="100"/>
-    <text x="835" y="210" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#a855f7">काठ/फल्याक</text>
+  <!-- Stars/dots in the background -->
+  <g opacity="0.3">
+    <circle cx="100" cy="80" r="2" fill="white" />
+    <circle cx="200" cy="120" r="1" fill="white" />
+    <circle cx="300" cy="70" r="1.5" fill="white" />
+    <circle cx="400" cy="90" r="1" fill="white" />
+    <circle cx="500" cy="60" r="2" fill="white" />
+    <circle cx="600" cy="100" r="1.5" fill="white" />
+    <circle cx="700" cy="80" r="1" fill="white" />
+    <circle cx="800" cy="70" r="2" fill="white" />
+    <circle cx="900" cy="110" r="1" fill="white" />
+    <circle cx="1000" cy="90" r="1.5" fill="white" />
+    <circle cx="1100" cy="60" r="1" fill="white" />
+    
+    <circle cx="150" cy="200" r="1" fill="white" />
+    <circle cx="250" cy="180" r="1.5" fill="white" />
+    <circle cx="350" cy="220" r="1" fill="white" />
+    <circle cx="450" cy="190" r="2" fill="white" />
+    <circle cx="550" cy="210" r="1" fill="white" />
+    <circle cx="650" cy="170" r="1.5" fill="white" />
+    <circle cx="750" cy="230" r="1" fill="white" />
+    <circle cx="850" cy="200" r="2" fill="white" />
+    <circle cx="950" cy="180" r="1" fill="white" />
+    <circle cx="1050" cy="220" r="1.5" fill="white" />
   </g>
-
-  <!-- House wall type cards - bottom row -->
-  <g filter="url(#modernShadow)" transform="translate(15, 200)">
+  
+  <!-- Connection lines between houses and wall types -->
+  <g opacity="0.4">
+    <path d="M150,200 C300,150 500,170 650,180" stroke="white" stroke-width="1" fill="none" />
+    <path d="M200,220 C350,180 550,200 700,190" stroke="white" stroke-width="1" fill="none" />
+    <path d="M250,190 C400,160 600,180 750,170" stroke="white" stroke-width="1" fill="none" />
+    <path d="M300,210 C450,170 650,190 800,180" stroke="white" stroke-width="1" fill="none" />
+  </g>
+  
+  <!-- Wall type bubbles -->
+  <g>
+    <!-- Cement Joined -->
+    <g transform="translate(650, 70) scale(1.1)">
+      <use href="#wall-bubble" fill="url(#wall-gradient-1)" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">सिमेन्टको जोडाइ भएको इँटा/ढुंगा</text>
+    </g>
+    
+    <!-- Mud Joined -->
+    <g transform="translate(800, 90) scale(1)">
+      <use href="#wall-bubble" fill="url(#wall-gradient-2)" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">माटोको जोडाइ भएको इँटा/ढुंगा</text>
+    </g>
+    
+    <!-- Unbaked Brick -->
+    <g transform="translate(450, 110) scale(0.95)">
+      <use href="#wall-bubble" fill="url(#wall-gradient-3)" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">काँचो इँटा</text>
+    </g>
+    
+    <!-- Wood -->
+    <g transform="translate(950, 70) scale(0.9)">
+      <use href="#wall-bubble" fill="url(#wall-gradient-4)" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">काठ/फल्याक</text>
+    </g>
+    
     <!-- Bamboo -->
-    <rect x="40" y="80" width="210" height="180" rx="15" fill="white"/>
-    <use xlink:href="#iconBamboo" x="95" y="90" width="100" height="100"/>
-    <text x="145" y="210" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#16a34a">बाँसजन्य सामग्री</text>
+    <g transform="translate(750, 180) scale(0.95)">
+      <use href="#wall-bubble" fill="#2ecc71" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">बाँसजन्य सामग्री</text>
+    </g>
     
     <!-- Tin -->
-    <rect x="300" y="80" width="210" height="180" rx="15" fill="white"/>
-    <use xlink:href="#iconTin" x="355" y="90" width="100" height="100"/>
-    <text x="405" y="210" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#64748b">जस्ता/टिन/च्यादर</text>
+    <g transform="translate(550, 210) scale(1)">
+      <use href="#wall-bubble" fill="#7f8c8d" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">जस्ता/टिन/च्यादर</text>
+    </g>
     
     <!-- Prefab -->
-    <rect x="560" y="80" width="150" height="180" rx="15" fill="white"/>
-    <use xlink:href="#iconPrefab" x="585" y="90" width="100" height="100"/>
-    <text x="635" y="210" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#ca8a04">प्रि फ्याब</text>
+    <g transform="translate(900, 220) scale(0.9)">
+      <use href="#wall-bubble" fill="#f39c12" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">प्रि फ्याब</text>
+    </g>
     
     <!-- Other -->
-    <rect x="760" y="80" width="150" height="180" rx="15" fill="white"/>
-    <use xlink:href="#iconOther" x="785" y="90" width="100" height="100"/>
-    <text x="835" y="210" font-size="16" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#64748b">अन्य</text>
-  </g>
-
-  <!-- Enhanced connecting lines with animated-like effect -->
-  <g>
-    <!-- Top row connections -->
-    <path d="M250,170 C275,170 275,170 300,170" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
-    <path d="M510,170 C535,170 535,170 560,170" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
-    <path d="M710,170 C735,170 735,170 760,170" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
-
-    <!-- Bottom row connections -->
-    <path d="M250,370 C275,370 275,370 300,370" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
-    <path d="M510,370 C535,370 535,370 560,370" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
-    <path d="M710,370 C735,370 735,370 760,370" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
-    
-    <!-- Vertical connections -->
-    <path d="M145,260 L145,280" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
-    <path d="M405,260 L405,280" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
-    <path d="M635,260 L635,280" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
-    <path d="M835,260 L835,280" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+    <g transform="translate(400, 190) scale(0.85)">
+      <use href="#wall-bubble" fill="#95a5a6" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">अन्य</text>
+    </g>
   </g>
   
-  <!-- Subtle geometric decorative elements -->
-  <g opacity="0.15">
-    <path d="M920,350 L1000,320 L960,280 Z" fill="#3b82f6"/>
-    <path d="M1050,50 L1000,100 L1080,120 Z" fill="#60a5fa"/>
-    <circle cx="970" cy="90" r="15" fill="#0ea5e9"/>
-    <circle cx="1040" cy="320" r="12" fill="#0284c7"/>
-    <circle cx="990" cy="260" r="10" fill="#3b82f6"/>
-    <rect x="930" y="150" width="20" height="20" rx="4" fill="#60a5fa"/>
-    <rect x="980" y="200" width="15" height="15" rx="3" fill="#3b82f6"/>
+  <!-- House visuals with different wall types -->
+  <!-- Cement Joined House -->
+  <g transform="translate(100, 120)">
+    <g transform="scale(0.8)">
+      <use href="#house-shape" fill="url(#wall-gradient-1)" opacity="0.9" />
+      <use href="#house-shape" fill="url(#cement-pattern)" opacity="0.7" />
+    </g>
   </g>
-
-  <!-- Wall material samples at edges -->
-  <g opacity="0.3">
-    <rect x="980" y="40" width="180" height="30" fill="url(#cementPattern)"/>
-    <rect x="980" y="80" width="180" height="30" fill="url(#mudPattern)"/>
-    <rect x="980" y="120" width="180" height="30" fill="url(#unbakeBrickPattern)"/>
-    <rect x="980" y="160" width="180" height="30" fill="url(#woodPattern)"/>
-    <rect x="980" y="200" width="180" height="30" fill="url(#bambooPattern)"/>
-    <rect x="980" y="240" width="180" height="30" fill="url(#tinPattern)"/>
-    <rect x="980" y="280" width="180" height="30" fill="url(#prefabPattern)"/>
-    <rect x="980" y="320" width="180" height="30" fill="url(#otherPattern)"/>
+  
+  <!-- Mud Joined House -->
+  <g transform="translate(200, 140)">
+    <g transform="scale(0.8)">
+      <use href="#house-shape" fill="url(#wall-gradient-2)" opacity="0.9" />
+      <use href="#house-shape" fill="url(#mud-pattern)" opacity="0.7" />
+    </g>
   </g>
+  
+  <!-- Unbaked Brick House -->
+  <g transform="translate(300, 130)">
+    <g transform="scale(0.8)">
+      <use href="#house-shape" fill="url(#wall-gradient-3)" opacity="0.9" />
+      <use href="#house-shape" fill="url(#unbaked-brick-pattern)" opacity="0.7" />
+    </g>
+  </g>
+  
+  <!-- Wood House -->
+  <g transform="translate(150, 220)">
+    <g transform="scale(0.8)">
+      <use href="#house-shape" fill="url(#wall-gradient-4)" opacity="0.9" />
+      <use href="#house-shape" fill="url(#wood-pattern)" opacity="0.7" />
+    </g>
+  </g>
+  
+  <!-- Bamboo House -->
+  <g transform="translate(250, 240)">
+    <g transform="scale(0.8)">
+      <use href="#house-shape" fill="#2ecc71" opacity="0.9" />
+      <use href="#house-shape" fill="url(#bamboo-pattern)" opacity="0.7" />
+    </g>
+  </g>
+  
+  <!-- Tin House -->
+  <g transform="translate(350, 230)">
+    <g transform="scale(0.8)">
+      <use href="#house-shape" fill="#7f8c8d" opacity="0.9" />
+      <use href="#house-shape" fill="url(#tin-pattern)" opacity="0.7" />
+    </g>
+  </g>
+  
+  <!-- Prefab House -->
+  <g transform="translate(100, 320)">
+    <g transform="scale(0.8)">
+      <use href="#house-shape" fill="#f39c12" opacity="0.9" />
+      <use href="#house-shape" fill="url(#prefab-pattern)" opacity="0.7" />
+    </g>
+  </g>
+  
+  <!-- Other House -->
+  <g transform="translate(200, 310)">
+    <g transform="scale(0.8)">
+      <use href="#house-shape" fill="#95a5a6" opacity="0.9" />
+      <use href="#house-shape" fill="url(#other-pattern)" opacity="0.7" />
+    </g>
+  </g>
+  
+  <!-- Wall material samples at right side -->
+  <g opacity="0.7">
+    <g transform="translate(1030, 80)">
+      <rect width="100" height="30" fill="url(#cement-pattern)" stroke="white" stroke-width="1" />
+    </g>
+    <g transform="translate(1030, 120)">
+      <rect width="100" height="30" fill="url(#mud-pattern)" stroke="white" stroke-width="1" />
+    </g>
+    <g transform="translate(1030, 160)">
+      <rect width="100" height="30" fill="url(#unbaked-brick-pattern)" stroke="white" stroke-width="1" />
+    </g>
+    <g transform="translate(1030, 200)">
+      <rect width="100" height="30" fill="url(#wood-pattern)" stroke="white" stroke-width="1" />
+    </g>
+    <g transform="translate(1030, 240)">
+      <rect width="100" height="30" fill="url(#bamboo-pattern)" stroke="white" stroke-width="1" />
+    </g>
+    <g transform="translate(1030, 280)">
+      <rect width="100" height="30" fill="url(#tin-pattern)" stroke="white" stroke-width="1" />
+    </g>
+    <g transform="translate(1030, 320)">
+      <rect width="100" height="30" fill="url(#prefab-pattern)" stroke="white" stroke-width="1" />
+    </g>
+  </g>
+  
+  <!-- Additional decorative elements -->
+  <g opacity="0.5">
+    <!-- Building tools -->
+    <path d="M980,50 L1010,80 L1000,90 L970,60 Z" fill="#f1c40f" />
+    <path d="M960,70 L980,90 L975,95 L955,75 Z" fill="#f1c40f" />
+    
+    <!-- Bricks -->
+    <rect x="950" y="120" width="20" height="10" fill="#e74c3c" opacity="0.7" />
+    <rect x="975" y="120" width="20" height="10" fill="#e74c3c" opacity="0.7" />
+    <rect x="962" y="130" width="20" height="10" fill="#e74c3c" opacity="0.7" />
+    <rect x="987" y="130" width="20" height="10" fill="#e74c3c" opacity="0.7" />
+    
+    <!-- Cement bag -->
+    <rect x="950" y="170" width="30" height="40" fill="#95a5a6" />
+    <path d="M950,175 C960,180 970,180 980,175" fill="none" stroke="white" stroke-width="1" />
+  </g>
+  
+  <!-- Title text at bottom -->
+  <text font-family="Arial" font-size="24" fill="white" text-anchor="middle" font-weight="bold">
+    <textPath href="#curved-text-path" startOffset="50%">बाहिरी गारोको आधारमा घरधुरी</textPath>
+  </text>
 </svg>
