@@ -264,7 +264,6 @@ export default async function WardWiseForeignEmploymentCountriesPage() {
     "FRANCE": "पश्चिमी देशहरू",
     "ITALY": "पश्चिमी देशहरू",
     "SPAIN": "पश्चिमी देशहरू",
-    "AUSTRALIA": "पश्चिमी देशहरू",
     
     // Default to "अन्य देशहरू" (Other Countries) for those not explicitly mapped
   };

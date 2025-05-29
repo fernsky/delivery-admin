@@ -11,19 +11,19 @@ import {
 } from "recharts";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
-interface RegionalDistributionChartProps {
-  regionChartData: Array<{
-    name: string;
-    value: number;
+interface RemittanceLevelDistributionChartProps {
+  remittanceLevelData: Array<{
+    level: string;
+    levelLabel: string;
+    population: number;
     percentage: string;
+    color: string;
   }>;
-  REGION_COLORS: Record<string, string>;
 }
 
-export default function RegionalDistributionChart({
-  regionChartData,
-  REGION_COLORS,
-}: RegionalDistributionChartProps) {
+export default function RemittanceLevelDistributionChart({
+  remittanceLevelData,
+}: RemittanceLevelDistributionChartProps) {
   // Custom tooltip component
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -52,26 +52,15 @@ export default function RegionalDistributionChart({
   };
 
   // Calculate total for various statistics
-  const total = regionChartData.reduce((sum, item) => sum + item.value, 0);
+  const total = remittanceLevelData.reduce((sum, item) => sum + item.population, 0);
 
-  // Custom legend to add percentages
-  const renderCustomLegend = (props: any) => {
-    const { payload } = props;
-    
-    return (
-      <ul className="flex justify-center flex-wrap">
-        {payload.map((entry: any, index: number) => (
-          <li key={`item-${index}`} className="flex items-center mx-4 mb-2">
-            <div
-              className="w-3 h-3 rounded-full mr-2"
-              style={{ backgroundColor: entry.color }}
-            ></div>
-            <span>{entry.value} ({localizeNumber(regionChartData[index]?.percentage || "0", "ne")}%)</span>
-          </li>
-        ))}
-      </ul>
-    );
-  };
+  // Data for visualization
+  const data = remittanceLevelData.map(item => ({
+    name: item.levelLabel,
+    value: item.population,
+    percentage: item.percentage,
+    color: item.color
+  }));
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -84,22 +73,26 @@ export default function RegionalDistributionChart({
           dominantBaseline="middle"
           className="font-medium text-lg"
         >
-          क्षेत्रगत वितरण
+          रेमिट्यान्स स्तर अनुसार वितरण
         </text>
         <Pie
-          data={regionChartData}
+          data={data}
           cx="50%"
           cy="55%"
-          innerRadius={60}
+          innerRadius={70}
           outerRadius={120}
           fill="#8884d8"
-          paddingAngle={2}
+          paddingAngle={5}
           dataKey="value"
+          labelLine={false}
+          label={({ name, percentage }) => `${name}: ${localizeNumber(percentage, "ne")}%`}
         >
-          {regionChartData.map((entry, index) => (
+          {data.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
-              fill={REGION_COLORS[entry.name as keyof typeof REGION_COLORS] || "#c0c0c0"}
+              fill={entry.color}
+              stroke="var(--background)"
+              strokeWidth={2}
             />
           ))}
           <Label
@@ -125,7 +118,6 @@ export default function RegionalDistributionChart({
           />
         </Pie>
         <Tooltip content={CustomTooltip} />
-        <Legend content={renderCustomLegend} layout="horizontal" verticalAlign="bottom" align="center" />
       </PieChart>
     </ResponsiveContainer>
   );

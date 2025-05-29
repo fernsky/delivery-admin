@@ -6,7 +6,6 @@ import WardForeignEmploymentPieCharts from "./charts/ward-foreign-employment-pie
 import { localizeNumber } from "@/lib/utils/localize-number";
 import RegionalDistributionChart from "./charts/regional-distribution-chart";
 import SkillLevelChart from "./charts/skill-level-chart";
-import RemittanceImpactChart from "./charts/remittance-impact-chart";
 
 interface ForeignEmploymentCountriesChartsProps {
   overallSummary: Array<{
@@ -120,7 +119,7 @@ export default function ForeignEmploymentCountriesCharts({
           {/* Client-side pie chart */}
           <div className="lg:col-span-1">
             <h4 className="text-lg font-medium mb-4 text-center">पाई चार्ट</h4>
-            <div className="h-[480px]">
+            <div className="h-[1080px]">
               <ForeignEmploymentPieChart
                 pieChartData={pieChartData}
                 COUNTRY_NAMES={COUNTRY_NAMES}
@@ -243,7 +242,7 @@ export default function ForeignEmploymentCountriesCharts({
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
           {/* Regional Distribution Chart */}
-          <div className="h-[400px]">
+          <div className="h-[600px]">
             <RegionalDistributionChart regionChartData={regionChartData} REGION_COLORS={REGION_COLORS} />
           </div>
 
@@ -328,126 +327,7 @@ export default function ForeignEmploymentCountriesCharts({
         </div>
       </div>
 
-      {/* Remittance Impact Chart */}
-      <div 
-        className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card"
-        id="economic-impact-and-remittance"
-        itemScope
-        itemType="https://schema.org/Dataset"
-      >
-        <meta
-          itemProp="name"
-          content="Economic Impact of Remittance in Khajura Rural Municipality"
-        />
-        <meta
-          itemProp="description"
-          content="Remittance impact analysis from foreign employment"
-        />
-
-        <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold" itemProp="headline">
-            रेमिट्यान्स र आर्थिक प्रभाव
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            वैदेशिक रोजगारीबाट प्राप्त हुने रेमिट्यान्स र यसको आर्थिक प्रभावको विश्लेषण
-          </p>
-        </div>
-
-        <div className="p-6">
-          {/* Key stats for remittance */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-muted/30 p-4 rounded-lg text-center">
-              <h4 className="text-lg font-medium mb-2">अनुमानित वार्षिक रेमिट्यान्स</h4>
-              <p className="text-3xl font-bold text-primary">
-                रु. {localizeNumber(formattedEstimatedAnnualRemittance, "ne")} करोड
-              </p>
-              <p className="text-sm text-muted-foreground mt-2">
-                प्रति व्यक्ति रु. ५ लाख को दरले
-              </p>
-            </div>
-            
-            <div className="bg-muted/30 p-4 rounded-lg text-center">
-              <h4 className="text-lg font-medium mb-2">औसत मासिक रेमिट्यान्स</h4>
-              <p className="text-3xl font-bold text-primary">
-                रु. {localizeNumber((parseFloat(formattedEstimatedAnnualRemittance) / 12).toFixed(2), "ne")} करोड
-              </p>
-              <p className="text-sm text-muted-foreground mt-2">
-                मासिक आर्थिक योगदान
-              </p>
-            </div>
-            
-            <div className="bg-muted/30 p-4 rounded-lg text-center">
-              <h4 className="text-lg font-medium mb-2">प्रति परिवार मासिक प्राप्ति</h4>
-              <p className="text-3xl font-bold text-primary">
-                रु. {localizeNumber("42,000", "ne")}
-              </p>
-              <p className="text-sm text-muted-foreground mt-2">
-                अनुमानित औसत
-              </p>
-            </div>
-          </div>
-
-          {/* Remittance Impact Chart */}
-          <div className="h-[400px] mb-8">
-            <RemittanceImpactChart 
-              wardWiseAnalysis={wardWiseAnalysis}
-              totalPopulation={totalPopulation}
-              estimatedAnnualRemittance={estimatedAnnualRemittance}
-            />
-          </div>
-          
-          {/* Remittance usage breakdown */}
-          <div className="bg-muted/30 p-6 rounded-lg">
-            <h4 className="text-lg font-medium mb-4">रेमिट्यान्सको उपयोग</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <div className="space-y-4">
-                  {[
-                    { category: "दैनिक जीवनयापन खर्च", percentage: 35, color: "#3498db" },
-                    { category: "शिक्षा", percentage: 18, color: "#2ecc71" },
-                    { category: "स्वास्थ्य", percentage: 12, color: "#e74c3c" },
-                    { category: "घरजग्गा र निर्माण", percentage: 20, color: "#f1c40f" },
-                    { category: "साना व्यवसाय", percentage: 8, color: "#9b59b6" }
-                  ].map((item, i) => (
-                    <div key={i}>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>{item.category}</span>
-                        <span className="font-medium">{localizeNumber(item.percentage.toString(), "ne")}%</span>
-                      </div>
-                      <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full"
-                          style={{
-                            width: `${item.percentage}%`,
-                            backgroundColor: item.color
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <h5 className="font-medium">रेमिट्यान्स उपयोगको विश्लेषण</h5>
-                <p className="text-sm">
-                  वैदेशिक रोजगारीबाट प्राप्त हुने रेमिट्यान्सको ठूलो हिस्सा (३५%) दैनिक जीवनयापनमा खर्च हुने देखिन्छ। उत्पादनशील क्षेत्रमा लगानी (व्यवसाय, कृषि आदि) को हिस्सा केवल १४% रहेको छ। शिक्षा र स्वास्थ्यमा गरिने लगानीले भविष्यमा मानव पुँजी निर्माणमा सहयोग पुर्‍याउँछ।
-                </p>
-                
-                <div className="bg-muted/50 p-3 rounded">
-                  <h5 className="font-medium mb-2">सुझावहरू</h5>
-                  <ul className="space-y-1 text-sm pl-5 list-disc">
-                    <li>उत्पादनशील क्षेत्रमा रेमिट्यान्स लगानी गर्न प्रोत्साहन</li>
-                    <li>सामूहिक लगानी मार्फत स्थानीय रोजगारी सिर्जना</li>
-                    <li>वित्तीय साक्षरता र व्यवसायिक तालिम कार्यक्रम</li>
-                    <li>सहुलियतपूर्ण कर्जा सुविधा र प्रविधिक सहयोग</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
 
       {/* Ward-wise distribution - pre-rendered table with client-side chart */}
       <div 

@@ -17,42 +17,29 @@ import { localizeNumber } from "@/lib/utils/localize-number";
 interface RemittanceImpactChartProps {
   wardWiseAnalysis: Array<{
     wardNumber: number;
-    totalPopulation: number;
-    mostCommonCountry: string;
-    mostCommonCountryPopulation: number;
-    mostCommonCountryPercentage: string;
-    gulfCountriesPopulation: number;
-    gulfPercentage: string;
-    asiaPacificPopulation: number;
-    asiaPacificPercentage: string;
-    westernCountriesPopulation: number;
-    westernCountriesPercentage: string;
-    diversityScore: number;
-    uniqueCountries: number;
+    totalSendingPopulation: number;
+    averageRemittance: number;
+    estimatedAnnualRemittance: number;
+    prosperityIndex: number;
   }>;
-  totalPopulation: number;
-  estimatedAnnualRemittance: number;
+  totalSendingPopulation: number;
+  totalEstimatedRemittance: number;
 }
 
 export default function RemittanceImpactChart({
   wardWiseAnalysis,
-  totalPopulation,
-  estimatedAnnualRemittance,
+  totalSendingPopulation,
+  totalEstimatedRemittance,
 }: RemittanceImpactChartProps) {
-  // Calculate estimated remittance per ward based on population
+  // Calculate estimated remittance per ward
   const chartData = wardWiseAnalysis
     .map((ward) => {
-      const populationPercentage = wardWiseAnalysis.length > 0 
-        ? ward.totalPopulation / totalPopulation
-        : 0;
-        
-      const wardRemittance = estimatedAnnualRemittance * populationPercentage;
-      const remittanceInLakhs = wardRemittance / 100000;
+      const remittanceInLakhs = ward.estimatedAnnualRemittance / 100000;
       
       return {
         name: `वडा ${ward.wardNumber}`,
         remittance: remittanceInLakhs.toFixed(1),
-        population: ward.totalPopulation,
+        population: ward.totalSendingPopulation,
       };
     })
     .sort((a, b) => parseFloat(b.remittance) - parseFloat(a.remittance));
@@ -117,7 +104,7 @@ export default function RemittanceImpactChart({
           wrapperStyle={{ paddingTop: 10 }}
           payload={[
             { value: 'अनुमानित वार्षिक रेमिट्यान्स (लाखमा)', type: 'rect', color: '#8884d8' },
-            { value: 'कार्यरत जनसंख्या', type: 'rect', color: '#82ca9d' },
+            { value: 'रेमिट्यान्स पठाउने जनसंख्या', type: 'rect', color: '#82ca9d' },
           ]}
         />
         <ReferenceLine 
