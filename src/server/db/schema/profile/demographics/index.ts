@@ -10,3 +10,7 @@ export * from "./ward-age-wise-population";
 export * from "./ward-wise-religion-population";
 // Major Occupation
 export * from "./ward-wise-major-occupation";
+
+// Economically Active Population
+export * from "./ward-age-wise-economically-active-population";
+

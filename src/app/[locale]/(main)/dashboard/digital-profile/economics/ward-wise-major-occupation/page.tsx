@@ -24,7 +24,7 @@ export default function WardWiseMajorOccupationPage() {
     data: occupationData,
     isLoading,
     isError,
-  } = api.profile.economics.wardWiseMajorOccupation.getAll.useQuery();
+  } = api.profile.demographics.wardWiseMajorOccupation.getAll.useQuery();
 
   const handleEdit = (id: string) => {
     setEditId(id);

@@ -60,7 +60,7 @@ export default function WardWiseMajorOccupationForm({
 
   // Get the existing record if editing
   const { data: editingData, isLoading: isLoadingEditData } =
-    api.profile.economics.wardWiseMajorOccupation.getAll.useQuery(undefined, {
+    api.profile.demographics.wardWiseMajorOccupation.getAll.useQuery(undefined, {
       enabled: !!editId,
     });
 
