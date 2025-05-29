@@ -258,7 +258,7 @@ export default function RemittanceAnalysisSection({
           </div>
         </div>
         
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="mt-6">
           <div className="bg-card p-4 rounded border">
             <h4 className="font-medium mb-4">वडागत तुलनात्मक विश्लेषण</h4>
             <ul className="space-y-2 text-sm">
@@ -293,55 +293,9 @@ export default function RemittanceAnalysisSection({
             </ul>
           </div>
 
-          <div className="bg-card p-4 rounded border">
-            <h4 className="font-medium mb-4">रेमिट्यान्सको आर्थिक प्रभाव</h4>
-            
-            <div className="space-y-4">
-              <p className="text-sm">
-                गाउँपालिकामा वार्षिक रु. {localizeNumber(totalData.estimatedAnnualRemittanceCrores, "ne")} करोड रेमिट्यान्स भित्रिने अनुमान गरिएको छ। यसले स्थानीय अर्थतन्त्रमा महत्वपूर्ण प्रभाव पार्छ, जसमा निम्न क्षेत्रहरू पर्दछन्:
-              </p>
+         
               
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>घरायसी उपभोग</span>
-                  <span className="font-medium">४०%</span>
-                </div>
-                <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500 rounded-full" style={{ width: "40%" }}></div>
-                </div>
-                
-                <div className="flex justify-between text-sm">
-                  <span>शिक्षा र स्वास्थ्य</span>
-                  <span className="font-medium">१८%</span>
-                </div>
-                <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 rounded-full" style={{ width: "18%" }}></div>
-                </div>
-                
-                <div className="flex justify-between text-sm">
-                  <span>घरजग्गा र निर्माण</span>
-                  <span className="font-medium">२५%</span>
-                </div>
-                <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
-                  <div className="h-full bg-yellow-500 rounded-full" style={{ width: "25%" }}></div>
-                </div>
-                
-                <div className="flex justify-between text-sm">
-                  <span>लगानी र बचत</span>
-                  <span className="font-medium">१७%</span>
-                </div>
-                <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
-                  <div className="h-full bg-purple-500 rounded-full" style={{ width: "17%" }}></div>
-                </div>
-              </div>
               
-              <div className="p-3 bg-muted/50 rounded text-sm mt-2 border">
-                <p>
-                  <strong>सुझाव:</strong> रेमिट्यान्सको दिगो प्रयोगका लागि उत्पादनशील क्षेत्रमा लगानी प्रवर्द्धन, वित्तीय साक्षरता कार्यक्रम र सामूहिक लगानी संयन्त्रहरू विकास गर्नुपर्ने देखिन्छ।
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </>

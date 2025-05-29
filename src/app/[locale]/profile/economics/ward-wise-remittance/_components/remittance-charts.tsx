@@ -194,7 +194,7 @@ export default function RemittanceCharts({
           {/* Client-side pie chart */}
           <div className="lg:col-span-1">
             <h4 className="text-lg font-medium mb-4 text-center">पाई चार्ट</h4>
-            <div className="h-[480px]">
+            <div className="h-[580px]">
               <RemittancePieChart
                 pieChartData={pieChartData}
                 AMOUNT_RANGE_MAP={AMOUNT_RANGE_MAP}

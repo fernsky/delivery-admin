@@ -235,7 +235,7 @@ export const getWardWiseRemittanceSummary = publicProcedure.query(
           amount_group, 
           SUM(sending_population) as total_population
         FROM 
-          ward_wise_remittance
+          acme_ward_wise_remittance
         GROUP BY 
           amount_group
         ORDER BY 

@@ -123,6 +123,10 @@ const navItems = [
         title: "वैदेशिक रोजगारीमा गएकाहरूको विवरण",
         href: "/profile/economics/ward-wise-foreign-employment-countries",
       },
+      {
+        title: "वैदेशिक रोजगारीबाट प्राप्त विप्रेषण",
+        href: "/profile/economics/ward-wise-remittance",
+      },
       // {
       //   title: "रोजगारी स्थिति",
       //   href: "/profile/economics/economic-status",

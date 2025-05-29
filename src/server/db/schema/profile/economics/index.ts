@@ -44,3 +44,6 @@ export * from "./ward-wise-household-base";
 
 // House Outer wall
 export *  from "./ward-wise-household-outer-wall";
+
+// Remittance Amount
+export * from './ward-wise-remittance'

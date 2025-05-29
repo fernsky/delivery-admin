@@ -49,7 +49,7 @@ export default function RemittanceImpactChart({
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="font-medium">{label}</p>
+          <p className="font-medium">{localizeNumber(label, "ne")}</p>
           <div className="flex justify-between gap-4 mt-1">
             <span className="text-sm">अनुमानित वार्षिक रेमिट्यान्स:</span>
             <span className="font-medium">
