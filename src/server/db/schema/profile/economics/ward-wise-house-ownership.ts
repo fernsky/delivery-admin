@@ -2,7 +2,7 @@ import { pgTable } from "../../basic";
 import { integer, timestamp, varchar, pgEnum } from "drizzle-orm/pg-core";
 
 // Define house ownership type enum
-export const ownershipTypeEnum = pgEnum("ownership_type_enum", [
+export const houseOwnershipTypeEnum = pgEnum("ownership_type_enum", [
   "PRIVATE",
   "RENT",
   "INSTITUTIONAL",
@@ -16,7 +16,7 @@ export const wardWiseHouseOwnership = pgTable("ward_wise_house_ownership", {
   wardNumber: integer("ward_number").notNull(),
 
   // Type of house ownership
-  ownershipType: ownershipTypeEnum("ownership_type").notNull(),
+  ownershipType: houseOwnershipTypeEnum("ownership_type").notNull(),
 
   // Number of households with this ownership type
   households: integer("households").notNull(),

@@ -47,3 +47,6 @@ export *  from "./ward-wise-household-outer-wall";
 
 // Remittance Amount
 export * from './ward-wise-remittance'
+
+// Land Ownership
+export * from './ward-wise-land-ownership'

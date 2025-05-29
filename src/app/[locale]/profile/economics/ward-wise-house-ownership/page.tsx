@@ -7,7 +7,7 @@ import { localizeNumber } from "@/lib/utils/localize-number";
 import HouseOwnershipCharts from "./_components/house-ownership-charts";
 import HouseOwnershipAnalysisSection from "./_components/house-ownership-analysis-section";
 import HouseOwnershipSEO from "./_components/house-ownership-seo";
-import { OwnershipType } from "@/server/api/routers/profile/economics/ward-wise-house-ownership.schema";
+import { HouseOwnershipType } from "@/server/api/routers/profile/economics/ward-wise-house-ownership.schema";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";

@@ -1,26 +1,26 @@
 import { z } from "zod";
 
 // Define the house ownership type enum to match the database enum
-export const OwnershipTypeEnum = z.enum([
+export const HouseOwnershipTypeEnum = z.enum([
   "PRIVATE",
   "RENT",
   "INSTITUTIONAL",
   "OTHER",
 ]);
-export type OwnershipType = z.infer<typeof OwnershipTypeEnum>;
+export type HouseOwnershipType = z.infer<typeof HouseOwnershipTypeEnum>;
 
 // Schema for ward-wise house ownership data
 export const wardWiseHouseOwnershipSchema = z.object({
   id: z.string().optional(),
   wardNumber: z.number().int().positive(),
-  ownershipType: OwnershipTypeEnum,
+  ownershipType: HouseOwnershipTypeEnum,
   households: z.number().int().nonnegative(),
 });
 
 // Schema for filtering ward-wise house ownership data
 export const wardWiseHouseOwnershipFilterSchema = z.object({
   wardNumber: z.number().int().positive().optional(),
-  ownershipType: OwnershipTypeEnum.optional(),
+  ownershipType: HouseOwnershipTypeEnum.optional(),
 });
 
 export const updateWardWiseHouseOwnershipSchema = wardWiseHouseOwnershipSchema;

@@ -3,21 +3,21 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { wardWiseHouseOwnership } from "@/server/db/schema/profile/economics/ward-wise-house-ownership";
+import { wardWiseLandOwnership } from "@/server/db/schema/profile/economics/ward-wise-land-ownership";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
-  wardWiseHouseOwnershipSchema,
-  wardWiseHouseOwnershipFilterSchema,
-  updateWardWiseHouseOwnershipSchema,
-  HouseOwnershipTypeEnum,
-} from "./ward-wise-house-ownership.schema";
+  wardWiseLandOwnershipSchema,
+  wardWiseLandOwnershipFilterSchema,
+  updateWardWiseLandOwnershipSchema,
+  LandOwnershipTypeEnum,
+} from "./ward-wise-land-ownership.schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 
-// Get all ward-wise house ownership data with optional filtering
-export const getAllWardWiseHouseOwnership = publicProcedure
-  .input(wardWiseHouseOwnershipFilterSchema.optional())
+// Get all ward-wise land ownership data with optional filtering
+export const getAllWardWiseLandOwnership = publicProcedure
+  .input(wardWiseLandOwnershipFilterSchema.optional())
   .query(async ({ ctx, input }) => {
     try {
       // Set UTF-8 encoding explicitly before running query
@@ -27,30 +27,28 @@ export const getAllWardWiseHouseOwnership = publicProcedure
       let data: any[];
       try {
         // Build query with conditions
-        const baseQuery = ctx.db.select().from(wardWiseHouseOwnership);
+        const baseQuery = ctx.db.select().from(wardWiseLandOwnership);
 
         let conditions = [];
 
         if (input?.wardNumber) {
           conditions.push(
-            eq(wardWiseHouseOwnership.wardNumber, input.wardNumber),
+            eq(wardWiseLandOwnership.wardNumber, input.wardNumber),
           );
         }
 
-        if (input?.ownershipType) {
-          conditions.push(
-            eq(wardWiseHouseOwnership.ownershipType, input.ownershipType),
-          );
+        if (input?.landOwnershipType) {
+          conditions.push(eq(wardWiseLandOwnership.landOwnershipType, input.landOwnershipType));
         }
 
         const queryWithFilters = conditions.length
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward number and ownership type
+        // Sort by ward number and land ownership type
         data = await queryWithFilters.orderBy(
-          wardWiseHouseOwnership.wardNumber,
-          wardWiseHouseOwnership.ownershipType,
+          wardWiseLandOwnership.wardNumber,
+          wardWiseLandOwnership.landOwnershipType,
         );
       } catch (err) {
         console.log("Failed to query main schema, trying ACME table:", err);
@@ -63,14 +61,14 @@ export const getAllWardWiseHouseOwnership = publicProcedure
           SELECT 
             id,
             ward_number,
-            ownership_type,
+            land_ownership_type,
             households,
             updated_at,
             created_at
           FROM 
-            acme_ward_wise_house_ownership
+            acme_ward_wise_land_ownership
           ORDER BY 
-            ward_number, ownership_type
+            ward_number, land_ownership_type
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
 
@@ -79,7 +77,7 @@ export const getAllWardWiseHouseOwnership = publicProcedure
           data = acmeResult.map((row) => ({
             id: row.id,
             wardNumber: parseInt(String(row.ward_number)),
-            ownershipType: row.ownership_type,
+            landOwnershipType: row.land_ownership_type,
             households: parseInt(String(row.households || "0")),
             updatedAt: row.updated_at,
             createdAt: row.created_at,
@@ -90,17 +88,15 @@ export const getAllWardWiseHouseOwnership = publicProcedure
             data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
 
-          if (input?.ownershipType) {
-            data = data.filter(
-              (item) => item.ownershipType === input.ownershipType,
-            );
+          if (input?.landOwnershipType) {
+            data = data.filter((item) => item.landOwnershipType === input.landOwnershipType);
           }
         }
       }
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward-wise house ownership data:", error);
+      console.error("Error fetching ward-wise land ownership data:", error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -109,39 +105,38 @@ export const getAllWardWiseHouseOwnership = publicProcedure
   });
 
 // Get data for a specific ward
-export const getWardWiseHouseOwnershipByWard = publicProcedure
+export const getWardWiseLandOwnershipByWard = publicProcedure
   .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
-      .from(wardWiseHouseOwnership)
-      .where(eq(wardWiseHouseOwnership.wardNumber, input.wardNumber))
-      .orderBy(wardWiseHouseOwnership.ownershipType);
+      .from(wardWiseLandOwnership)
+      .where(eq(wardWiseLandOwnership.wardNumber, input.wardNumber))
+      .orderBy(wardWiseLandOwnership.landOwnershipType);
 
     return data;
   });
 
-// Create a new ward-wise house ownership entry
-export const createWardWiseHouseOwnership = protectedProcedure
-  .input(wardWiseHouseOwnershipSchema)
+// Create a new ward-wise land ownership entry
+export const createWardWiseLandOwnership = protectedProcedure
+  .input(wardWiseLandOwnershipSchema)
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can create ward-wise house ownership data",
+        message: "Only administrators can create ward-wise land ownership data",
       });
     }
 
-    // Check if entry already exists for this ward and ownership type
+    // Check if entry already exists for this ward and land ownership type
     const existing = await ctx.db
-      .select({ id: wardWiseHouseOwnership.id })
-      .from(wardWiseHouseOwnership)
+      .select({ id: wardWiseLandOwnership.id })
+      .from(wardWiseLandOwnership)
       .where(
         and(
-          eq(wardWiseHouseOwnership.wardNumber, input.wardNumber),
-          eq(wardWiseHouseOwnership.ownershipType, input.ownershipType),
+          eq(wardWiseLandOwnership.wardNumber, input.wardNumber),
+          eq(wardWiseLandOwnership.landOwnershipType, input.landOwnershipType),
         ),
       )
       .limit(1);
@@ -149,31 +144,30 @@ export const createWardWiseHouseOwnership = protectedProcedure
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward Number ${input.wardNumber} and ownership type ${input.ownershipType} already exists`,
+        message: `Data for Ward Number ${input.wardNumber} and land ownership type ${input.landOwnershipType} already exists`,
       });
     }
 
     // Create new record
-    await ctx.db.insert(wardWiseHouseOwnership).values({
+    await ctx.db.insert(wardWiseLandOwnership).values({
       id: input.id || uuidv4(),
       wardNumber: input.wardNumber,
-      ownershipType: input.ownershipType,
+      landOwnershipType: input.landOwnershipType,
       households: input.households,
     });
 
     return { success: true };
   });
 
-// Update an existing ward-wise house ownership entry
-export const updateWardWiseHouseOwnership = protectedProcedure
-  .input(updateWardWiseHouseOwnershipSchema)
+// Update an existing ward-wise land ownership entry
+export const updateWardWiseLandOwnership = protectedProcedure
+  .input(updateWardWiseLandOwnershipSchema)
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can update ward-wise house ownership data",
+        message: "Only administrators can update ward-wise land ownership data",
       });
     }
 
@@ -186,9 +180,9 @@ export const updateWardWiseHouseOwnership = protectedProcedure
 
     // Check if the record exists
     const existing = await ctx.db
-      .select({ id: wardWiseHouseOwnership.id })
-      .from(wardWiseHouseOwnership)
-      .where(eq(wardWiseHouseOwnership.id, input.id))
+      .select({ id: wardWiseLandOwnership.id })
+      .from(wardWiseLandOwnership)
+      .where(eq(wardWiseLandOwnership.id, input.id))
       .limit(1);
 
     if (existing.length === 0) {
@@ -200,74 +194,73 @@ export const updateWardWiseHouseOwnership = protectedProcedure
 
     // Update the record
     await ctx.db
-      .update(wardWiseHouseOwnership)
+      .update(wardWiseLandOwnership)
       .set({
         wardNumber: input.wardNumber,
-        ownershipType: input.ownershipType,
+        landOwnershipType: input.landOwnershipType,
         households: input.households,
       })
-      .where(eq(wardWiseHouseOwnership.id, input.id));
+      .where(eq(wardWiseLandOwnership.id, input.id));
 
     return { success: true };
   });
 
-// Delete a ward-wise house ownership entry
-export const deleteWardWiseHouseOwnership = protectedProcedure
+// Delete a ward-wise land ownership entry
+export const deleteWardWiseLandOwnership = protectedProcedure
   .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message:
-          "Only administrators can delete ward-wise house ownership data",
+        message: "Only administrators can delete ward-wise land ownership data",
       });
     }
 
     // Delete the record
     await ctx.db
-      .delete(wardWiseHouseOwnership)
-      .where(eq(wardWiseHouseOwnership.id, input.id));
+      .delete(wardWiseLandOwnership)
+      .where(eq(wardWiseLandOwnership.id, input.id));
 
     return { success: true };
   });
 
 // Get summary statistics
-export const getWardWiseHouseOwnershipSummary = publicProcedure.query(
+export const getWardWiseLandOwnershipSummary = publicProcedure.query(
   async ({ ctx }) => {
     try {
-      // Get total counts by ownership type across all wards
+      // Get total counts by land ownership type across all wards
       const summarySql = sql`
         SELECT 
-          ownership_type, 
+          land_ownership_type, 
           SUM(households) as total_households
         FROM 
-          acme_ward_wise_house_ownership
+          ward_wise_land_ownership
         GROUP BY 
-          ownership_type
+          land_ownership_type
         ORDER BY 
-          ownership_type
+          total_households DESC
       `;
 
       const summaryData = await ctx.db.execute(summarySql);
 
       return summaryData;
     } catch (error) {
-      console.error("Error in getWardWiseHouseOwnershipSummary:", error);
+      console.error("Error in getWardWiseLandOwnershipSummary:", error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to retrieve ward-wise house ownership summary",
+        message: "Failed to retrieve ward-wise land ownership summary",
       });
     }
   },
 );
 
 // Export the router with all procedures
-export const wardWiseHouseOwnershipRouter = createTRPCRouter({
-  getAll: getAllWardWiseHouseOwnership,
-  getByWard: getWardWiseHouseOwnershipByWard,
-  create: createWardWiseHouseOwnership,
-  update: updateWardWiseHouseOwnership,
-  delete: deleteWardWiseHouseOwnership,
-  summary: getWardWiseHouseOwnershipSummary,
+export const wardWiseLandOwnershipRouter = createTRPCRouter({
+  getAll: getAllWardWiseLandOwnership,
+  getByWard: getWardWiseLandOwnershipByWard,
+  create: createWardWiseLandOwnership,
+  update: updateWardWiseLandOwnership,
+  delete: deleteWardWiseLandOwnership,
+  summary: getWardWiseLandOwnershipSummary,
 });

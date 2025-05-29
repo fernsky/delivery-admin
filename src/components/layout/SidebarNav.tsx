@@ -127,6 +127,10 @@ const navItems = [
         title: "वैदेशिक रोजगारीबाट प्राप्त विप्रेषण",
         href: "/profile/economics/ward-wise-remittance",
       },
+      {
+        title: "जग्गाको स्वामित्वको आधारमा घरधुरी",
+        href: "/profile/economics/ward-wise-land-ownership",
+      },
       // {
       //   title: "रोजगारी स्थिति",
       //   href: "/profile/economics/economic-status",

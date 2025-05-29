@@ -235,7 +235,7 @@ export const getWardWiseForeignEmploymentCountriesSummary = publicProcedure.quer
           country, 
           SUM(population) as total_population
         FROM 
-          ward_wise_foreign_employment_countries
+          acme_ward_wise_foreign_employment_countries
         GROUP BY 
           country
         ORDER BY 
