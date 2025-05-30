@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="400" viewBox="0 0 1200 400"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <!-- Gradients for background and elements -->
+        <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0f172a" />
+            <stop offset="100%" stop-color="#334155" />
+        </linearGradient>
+
+        <linearGradient id="potato-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f1c40f" />
+            <stop offset="100%" stop-color="#f39c12" />
+        </linearGradient>
+
+        <linearGradient id="cauliflower-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ecf0f1" />
+            <stop offset="100%" stop-color="#bdc3c7" />
+        </linearGradient>
+
+        <linearGradient id="tomato-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e74c3c" />
+            <stop offset="100%" stop-color="#c0392b" />
+        </linearGradient>
+
+        <linearGradient id="cabbage-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2ecc71" />
+            <stop offset="100%" stop-color="#27ae60" />
+        </linearGradient>
+
+        <linearGradient id="radish-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e91e63" />
+            <stop offset="100%" stop-color="#d81b60" />
+        </linearGradient>
+
+        <linearGradient id="onion-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9b59b6" />
+            <stop offset="100%" stop-color="#8e44ad" />
+        </linearGradient>
+
+        <linearGradient id="money-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2ecc71" />
+            <stop offset="100%" stop-color="#27ae60" />
+        </linearGradient>
+
+        <!-- Path for curved text at bottom -->
+        <path id="curved-text-path" d="M200,350 Q600,280 1000,350" fill="none" />
+
+        <!-- Potato shape -->
+        <path id="potato" d="M30,10 C70,0 80,40 65,60 C50,80 10,70 5,40 C0,20 15,15 30,10 Z" />
+
+        <!-- Cauliflower shape -->
+        <path id="cauliflower" d="M50,20 C80,10 90,40 70,70 C60,80 40,80 30,70 C10,40 20,10 50,20 Z" />
+
+        <!-- Tomato shape -->
+        <path id="tomato" d="M50,10 C75,10 90,35 90,50 C90,80 75,90 50,90 C25,90 10,80 10,50 C10,35 25,10 50,10 Z" />
+
+        <!-- Cabbage shape -->
+        <path id="cabbage" d="M50,5 C75,5 95,25 95,50 C95,75 75,95 50,95 C25,95 5,75 5,50 C5,25 25,5 50,5 Z" />
+
+        <!-- Radish shape -->
+        <path id="radish" d="M20,20 L40,0 L60,20 C80,30 80,70 60,80 C40,90 20,90 0,80 C-20,70 -20,30 0,20 Z" />
+
+        <!-- Onion shape -->
+        <path id="onion" d="M50,10 C70,10 80,30 80,50 C80,80 60,90 50,90 C40,90 20,80 20,50 C20,30 30,10 50,10 Z" />
+
+        <!-- Carrot shape -->
+        <path id="carrot" d="M30,0 L50,0 L60,90 L20,90 Z" />
+
+        <!-- Cucumber shape -->
+        <path id="cucumber" d="M20,20 C10,30 10,70 20,80 C30,90 70,90 80,80 C90,70 90,30 80,20 C70,10 30,10 20,20 Z" />
+
+        <!-- Vegetable basket -->
+        <path id="basket" d="M10,30 C0,50 0,70 30,90 C60,110 90,110 120,90 C150,70 150,50 140,30 L120,50 L30,50 Z" />
+
+        <!-- Vegetable plant -->
+        <path id="vegetable-plant" d="M40,100 C40,60 0,60 0,30 C0,0 30,0 40,20 C50,0 80,0 80,30 C80,60 40,60 40,100" />
+
+        <!-- Sack of vegetables -->
+        <path id="vegetable-sack" d="M10,30 C0,20 0,0 25,0 C50,0 50,20 40,30 L40,90 C40,110 10,110 10,90 Z" />
+
+        <!-- Rupee symbol -->
+        <path id="rupee-symbol" d="M0,0 L30,0 L30,10 L20,10 L30,30 L0,30 L0,20 L10,20 L0,0 Z" />
+
+        <!-- Market stall -->
+        <path id="market-stall" d="M0,20 L100,20 L90,0 L10,0 Z M10,20 L10,70 L90,70 L90,20 Z M0,20 L0,80 L100,80 L100,20 Z" />
+
+        <!-- Farmer -->
+        <path id="farmer" d="M25,10 C25,4.5 29.5,0 35,0 C40.5,0 45,4.5 45,10 C45,15.5 40.5,20 35,20 C29.5,20 25,15.5 25,10 Z M15,45 C15,25 55,25 55,45 L55,80 L45,80 L45,60 L35,80 L25,60 L25,80 L15,80 Z" />
+
+        <!-- Vegetable field -->
+        <path id="vegetable-field" d="M0,0 L100,0 L100,60 L0,60 Z" />
+
+        <!-- Pie chart segment -->
+        <path id="pie-segment-25" d="M50,50 L50,0 A50,50 0 0,1 85,15 Z" />
+        <path id="pie-segment-50" d="M50,50 L50,0 A50,50 0 0,1 100,50 Z" />
+        <path id="pie-segment-75" d="M50,50 L50,0 A50,50 0 0,1 50,100 Z" />
+
+        <!-- Vegetable type bubble -->
+        <path id="vegetable-bubble" d="M0,0 Q5,-15 20,-15 L80,-15 Q95,-15 100,0 L100,40 Q100,55 85,55 L60,55 L45,70 L30,55 L15,55 Q0,55 0,40 Z" />
+
+        <!-- Grid pattern for background -->
+        <pattern id="grid-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M0,0 L40,0 L40,40 L0,40 Z" fill="none" stroke="#1e293b" stroke-width="0.5" opacity="0.3" />
+        </pattern>
+
+        <!-- Leaf pattern -->
+        <path id="leaf" d="M0,10 C5,-5 15,-5 20,10 C15,15 5,15 0,10 Z" />
+    </defs>
+
+    <!-- Background with gradient and grid -->
+    <rect width="1200" height="400" fill="url(#bg-gradient)" />
+    <rect width="1200" height="400" fill="url(#grid-pattern)" />
+
+    <!-- Decorative elements -->
+    <g opacity="0.1">
+        <circle cx="150" cy="80" r="40" fill="white" />
+        <circle cx="1050" cy="100" r="50" fill="white" />
+        <circle cx="600" cy="50" r="30" fill="white" />
+        <circle cx="100" cy="320" r="35" fill="white" />
+        <circle cx="1100" cy="300" r="45" fill="white" />
+    </g>
+
+    <!-- Animated clouds -->
+    <g opacity="0.3">
+        <path d="M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z" fill="white">
+            <animate attributeName="d" values="M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z;
+                                        M110,70 Q130,50 160,60 Q180,40 210,50 Q230,30 260,50 Q240,70 210,65 Q190,75 160,70 Q140,80 110,70 Z;
+                                        M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z" dur="20s" repeatCount="indefinite" />
+        </path>
+
+        <path d="M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z" fill="white">
+            <animate attributeName="d" values="M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z;
+                                        M710,50 Q740,30 770,45 Q790,20 820,40 Q800,60 770,55 Q750,65 710,50 Z;
+                                        M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z" dur="15s" repeatCount="indefinite" />
+        </path>
+
+        <path d="M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z" fill="white">
+            <animate attributeName="d" values="M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z;
+                                        M390,90 Q420,60 450,80 Q470,50 500,70 Q480,100 450,90 Q430,110 390,90 Z;
+                                        M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z" dur="18s" repeatCount="indefinite" />
+        </path>
+    </g>
+
+    <!-- Sun -->
+    <g transform="translate(900, 60)">
+        <circle cx="0" cy="0" r="30" fill="#f39c12" opacity="0.7" />
+        <g opacity="0.7">
+            <path d="M0,-40 L0,-35 M28,-28 L25,-25 M40,0 L35,0 M28,28 L25,25 M0,40 L0,35 M-28,28 L-25,25 M-40,0 L-35,0 M-28,-28 L-25,-25" stroke="#f39c12" stroke-width="3" />
+        </g>
+    </g>
+
+    <!-- Main vegetables visualization section -->
+    <!-- Potato -->
+    <g transform="translate(100, 100)">
+        <g transform="scale(0.8)">
+            <use href="#potato" fill="url(#potato-gradient)" />
+            <!-- Potato details -->
+            <ellipse cx="35" cy="40" rx="5" ry="3" fill="#c0392b" opacity="0.7" />
+            <ellipse cx="50" cy="30" rx="4" ry="3" fill="#c0392b" opacity="0.7" />
+            <ellipse cx="25" cy="20" rx="3" ry="2" fill="#c0392b" opacity="0.7" />
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <use href="#vegetable-bubble" fill="url(#potato-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">आलु</text>
+        </g>
+    </g>
+
+    <!-- Cauliflower -->
+    <g transform="translate(240, 100)">
+        <g transform="scale(0.8)">
+            <use href="#cauliflower" fill="url(#cauliflower-gradient)" />
+            <!-- Cauliflower details -->
+            <path d="M40,30 C45,35 55,35 60,30 M30,40 C40,50 60,50 70,40" stroke="#bdc3c7" stroke-width="2" fill="none" />
+            <path d="M50,70 L50,80" stroke="#2ecc71" stroke-width="3" />
+            <use href="#leaf" fill="#2ecc71" transform="translate(40, 80) scale(0.8)" />
+            <use href="#leaf" fill="#2ecc71" transform="translate(60, 80) scale(0.8)" />
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <use href="#vegetable-bubble" fill="url(#cauliflower-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">काउली</text>
+        </g>
+    </g>
+
+    <!-- Tomato -->
+    <g transform="translate(380, 100)">
+        <g transform="scale(0.7)">
+            <use href="#tomato" fill="url(#tomato-gradient)" />
+            <!-- Tomato details -->
+            <path d="M50,10 L50,0 M47,0 L53,0" stroke="#2ecc71" stroke-width="2" />
+            <path d="M50,10 C30,30 30,70 50,90 M50,10 C70,30 70,70 50,90" stroke="#c0392b" stroke-width="1" fill="none" />
+            <use href="#leaf" fill="#2ecc71" transform="translate(20, 10) rotate(-30) scale(0.8)" />
+            <use href="#leaf" fill="#2ecc71" transform="translate(80, 10) rotate(30) scale(0.8)" />
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <use href="#vegetable-bubble" fill="url(#tomato-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">गोलभेडा</text>
+        </g>
+    </g>
+
+    <!-- Cabbage -->
+    <g transform="translate(520, 100)">
+        <g transform="scale(0.7)">
+            <use href="#cabbage" fill="url(#cabbage-gradient)" />
+            <!-- Cabbage details -->
+            <path d="M50,20 C30,30 30,70 50,80 M50,20 C70,30 70,70 50,80" stroke="#27ae60" stroke-width="2" fill="none" />
+            <path d="M30,50 L70,50" stroke="#27ae60" stroke-width="2" />
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <use href="#vegetable-bubble" fill="url(#cabbage-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">बन्दा</text>
+        </g>
+    </g>
+
+    <!-- Onion -->
+    <g transform="translate(660, 100)">
+        <g transform="scale(0.7)">
+            <use href="#onion" fill="url(#onion-gradient)" />
+            <!-- Onion details -->
+            <path d="M50,10 L50,0 M45,0 L55,0" stroke="#8e44ad" stroke-width="2" />
+            <path d="M30,30 C50,40 50,40 70,30 M30,50 C50,60 50,60 70,50 M30,70 C50,80 50,80 70,70" stroke="#9b59b6" stroke-width="1" fill="none" />
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <use href="#vegetable-bubble" fill="url(#onion-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">प्याज</text>
+        </g>
+    </g>
+
+    <!-- Radish -->
+    <g transform="translate(800, 100)">
+        <g transform="translate(30, 0) scale(0.5)">
+            <use href="#radish" fill="url(#radish-gradient)" />
+            <!-- Radish details -->
+            <path d="M40,0 L40,20" stroke="#2ecc71" stroke-width="3" />
+            <use href="#leaf" fill="#2ecc71" transform="translate(20, 0) rotate(-20) scale(1)" />
+            <use href="#leaf" fill="#2ecc71" transform="translate(60, 0) rotate(20) scale(1)" />
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <use href="#vegetable-bubble" fill="url(#radish-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">मुला</text>
+        </g>
+    </g>
+
+    <!-- Other vegetables -->
+    <g transform="translate(940, 100)">
+        <g transform="scale(0.8)">
+            <rect x="10" y="10" width="80" height="80" rx="5" fill="#7f8c8d" />
+            <!-- Other vegetables details -->
+            <path d="M30,30 C50,20 50,20 70,30 M30,50 C50,40 50,40 70,50 M30,70 C50,60 50,60 70,70" stroke="#95a5a6" stroke-width="2" fill="none" />
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <use href="#vegetable-bubble" fill="#7f8c8d" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">अन्य</text>
+        </g>
+    </g>
+
+    <!-- Production and sales visualization -->
+    <!-- Production pie chart -->
+    <g transform="translate(200, 230)">
+        <circle cx="60" cy="60" r="50" fill="#212f3d" stroke="#fff" stroke-width="1" opacity="0.8" />
+        <!-- Pie segments (representing different vegetables) -->
+        <path d="M60,60 L60,10 A50,50 0 0,1 107,77 Z" fill="url(#potato-gradient)" />
+        <!-- Potato: 55% -->
+        <path d="M60,60 L107,77 A50,50 0 0,1 80,106 Z" fill="url(#tomato-gradient)" />
+        <!-- Tomato: 15% -->
+        <path d="M60,60 L80,106 A50,50 0 0,1 22,85 Z" fill="url(#cabbage-gradient)" />
+        <!-- Cabbage: 20% -->
+        <path d="M60,60 L22,85 A50,50 0 0,1 60,10 Z" fill="#7f8c8d" />
+        <!-- Others: 10% -->
+
+        <circle cx="60" cy="60" r="20" fill="#212f3d" />
+        <text x="60" y="65" font-family="Arial" font-size="10" fill="white" text-anchor="middle">उत्पादन</text>
+    </g>
+
+    <!-- Sales pie chart -->
+    <g transform="translate(400, 230)">
+        <circle cx="60" cy="60" r="50" fill="#212f3d" stroke="#fff" stroke-width="1" opacity="0.8" />
+        <!-- Pie segments (representing different vegetables) -->
+        <path d="M60,60 L60,10 A50,50 0 0,1 110,60 Z" fill="url(#potato-gradient)" />
+        <!-- Potato: 25% -->
+        <path d="M60,60 L110,60 A50,50 0 0,1 60,110 Z" fill="url(#tomato-gradient)" />
+        <!-- Tomato: 25% -->
+        <path d="M60,60 L60,110 A50,50 0 0,1 10,60 Z" fill="url(#cabbage-gradient)" />
+        <!-- Cabbage: 25% -->
+        <path d="M60,60 L10,60 A50,50 0 0,1 60,10 Z" fill="#7f8c8d" />
+        <!-- Others: 25% -->
+
+        <circle cx="60" cy="60" r="20" fill="#212f3d" />
+        <text x="60" y="65" font-family="Arial" font-size="10" fill="white" text-anchor="middle">बिक्री</text>
+    </g>
+
+    <!-- Revenue chart -->
+    <g transform="translate(600, 230)">
+        <rect x="20" y="20" width="30" height="80" fill="url(#potato-gradient)" />
+        <rect x="60" y="40" width="30" height="60" fill="url(#tomato-gradient)" />
+        <rect x="100" y="70" width="30" height="30" fill="url(#cabbage-gradient)" />
+
+        <text x="35" y="110" font-family="Arial" font-size="10" fill="white" text-anchor="middle">आलु</text>
+        <text x="75" y="110" font-family="Arial" font-size="10" fill="white" text-anchor="middle">गोलभेडा</text>
+        <text x="115" y="110" font-family="Arial" font-size="10" fill="white" text-anchor="middle">बन्दा</text>
+
+        <text x="75" y="130" font-family="Arial" font-size="14" fill="white" text-anchor="middle">आम्दानी (रु)</text>
+    </g>
+
+    <!-- Self-consumption vs. Sales visualization -->
+    <g transform="translate(800, 230)">
+        <rect x="20" y="20" width="120" height="30" fill="#3498db" opacity="0.8" />
+        <rect x="20" y="60" width="60" height="30" fill="#2ecc71" opacity="0.8" />
+
+        <text x="80" y="40" font-family="Arial" font-size="12" fill="white" text-anchor="middle">कुल उत्पादन</text>
+        <text x="50" y="80" font-family="Arial" font-size="12" fill="white" text-anchor="middle">बिक्री</text>
+
+        <path d="M20,110 L140,110" stroke="white" stroke-width="1" />
+        <text x="80" y="130" font-family="Arial" font-size="14" fill="white" text-anchor="middle">उपभोग / बिक्री अनुपात</text>
+    </g>
+
+    <!-- Farmers & Market Icons -->
+    <g transform="translate(80, 270) scale(0.7)">
+        <use href="#farmer" fill="#3498db" />
+    </g>
+
+    <g transform="translate(130, 270) scale(0.7)">
+        <use href="#farmer" fill="#2ecc71" />
+    </g>
+
+    <!-- Arrow showing flow from farmers to market -->
+    <path d="M160,290 L190,290" stroke="#27ae60" stroke-width="3" marker-end="url(#arrowhead)" />
+
+    <!-- Define arrowhead marker -->
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#27ae60" />
+        </marker>
+    </defs>
+
+    <!-- Market stall -->
+    <g transform="translate(200, 270) scale(0.5)">
+        <use href="#market-stall" fill="#16a085" />
+        <rect x="20" y="30" width="20" height="30" fill="url(#potato-gradient)" />
+        <rect x="50" y="30" width="20" height="30" fill="url(#tomato-gradient)" />
+        <rect x="80" y="30" width="10" height="10" fill="url(#cabbage-gradient)" />
+    </g>
+
+    <!-- Arrow showing flow from market to money -->
+    <path d="M260,290 L290,290" stroke="#27ae60" stroke-width="3" marker-end="url(#arrowhead)" />
+
+    <!-- Money/Revenue -->
+    <g transform="translate(300, 270) scale(0.8)">
+        <circle cx="25" cy="25" r="25" fill="url(#money-gradient)" />
+        <text x="25" y="35" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">रु</text>
+    </g>
+
+    <!-- Nutrition value indicator -->
+    <g transform="translate(450, 270)">
+        <text x="0" y="20" font-family="Arial" font-size="14" fill="white">पोषण मूल्य</text>
+        <rect x="0" y="30" width="300" height="20" rx="10" fill="#1e293b" opacity="0.8" />
+        <rect x="0" y="30" width="270" height="20" rx="10" fill="#3498db" opacity="0.8" />
+        <!-- 90% nutrition value -->
+        <text x="150" y="45" font-family="Arial" font-size="12" fill="white" text-anchor="middle">भिटामिन र खनिज</text>
+    </g>
+
+    <!-- Commercialization indicator -->
+    <g transform="translate(450, 320)">
+        <text x="0" y="0" font-family="Arial" font-size="14" fill="white">व्यावसायीकरण स्कोर</text>
+        <rect x="0" y="10" width="300" height="20" rx="10" fill="#1e293b" opacity="0.8" />
+        <rect x="0" y="10" width="120" height="20" rx="10" fill="#2ecc71" opacity="0.8" />
+        <!-- 40% commercialized -->
+        <text x="150" y="25" font-family="Arial" font-size="12" fill="white" text-anchor="middle">४०%</text>
+    </g>
+
+    <!-- Vegetable garden visualization -->
+    <g transform="translate(900, 230)">
+        <!-- Soil and rows -->
+        <rect x="0" y="50" width="240" height="10" fill="#795548" opacity="0.8" />
+        <path d="M20,50 L20,20 M40,50 L40,15 M60,50 L60,25 M80,50 L80,10 M100,50 L100,20 M120,50 L120,15 M140,50 L140,25 M160,50 L160,10 M180,50 L180,20 M200,50 L200,15 M220,50 L220,25" stroke="#27ae60" stroke-width="2" />
+
+        <!-- Vegetable rows -->
+        <g transform="translate(20, 15) scale(0.2)">
+            <use href="#potato" fill="url(#potato-gradient)" />
+        </g>
+        <g transform="translate(40, 10) scale(0.2)">
+            <use href="#tomato" fill="url(#tomato-gradient)" />
+        </g>
+        <g transform="translate(60, 20) scale(0.2)">
+            <use href="#cabbage" fill="url(#cabbage-gradient)" />
+        </g>
+        <g transform="translate(80, 5) scale(0.2)">
+            <use href="#cauliflower" fill="url(#cauliflower-gradient)" />
+        </g>
+        <g transform="translate(100, 15) scale(0.2)">
+            <use href="#potato" fill="url(#potato-gradient)" />
+        </g>
+        <g transform="translate(120, 10) scale(0.2)">
+            <use href="#tomato" fill="url(#tomato-gradient)" />
+        </g>
+        <g transform="translate(140, 20) scale(0.2)">
+            <use href="#cabbage" fill="url(#cabbage-gradient)" />
+        </g>
+        <g transform="translate(160, 5) scale(0.2)">
+            <use href="#cauliflower" fill="url(#cauliflower-gradient)" />
+        </g>
+        <g transform="translate(180, 15) scale(0.2)">
+            <use href="#potato" fill="url(#potato-gradient)" />
+        </g>
+        <g transform="translate(200, 10) scale(0.2)">
+            <use href="#tomato" fill="url(#tomato-gradient)" />
+        </g>
+        <g transform="translate(220, 20) scale(0.2)">
+            <use href="#cabbage" fill="url(#cabbage-gradient)" />
+        </g>
+    </g>
+
+    <!-- Vegetable basket -->
+    <g transform="translate(900, 290) scale(0.3)">
+        <use href="#basket" fill="#795548" />
+        <g transform="translate(30, 20) scale(0.7)">
+            <use href="#potato" fill="url(#potato-gradient)" />
+        </g>
+        <g transform="translate(60, 30) scale(0.5)">
+            <use href="#tomato" fill="url(#tomato-gradient)" />
+        </g>
+        <g transform="translate(90, 25) scale(0.4)">
+            <use href="#onion" fill="url(#onion-gradient)" />
+        </g>
+        <g transform="translate(120, 30) scale(0.5)">
+            <use href="#cabbage" fill="url(#cabbage-gradient)" />
+        </g>
+    </g>
+
+    <!-- Vegetable sacks representing harvested vegetables -->
+    <g transform="translate(1000, 290) scale(0.4)">
+        <use href="#vegetable-sack" fill="url(#potato-gradient)" />
+    </g>
+
+    <g transform="translate(1030, 290) scale(0.4)">
+        <use href="#vegetable-sack" fill="url(#tomato-gradient)" />
+    </g>
+
+    <g transform="translate(1060, 290) scale(0.4)">
+        <use href="#vegetable-sack" fill="url(#cabbage-gradient)" />
+    </g>
+
+    <g transform="translate(1090, 290) scale(0.4)">
+        <use href="#vegetable-sack" fill="url(#onion-gradient)" />
+    </g>
+
+    <!-- Vegetable quality indicator -->
+    <g transform="translate(1000, 250)">
+        <text x="0" y="0" font-family="Arial" font-size="12" fill="white">तरकारी गुणस्तर</text>
+        <rect x="0" y="10" width="150" height="10" rx="5" fill="#1e293b" opacity="0.8" />
+        <rect x="0" y="10" width="120" height="10" rx="5" fill="#2ecc71" opacity="0.8" />
+        <!-- 80% quality -->
+    </g>
+
+    <!-- Animated vegetable floating effect -->
+    <g transform="translate(150, 320)" opacity="0.6">
+        <g transform="scale(0.3)">
+            <use href="#potato" fill="url(#potato-gradient)">
+                <animate attributeName="transform" values="scale(1);scale(1.1);scale(1)" dur="3s" repeatCount="indefinite" />
+            </use>
+        </g>
+    </g>
+
+    <g transform="translate(300, 330)" opacity="0.6">
+        <g transform="scale(0.3)">
+            <use href="#tomato" fill="url(#tomato-gradient)">
+                <animate attributeName="transform" values="scale(1);scale(1.1);scale(1)" dur="2.5s" repeatCount="indefinite" />
+            </use>
+        </g>
+    </g>
+
+    <g transform="translate(650, 340)" opacity="0.6">
+        <g transform="scale(0.3)">
+            <use href="#cabbage" fill="url(#cabbage-gradient)">
+                <animate attributeName="transform" values="scale(1);scale(1.1);scale(1)" dur="3.5s" repeatCount="indefinite" />
+            </use>
+        </g>
+    </g>
+
+    <g transform="translate(850, 310)" opacity="0.6">
+        <g transform="scale(0.3)">
+            <use href="#onion" fill="url(#onion-gradient)">
+                <animate attributeName="transform" values="scale(1);scale(1.1);scale(1)" dur="4s" repeatCount="indefinite" />
+            </use>
+        </g>
+    </g>
+
+    <!-- Title text at bottom -->
+    <text font-family="Arial" font-size="24" fill="white" text-anchor="middle" font-weight="bold">
+        <textPath href="#curved-text-path" startOffset="50%">तरकारी बालीको प्रकार अनुसार उत्पादन र बिक्री</textPath>
+    </text>
+</svg>
