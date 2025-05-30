@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="400" viewBox="0 0 1200 400"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <!-- Gradients for background and elements -->
+        <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0f172a" />
+            <stop offset="100%" stop-color="#334155" />
+        </linearGradient>
+
+        <!-- Disease gradients -->
+        <linearGradient id="disease-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e74c3c" />
+            <stop offset="100%" stop-color="#c0392b" />
+        </linearGradient>
+
+        <!-- Pest gradients -->
+        <linearGradient id="pest-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f39c12" />
+            <stop offset="100%" stop-color="#e67e22" />
+        </linearGradient>
+
+        <!-- Crop specific gradients -->
+        <linearGradient id="rice-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2ecc71" />
+            <stop offset="100%" stop-color="#27ae60" />
+        </linearGradient>
+
+        <linearGradient id="wheat-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f1c40f" />
+            <stop offset="100%" stop-color="#f39c12" />
+        </linearGradient>
+
+        <linearGradient id="corn-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e67e22" />
+            <stop offset="100%" stop-color="#d35400" />
+        </linearGradient>
+
+        <linearGradient id="vegetable-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#27ae60" />
+            <stop offset="100%" stop-color="#229954" />
+        </linearGradient>
+
+        <linearGradient id="fruit-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e74c3c" />
+            <stop offset="100%" stop-color="#cb4335" />
+        </linearGradient>
+
+        <linearGradient id="protection-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3498db" />
+            <stop offset="100%" stop-color="#2980b9" />
+        </linearGradient>
+
+        <!-- Path for curved text at bottom -->
+        <path id="curved-text-path" d="M200,350 Q600,280 1000,350" fill="none" />
+
+        <!-- Disease virus shape -->
+        <path id="virus" d="M50,30 C70,10 90,30 70,50 C90,70 70,90 50,70 C30,90 10,70 30,50 C10,30 30,10 50,30 Z" />
+
+        <!-- Pest insect shape -->
+        <path id="insect" d="M40,20 L60,20 L70,30 L70,50 L60,60 L40,60 L30,50 L30,30 Z M25,35 L15,35 M85,35 L75,35 M25,45 L15,45 M85,45 L75,45" />
+
+        <!-- Infected leaf shape -->
+        <path id="infected-leaf" d="M50,0 C80,20 80,60 50,80 C20,60 20,20 50,0 Z" />
+
+        <!-- Healthy leaf shape -->
+        <path id="healthy-leaf" d="M50,0 C80,20 80,60 50,80 C20,60 20,20 50,0 Z" />
+
+        <!-- Rice plant -->
+        <path id="rice-plant" d="M45,100 L45,20 M35,30 Q45,20 55,30 M30,40 Q45,30 60,40 M25,50 Q45,40 65,50" />
+
+        <!-- Wheat plant -->
+        <path id="wheat-plant" d="M45,100 L45,20 M35,25 L35,35 M40,20 L40,30 M45,15 L45,25 M50,20 L50,30 M55,25 L55,35" />
+
+        <!-- Corn plant -->
+        <path id="corn-plant" d="M45,100 L45,20 M25,30 L65,30 M20,50 L70,50 M30,70 L60,70" />
+
+        <!-- Vegetable plant -->
+        <path id="vegetable-plant" d="M45,100 L45,50 C35,40 35,30 45,20 C55,30 55,40 45,50 M30,60 C40,50 50,50 60,60" />
+
+        <!-- Fruit tree -->
+        <path id="fruit-tree" d="M45,100 L45,60 M30,50 C40,40 50,40 60,50 C70,40 70,60 60,70 C50,80 40,80 30,70 C20,60 20,40 30,50" />
+
+        <!-- Magnifying glass -->
+        <path id="magnifying-glass" d="M30,30 C30,13.5 43.5,0 60,0 C76.5,0 90,13.5 90,30 C90,46.5 76.5,60 60,60 C43.5,60 30,46.5 30,30 M75,75 L100,100" />
+
+        <!-- Treatment spray -->
+        <path id="spray" d="M20,80 L20,20 L80,20 L80,80 M40,0 L60,0 L60,20 M30,30 Q50,25 70,30 M30,40 Q50,35 70,40 M30,50 Q50,45 70,50" />
+
+        <!-- Shield protection -->
+        <path id="shield" d="M50,0 L80,20 L80,60 C80,80 50,100 50,100 C50,100 20,80 20,60 L20,20 Z" />
+
+        <!-- Warning triangle -->
+        <path id="warning" d="M50,10 L80,70 L20,70 Z M45,30 L55,30 L55,50 L45,50 Z M45,55 L55,55 L55,65 L45,65 Z" />
+
+        <!-- Cross mark for disease -->
+        <path id="cross" d="M20,20 L80,80 M80,20 L20,80" />
+
+        <!-- Chart visualization elements -->
+        <path id="bar-chart" d="M10,10 L10,80 L90,80 M20,60 L20,80 M40,40 L40,80 M60,20 L60,80 M80,50 L80,80" />
+
+        <!-- Pie chart -->
+        <circle id="pie-base" cx="50" cy="50" r="40" />
+
+        <!-- Grid pattern for background -->
+        <pattern id="grid-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M0,0 L40,0 L40,40 L0,40 Z" fill="none" stroke="#1e293b" stroke-width="0.5" opacity="0.3" />
+        </pattern>
+
+        <!-- Disease spots pattern -->
+        <pattern id="disease-spots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <circle cx="5" cy="5" r="2" fill="#e74c3c" opacity="0.6" />
+            <circle cx="15" cy="15" r="1.5" fill="#c0392b" opacity="0.6" />
+            <circle cx="10" cy="15" r="1" fill="#e74c3c" opacity="0.4" />
+        </pattern>
+
+        <!-- Pest bite pattern -->
+        <pattern id="pest-bites" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse">
+            <path d="M5,5 L10,5 L10,10 L5,10 Z" fill="none" stroke="#f39c12" stroke-width="1" opacity="0.7" />
+            <circle cx="12" cy="12" r="1" fill="#e67e22" opacity="0.8" />
+        </pattern>
+    </defs>
+
+    <!-- Background with gradient and grid -->
+    <rect width="1200" height="400" fill="url(#bg-gradient)" />
+    <rect width="1200" height="400" fill="url(#grid-pattern)" />
+
+    <!-- Decorative elements -->
+    <g opacity="0.1">
+        <circle cx="150" cy="80" r="40" fill="white" />
+        <circle cx="1050" cy="100" r="50" fill="white" />
+        <circle cx="600" cy="50" r="30" fill="white" />
+        <circle cx="100" cy="320" r="35" fill="white" />
+        <circle cx="1100" cy="300" r="45" fill="white" />
+    </g>
+
+    <!-- Warning clouds with diseases -->
+    <g opacity="0.4">
+        <path d="M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z" fill="#e74c3c">
+            <animate attributeName="opacity" values="0.2;0.5;0.2" dur="4s" repeatCount="indefinite" />
+        </path>
+
+        <path d="M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z" fill="#f39c12">
+            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite" />
+        </path>
+
+        <path d="M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z" fill="#e67e22">
+            <animate attributeName="opacity" values="0.2;0.4;0.2" dur="5s" repeatCount="indefinite" />
+        </path>
+    </g>
+
+    <!-- Sun with protection aura -->
+    <g transform="translate(900, 60)">
+        <circle cx="0" cy="0" r="35" fill="#f39c12" opacity="0.8" />
+        <circle cx="0" cy="0" r="25" fill="#3498db" opacity="0.3" />
+        <g opacity="0.7">
+            <path d="M0,-45 L0,-40 M32,-32 L28,-28 M45,0 L40,0 M32,32 L28,28 M0,45 L0,40 M-32,32 L-28,28 M-45,0 L-40,0 M-32,-32 L-28,-28" stroke="#f39c12" stroke-width="3" />
+        </g>
+    </g>
+
+    <!-- Main crop diseases visualization section -->
+    <!-- Rice Diseases -->
+    <g transform="translate(100, 100)">
+        <g transform="scale(0.8)">
+            <use href="#rice-plant" stroke="url(#rice-gradient)" stroke-width="3" fill="none" />
+            <!-- Disease spots on rice -->
+            <rect x="30" y="30" width="40" height="40" fill="url(#disease-spots)" opacity="0.7" rx="5" />
+            <g transform="translate(35, 35) scale(0.3)">
+                <use href="#virus" fill="url(#disease-gradient)" />
+            </g>
+            <g transform="translate(55, 45) scale(0.2)">
+                <use href="#insect" fill="url(#pest-gradient)" />
+            </g>
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <rect x="0" y="0" width="100" height="55" rx="10" fill="url(#rice-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">धान</text>
+            <text x="50" y="40" font-family="Arial" font-size="10" fill="white" text-anchor="middle">ब्लाष्ट, पतेरो</text>
+        </g>
+    </g>
+
+    <!-- Wheat Diseases -->
+    <g transform="translate(240, 100)">
+        <g transform="scale(0.8)">
+            <use href="#wheat-plant" stroke="url(#wheat-gradient)" stroke-width="3" fill="none" />
+            <!-- Disease on wheat -->
+            <rect x="25" y="20" width="50" height="30" fill="url(#disease-spots)" opacity="0.6" rx="3" />
+            <g transform="translate(40, 25) scale(0.25)">
+                <use href="#virus" fill="url(#disease-gradient)" />
+            </g>
+            <g transform="translate(50, 35) scale(0.2)">
+                <use href="#insect" fill="url(#pest-gradient)" />
+            </g>
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <rect x="0" y="0" width="100" height="55" rx="10" fill="url(#wheat-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">गहुँ</text>
+            <text x="50" y="40" font-family="Arial" font-size="10" fill="white" text-anchor="middle">सिन्दुरे, लाही</text>
+        </g>
+    </g>
+
+    <!-- Corn Diseases -->
+    <g transform="translate(380, 100)">
+        <g transform="scale(0.8)">
+            <use href="#corn-plant" stroke="url(#corn-gradient)" stroke-width="3" fill="none" />
+            <!-- Disease on corn -->
+            <rect x="20" y="25" width="60" height="45" fill="url(#pest-bites)" opacity="0.7" rx="5" />
+            <g transform="translate(30, 35) scale(0.3)">
+                <use href="#virus" fill="url(#disease-gradient)" />
+            </g>
+            <g transform="translate(60, 30) scale(0.2)">
+                <use href="#insect" fill="url(#pest-gradient)" />
+            </g>
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <rect x="0" y="0" width="100" height="55" rx="10" fill="url(#corn-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">मकै</text>
+            <text x="50" y="40" font-family="Arial" font-size="10" fill="white" text-anchor="middle">कालोपोके, लाही</text>
+        </g>
+    </g>
+
+    <!-- Vegetable Diseases -->
+    <g transform="translate(520, 100)">
+        <g transform="scale(0.8)">
+            <use href="#vegetable-plant" stroke="url(#vegetable-gradient)" stroke-width="3" fill="none" />
+            <!-- Multiple diseases on vegetables -->
+            <circle cx="45" cy="35" r="15" fill="url(#disease-spots)" opacity="0.6" />
+            <circle cx="35" cy="55" r="10" fill="url(#pest-bites)" opacity="0.7" />
+            <g transform="translate(40, 30) scale(0.25)">
+                <use href="#virus" fill="url(#disease-gradient)" />
+            </g>
+            <g transform="translate(50, 40) scale(0.2)">
+                <use href="#insect" fill="url(#pest-gradient)" />
+            </g>
+            <g transform="translate(30, 50) scale(0.15)">
+                <use href="#insect" fill="url(#pest-gradient)" />
+            </g>
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <rect x="0" y="0" width="100" height="55" rx="10" fill="url(#vegetable-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">तरकारी</text>
+            <text x="50" y="40" font-family="Arial" font-size="10" fill="white" text-anchor="middle">गवारो, सुलसुले</text>
+        </g>
+    </g>
+
+    <!-- Fruit Diseases -->
+    <g transform="translate(660, 100)">
+        <g transform="scale(0.8)">
+            <use href="#fruit-tree" stroke="url(#fruit-gradient)" stroke-width="3" fill="none" />
+            <!-- Fruit diseases -->
+            <ellipse cx="45" cy="45" rx="25" ry="20" fill="url(#disease-spots)" opacity="0.6" />
+            <g transform="translate(35, 40) scale(0.3)">
+                <use href="#virus" fill="url(#disease-gradient)" />
+            </g>
+            <g transform="translate(55, 35) scale(0.2)">
+                <use href="#insect" fill="url(#pest-gradient)" />
+            </g>
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <rect x="0" y="0" width="100" height="55" rx="10" fill="url(#fruit-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">फलफूल</text>
+            <text x="50" y="40" font-family="Arial" font-size="10" fill="white" text-anchor="middle">मधुवा, होपर</text>
+        </g>
+    </g>
+
+    <!-- Disease Management -->
+    <g transform="translate(800, 100)">
+        <g transform="scale(0.8)">
+            <use href="#shield" fill="url(#protection-gradient)" stroke="white" stroke-width="2" />
+            <!-- Protection symbols -->
+            <g transform="translate(35, 35) scale(0.3)">
+                <use href="#spray" fill="#2ecc71" />
+            </g>
+            <path d="M40,60 L60,60 M35,70 L65,70" stroke="white" stroke-width="2" />
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <rect x="0" y="0" width="100" height="55" rx="10" fill="url(#protection-gradient)" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">रोकथाम</text>
+            <text x="50" y="40" font-family="Arial" font-size="10" fill="white" text-anchor="middle">IPM, जैविक</text>
+        </g>
+    </g>
+
+    <!-- Scientific analysis section -->
+    <g transform="translate(940, 100)">
+        <g transform="scale(0.8)">
+            <use href="#magnifying-glass" stroke="#9b59b6" stroke-width="3" fill="none" />
+            <g transform="translate(40, 20) scale(0.2)">
+                <use href="#virus" fill="url(#disease-gradient)" />
+            </g>
+            <g transform="translate(60, 35) scale(0.15)">
+                <use href="#insect" fill="url(#pest-gradient)" />
+            </g>
+        </g>
+        <g transform="translate(10, 90) scale(1)">
+            <rect x="0" y="0" width="100" height="55" rx="10" fill="#9b59b6" />
+            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">अनुसन्धान</text>
+            <text x="50" y="40" font-family="Arial" font-size="10" fill="white" text-anchor="middle">पहिचान, विश्लेषण</text>
+        </g>
+    </g>
+
+    <!-- Disease and pest statistics visualization -->
+    <!-- Disease severity chart -->
+    <g transform="translate(200, 230)">
+        <circle cx="60" cy="60" r="50" fill="#212f3d" stroke="#fff" stroke-width="1" opacity="0.8" />
+        <!-- Pie segments for disease severity -->
+        <path d="M60,60 L60,10 A50,50 0 0,1 100,40 Z" fill="#e74c3c" />
+        <!-- High severity: 30% -->
+        <path d="M60,60 L100,40 A50,50 0 0,1 90,95 Z" fill="#f39c12" />
+        <!-- Medium severity: 25% -->
+        <path d="M60,60 L90,95 A50,50 0 0,1 30,95 Z" fill="#f1c40f" />
+        <!-- Low severity: 25% -->
+        <path d="M60,60 L30,95 A50,50 0 0,1 60,10 Z" fill="#2ecc71" />
+        <!-- Controlled: 20% -->
+
+        <circle cx="60" cy="60" r="20" fill="#212f3d" />
+        <text x="60" y="65" font-family="Arial" font-size="10" fill="white" text-anchor="middle">रोग स्तर</text>
+    </g>
+
+    <!-- Pest distribution chart -->
+    <g transform="translate(400, 230)">
+        <circle cx="60" cy="60" r="50" fill="#212f3d" stroke="#fff" stroke-width="1" opacity="0.8" />
+        <!-- Pie segments for pest types -->
+        <path d="M60,60 L60,10 A50,50 0 0,1 110,60 Z" fill="#e67e22" />
+        <!-- Chewing insects: 25% -->
+        <path d="M60,60 L110,60 A50,50 0 0,1 60,110 Z" fill="#f39c12" />
+        <!-- Sucking insects: 25% -->
+        <path d="M60,60 L60,110 A50,50 0 0,1 10,60 Z" fill="#d35400" />
+        <!-- Boring insects: 25% -->
+        <path d="M60,60 L10,60 A50,50 0 0,1 60,10 Z" fill="#e74c3c" />
+        <!-- Other pests: 25% -->
+
+        <circle cx="60" cy="60" r="20" fill="#212f3d" />
+        <text x="60" y="65" font-family="Arial" font-size="10" fill="white" text-anchor="middle">कीट प्रकार</text>
+    </g>
+
+    <!-- Treatment effectiveness chart -->
+    <g transform="translate(600, 230)">
+        <rect x="20" y="20" width="30" height="80" fill="#2ecc71" />
+        <rect x="60" y="40" width="30" height="60" fill="#3498db" />
+        <rect x="100" y="70" width="30" height="30" fill="#f39c12" />
+
+        <text x="35" y="110" font-family="Arial" font-size="10" fill="white" text-anchor="middle">जैविक</text>
+        <text x="75" y="110" font-family="Arial" font-size="10" fill="white" text-anchor="middle">रासायनिक</text>
+        <text x="115" y="110" font-family="Arial" font-size="10" fill="white" text-anchor="middle">भौतिक</text>
+
+        <text x="75" y="130" font-family="Arial" font-size="14" fill="white" text-anchor="middle">उपचार प्रभावकारिता</text>
+    </g>
+
+    <!-- Crop loss vs protection visualization -->
+    <g transform="translate(800, 230)">
+        <rect x="20" y="20" width="120" height="30" fill="#e74c3c" opacity="0.8" />
+        <rect x="20" y="60" width="80" height="30" fill="#2ecc71" opacity="0.8" />
+
+        <text x="80" y="40" font-family="Arial" font-size="12" fill="white" text-anchor="middle">रोग/कीटबाट क्षति</text>
+        <text x="60" y="80" font-family="Arial" font-size="12" fill="white" text-anchor="middle">संरक्षित उत्पादन</text>
+
+        <path d="M20,110 L140,110" stroke="white" stroke-width="1" />
+        <text x="80" y="130" font-family="Arial" font-size="14" fill="white" text-anchor="middle">नोक्सान / संरक्षण अनुपात</text>
+    </g>
+
+    <!-- Agricultural experts and farmers -->
+    <g transform="translate(80, 270) scale(0.7)">
+        <rect x="15" y="45" width="40" height="35" fill="#2980b9" />
+        <circle cx="35" cy="35" r="10" fill="#f4d03f" />
+        <rect x="25" y="65" width="20" height="15" fill="#2c3e50" />
+        <text x="35" y="90" font-family="Arial" font-size="8" fill="white" text-anchor="middle">कृषि विज्ञ</text>
+    </g>
+
+    <g transform="translate(130, 270) scale(0.7)">
+        <rect x="15" y="45" width="40" height="35" fill="#27ae60" />
+        <circle cx="35" cy="35" r="10" fill="#f4d03f" />
+        <rect x="25" y="65" width="20" height="15" fill="#8b4513" />
+        <text x="35" y="90" font-family="Arial" font-size="8" fill="white" text-anchor="middle">किसान</text>
+    </g>
+
+    <!-- Arrow showing knowledge transfer -->
+    <path d="M160,290 L190,290" stroke="#3498db" stroke-width="3" marker-end="url(#arrowhead)" />
+
+    <!-- Define arrowhead marker -->
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#3498db" />
+        </marker>
+    </defs>
+
+    <!-- Research and development lab -->
+    <g transform="translate(200, 270) scale(0.5)">
+        <rect x="0" y="20" width="100" height="60" fill="#8e44ad" />
+        <rect x="10" y="0" width="80" height="20" fill="#9b59b6" />
+        <rect x="20" y="30" width="20" height="30" fill="#3498db" />
+        <rect x="50" y="30" width="20" height="30" fill="#e74c3c" />
+        <rect x="80" y="30" width="10" height="10" fill="#f1c40f" />
+        <text x="50" y="95" font-family="Arial" font-size="10" fill="white" text-anchor="middle">अनुसन्धान केन्द्र</text>
+    </g>
+
+    <!-- Arrow showing research to treatment -->
+    <path d="M260,290 L290,290" stroke="#3498db" stroke-width="3" marker-end="url(#arrowhead)" />
+
+    <!-- Treatment and prevention -->
+    <g transform="translate(300, 270) scale(0.8)">
+        <use href="#shield" fill="url(#protection-gradient)" />
+        <g transform="translate(35, 35) scale(0.4)">
+            <use href="#spray" fill="#2ecc71" />
+        </g>
+    </g>
+
+    <!-- IPM effectiveness indicator -->
+    <g transform="translate(450, 270)">
+        <text x="0" y="20" font-family="Arial" font-size="14" fill="white">समेकित कीट व्यवस्थापन (IPM)</text>
+        <rect x="0" y="30" width="300" height="20" rx="10" fill="#1e293b" opacity="0.8" />
+        <rect x="0" y="30" width="210" height="20" rx="10" fill="#2ecc71" opacity="0.8" />
+        <!-- 70% effective -->
+        <text x="150" y="45" font-family="Arial" font-size="12" fill="white" text-anchor="middle">७०% प्रभावकारी</text>
+    </g>
+
+    <!-- Early warning system -->
+    <g transform="translate(450, 320)">
+        <text x="0" y="0" font-family="Arial" font-size="14" fill="white">प्रारम्भिक चेतावनी प्रणाली</text>
+        <rect x="0" y="10" width="300" height="20" rx="10" fill="#1e293b" opacity="0.8" />
+        <rect x="0" y="10" width="120" height="20" rx="10" fill="#e67e22" opacity="0.8" />
+        <!-- 40% coverage -->
+        <text x="150" y="25" font-family="Arial" font-size="12" fill="white" text-anchor="middle">४०% क्षेत्र</text>
+    </g>
+
+    <!-- Disease/pest monitoring network -->
+    <g transform="translate(900, 230)">
+        <!-- Monitoring stations -->
+        <rect x="0" y="0" width="240" height="120" fill="#34495e" opacity="0.2" stroke="#34495e" stroke-width="2" rx="5" />
+
+        <!-- Monitoring points -->
+        <g transform="translate(20, 20) scale(0.4)">
+            <use href="#magnifying-glass" stroke="#3498db" stroke-width="3" fill="none" />
+        </g>
+        <g transform="translate(80, 20) scale(0.4)">
+            <use href="#warning" fill="#e74c3c" />
+        </g>
+        <g transform="translate(140, 20) scale(0.4)">
+            <use href="#spray" fill="#2ecc71" />
+        </g>
+        <g transform="translate(200, 20) scale(0.4)">
+            <use href="#shield" fill="#3498db" />
+        </g>
+
+        <g transform="translate(50, 70) scale(0.4)">
+            <use href="#warning" fill="#f39c12" />
+        </g>
+        <g transform="translate(110, 70) scale(0.4)">
+            <use href="#magnifying-glass" stroke="#9b59b6" stroke-width="3" fill="none" />
+        </g>
+        <g transform="translate(170, 70) scale(0.4)">
+            <use href="#shield" fill="#2ecc71" />
+        </g>
+
+        <text x="120" y="140" font-family="Arial" font-size="14" fill="white" text-anchor="middle">निगरानी नेटवर्क</text>
+    </g>
+
+    <!-- Disease pressure indicator -->
+    <g transform="translate(1000, 250)">
+        <text x="0" y="0" font-family="Arial" font-size="12" fill="white">रोग दबाब स्तर</text>
+        <rect x="0" y="10" width="150" height="10" rx="5" fill="#1e293b" opacity="0.8" />
+        <rect x="0" y="10" width="90" height="10" rx="5" fill="#e74c3c" opacity="0.8" />
+        <!-- 60% disease pressure -->
+        <text x="75" y="35" font-family="Arial" font-size="10" fill="white" text-anchor="middle">उच्च</text>
+    </g>
+
+    <!-- Animated disease/pest floating effects -->
+    <g transform="translate(150, 320)" opacity="0.6">
+        <g transform="scale(0.3)">
+            <use href="#virus" fill="url(#disease-gradient)">
+                <animate attributeName="transform" values="scale(1);scale(1.2);scale(1)" dur="3s" repeatCount="indefinite" />
+            </use>
+        </g>
+    </g>
+
+    <g transform="translate(300, 330)" opacity="0.6">
+        <g transform="scale(0.3)">
+            <use href="#insect" fill="url(#pest-gradient)">
+                <animate attributeName="transform" values="scale(1);scale(1.1);scale(1)" dur="2.5s" repeatCount="indefinite" />
+            </use>
+        </g>
+    </g>
+
+    <g transform="translate(650, 340)" opacity="0.6">
+        <g transform="scale(0.3)">
+            <use href="#warning" fill="#e74c3c">
+                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite" />
+            </use>
+        </g>
+    </g>
+
+    <g transform="translate(850, 310)" opacity="0.6">
+        <g transform="scale(0.3)">
+            <use href="#shield" fill="url(#protection-gradient)">
+                <animate attributeName="transform" values="scale(1);scale(1.1);scale(1)" dur="4s" repeatCount="indefinite" />
+            </use>
+        </g>
+    </g>
+
+    <!-- Weather station for disease prediction -->
+    <g transform="translate(1000, 290) scale(0.3)">
+        <rect x="20" y="60" width="60" height="40" fill="#34495e" />
+        <rect x="35" y="20" width="30" height="40" fill="#2c3e50" />
+        <circle cx="50" cy="30" r="8" fill="#3498db" />
+        <path d="M42,10 L58,10 M42,15 L58,15" stroke="#95a5a6" stroke-width="2" />
+        <text x="50" y="120" font-family="Arial" font-size="20" fill="white" text-anchor="middle">मौसम स्टेशन</text>
+    </g>
+
+    <!-- Treatment success rate -->
+    <g transform="translate(1100, 280)">
+        <text x="0" y="0" font-family="Arial" font-size="12" fill="white">उपचार सफलता दर</text>
+        <circle cx="30" cy="25" r="25" fill="#212f3d" stroke="#2ecc71" stroke-width="3" />
+        <text x="30" y="30" font-family="Arial" font-size="14" fill="#2ecc71" text-anchor="middle">८५%</text>
+    </g>
+
+    <!-- Title text at bottom -->
+    <text font-family="Arial" font-size="24" fill="white" text-anchor="middle" font-weight="bold">
+        <textPath href="#curved-text-path" startOffset="50%">बाली रोग र कीटपतंगको विश्लेषण तथा व्यवस्थापन</textPath>
+    </text>
+</svg>
