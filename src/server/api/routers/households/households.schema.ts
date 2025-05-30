@@ -158,6 +158,7 @@ export const householdQuerySchema = z.object({
       timeToPublicBus: z.string().optional(),
     })
     .optional(),
+  search: z.string().optional(),
 });
 
 export const householdStatusSchema = z.object({

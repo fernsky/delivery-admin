@@ -19,8 +19,20 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DISTRICTS } from "@/constants/districts";
 
+const FormFieldDebug = ({ name }: { name: string }) => {
+  const { getValues } = useFormContext();
+  const value = getValues(name);
+
+  return (
+    <div className="text-xs text-gray-500 mt-1">
+      Field value: {value ? JSON.stringify(value) : "empty"}
+    </div>
+  );
+};
+
 export default function BasicInformationStep() {
-  const { control } = useFormContext<Household>();
+  const { control, formState } = useFormContext();
+  const { errors } = formState;
 
   return (
     <div className="space-y-6">
@@ -40,6 +52,7 @@ export default function BasicInformationStep() {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      value={field.value}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="प्रदेश छनौट गर्नुहोस्" />
@@ -72,6 +85,7 @@ export default function BasicInformationStep() {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      value={field.value}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="जिल्ला छनौट गर्नुहोस्" />
@@ -95,7 +109,7 @@ export default function BasicInformationStep() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={control}
-              name="local_level"
+              name="localLevel"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>स्थानीय तह</FormLabel>
@@ -112,7 +126,7 @@ export default function BasicInformationStep() {
 
             <FormField
               control={control}
-              name="ward_no"
+              name="wardNo"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>वडा नं.</FormLabel>
@@ -135,7 +149,7 @@ export default function BasicInformationStep() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={control}
-              name="house_symbol_no"
+              name="houseSymbolNo"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>घर संकेत नं.</FormLabel>
@@ -152,7 +166,7 @@ export default function BasicInformationStep() {
 
             <FormField
               control={control}
-              name="family_symbol_no"
+              name="familySymbolNo"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>परिवार संकेत नं.</FormLabel>
@@ -194,7 +208,7 @@ export default function BasicInformationStep() {
 
           <FormField
             control={control}
-            name="development_organization"
+            name="developmentOrganization"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>विकास संस्था</FormLabel>
@@ -211,7 +225,7 @@ export default function BasicInformationStep() {
 
           <FormField
             control={control}
-            name="date_of_interview"
+            name="dateOfInterview"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>अन्तरवार्ता मिति</FormLabel>
@@ -228,6 +242,30 @@ export default function BasicInformationStep() {
           />
         </CardContent>
       </Card>
+
+      {/* Replace with non-rerendering debug info */}
+      <div className="mb-4 p-2 bg-gray-50 rounded border">
+        <details>
+          <summary className="text-sm font-medium cursor-pointer">
+            Form Data Debug
+          </summary>
+          <button
+            type="button"
+            onClick={() => {
+              const formContext = useFormContext();
+              console.log({
+                province: formContext.getValues("province"),
+                district: formContext.getValues("district"),
+                localLevel: formContext.getValues("localLevel"),
+                wardNo: formContext.getValues("wardNo"),
+              });
+            }}
+            className="text-xs text-blue-500"
+          >
+            Log field values
+          </button>
+        </details>
+      </div>
     </div>
   );
 }

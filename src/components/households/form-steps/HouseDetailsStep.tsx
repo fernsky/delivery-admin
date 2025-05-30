@@ -20,11 +20,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export default function HouseDetailsStep() {
   const { control, watch } = useFormContext<Household>();
 
-  const houseOwnership = watch("house_ownership");
-  const houseBase = watch("house_base");
-  const houseOuterWall = watch("house_outer_wall");
-  const houseRoof = watch("house_roof");
-  const houseFloor = watch("house_floor");
+  const houseOwnership = watch("house_ownership") as string;
+  const houseBase = watch("house_base") as string;
+  const houseOuterWall = watch("house_outer_wall") as string;
+  const houseRoof = watch("house_roof") as string;
+  const houseFloor = watch("house_floor") as string;
 
   return (
     <div className="space-y-6">
@@ -43,6 +43,7 @@ export default function HouseDetailsStep() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="स्वामित्व प्रकार छनौट गर्नुहोस्" />
@@ -89,6 +90,7 @@ export default function HouseDetailsStep() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="जग्गाको स्वामित्व छनौट गर्नुहोस्" />

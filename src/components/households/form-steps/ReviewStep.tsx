@@ -7,11 +7,13 @@ import { Spinner } from "@/components/ui/spinner";
 interface ReviewStepProps {
   onSubmit: () => void;
   isSubmitting: boolean;
+  isEditing?: boolean;
 }
 
 export default function ReviewStep({
   onSubmit,
   isSubmitting,
+  isEditing = false,
 }: ReviewStepProps) {
   const { watch } = useFormContext<Household>();
   const values = watch();
@@ -95,8 +97,10 @@ export default function ReviewStep({
           {isSubmitting ? (
             <>
               <Spinner className="mr-2" />
-              सबमिट गर्दै...
+              {isEditing ? "अपडेट गर्दै..." : "सबमिट गर्दै..."}
             </>
+          ) : isEditing ? (
+            "अपडेट गर्नुहोस्"
           ) : (
             "सबमिट गर्नुहोस्"
           )}

@@ -45,6 +45,7 @@ export default function WaterSanitationStep() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="पानीको स्रोत चयन गर्नुहोस्" />
@@ -132,6 +133,7 @@ export default function WaterSanitationStep() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="शौचालयको प्रकार चयन गर्नुहोस्" />
@@ -168,6 +170,7 @@ export default function WaterSanitationStep() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="फोहोर व्यवस्थापन विधि चयन गर्नुहोस्" />
