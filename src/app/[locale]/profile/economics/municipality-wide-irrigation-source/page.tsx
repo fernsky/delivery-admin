@@ -326,7 +326,7 @@ export default async function MunicipalityWideIrrigationSourcePage() {
         <section>
           <div className="relative rounded-lg overflow-hidden mb-8">
             <Image
-              src="/images/irrigation-source.svg"
+              src="/images/irrigation-sources.svg"
               width={1200}
               height={400}
               alt="सिंचाई स्रोतको प्रकार अनुसार क्षेत्रफल - खजुरा गाउँपालिका (Irrigation Sources by Coverage Area - Khajura Rural Municipality)"
