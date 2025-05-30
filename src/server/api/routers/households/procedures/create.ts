@@ -142,10 +142,8 @@ export const createHouseholdProcedure = publicProcedure
         hasBusiness: input.hasBusiness || null,
         
         // System fields
-        deviceId: input.deviceId || null,
         
         // Set default status as pending for new households
-        status: "pending" as const,
       };
 
       // Insert household into database

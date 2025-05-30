@@ -144,7 +144,6 @@ export const householdQuerySchema = z.object({
       "locality", 
       "house_symbol_no",
       "date_of_interview",
-      "status"
     ])
     .default("family_head_name"),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
@@ -157,16 +156,12 @@ export const householdQuerySchema = z.object({
       houseOwnership: z.string().optional(),
       isEarthquakeResistant: z.string().optional(),
       timeToPublicBus: z.string().optional(),
-      status: z
-        .enum(["all", "pending", "approved", "rejected", "requested_for_edit"])
-        .optional(),
     })
     .optional(),
 });
 
 export const householdStatusSchema = z.object({
   householdId: z.string(),
-  status: z.enum(["approved", "pending", "requested_for_edit", "rejected"]),
   message: z.string().optional(), // For rejection reason or edit request details
 });
 
