@@ -139,6 +139,10 @@ const navItems = [
         title: "सिंचाईको स्रोतको आधारमा सिंचित जमिन",
         href: "/profile/economics/municipality-wide-irrigation-source",
       },
+      {
+        title: "अन्नबाली उत्पादन सम्बन्धी विवरण",
+        href: "/profile/economics/municipality-wide-food-crops",
+      },
       // {
       //   title: "रोजगारी स्थिति",
       //   href: "/profile/economics/economic-status",
@@ -296,12 +300,14 @@ export default function SidebarNav() {
                 )}
               >
                 <div className="flex items-center gap-2.5">
-                  <div className={cn(
-                    "p-1.5 rounded-md transition-colors",
-                    pathname.startsWith(section.href)
-                      ? "bg-[#123772]/10"
-                      : "bg-gray-100"
-                  )}>
+                  <div
+                    className={cn(
+                      "p-1.5 rounded-md transition-colors",
+                      pathname.startsWith(section.href)
+                        ? "bg-[#123772]/10"
+                        : "bg-gray-100",
+                    )}
+                  >
                     {section.icon}
                   </div>
                   <span>{section.title}</span>
@@ -310,7 +316,9 @@ export default function SidebarNav() {
                   className={cn(
                     "h-4 w-4 shrink-0 transition-transform duration-200",
                     openSections[section.title] ? "rotate-180" : "rotate-0",
-                    pathname.startsWith(section.href) ? "text-[#123772]" : "text-gray-400"
+                    pathname.startsWith(section.href)
+                      ? "text-[#123772]"
+                      : "text-gray-400",
                   )}
                 />
               </CollapsibleTrigger>
@@ -326,10 +334,14 @@ export default function SidebarNav() {
                         : "text-gray-600 hover:bg-[#123772]/5 hover:text-[#123772]",
                     )}
                   >
-                    <FileText className={cn(
-                      "w-3 h-3",
-                      pathname === item.href ? "text-white" : "text-[#123772] opacity-70"
-                    )} />
+                    <FileText
+                      className={cn(
+                        "w-3 h-3",
+                        pathname === item.href
+                          ? "text-white"
+                          : "text-[#123772] opacity-70",
+                      )}
+                    />
                     {item.title}
                   </Link>
                 ))}
@@ -345,12 +357,12 @@ export default function SidebarNav() {
                   : "text-gray-600 hover:bg-[#123772]/5 hover:text-[#123772]",
               )}
             >
-              <div className={cn(
-                "p-1.5 rounded-md transition-colors",
-                pathname === section.href
-                  ? "bg-white/20"
-                  : "bg-gray-100"
-              )}>
+              <div
+                className={cn(
+                  "p-1.5 rounded-md transition-colors",
+                  pathname === section.href ? "bg-white/20" : "bg-gray-100",
+                )}
+              >
                 {section.icon}
               </div>
               {section.title}
