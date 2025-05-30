@@ -308,7 +308,7 @@ export default function PulseAnalysisSection({
                 <span className="text-green-500">•</span>
                 <span>
                   <strong>पोषण मूल्य:</strong> दालहरू प्रोटिनको महत्वपूर्ण स्रोत
-                  हुन् र {localizeNumber(selfConsumption.toFixed(2), "ne")}{" "}
+                  हुन् र {localizeNumber((totalProduction - totalSales).toFixed(2), "ne")}{" "}
                   मेट्रिक टन दालबाली स्थानीय उपभोगमा प्रयोग हुँदा पालिकाको पोषण
                   सुरक्षामा सकारात्मक योगदान पुर्‍याउँछ।
                 </span>
