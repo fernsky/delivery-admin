@@ -17,6 +17,8 @@ import { wardWiseHouseholdOuterWallRouter } from "../economics/ward-wise-househo
 import { wardWiseForeignEmploymentCountriesRouter } from "./ward-wise-foreign-employment-countries.procedure";
 import { wardWiseRemittanceRouter } from "./ward-wise-remittance.procedure";
 import { wardWiseLandOwnershipRouter } from "./ward-wise-land-ownership.procedure";
+import { wardWiseIrrigatedAreaRouter } from "./ward-wise-irrigated-area.procedure";
+import { municipalityWideIrrigationSourceRouter } from "./municipality-wide-irrigation-source.procedure";
 
 
 export const economicsRouter = createTRPCRouter({
@@ -39,6 +41,8 @@ export const economicsRouter = createTRPCRouter({
   wardWiseForeignEmploymentCountries: wardWiseForeignEmploymentCountriesRouter,
   wardWiseRemittance: wardWiseRemittanceRouter,
   wardWiseLandOwnership: wardWiseLandOwnershipRouter,
+  wardWiseIrrigatedArea: wardWiseIrrigatedAreaRouter,
+  municipalityWideIrrigationSource: municipalityWideIrrigationSourceRouter,
 });
 
 

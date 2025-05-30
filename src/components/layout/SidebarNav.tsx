@@ -131,6 +131,14 @@ const navItems = [
         title: "जग्गाको स्वामित्वको आधारमा घरधुरी",
         href: "/profile/economics/ward-wise-land-ownership",
       },
+      {
+        title: "सिंचाई सुविधाको उपलब्धता",
+        href: "/profile/economics/ward-wise-irrigated-area",
+      },
+      {
+        title: "सिंचाईको स्रोतको आधारमा सिंचित जमिन",
+        href: "/profile/economics/municipality-wide-irrigation-source",
+      },
       // {
       //   title: "रोजगारी स्थिति",
       //   href: "/profile/economics/economic-status",

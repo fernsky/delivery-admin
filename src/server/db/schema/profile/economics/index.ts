@@ -50,3 +50,9 @@ export * from './ward-wise-remittance'
 
 // Land Ownership
 export * from './ward-wise-land-ownership'
+
+// Irrigated Area
+export * from './ward-wise-irrigated-area'
+
+// Irrigation Source
+export * from './municipality-wide-irrigation-source'
