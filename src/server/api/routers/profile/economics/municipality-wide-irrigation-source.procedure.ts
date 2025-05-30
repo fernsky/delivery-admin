@@ -9,7 +9,7 @@ import {
   municipalityWideIrrigationSourceSchema,
   municipalityWideIrrigationSourceFilterSchema,
   updateMunicipalityWideIrrigationSourceSchema,
-  IrrigationSourceEnum,
+  IrrigationSourceTypeEnum,
 } from "./municipality-wide-irrigation-source.schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -27,13 +27,18 @@ export const getAllMunicipalityWideIrrigationSource = publicProcedure
       let data: any[];
       try {
         // Build query with conditions
-        const baseQuery = ctx.db.select().from(municipalityWideIrrigationSource);
+        const baseQuery = ctx.db
+          .select()
+          .from(municipalityWideIrrigationSource);
 
         let conditions = [];
 
         if (input?.irrigationSource) {
           conditions.push(
-            eq(municipalityWideIrrigationSource.irrigationSource, input.irrigationSource),
+            eq(
+              municipalityWideIrrigationSource.irrigationSource,
+              input.irrigationSource,
+            ),
           );
         }
 
@@ -41,8 +46,10 @@ export const getAllMunicipalityWideIrrigationSource = publicProcedure
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by coverage area (descending)
-        data = await queryWithFilters.orderBy(desc(municipalityWideIrrigationSource.coverageInHectares));
+        // Sort by irrigation source type
+        data = await queryWithFilters.orderBy(
+          municipalityWideIrrigationSource.irrigationSource,
+        );
       } catch (err) {
         console.log("Failed to query main schema, trying ACME table:", err);
         data = [];
@@ -55,17 +62,12 @@ export const getAllMunicipalityWideIrrigationSource = publicProcedure
             id,
             irrigation_source,
             coverage_in_hectares,
-            percentage,
             updated_at,
             created_at
           FROM 
             acme_municipality_wide_irrigation_source
           ORDER BY 
-            CASE 
-              WHEN irrigation_source = 'TOTAL' THEN 1
-              ELSE 0
-            END,
-            coverage_in_hectares DESC
+            irrigation_source
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
 
@@ -74,27 +76,50 @@ export const getAllMunicipalityWideIrrigationSource = publicProcedure
           data = acmeResult.map((row) => ({
             id: row.id,
             irrigationSource: row.irrigation_source,
-            coverageInHectares: parseFloat(String(row.coverage_in_hectares || "0")),
-            percentage: parseFloat(String(row.percentage || "0")),
+            coverageInHectares: parseFloat(
+              String(row.coverage_in_hectares || "0"),
+            ),
             updatedAt: row.updated_at,
             createdAt: row.created_at,
           }));
 
           // Apply filters if needed
           if (input?.irrigationSource) {
-            data = data.filter((item) => item.irrigationSource === input.irrigationSource);
+            data = data.filter(
+              (item) => item.irrigationSource === input.irrigationSource,
+            );
           }
         }
       }
 
       return data;
     } catch (error) {
-      console.error("Error fetching municipality-wide irrigation source data:", error);
+      console.error(
+        "Error fetching municipality-wide irrigation source data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
       });
     }
+  });
+
+// Get data for a specific irrigation source
+export const getMunicipalityWideIrrigationSourceByType = publicProcedure
+  .input(z.object({ irrigationSource: IrrigationSourceTypeEnum }))
+  .query(async ({ ctx, input }) => {
+    const data = await ctx.db
+      .select()
+      .from(municipalityWideIrrigationSource)
+      .where(
+        eq(
+          municipalityWideIrrigationSource.irrigationSource,
+          input.irrigationSource,
+        ),
+      );
+
+    return data;
   });
 
 // Create a new municipality-wide irrigation source entry
@@ -105,7 +130,8 @@ export const createMunicipalityWideIrrigationSource = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Only administrators can create municipality-wide irrigation source data",
+        message:
+          "Only administrators can create municipality-wide irrigation source data",
       });
     }
 
@@ -113,35 +139,19 @@ export const createMunicipalityWideIrrigationSource = protectedProcedure
     const existing = await ctx.db
       .select({ id: municipalityWideIrrigationSource.id })
       .from(municipalityWideIrrigationSource)
-      .where(eq(municipalityWideIrrigationSource.irrigationSource, input.irrigationSource))
+      .where(
+        eq(
+          municipalityWideIrrigationSource.irrigationSource,
+          input.irrigationSource,
+        ),
+      )
       .limit(1);
 
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for irrigation source ${input.irrigationSource} already exists`,
+        message: `Data for irrigation source type ${input.irrigationSource} already exists`,
       });
-    }
-
-    // Calculate percentage if not provided
-    let percentage = input.percentage || 0;
-    
-    if (!input.percentage) {
-      // Get the total irrigation coverage to calculate percentage
-      const totalQuery = await ctx.db
-        .select({
-          total: municipalityWideIrrigationSource.coverageInHectares,
-        })
-        .from(municipalityWideIrrigationSource)
-        .where(eq(municipalityWideIrrigationSource.irrigationSource, "TOTAL"))
-        .limit(1);
-
-      if (totalQuery.length > 0) {
-        const totalCoverage = parseFloat(String(totalQuery[0].total || "0"));
-        if (totalCoverage > 0) {
-          percentage = (input.coverageInHectares / totalCoverage) * 100;
-        }
-      }
     }
 
     // Create new record
@@ -149,7 +159,6 @@ export const createMunicipalityWideIrrigationSource = protectedProcedure
       id: input.id || uuidv4(),
       irrigationSource: input.irrigationSource,
       coverageInHectares: input.coverageInHectares.toString(),
-      percentage: percentage.toString(),
     });
 
     return { success: true };
@@ -163,7 +172,8 @@ export const updateMunicipalityWideIrrigationSource = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Only administrators can update municipality-wide irrigation source data",
+        message:
+          "Only administrators can update municipality-wide irrigation source data",
       });
     }
 
@@ -188,34 +198,12 @@ export const updateMunicipalityWideIrrigationSource = protectedProcedure
       });
     }
 
-    // Calculate percentage if not provided
-    let percentage = input.percentage || 0;
-    
-    if (!input.percentage) {
-      // Get the total irrigation coverage to calculate percentage
-      const totalQuery = await ctx.db
-        .select({
-          total: municipalityWideIrrigationSource.coverageInHectares,
-        })
-        .from(municipalityWideIrrigationSource)
-        .where(eq(municipalityWideIrrigationSource.irrigationSource, "TOTAL"))
-        .limit(1);
-
-      if (totalQuery.length > 0) {
-        const totalCoverage = parseFloat(String(totalQuery[0].total || "0"));
-        if (totalCoverage > 0) {
-          percentage = (input.coverageInHectares / totalCoverage) * 100;
-        }
-      }
-    }
-
     // Update the record
     await ctx.db
       .update(municipalityWideIrrigationSource)
       .set({
         irrigationSource: input.irrigationSource,
         coverageInHectares: input.coverageInHectares.toString(),
-        percentage: percentage.toString(),
       })
       .where(eq(municipalityWideIrrigationSource.id, input.id));
 
@@ -230,7 +218,8 @@ export const deleteMunicipalityWideIrrigationSource = protectedProcedure
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Only administrators can delete municipality-wide irrigation source data",
+        message:
+          "Only administrators can delete municipality-wide irrigation source data",
       });
     }
 
@@ -246,45 +235,31 @@ export const deleteMunicipalityWideIrrigationSource = protectedProcedure
 export const getMunicipalityWideIrrigationSourceSummary = publicProcedure.query(
   async ({ ctx }) => {
     try {
-      // Get summary data - total irrigated area by source
+      // Get total coverage by irrigation source type
       const summarySql = sql`
         SELECT 
-          SUM(coverage_in_hectares) as total_irrigated_area
+          irrigation_source, 
+          SUM(coverage_in_hectares) as total_coverage
         FROM 
           acme_municipality_wide_irrigation_source
-        WHERE 
-          irrigation_source != 'TOTAL'
+        GROUP BY 
+          irrigation_source
+        ORDER BY 
+          total_coverage DESC
       `;
 
       const summaryData = await ctx.db.execute(summarySql);
 
-      // Get percentage distribution data
-      const distributionSql = sql`
-        SELECT 
-          irrigation_source, 
-          coverage_in_hectares,
-          percentage
-        FROM 
-          acme_municipality_wide_irrigation_source
-        ORDER BY
-          CASE 
-            WHEN irrigation_source = 'TOTAL' THEN 1
-            ELSE 0
-          END,
-          coverage_in_hectares DESC
-      `;
-
-      const distributionData = await ctx.db.execute(distributionSql);
-
-      return {
-        summary: summaryData[0],
-        distribution: distributionData,
-      };
+      return summaryData;
     } catch (error) {
-      console.error("Error in getMunicipalityWideIrrigationSourceSummary:", error);
+      console.error(
+        "Error in getMunicipalityWideIrrigationSourceSummary:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to retrieve municipality-wide irrigation source summary",
+        message:
+          "Failed to retrieve municipality-wide irrigation source summary",
       });
     }
   },
@@ -293,6 +268,7 @@ export const getMunicipalityWideIrrigationSourceSummary = publicProcedure.query(
 // Export the router with all procedures
 export const municipalityWideIrrigationSourceRouter = createTRPCRouter({
   getAll: getAllMunicipalityWideIrrigationSource,
+  getByType: getMunicipalityWideIrrigationSourceByType,
   create: createMunicipalityWideIrrigationSource,
   update: updateMunicipalityWideIrrigationSource,
   delete: deleteMunicipalityWideIrrigationSource,

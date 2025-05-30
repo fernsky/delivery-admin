@@ -8,7 +8,6 @@ BEGIN
             id VARCHAR(36) PRIMARY KEY,
             irrigation_source VARCHAR(100) NOT NULL,
             coverage_in_hectares DECIMAL(10, 2) NOT NULL,
-            percentage DECIMAL(5, 2) NOT NULL,
             updated_at TIMESTAMP DEFAULT NOW(),
             created_at TIMESTAMP DEFAULT NOW()
         );

@@ -1,5 +1,5 @@
-import { pgTable } from '../../../schema/basic';
-import { timestamp, varchar, decimal, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable } from "../../../schema/basic";
+import { timestamp, varchar, decimal, pgEnum } from "drizzle-orm/pg-core";
 
 // Define irrigation source type enum
 export const irrigationSourceEnum = pgEnum("irrigation_source_type", [
@@ -11,27 +11,31 @@ export const irrigationSourceEnum = pgEnum("irrigation_source_type", [
   "PUMPING_SET",
   "UNDERGROUND_IRRIGATION",
   "OTHER",
-  "TOTAL"
 ]);
 
-export const municipalityWideIrrigationSource = pgTable('municipality_wide_irrigation_source', {
-  id: varchar('id', { length: 36 }).primaryKey(),
+export const municipalityWideIrrigationSource = pgTable(
+  "municipality_wide_irrigation_source",
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
 
-  // Irrigation source type
-  irrigationSource: irrigationSourceEnum('irrigation_source').notNull(),
+    // Irrigation source type
+    irrigationSource: irrigationSourceEnum("irrigation_source").notNull(),
 
-  // Coverage area
-  coverageInHectares: decimal('coverage_in_hectares', { precision: 10, scale: 2 }).notNull(),
-  
-  // Percentage (can be calculated dynamically but stored for convenience)
-  percentage: decimal('percentage', { precision: 5, scale: 2 }).notNull(),
+    // Coverage area
+    coverageInHectares: decimal("coverage_in_hectares", {
+      precision: 10,
+      scale: 2,
+    }).notNull(),
 
-  // Metadata
-  updatedAt: timestamp('updated_at')
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-  createdAt: timestamp('created_at').defaultNow(),
-});
+    // Metadata
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+);
 
-export type MunicipalityWideIrrigationSource = typeof municipalityWideIrrigationSource.$inferSelect;
-export type NewMunicipalityWideIrrigationSource = typeof municipalityWideIrrigationSource.$inferInsert;
+export type MunicipalityWideIrrigationSource =
+  typeof municipalityWideIrrigationSource.$inferSelect;
+export type NewMunicipalityWideIrrigationSource =
+  typeof municipalityWideIrrigationSource.$inferInsert;

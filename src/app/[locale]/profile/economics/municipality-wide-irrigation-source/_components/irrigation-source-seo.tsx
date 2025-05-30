@@ -3,72 +3,80 @@ import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface IrrigationSourceSEOProps {
   overallSummary: Array<{
-    source: string;
-    sourceName: string;
+    type: string;
+    typeName: string;
     coverage: number;
-    percentage: number;
   }>;
-  totalIrrigatedArea: number;
+  totalCoverage: number;
   IRRIGATION_SOURCE_TYPES: Record<string, string>;
   IRRIGATION_SOURCE_TYPES_EN: Record<string, string>;
   sustainabilityScore: number;
-  diversityIndex: number;
 }
 
 export default function IrrigationSourceSEO({
   overallSummary,
-  totalIrrigatedArea,
+  totalCoverage,
   IRRIGATION_SOURCE_TYPES,
   IRRIGATION_SOURCE_TYPES_EN,
   sustainabilityScore,
-  diversityIndex,
 }: IrrigationSourceSEOProps) {
   // Create structured data for SEO
   const generateStructuredData = () => {
     // Convert irrigation source stats to structured data format
     const irrigationSourceStats = overallSummary.map((item) => ({
       "@type": "Observation",
-      name: `${IRRIGATION_SOURCE_TYPES_EN[item.source] || item.source} in Khajura Rural Municipality`,
+      name: `${IRRIGATION_SOURCE_TYPES_EN[item.type] || item.type} in Khajura Rural Municipality`,
       observationDate: new Date().toISOString().split("T")[0],
       measuredProperty: {
         "@type": "PropertyValue",
-        name: `${IRRIGATION_SOURCE_TYPES_EN[item.source] || item.source} Coverage`,
+        name: `${IRRIGATION_SOURCE_TYPES_EN[item.type] || item.type}`,
         unitText: "hectares",
       },
       measuredValue: item.coverage,
-      description: `${item.coverage.toFixed(2)} hectares of agricultural land in Khajura Rural Municipality is irrigated using ${IRRIGATION_SOURCE_TYPES_EN[item.source] || item.source} (${item.percentage.toFixed(2)}% of total irrigated area)`,
+      description: `${item.coverage.toFixed(2)} hectares in Khajura Rural Municipality are irrigated through ${IRRIGATION_SOURCE_TYPES_EN[item.type] || item.type} (${((item.coverage / totalCoverage) * 100).toFixed(2)}% of total irrigated area)`,
     }));
 
-    // Find most used irrigation source
-    const mostUsedSource = overallSummary.length > 0 ? overallSummary[0] : null;
-    const mostUsedSourceEN = mostUsedSource ? (IRRIGATION_SOURCE_TYPES_EN[mostUsedSource.source] || mostUsedSource.source) : "";
-    const mostUsedSourcePercentage = mostUsedSource ? mostUsedSource.percentage.toFixed(2) : "0";
+    // Find most common irrigation source
+    const mostCommonSource =
+      overallSummary.length > 0 ? overallSummary[0] : null;
+    const mostCommonSourceEN = mostCommonSource
+      ? IRRIGATION_SOURCE_TYPES_EN[mostCommonSource.type] ||
+        mostCommonSource.type
+      : "";
+    const mostCommonSourcePercentage =
+      mostCommonSource && totalCoverage > 0
+        ? ((mostCommonSource.coverage / totalCoverage) * 100).toFixed(2)
+        : "0";
 
-    // Find least used irrigation source
-    const leastUsedSource = overallSummary.length > 0 ? overallSummary[overallSummary.length - 1] : null;
-    const leastUsedSourceEN = leastUsedSource ? (IRRIGATION_SOURCE_TYPES_EN[leastUsedSource.source] || leastUsedSource.source) : "";
+    // Find traditional irrigation sources
+    const traditionalSources = overallSummary
+      .filter((item) => ["CANAL", "IRRIGATION_CANAL"].includes(item.type))
+      .reduce((sum, item) => sum + item.coverage, 0);
+    const traditionalSourcePercentage =
+      totalCoverage > 0
+        ? ((traditionalSources / totalCoverage) * 100).toFixed(2)
+        : "0";
 
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      name: "Irrigation Sources in Khajura Rural Municipality (खजुरा गाउँपालिका)",
-      description: `Municipality-wide irrigation source distribution across Khajura Rural Municipality with total irrigated area of ${totalIrrigatedArea.toFixed(2)} hectares. The most used irrigation source is ${mostUsedSourceEN} covering ${mostUsedSource?.coverage.toFixed(2)} hectares (${mostUsedSourcePercentage}%). Irrigation sustainability score is ${sustainabilityScore}% with diversity index of ${(diversityIndex * 100).toFixed(2)}%.`,
+      name: "Irrigation Source Types in Khajura Rural Municipality (खजुरा गाउँपालिका)",
+      description: `Irrigation source statistics of Khajura Rural Municipality with a total irrigation coverage of ${totalCoverage.toFixed(2)} hectares. The most common irrigation source is ${mostCommonSourceEN} with ${mostCommonSource?.coverage.toFixed(2)} hectares (${mostCommonSourcePercentage}%). Traditional irrigation methods account for ${traditionalSourcePercentage}% of all irrigated area. Irrigation sustainability score is ${sustainabilityScore}%.`,
       keywords: [
         "Khajura Rural Municipality",
         "खजुरा गाउँपालिका",
         "Irrigation sources",
-        "Agricultural irrigation",
-        "Irrigation systems Nepal",
-        "Lake reservoir irrigation",
+        "Irrigation source types",
+        "Lake or reservoir irrigation",
         "Canal irrigation",
-        "Underground irrigation",
-        "Electric lift irrigation",
-        "Rainwater collection",
-        "Pumping set irrigation",
+        "Nepal irrigation statistics",
+        "Municipality-wide irrigation sources",
         ...Object.values(IRRIGATION_SOURCE_TYPES_EN).map(
           (name) => `${name} irrigation statistics`,
         ),
-        ...Object.values(IRRIGATION_SOURCE_TYPES).map((name) => `${name} सिंचाई तथ्याङ्क`),
+        ...Object.values(IRRIGATION_SOURCE_TYPES).map(
+          (name) => `${name} सिंचाई क्षेत्रफल`,
+        ),
       ],
       url: "https://digital.khajuramun.gov.np/profile/economics/municipality-wide-irrigation-source",
       creator: {
@@ -89,15 +97,15 @@ export default function IrrigationSourceSEO({
       variableMeasured: [
         ...overallSummary.map((item) => ({
           "@type": "PropertyValue",
-          name: `${IRRIGATION_SOURCE_TYPES_EN[item.source] || item.source} Coverage`,
+          name: `${IRRIGATION_SOURCE_TYPES_EN[item.type] || item.type} coverage`,
           unitText: "hectares",
           value: item.coverage,
         })),
         {
           "@type": "PropertyValue",
           name: "Total Irrigated Area",
-          unitText: "hectares", 
-          value: totalIrrigatedArea,
+          unitText: "hectares",
+          value: totalCoverage,
         },
         {
           "@type": "PropertyValue",
@@ -105,12 +113,6 @@ export default function IrrigationSourceSEO({
           unitText: "percentage",
           value: sustainabilityScore,
         },
-        {
-          "@type": "PropertyValue",
-          name: "Irrigation Diversity Index",
-          unitText: "index",
-          value: diversityIndex,
-        }
       ],
       observation: irrigationSourceStats,
     };

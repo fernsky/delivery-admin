@@ -2,11 +2,13 @@
 
 import { localizeNumber } from "@/lib/utils/localize-number";
 
-interface IrrigationSustainabilityChartProps {
+interface SustainabilityChartProps {
   sustainabilityScore: number;
 }
 
-export default function IrrigationSustainabilityChart({ sustainabilityScore }: IrrigationSustainabilityChartProps) {
+export default function SustainabilityChart({
+  sustainabilityScore,
+}: SustainabilityChartProps) {
   // Determine color based on sustainability score
   const getColor = (score: number) => {
     if (score >= 80) return "#2ecc71"; // Green for high sustainability
@@ -39,18 +41,21 @@ export default function IrrigationSustainabilityChart({ sustainabilityScore }: I
           }}
         ></div>
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-sm font-medium z-10">
-          {localizeNumber(sustainabilityScore.toString(), "ne")}% - {sustainabilityLevel} दिगोपना
+          {localizeNumber(sustainabilityScore.toString(), "ne")}% -{" "}
+          {sustainabilityLevel} दिगोपना
         </div>
       </div>
-      
+
       <div className="w-full max-w-md mt-4 flex justify-between text-xs text-muted-foreground">
-        <span>अति न्यून दिगोपना</span>
-        <span>अति उच्च दिगोपना</span>
+        <span>कम दिगो</span>
+        <span>अति दिगो</span>
       </div>
-      
+
       <div className="mt-6 text-sm">
         <p className="text-center">
-          सिंचाई दिगोपना स्कोर {localizeNumber(sustainabilityScore.toString(), "ne")}% ({sustainabilityLevel} स्तर)
+          सिंचाई दिगोपना स्कोर{" "}
+          {localizeNumber(sustainabilityScore.toString(), "ne")}% (
+          {sustainabilityLevel} दिगोपना स्तर)
         </p>
       </div>
     </div>
