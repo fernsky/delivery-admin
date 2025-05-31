@@ -4,9 +4,9 @@ import { TableOfContents } from "@/components/TableOfContents";
 import Image from "next/image";
 import { api } from "@/trpc/server";
 import { localizeNumber } from "@/lib/utils/localize-number";
-import WardWiseFinancialAccountsCharts from "./_components/ward-wise-financial-accounts-charts";
-import WardWiseFinancialAccountsAnalysisSection from "./_components/ward-wise-financial-accounts-analysis-section";
-import WardWiseFinancialAccountsSEO from "./_components/ward-wise-financial-accounts-seo";
+import WardWiseFinancialAccountsCharts from "./_components/financial-accounts-charts";
+import WardWiseFinancialAccountsAnalysisSection from "./_components/financial-accounts-analysis-section";
+import WardWiseFinancialAccountsSEO from "./_components/financial-accounts-seo";
 
 const FINANCIAL_ACCOUNT_TYPES = {
   BANK: {
@@ -326,16 +326,16 @@ export default async function WardWiseFinancialAccountsPage() {
   }).sort((a, b) => b.accountPercent - a.accountPercent);
 
   // Find wards with best and worst financial access
-  const bestAccessWard = wardWiseAnalysis[0];
-  const worstAccessWard = [...wardWiseAnalysis].sort(
-    (a, b) => a.noAccountPercent - b.noAccountPercent
+  const bestInclusionWard = wardWiseAnalysis[0];
+  const worstInclusionWard = [...wardWiseAnalysis].sort(
+    (a, b) => b.noAccountPercent - a.noAccountPercent
   )[0];
 
   return (
     <DocsLayout toc={<TableOfContents toc={toc} />}>
       {/* Add structured data for SEO */}
       <WardWiseFinancialAccountsSEO
-        wardWiseFinancialAccountsData={wardWiseFinancialAccountsData}
+        financialAccountsData={wardWiseFinancialAccountsData}
         totalHouseholds={totalHouseholds}
         bankTotal={bankTotal}
         financeTotal={financeTotal}
@@ -347,8 +347,8 @@ export default async function WardWiseFinancialAccountsPage() {
         microfinancePercentage={parseFloat(microfinancePercentage)}
         cooperativePercentage={parseFloat(cooperativePercentage)}
         noAccountPercentage={parseFloat(noAccountPercentage)}
-        bestAccessWard={bestAccessWard}
-        worstAccessWard={worstAccessWard}
+        bestInclusionWard={bestInclusionWard}
+        worstInclusionWard={worstInclusionWard}
         FINANCIAL_ACCOUNT_TYPES={FINANCIAL_ACCOUNT_TYPES}
         wardNumbers={wardNumbers}
       />
@@ -375,16 +375,22 @@ export default async function WardWiseFinancialAccountsPage() {
               परिचय
             </h2>
             <p>
-              वित्तीय खाताहरूको वितरण आर्थिक विकासको महत्वपूर्ण सूचक हो र यसले नागरिकको वित्तीय
-              समावेशीता र सशक्तिकरणमा प्रत्यक्ष प्रभाव पार्दछ। यस खण्डमा खजुरा गाउँपालिकाको विभिन्न
-              वडाहरूमा नागरिकले वित्तीय खातामा पहुँच बनाउन लाग्ने समयको विश्लेषण प्रस्तुत
-              गरिएको छ, जसले भविष्यको वित्तीय नीति निर्माणमा सहयोग पुर्याउने छ।
+              वित्तीय खाताहरूको वितरण आर्थिक विकासको महत्वपूर्ण सूचक हो र यसले
+              नागरिकको वित्तीय समावेशीता र सशक्तिकरणमा प्रत्यक्ष प्रभाव पार्दछ।
+              यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा नागरिकले वित्तीय
+              खातामा पहुँच बनाउन लाग्ने समयको विश्लेषण प्रस्तुत गरिएको छ, जसले
+              भविष्यको वित्तीय नीति निर्माणमा सहयोग पुर्याउने छ।
             </p>
             <p>
-              खजुरा गाउँपालिकामा कुल {localizeNumber(totalHouseholds.toLocaleString(), "ne")} घरधुरीमध्ये
-              {localizeNumber(bankPercentage, "ne")}% अर्थात {localizeNumber(bankTotal.toLocaleString(), "ne")} 
-              घरधुरीले बैंकमा पहुँच राख्छन्, {localizeNumber(financePercentage, "ne")}% 
-              अर्थात {localizeNumber(financeTotal.toLocaleString(), "ne")} घरधुरीले वित्तीय संस्थामा पहुँच राख्छन्।
+              खजुरा गाउँपालिकामा कुल{" "}
+              {localizeNumber(totalHouseholds.toLocaleString(), "ne")}{" "}
+              घरधुरीमध्ये
+              {localizeNumber(bankPercentage, "ne")}% अर्थात{" "}
+              {localizeNumber(bankTotal.toLocaleString(), "ne")}
+              घरधुरीले बैंकमा पहुँच राख्छन्,{" "}
+              {localizeNumber(financePercentage, "ne")}% अर्थात{" "}
+              {localizeNumber(financeTotal.toLocaleString(), "ne")} घरधुरीले
+              वित्तीय संस्थामा पहुँच राख्छन्।
             </p>
 
             <h2
@@ -393,9 +399,7 @@ export default async function WardWiseFinancialAccountsPage() {
             >
               वित्तीय खाताको वितरण
             </h2>
-            <p>
-              खजुरा गाउँपालिकामा वित्तीय खाताको वितरण निम्नानुसार रहेको छ:
-            </p>
+            <p>खजुरा गाउँपालिकामा वित्तीय खाताको वितरण निम्नानुसार रहेको छ:</p>
           </div>
 
           {/* Client component for charts */}
@@ -414,22 +418,27 @@ export default async function WardWiseFinancialAccountsPage() {
             cooperativePercentage={parseFloat(cooperativePercentage)}
             noAccountPercentage={parseFloat(noAccountPercentage)}
             wardWiseAnalysis={wardWiseAnalysis}
-            bestAccessWard={bestAccessWard}
-            worstAccessWard={worstAccessWard}
+            bestInclusionWard={bestInclusionWard}
+            worstInclusionWard={worstInclusionWard}
             FINANCIAL_ACCOUNT_TYPES={FINANCIAL_ACCOUNT_TYPES}
           />
 
           <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
-            <h2 id="financial-access-analysis" className="scroll-m-20 border-b pb-2">
+            <h2
+              id="financial-access-analysis"
+              className="scroll-m-20 border-b pb-2"
+            >
               वित्तीय पहुँच विश्लेषण
             </h2>
             <p>
-              खजुरा गाउँपालिकामा वित्तीय खाताहरूको विश्लेषण गर्दा, समग्रमा 
-              {localizeNumber(bankPercentage, "ne")}% घरधुरीहरू बैंकमा पहुँच राख्छन् र 
-              {localizeNumber(financePercentage, "ne")}% घरधुरीहरू वित्तीय संस्थामा पहुँच राख्छन्।
-              वडागत रूपमा हेर्दा वडा नं. {localizeNumber(bestAccessWard.wardNumber.toString(), "ne")} मा 
-              सबैभन्दा राम्रो पहुँच छ, जहाँ {localizeNumber(bestAccessWard.bankPercent.toFixed(2), "ne")}% घरधुरीहरू 
-              १५ मिनेटभित्र वित्तीय संस्था पुग्न सक्छन्।
+              खजुरा गाउँपालिकामा वित्तीय खाताहरूको विश्लेषण गर्दा, समग्रमा
+              {localizeNumber(bankPercentage, "ne")}% घरधुरीहरू बैंकमा पहुँच
+              राख्छन् र{localizeNumber(financePercentage, "ne")}% घरधुरीहरू
+              वित्तीय संस्थामा पहुँच राख्छन्। वडागत रूपमा हेर्दा वडा नं.{" "}
+              {localizeNumber(bestInclusionWard.wardNumber.toString(), "ne")} मा
+              सबैभन्दा राम्रो पहुँच छ, जहाँ{" "}
+              {localizeNumber(bestInclusionWard.bankPercent.toFixed(2), "ne")}%
+              घरधुरीहरू १५ मिनेटभित्र वित्तीय संस्था पुग्न सक्छन्।
             </p>
 
             <WardWiseFinancialAccountsAnalysisSection
@@ -445,8 +454,8 @@ export default async function WardWiseFinancialAccountsPage() {
               cooperativePercentage={parseFloat(cooperativePercentage)}
               noAccountPercentage={parseFloat(noAccountPercentage)}
               wardWiseAnalysis={wardWiseAnalysis}
-              bestAccessWard={bestAccessWard}
-              worstAccessWard={worstAccessWard}
+              bestInclusionWard={bestInclusionWard}
+              worstInclusionWard={worstInclusionWard}
               FINANCIAL_ACCOUNT_TYPES={FINANCIAL_ACCOUNT_TYPES}
             />
 
@@ -458,53 +467,61 @@ export default async function WardWiseFinancialAccountsPage() {
             </h2>
 
             <p>
-              खजुरा गाउँपालिकामा वित्तीय खाताहरूको वितरणको तथ्याङ्क विश्लेषणबाट निम्न रणनीतिहरू 
-              अवलम्बन गर्न सकिन्छ:
+              खजुरा गाउँपालिकामा वित्तीय खाताहरूको वितरणको तथ्याङ्क विश्लेषणबाट
+              निम्न रणनीतिहरू अवलम्बन गर्न सकिन्छ:
             </p>
 
             <div className="pl-6 space-y-4">
               <div className="flex">
                 <span className="font-bold mr-2">१.</span>
                 <div>
-                  <strong>वित्तीय संस्थाहरूको विस्तार:</strong> {localizeNumber(noAccountPercentage, "ne")}% 
-                  घरधुरीलाई वित्तीय संस्था पुग्न १ घण्टाभन्दा बढी लाग्ने भएकाले त्यस्ता क्षेत्रमा वित्तीय 
-                  संस्थाहरू स्थापना गर्न प्रोत्साहन गर्ने।
+                  <strong>वित्तीय संस्थाहरूको विस्तार:</strong>{" "}
+                  {localizeNumber(noAccountPercentage, "ne")}% घरधुरीलाई वित्तीय
+                  संस्था पुग्न १ घण्टाभन्दा बढी लाग्ने भएकाले त्यस्ता क्षेत्रमा
+                  वित्तीय संस्थाहरू स्थापना गर्न प्रोत्साहन गर्ने।
                 </div>
               </div>
               <div className="flex">
                 <span className="font-bold mr-2">२.</span>
                 <div>
-                  <strong>डिजिटल वित्तीय सेवा:</strong> मोबाइल बैंकिङ, इन्टरनेट बैंकिङ र एजेन्ट बैंकिङ जस्ता 
-                  डिजिटल वित्तीय सेवाहरू विस्तार गरी भौगोलिक पहुँचको समस्या समाधान गर्ने।
+                  <strong>डिजिटल वित्तीय सेवा:</strong> मोबाइल बैंकिङ, इन्टरनेट
+                  बैंकिङ र एजेन्ट बैंकिङ जस्ता डिजिटल वित्तीय सेवाहरू विस्तार
+                  गरी भौगोलिक पहुँचको समस्या समाधान गर्ने।
                 </div>
               </div>
               <div className="flex">
                 <span className="font-bold mr-2">३.</span>
                 <div>
-                  <strong>वित्तीय साक्षरता कार्यक्रम:</strong> विशेष गरी वडा नं. {localizeNumber(worstAccessWard.wardNumber.toString(), "ne")} 
-                  जस्ता न्यून पहुँच भएका क्षेत्रमा वित्तीय साक्षरता कार्यक्रम सञ्चालन गर्ने।
+                  <strong>वित्तीय साक्षरता कार्यक्रम:</strong> विशेष गरी वडा नं.{" "}
+                  {localizeNumber(worstInclusionWard.wardNumber.toString(), "ne")}
+                  जस्ता न्यून पहुँच भएका क्षेत्रमा वित्तीय साक्षरता कार्यक्रम
+                  सञ्चालन गर्ने।
                 </div>
               </div>
               <div className="flex">
                 <span className="font-bold mr-2">४.</span>
                 <div>
-                  <strong>यातायात पूर्वाधार सुधार:</strong> वित्तीय संस्थामा पुग्न लामो समय लाग्ने क्षेत्रहरूमा 
-                  यातायात पूर्वाधार सुधार गरी पहुँच सहज बनाउने।
+                  <strong>यातायात पूर्वाधार सुधार:</strong> वित्तीय संस्थामा
+                  पुग्न लामो समय लाग्ने क्षेत्रहरूमा यातायात पूर्वाधार सुधार गरी
+                  पहुँच सहज बनाउने।
                 </div>
               </div>
               <div className="flex">
                 <span className="font-bold mr-2">५.</span>
                 <div>
-                  <strong>विशेष वित्तीय उत्पादन:</strong> ग्रामीण क्षेत्रमा बस्ने नागरिकहरूका लागि विशेष 
-                  वित्तीय उत्पादन र सेवाहरू विकास गर्ने।
+                  <strong>विशेष वित्तीय उत्पादन:</strong> ग्रामीण क्षेत्रमा
+                  बस्ने नागरिकहरूका लागि विशेष वित्तीय उत्पादन र सेवाहरू विकास
+                  गर्ने।
                 </div>
               </div>
             </div>
 
             <p className="mt-6">
-              यसरी खजुरा गाउँपालिकामा वित्तीय खाताहरूको वितरणको विश्लेषणले पालिकामा 
-              वित्तीय समावेशीकरणको अवस्था र भविष्यको रणनीति निर्माणमा महत्वपूर्ण भूमिका खेल्दछ। यसका लागि 
-              वडागत विशेषताहरूलाई ध्यानमा राखी वित्तीय सेवा विस्तारका कार्यक्रमहरू तर्जुमा गर्नु आवश्यक देखिन्छ।
+              यसरी खजुरा गाउँपालिकामा वित्तीय खाताहरूको वितरणको विश्लेषणले
+              पालिकामा वित्तीय समावेशीकरणको अवस्था र भविष्यको रणनीति निर्माणमा
+              महत्वपूर्ण भूमिका खेल्दछ। यसका लागि वडागत विशेषताहरूलाई ध्यानमा
+              राखी वित्तीय सेवा विस्तारका कार्यक्रमहरू तर्जुमा गर्नु आवश्यक
+              देखिन्छ।
             </p>
           </div>
         </section>

@@ -47,8 +47,8 @@ export default function TimeToFinancialOrganizationComparisonChart({
     [TIME_TO_FINANCIAL_ORG_STATUS.UNDER_1_HOUR.name]: ward.under1HourPercent,
     [TIME_TO_FINANCIAL_ORG_STATUS.HOUR_OR_MORE.name]: ward.over1HourPercent,
   })).sort((a, b) => 
-    (b[TIME_TO_FINANCIAL_ORG_STATUS.UNDER_15_MIN.name] + b[TIME_TO_FINANCIAL_ORG_STATUS.UNDER_30_MIN.name]) - 
-    (a[TIME_TO_FINANCIAL_ORG_STATUS.UNDER_15_MIN.name] + a[TIME_TO_FINANCIAL_ORG_STATUS.UNDER_30_MIN.name])
+    (Number(b[TIME_TO_FINANCIAL_ORG_STATUS.UNDER_15_MIN.name]) + Number(b[TIME_TO_FINANCIAL_ORG_STATUS.UNDER_30_MIN.name])) - 
+    (Number(a[TIME_TO_FINANCIAL_ORG_STATUS.UNDER_15_MIN.name]) + Number(a[TIME_TO_FINANCIAL_ORG_STATUS.UNDER_30_MIN.name]))
   );
 
   // Calculate average quick access rate (under 15 min)

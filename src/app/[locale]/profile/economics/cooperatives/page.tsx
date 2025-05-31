@@ -201,7 +201,7 @@ const toc = [
   },
   {
     level: 2,
-    text: "निष्कर्ष र सिफारिसहरू",\
+    text: "निष्कर्ष र सिफारिसहरू",
     slug: "conclusions-and-recommendations",
   },
 ];
