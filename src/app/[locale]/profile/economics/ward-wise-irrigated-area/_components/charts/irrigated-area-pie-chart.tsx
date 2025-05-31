@@ -15,14 +15,12 @@ interface IrrigatedAreaPieChartProps {
     name: string;
     value: number;
     percentage: string;
-    type: string;
+    color: string;
   }>;
-  AREA_COLORS: Record<string, string>;
 }
 
 export default function IrrigatedAreaPieChart({
   pieChartData,
-  AREA_COLORS,
 }: IrrigatedAreaPieChartProps) {
   // Custom tooltip component for better presentation with Nepali numbers
   const CustomTooltip = ({ active, payload }: any) => {
@@ -33,9 +31,9 @@ export default function IrrigatedAreaPieChart({
         <div className="bg-background p-3 border shadow-sm rounded-md">
           <p className="font-medium">{name}</p>
           <div className="flex justify-between gap-4 mt-1">
-            <span className="text-sm">क्षेत्रफल:</span>
+            <span className="text-sm">क्षेत्रफल (हेक्टर):</span>
             <span className="font-medium">
-              {localizeNumber(value.toLocaleString(), "ne")} हेक्टर
+              {localizeNumber(value.toFixed(2), "ne")}
             </span>
           </div>
           <div className="flex justify-between gap-4">
@@ -65,17 +63,14 @@ export default function IrrigatedAreaPieChart({
           {pieChartData.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
-              fill={
-                AREA_COLORS[entry.type] || 
-                `#${Math.floor(Math.random() * 16777215).toString(16)}`
-              }
+              fill={entry.color}
             />
           ))}
         </Pie>
         <Tooltip content={CustomTooltip} />
-        <Legend 
+        <Legend
           formatter={(value) => value}
-          wrapperStyle={{ fontSize: '12px' }}
+          wrapperStyle={{ fontSize: "12px" }}
         />
       </PieChart>
     </ResponsiveContainer>

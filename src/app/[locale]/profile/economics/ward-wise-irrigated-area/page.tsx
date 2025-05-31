@@ -13,17 +13,12 @@ export const dynamic = "force-dynamic";
 
 // Define the locales for which this page should be statically generated
 export async function generateStaticParams() {
+  // Generate the page for 'en' and 'ne' locales
   return [{ locale: "en" }];
 }
 
 // Optional: Add revalidation period if you want to update the static pages periodically
 export const revalidate = 86400; // Revalidate once per day (in seconds)
-
-// Define colors for area types
-const AREA_COLORS: Record<string, string> = {
-  IRRIGATED: "#2ecc71", // Green for irrigated
-  UNIRRIGATED: "#e67e22", // Orange for unirrigated
-};
 
 // This function will generate metadata dynamically based on the actual data
 export async function generateMetadata(): Promise<Metadata> {
@@ -31,65 +26,62 @@ export async function generateMetadata(): Promise<Metadata> {
     // Fetch data for SEO using tRPC
     const irrigatedAreaData =
       await api.profile.economics.wardWiseIrrigatedArea.getAll.query();
+    const summaryData =
+      await api.profile.economics.wardWiseIrrigatedArea.summary.query();
+
     const municipalityName = "खजुरा गाउँपालिका"; // Khajura Rural Municipality
 
-    // Process data for SEO
-    const totalIrrigatedArea = irrigatedAreaData.reduce(
-      (sum, item) => sum + parseFloat(item.irrigatedAreaHectares.toString()),
-      0,
-    );
+    // Calculate total areas
+    const totalIrrigatedArea = summaryData?.total_irrigated_area
+      ? parseFloat(summaryData.total_irrigated_area)
+      : irrigatedAreaData.reduce(
+          (sum, item) => sum + (parseFloat(String(item.irrigatedAreaHectares)) || 0),
+          0
+        );
 
-    const totalUnirrigatedArea = irrigatedAreaData.reduce(
-      (sum, item) => sum + parseFloat(item.unirrigatedAreaHectares.toString()),
-      0,
-    );
+    const totalUnirrigatedArea = summaryData?.total_unirrigated_area
+      ? parseFloat(summaryData.total_unirrigated_area)
+      : irrigatedAreaData.reduce(
+          (sum, item) => sum + (parseFloat(String(item.unirrigatedAreaHectares)) || 0),
+          0
+        );
 
     const totalArea = totalIrrigatedArea + totalUnirrigatedArea;
-    const irrigationCoverage =
-      totalArea > 0 ? (totalIrrigatedArea / totalArea) * 100 : 0;
+    const irrigatedPercentage =
+      totalArea > 0 ? ((totalIrrigatedArea / totalArea) * 100).toFixed(2) : "0";
 
-    // Find ward with highest irrigation coverage
-    let highestCoverageWard: number | null = null;
-    let highestCoveragePercentage = 0;
-
-    irrigatedAreaData.forEach((item) => {
-      const irrigated = parseFloat(item.irrigatedAreaHectares.toString());
-      const unirrigated = parseFloat(item.unirrigatedAreaHectares.toString());
-      const wardTotal = irrigated + unirrigated;
-      const coverage = wardTotal > 0 ? (irrigated / wardTotal) * 100 : 0;
-
-      if (coverage > highestCoveragePercentage) {
-        highestCoveragePercentage = coverage;
-        highestCoverageWard = item.wardNumber;
-      }
-    });
+    // Find the ward with highest irrigated area
+    const sortedByIrrigated = [...irrigatedAreaData].sort(
+      (a, b) => b.irrigatedAreaHectares - a.irrigatedAreaHectares
+    );
+    const highestIrrigatedWard = sortedByIrrigated[0];
 
     // Create rich keywords with actual data
     const keywordsNP = [
-      "खजुरा गाउँपालिका सिंचित क्षेत्र",
-      "वडा अनुसार सिंचाई",
-      "खजुरा सिंचाई कभरेज",
-      "कृषि सिंचाई वितरण",
-      "सिंचित असिंचित क्षेत्र",
-      `खजुरा सिंचित क्षेत्र ${localizeNumber(totalIrrigatedArea.toFixed(1), "ne")} हेक्टर`,
+      "खजुरा गाउँपालिका वडा अनुसार सिंचित क्षेत्रफल",
+      "वडा अनुसार सिंचित र असिंचित क्षेत्रफल",
+      "सिंचाई क्षेत्र विश्लेषण",
+      `खजुरा सिंचित क्षेत्रफल ${localizeNumber(totalIrrigatedArea.toFixed(2), "ne")} हेक्टर`,
+      "वडागत सिंचाई विवरण",
+      "कृषि सिंचाई",
     ];
 
     const keywordsEN = [
-      "Khajura Rural Municipality irrigated area",
-      "Ward-wise irrigation coverage",
-      "Khajura irrigation statistics",
-      "Agricultural irrigation distribution",
-      "Irrigated unirrigated area",
-      `Khajura irrigated area ${totalIrrigatedArea.toFixed(1)} hectares`,
+      "Khajura Rural Municipality ward-wise irrigated area",
+      "Ward-wise irrigated and unirrigated area statistics",
+      "Irrigation coverage by ward",
+      `Khajura irrigated area ${totalIrrigatedArea.toFixed(2)} hectares`,
+      "Agricultural irrigation statistics",
+      "Irrigation analysis by ward",
     ];
 
     // Create detailed description with actual data
-    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार सिंचित क्षेत्रको विस्तृत विश्लेषण। कुल ${localizeNumber(totalArea.toFixed(1), "ne")} हेक्टर कृषि क्षेत्रमध्ये ${localizeNumber(totalIrrigatedArea.toFixed(1), "ne")} हेक्टर (${localizeNumber(irrigationCoverage.toFixed(1), "ne")}%) सिंचित छ। वडा नं. ${localizeNumber(highestCoverageWard !== null ? String(highestCoverageWard) : "", "ne")} मा सर्वाधिक ${localizeNumber(highestCoveragePercentage.toFixed(1), "ne")}% सिंचाई कभरेज रहेको छ।`;
+    const descriptionNP = `खजुरा गाउँपालिकामा वडा अनुसार सिंचित र असिंचित क्षेत्रफलको विवरण र विश्लेषण। कुल ${localizeNumber(totalArea.toFixed(2), "ne")} हेक्टर क्षेत्रफल मध्ये ${localizeNumber(irrigatedPercentage, "ne")}% (${localizeNumber(totalIrrigatedArea.toFixed(2), "ne")}) हेक्टर क्षेत्रफल सिंचित र ${localizeNumber((100 - parseFloat(irrigatedPercentage)).toFixed(2), "ne")}% क्षेत्रफल असिंचित रहेको छ। वडा नं. ${localizeNumber(String(highestIrrigatedWard?.wardNumber || ""), "ne")} मा सबैभन्दा बढी सिंचित क्षेत्र रहेको छ।`;
 
-    const descriptionEN = `Comprehensive analysis of ward-wise irrigated area in Khajura Rural Municipality. Out of total ${totalArea.toFixed(1)} hectares of agricultural area, ${totalIrrigatedArea.toFixed(1)} hectares (${irrigationCoverage.toFixed(1)}%) is irrigated. Ward No. ${highestCoverageWard} has the highest irrigation coverage of ${highestCoveragePercentage.toFixed(1)}%.`;
+    const descriptionEN = `Details and analysis of irrigated and unirrigated area by ward in Khajura Rural Municipality. Out of a total of ${totalArea.toFixed(2)} hectares, ${irrigatedPercentage}% (${totalIrrigatedArea.toFixed(2)}) hectares are irrigated and ${(100 - parseFloat(irrigatedPercentage)).toFixed(2)}% area is unirrigated. Ward No. ${highestIrrigatedWard?.wardNumber || ""} has the highest irrigated area.`;
 
     return {
-      title: `वडा अनुसार सिंचित क्षेत्र | ${municipalityName} डिजिटल प्रोफाइल`,
+      title: `वडा अनुसार सिंचित र असिंचित क्षेत्रफल | ${municipalityName} डिजिटल प्रोफाइल`,
       description: descriptionNP,
       keywords: [...keywordsNP, ...keywordsEN],
       alternates: {
@@ -100,7 +92,7 @@ export async function generateMetadata(): Promise<Metadata> {
         },
       },
       openGraph: {
-        title: `वडा अनुसार सिंचित क्षेत्र | ${municipalityName}`,
+        title: `वडा अनुसार सिंचित र असिंचित क्षेत्रफल | ${municipalityName}`,
         description: descriptionNP,
         type: "article",
         locale: "ne_NP",
@@ -109,16 +101,17 @@ export async function generateMetadata(): Promise<Metadata> {
       },
       twitter: {
         card: "summary_large_image",
-        title: `वडा अनुसार सिंचित क्षेत्र | ${municipalityName}`,
+        title: `वडा अनुसार सिंचित र असिंचित क्षेत्रफल | ${municipalityName}`,
         description: descriptionNP,
       },
     };
   } catch (error) {
     // Fallback metadata if data fetching fails
     return {
-      title: "वडा अनुसार सिंचित क्षेत्र | खजुरा गाउँपालिका डिजिटल प्रोफाइल",
+      title:
+        "वडा अनुसार सिंचित र असिंचित क्षेत्रफल | खजुरा गाउँपालिका डिजिटल प्रोफाइल",
       description:
-        "खजुरा गाउँपालिकाको वडा अनुसार सिंचित र असिंचित कृषि क्षेत्रको विस्तृत विश्लेषण।",
+        "खजुरा गाउँपालिकामा वडा अनुसार सिंचित र असिंचित क्षेत्रफलको विवरण र विश्लेषण।",
     };
   }
 }
@@ -127,20 +120,11 @@ const toc = [
   { level: 2, text: "परिचय", slug: "introduction" },
   {
     level: 2,
-    text: "पालिकाको सिंचाई अवस्था",
-    slug: "municipality-irrigation-status",
+    text: "वडागत सिंचित क्षेत्रफलको अवस्था",
+    slug: "ward-wise-irrigated-area-status",
   },
-  {
-    level: 2,
-    text: "वडा अनुसार सिंचाई कभरेज",
-    slug: "ward-wise-irrigation-coverage",
-  },
-  { level: 2, text: "सिंचाई प्रभावकारिता", slug: "irrigation-effectiveness" },
-  {
-    level: 2,
-    text: "सिंचाई पूर्वाधार विकास",
-    slug: "irrigation-infrastructure-development",
-  },
+  { level: 2, text: "सिंचाई क्षेत्रफल विश्लेषण", slug: "irrigation-coverage-analysis" },
+  { level: 2, text: "सिंचाई अन्तराल र चुनौती", slug: "irrigation-gap-and-challenges" },
   {
     level: 2,
     text: "निष्कर्ष र सिफारिसहरू",
@@ -149,7 +133,7 @@ const toc = [
 ];
 
 export default async function WardWiseIrrigatedAreaPage() {
-  // Fetch all irrigated area data using tRPC
+  // Fetch all ward-wise irrigated area data using tRPC
   const irrigatedAreaData =
     await api.profile.economics.wardWiseIrrigatedArea.getAll.query();
 
@@ -163,128 +147,59 @@ export default async function WardWiseIrrigatedAreaPage() {
   }
 
   // Process data for overall summary
-  const totalIrrigatedArea = irrigatedAreaData.reduce(
-    (sum, item) => sum + parseFloat(String(item.irrigatedAreaHectares || 0)),
-    0,
-  );
+  const wardData = irrigatedAreaData
+    .map((item) => ({
+      wardNumber: item.wardNumber,
+      irrigatedArea: parseFloat(String(item.irrigatedAreaHectares)) || 0,
+      unirrigatedArea: parseFloat(String(item.unirrigatedAreaHectares)) || 0,
+      totalArea:
+        (parseFloat(String(item.irrigatedAreaHectares)) || 0) +
+        (parseFloat(String(item.unirrigatedAreaHectares)) || 0),
+    }))
+    .sort((a, b) => a.wardNumber - b.wardNumber);
 
-  const totalUnirrigatedArea = irrigatedAreaData.reduce(
-    (sum, item) => sum + parseFloat(String(item.unirrigatedAreaHectares || 0)),
-    0,
-  );
+  // Calculate overall totals
+  const totalIrrigatedArea = summaryData?.total_irrigated_area
+    ? parseFloat(summaryData.total_irrigated_area)
+    : wardData.reduce((sum, item) => sum + item.irrigatedArea, 0);
+
+  const totalUnirrigatedArea = summaryData?.total_unirrigated_area
+    ? parseFloat(summaryData.total_unirrigated_area)
+    : wardData.reduce((sum, item) => sum + item.unirrigatedArea, 0);
 
   const totalArea = totalIrrigatedArea + totalUnirrigatedArea;
-  const irrigationCoveragePercentage =
-    totalArea > 0 ? (totalIrrigatedArea / totalArea) * 100 : 0;
+  
+  // Calculate percentages
+  const irrigatedPercentage =
+    totalArea > 0 ? ((totalIrrigatedArea / totalArea) * 100).toFixed(2) : "0";
+  const unirrigatedPercentage =
+    totalArea > 0 ? ((totalUnirrigatedArea / totalArea) * 100).toFixed(2) : "0";
 
-  // Create data for pie chart
-  const pieChartData = [
-    {
-      name: "सिंचित क्षेत्र",
-      value: totalIrrigatedArea,
-      percentage: irrigationCoveragePercentage.toFixed(2),
-      type: "IRRIGATED",
-    },
-    {
-      name: "असिंचित क्षेत्र",
-      value: totalUnirrigatedArea,
-      percentage: (100 - irrigationCoveragePercentage).toFixed(2),
-      type: "UNIRRIGATED",
-    },
-  ];
+  // Find ward with highest irrigated area
+  const mostIrrigatedWard = [...wardData].sort(
+    (a, b) => b.irrigatedArea - a.irrigatedArea
+  )[0];
 
-  // Get unique ward numbers
-  const wardNumbers = Array.from(
-    new Set(irrigatedAreaData.map((item) => item.wardNumber)),
-  ).sort((a, b) => a - b); // Sort numerically
+  // Find ward with highest unirrigated area
+  const mostUnirrigatedWard = [...wardData].sort(
+    (a, b) => b.unirrigatedArea - a.unirrigatedArea
+  )[0];
 
-  // Process data for ward-wise visualization
-  const wardWiseData = wardNumbers
-    .map((wardNumber) => {
-      const wardItem = irrigatedAreaData.find(
-        (item) => item.wardNumber === wardNumber,
-      );
-
-      if (!wardItem) return null;
-
-      const irrigated = parseFloat(String(wardItem.irrigatedAreaHectares || 0));
-      const unirrigated = parseFloat(
-        String(wardItem.unirrigatedAreaHectares || 0),
-      );
-
-      return {
-        ward: `वडा ${wardNumber}`,
-        "सिंचित क्षेत्र": irrigated,
-        "असिंचित क्षेत्र": unirrigated,
-      };
-    })
-    .filter(Boolean);
-
-  // Calculate ward-wise irrigation analysis
-  const wardWiseAnalysis = wardNumbers
-    .map((wardNumber) => {
-      const wardItem = irrigatedAreaData.find(
-        (item) => item.wardNumber === wardNumber,
-      );
-
-      if (!wardItem) return null;
-
-      const irrigatedArea = parseFloat(
-        String(wardItem.irrigatedAreaHectares || 0),
-      );
-      const unirrigatedArea = parseFloat(
-        String(wardItem.unirrigatedAreaHectares || 0),
-      );
-      const totalWardArea = irrigatedArea + unirrigatedArea;
-      const irrigationCoverage =
-        totalWardArea > 0 ? (irrigatedArea / totalWardArea) * 100 : 0;
-
-      // Calculate irrigation efficiency score (0-100)
-      // Higher score means better irrigation coverage
-      const efficiencyScore = Math.round(irrigationCoverage);
-
-      // Categorize irrigation status
-      const getIrrigationStatus = (coverage: number) => {
-        if (coverage >= 80) return "excellent";
-        if (coverage >= 60) return "good";
-        if (coverage >= 40) return "moderate";
-        if (coverage >= 20) return "poor";
-        return "very_poor";
-      };
-
-      return {
-        wardNumber,
-        irrigatedArea,
-        unirrigatedArea,
-        totalWardArea,
-        irrigationCoverage,
-        efficiencyScore,
-        irrigationStatus: getIrrigationStatus(irrigationCoverage),
-      };
-    })
-    .filter(Boolean)
-    .sort(
-      (a, b) => (b?.irrigationCoverage || 0) - (a?.irrigationCoverage || 0),
-    ); // Sort by coverage with null safety
-
-  // Find best and worst performing wards
-  const bestPerformingWard = wardWiseAnalysis[0];
-  const worstPerformingWard = wardWiseAnalysis[wardWiseAnalysis.length - 1];
-
-  // Calculate overall irrigation efficiency score
-  const overallEfficiencyScore = Math.round(irrigationCoveragePercentage);
+  // Calculate irrigation sustainability score (simple ratio of irrigated to total area as percentage)
+  const irrigationSustainabilityScore = Math.round(
+    parseFloat(irrigatedPercentage)
+  );
 
   return (
     <DocsLayout toc={<TableOfContents toc={toc} />}>
       {/* Add structured data for SEO */}
       <IrrigatedAreaSEO
+        wardData={wardData}
         totalIrrigatedArea={totalIrrigatedArea}
-        //@ts-ignore
         totalUnirrigatedArea={totalUnirrigatedArea}
         totalArea={totalArea}
-        irrigationCoveragePercentage={irrigationCoveragePercentage}
-        wardWiseAnalysis={wardWiseAnalysis}
-        overallEfficiencyScore={overallEfficiencyScore}
+        irrigatedPercentage={irrigatedPercentage}
+        mostIrrigatedWard={mostIrrigatedWard}
       />
 
       <div className="flex flex-col gap-8">
@@ -294,7 +209,7 @@ export default async function WardWiseIrrigatedAreaPage() {
               src="/images/irrigated-area.svg"
               width={1200}
               height={400}
-              alt="वडा अनुसार सिंचित क्षेत्र - खजुरा गाउँपालिका (Ward-wise Irrigated Area - Khajura Rural Municipality)"
+              alt="वडा अनुसार सिंचित र असिंचित क्षेत्रफल - खजुरा गाउँपालिका (Ward-wise Irrigated and Unirrigated Area - Khajura Rural Municipality)"
               className="w-full h-[250px] object-cover rounded-sm"
               priority
             />
@@ -302,149 +217,109 @@ export default async function WardWiseIrrigatedAreaPage() {
 
           <div className="prose prose-slate dark:prose-invert max-w-none">
             <h1 className="scroll-m-20 tracking-tight mb-6">
-              खजुरा गाउँपालिकामा वडा अनुसार सिंचित क्षेत्र
+              खजुरा गाउँपालिकामा वडा अनुसार सिंचित र असिंचित क्षेत्रफल
             </h1>
 
             <h2 id="introduction" className="scroll-m-20">
               परिचय
             </h2>
             <p>
-              सिंचाई कृषि उत्पादनको मेरुदण्ड हो र खाद्य सुरक्षाको आधार पनि।
-              नेपालको कृषि प्रधान अर्थतन्त्रमा सिंचाई सुविधाको पहुँच र वितरणले
-              कृषकहरूको जीवनयात्रालाई प्रत्यक्ष प्रभाव पार्छ। खजुरा गाउँपालिकामा
-              पनि सिंचाई सुविधाको उपलब्धता र वितरणले स्थानीय कृषि उत्पादन र
-              किसानहरूको आर्थिक अवस्थामा महत्त्वपूर्ण भूमिका खेलेको छ।
+              सिंचाई कृषि उत्पादनलाई प्रभावकारी बनाउने महत्त्वपूर्ण पक्ष हो। खजुरा
+              गाउँपालिकामा वडागत रूपमा सिंचित र असिंचित क्षेत्रफलको अवस्था विविध
+              रहेको छ। सम्पूर्ण पालिकामा कुल {localizeNumber(totalArea.toFixed(2), "ne")} हेक्टर
+              क्षेत्रफल मध्ये {localizeNumber(irrigatedPercentage, "ne")}% 
+              अर्थात् {localizeNumber(totalIrrigatedArea.toFixed(2), "ne")} हेक्टर क्षेत्रफलमा सिंचाई
+              सुविधा उपलब्ध छ भने {localizeNumber(unirrigatedPercentage, "ne")}% अर्थात्
+              {localizeNumber(totalUnirrigatedArea.toFixed(2), "ne")} हेक्टर क्षेत्रफलमा सिंचाई सुविधा
+              उपलब्ध छैन।
             </p>
             <p>
-              खजुरा गाउँपालिकाको सिंचाई सम्बन्धी तथ्याङ्क अनुसार, कुल{" "}
-              {localizeNumber(totalArea.toFixed(1), "ne")}
-              हेक्टर कृषि क्षेत्रमध्ये{" "}
-              {localizeNumber(totalIrrigatedArea.toFixed(1), "ne")} हेक्टर
-              अर्थात्
-              {localizeNumber(irrigationCoveragePercentage.toFixed(1), "ne")}%
-              क्षेत्रमा सिंचाई सुविधा उपलब्ध छ। यसमध्ये वडा नं.{" "}
-              {localizeNumber(
-                bestPerformingWard?.wardNumber.toString() || "",
-                "ne",
-              )}{" "}
-              मा सबैभन्दा बढी
-              {localizeNumber(
-                bestPerformingWard?.irrigationCoverage.toFixed(1) || "0",
-                "ne",
-              )}
-              % सिंचाई कभरेज रहेको छ।
+              वडागत विश्लेषण गर्दा वडा नं. {localizeNumber(String(mostIrrigatedWard?.wardNumber || ""), "ne")} मा
+              सबैभन्दा बढी {localizeNumber(mostIrrigatedWard?.irrigatedArea.toFixed(2) || "", "ne")} हेक्टर
+              क्षेत्रफलमा सिंचाई सुविधा उपलब्ध छ भने वडा नं. {localizeNumber(String(mostUnirrigatedWard?.wardNumber || ""), "ne")} मा
+              सबैभन्दा बढी {localizeNumber(mostUnirrigatedWard?.unirrigatedArea.toFixed(2) || "", "ne")} हेक्टर
+              क्षेत्रफलमा सिंचाई सुविधा पुग्न सकेको छैन।
             </p>
 
             <h2
-              id="municipality-irrigation-status"
+              id="ward-wise-irrigated-area-status"
               className="scroll-m-20 border-b pb-2"
             >
-              पालिकाको समग्र सिंचाई अवस्था
+              वडागत सिंचित क्षेत्रफलको अवस्था
             </h2>
             <p>
-              खजुरा गाउँपालिकाको सिंचाई अवस्थाको समग्र मूल्याङ्कन गर्दा
-              निम्नलिखित तथ्यहरू देखिन्छन्:
+              खजुरा गाउँपालिकाका सबै वडाहरूमा सिंचाई सुविधाको वितरण असमान रहेको
+              देखिन्छ। यहाँ वडागत रूपमा सिंचित र असिंचित क्षेत्रफलको विस्तृत
+              विवरण प्रस्तुत गरिएको छ:
             </p>
 
             <ul>
-              <li>
-                <strong>कुल कृषि क्षेत्र:</strong>{" "}
-                {localizeNumber(totalArea.toFixed(1), "ne")} हेक्टर
-              </li>
-              <li>
-                <strong>सिंचित क्षेत्र:</strong>{" "}
-                {localizeNumber(totalIrrigatedArea.toFixed(1), "ne")} हेक्टर (
-                {localizeNumber(irrigationCoveragePercentage.toFixed(1), "ne")}
-                %)
-              </li>
-              <li>
-                <strong>असिंचित क्षेत्र:</strong>{" "}
-                {localizeNumber(totalUnirrigatedArea.toFixed(1), "ne")} हेक्टर (
-                {localizeNumber(
-                  (100 - irrigationCoveragePercentage).toFixed(1),
-                  "ne",
-                )}
-                %)
-              </li>
-              <li>
-                <strong>सिंचाई प्रभावकारिता स्कोर:</strong>{" "}
-                {localizeNumber(overallEfficiencyScore.toString(), "ne")}%
-              </li>
+              {wardData.map((ward) => {
+                const irrigatedPercent = ward.totalArea > 0
+                  ? ((ward.irrigatedArea / ward.totalArea) * 100).toFixed(1)
+                  : "0";
+                
+                return (
+                  <li key={ward.wardNumber}>
+                    <strong>वडा नं. {localizeNumber(String(ward.wardNumber), "ne")}</strong>:
+                    कुल क्षेत्रफल {localizeNumber(ward.totalArea.toFixed(2), "ne")} हेक्टर मध्ये 
+                    {localizeNumber(ward.irrigatedArea.toFixed(2), "ne")} हेक्टर ({localizeNumber(irrigatedPercent, "ne")}%) 
+                    सिंचित र {localizeNumber(ward.unirrigatedArea.toFixed(2), "ne")} हेक्टर 
+                    ({localizeNumber((100 - parseFloat(irrigatedPercent)).toFixed(1), "ne")}%) असिंचित
+                  </li>
+                );
+              })}
             </ul>
 
             <p>
-              सिंचाई कभरेजको विश्लेषण गर्दा, खजुरा गाउँपालिकामा सिंचाई पहुँच{" "}
-              {irrigationCoveragePercentage >= 60
-                ? "राम्रो"
-                : irrigationCoveragePercentage >= 40
-                  ? "सन्तोषजनक"
-                  : "सुधार आवश्यक"}
-              स्तरमा रहेको छ। तथापि, वडागत भिन्नताले सिंचाई पूर्वाधारको समान
-              वितरणमा चुनौती देखाउँछ।
+              सिंचित क्षेत्रफलको विश्लेषण गर्दा, सबैभन्दा बढी सिंचित क्षेत्रफल वडा नं.
+              {localizeNumber(String(mostIrrigatedWard?.wardNumber || ""), "ne")} मा {localizeNumber(mostIrrigatedWard?.irrigatedArea.toFixed(2) || "", "ne")} हेक्टर
+              रहेको देखिन्छ, जुन उक्त वडाको कुल क्षेत्रफलको {mostIrrigatedWard?.totalArea ? localizeNumber(((mostIrrigatedWard.irrigatedArea / mostIrrigatedWard.totalArea) * 100).toFixed(1), "ne") : "0"}%
+              हिस्सा हो।
             </p>
           </div>
 
           {/* Client component for charts */}
           <IrrigatedAreaCharts
+            wardData={wardData}
             totalIrrigatedArea={totalIrrigatedArea}
             totalUnirrigatedArea={totalUnirrigatedArea}
             totalArea={totalArea}
-            irrigationCoveragePercentage={irrigationCoveragePercentage}
-            pieChartData={pieChartData}
-            //@ts-ignore
-            wardWiseData={wardWiseData}
-            wardNumbers={wardNumbers}
-            irrigatedAreaData={irrigatedAreaData}
-            //@ts-ignore
-            wardWiseAnalysis={wardWiseAnalysis}
-            AREA_COLORS={AREA_COLORS}
-            overallEfficiencyScore={overallEfficiencyScore}
+            irrigatedPercentage={irrigatedPercentage}
+            unirrigatedPercentage={unirrigatedPercentage}
+            irrigationSustainabilityScore={irrigationSustainabilityScore}
           />
 
           <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
             <h2
-              id="irrigation-infrastructure-development"
+              id="irrigation-gap-and-challenges"
               className="scroll-m-20 border-b pb-2"
             >
-              सिंचाई पूर्वाधार विकास
+              सिंचाई अन्तराल र चुनौती
             </h2>
             <p>
-              खजुरा गाउँपालिकामा सिंचाई पूर्वाधारको वर्तमान अवस्थाले कृषि
-              उत्पादनमा महत्त्वपूर्ण भूमिका खेलेको छ। कुल{" "}
-              {localizeNumber(totalArea.toFixed(1), "ne")} हेक्टर कृषि योग्य
-              भूमिमध्ये {localizeNumber(totalIrrigatedArea.toFixed(1), "ne")}
-              हेक्टर क्षेत्रमा सिंचाई पहुँच पुगेको छ, जसले{" "}
-              {localizeNumber(irrigationCoveragePercentage.toFixed(1), "ne")}%
-              कभरेज दर दर्शाउँछ।
+              खजुरा गाउँपालिकामा सिंचाईको अवस्था विश्लेषण गर्दा कुल
+              {localizeNumber(totalArea.toFixed(2), "ne")} हेक्टर क्षेत्रफल मध्ये 
+              {localizeNumber(totalUnirrigatedArea.toFixed(2), "ne")} हेक्टर ({localizeNumber(unirrigatedPercentage, "ne")}%) 
+              क्षेत्रफलमा अझै सिंचाई सुविधा पुग्न नसकेको देखिन्छ, जुन एउटा ठूलो चुनौती हो।
             </p>
 
             <p>
-              तथापि, वडागत असन्तुलनले सिंचाई पूर्वाधारको समान वितरणमा चुनौती खडा
-              गरेको छ। विशेषगरी वडा नं.
-              {localizeNumber(
-                worstPerformingWard?.wardNumber.toString() || "",
-                "ne",
-              )}{" "}
-              मा मात्र{" "}
-              {localizeNumber(
-                worstPerformingWard?.irrigationCoverage.toFixed(1) || "0",
-                "ne",
-              )}
-              % सिंचाई कभरेज रहेकोले यस क्षेत्रमा सिंचाई पूर्वाधारको विस्तारमा
-              प्राथमिकता दिनुपर्ने देखिन्छ।
+              वडा नं. {localizeNumber(String(mostUnirrigatedWard?.wardNumber || ""), "ne")} मा सबैभन्दा बढी {localizeNumber(mostUnirrigatedWard?.unirrigatedArea.toFixed(2) || "", "ne")} हेक्टर
+              क्षेत्रफल असिंचित रहेको छ, जसले उक्त वडामा सिंचाई विस्तार गर्नुपर्ने
+              आवश्यकतालाई इङ्गित गर्दछ।
             </p>
 
             <IrrigatedAreaAnalysisSection
+              wardData={wardData}
               totalIrrigatedArea={totalIrrigatedArea}
               totalUnirrigatedArea={totalUnirrigatedArea}
               totalArea={totalArea}
-              irrigationCoveragePercentage={irrigationCoveragePercentage}
-              //@ts-ignore
-              wardWiseAnalysis={wardWiseAnalysis}
-              AREA_COLORS={AREA_COLORS}
-              overallEfficiencyScore={overallEfficiencyScore}
-              bestPerformingWard={bestPerformingWard}
-              worstPerformingWard={worstPerformingWard}
+              irrigatedPercentage={irrigatedPercentage}
+              unirrigatedPercentage={unirrigatedPercentage}
+              irrigationSustainabilityScore={irrigationSustainabilityScore}
+              mostIrrigatedWard={mostIrrigatedWard}
+              mostUnirrigatedWard={mostUnirrigatedWard}
             />
 
             <h2
@@ -455,70 +330,61 @@ export default async function WardWiseIrrigatedAreaPage() {
             </h2>
 
             <p>
-              खजुरा गाउँपालिकाको सिंचाई अवस्थाको विश्लेषणबाट निम्न निष्कर्ष र
-              सिफारिसहरू गर्न सकिन्छ:
+              खजुरा गाउँपालिकाको वडागत सिंचित र असिंचित क्षेत्रफलको विश्लेषणबाट
+              निम्न निष्कर्ष र सिफारिसहरू गर्न सकिन्छ:
             </p>
 
             <div className="pl-6 space-y-4">
               <div className="flex">
                 <span className="font-bold mr-2">१.</span>
                 <div>
-                  <strong>सिंचाई विस्तार:</strong> हाल पालिकामा{" "}
-                  {localizeNumber(
-                    (100 - irrigationCoveragePercentage).toFixed(1),
-                    "ne",
-                  )}
-                  % कृषि क्षेत्र असिंचित रहेकोले सिंचाई पूर्वाधारको विस्तारमा
-                  विशेष जोड दिनुपर्ने। विशेषगरी वडा नं.
-                  {localizeNumber(
-                    worstPerformingWard?.wardNumber.toString() || "",
-                    "ne",
-                  )}{" "}
-                  जस्ता कम कभरेज भएका क्षेत्रहरूमा प्राथमिकता दिनुपर्ने।
+                  <strong>सिंचाई पूर्वाधार विस्तार:</strong> हाल पालिकाको कुल
+                  क्षेत्रफलको {localizeNumber(unirrigatedPercentage, "ne")}% असिंचित रहेकोले यी
+                  क्षेत्रहरूमा, विशेषगरी वडा नं. {localizeNumber(String(mostUnirrigatedWard?.wardNumber || ""), "ne")} मा, सिंचाई पूर्वाधार विस्तार गर्नुपर्ने
+                  आवश्यकता देखिन्छ।
                 </div>
               </div>
               <div className="flex">
                 <span className="font-bold mr-2">२.</span>
                 <div>
-                  <strong>वडागत सन्तुलन:</strong> सिंचाई सुविधाको वडागत
-                  असन्तुलनलाई सम्बोधन गर्न समान वितरणको नीति अवलम्बन गर्नुपर्ने।
-                  उच्च कभरेज भएका वडाहरूको अनुभव र प्रविधि अन्य वडाहरूमा
-                  हस्तान्तरण गर्नुपर्ने।
+                  <strong>वडागत प्राथमिकीकरण:</strong> सिंचाई अन्तराल बढी भएका
+                  वडाहरूमा प्राथमिकताका साथ सिंचाई विकास योजना तयार गरी
+                  कार्यान्वयन गर्नुपर्ने।
                 </div>
               </div>
               <div className="flex">
                 <span className="font-bold mr-2">३.</span>
                 <div>
-                  <strong>प्रविधि सुधार:</strong> परम्परागत सिंचाई प्रणालीमा
-                  आधुनिक प्रविधिको समावेश गरी पानीको दक्ष उपयोग सुनिश्चित
-                  गर्नुपर्ने। ड्रिप इरिगेसन र स्प्रिंकलर सिस्टम जस्ता जल बचत
-                  प्रविधिहरूको प्रवर्द्धन गर्नुपर्ने।
+                  <strong>सामुदायिक सहभागिता:</strong> वडागत स्तरमा सिंचाई
+                  उपभोक्ता समिति गठन गरी सिंचाई पूर्वाधारको निर्माण, संचालन र
+                  मर्मतमा सामुदायिक सहभागिता बढाउनुपर्ने।
                 </div>
               </div>
               <div className="flex">
                 <span className="font-bold mr-2">४.</span>
                 <div>
-                  <strong>सामुदायिक सहभागिता:</strong> सिंचाई उपभोक्ता
-                  समितिहरूको क्षमता अभिवृद्धि गरी सिंचाई पूर्वाधारको संचालन र
-                  मर्मतसम्भारमा स्थानीय सहभागिता बढाउनुपर्ने।
+                  <strong>वैकल्पिक सिंचाई प्रविधि:</strong> भूगोल र भू-बनावट अनुसार
+                  ठूला सिंचाई पूर्वाधार निर्माण गर्न कठिन स्थानहरूमा साना सिंचाई,
+                  थोपा सिंचाई, स्प्रिङ्कलर सिंचाई जस्ता वैकल्पिक प्रविधिहरूको
+                  प्रयोग बढाउनुपर्ने।
                 </div>
               </div>
               <div className="flex">
                 <span className="font-bold mr-2">५.</span>
                 <div>
-                  <strong>जलवायु अनुकूलन:</strong> जलवायु परिवर्तनको प्रभावलाई
-                  मध्यनजर गर्दै सिंचाई पूर्वाधारको जलवायु अनुकूल विकास
-                  गर्नुपर्ने। वर्षाको पानी संकलन र भण्डारणमा विशेष जोड
-                  दिनुपर्ने।
+                  <strong>बजेट प्राथमिकीकरण:</strong> पालिका र वडा स्तरीय बजेट
+                  निर्माण गर्दा सिंचाई पूर्वाधार विकासलाई उच्च प्राथमिकतामा राखी
+                  बजेट विनियोजन गर्नुपर्ने।
                 </div>
               </div>
             </div>
 
             <p className="mt-6">
-              खजुरा गाउँपालिकामा सिंचाई सुविधाको वर्तमान अवस्थाले सिंचाई
-              पूर्वाधारमा व्यापक सुधार गर्नुपर्ने आवश्यकता देखाउँछ। समान पहुँच,
-              दक्ष प्रविधि र दिगो व्यवस्थापनमा जोड दिई कार्यान्वयन गर्न आवश्यक
-              देखिन्छ।
+              खजुरा गाउँपालिकामा सिंचाईको अवस्थालाई सुधार गर्न सम्पूर्ण
+              सरोकारवालाहरूको समन्वयात्मक प्रयास आवश्यक छ। वडागत स्तरमा सिंचाई
+              पूर्वाधार विकासका लागि योजनाबद्ध कार्यक्रम संचालन गरी कृषि
+              उत्पादकत्व वृद्धि गर्न सके पालिकाको समग्र आर्थिक विकासमा टेवा पुग्न
+              जानेछ।
             </p>
           </div>
         </section>

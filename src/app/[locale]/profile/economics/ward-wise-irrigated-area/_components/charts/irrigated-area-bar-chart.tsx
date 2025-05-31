@@ -3,32 +3,32 @@
 import {
   BarChart,
   Bar,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
   XAxis,
   YAxis,
   CartesianGrid,
-  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from "recharts";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface IrrigatedAreaBarChartProps {
-  wardWiseData: Array<Record<string, any>>;
-  LAND_OWNERSHIP_COLORS?: Record<string, string>;
-  AREA_COLORS: Record<string, string>;
+  data: Array<{
+    name: string;
+    irrigated: number;
+    unirrigated: number;
+  }>;
 }
 
 export default function IrrigatedAreaBarChart({
-  wardWiseData,
-  AREA_COLORS,
+  data,
 }: IrrigatedAreaBarChartProps) {
-  // Custom tooltip component for better presentation with Nepali numbers
+  // Custom tooltip for detailed information
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="font-medium">{localizeNumber(label, "ne")}</p>
+          <p className="font-medium">{label}</p>
           <div className="space-y-1 mt-2">
             {payload.map((entry: any, index: number) => (
               <div key={index} className="flex items-center gap-2">
@@ -38,7 +38,7 @@ export default function IrrigatedAreaBarChart({
                 ></div>
                 <span>{entry.name}: </span>
                 <span className="font-medium">
-                  {localizeNumber(entry.value?.toLocaleString() || "0", "ne")} हेक्टर
+                  {localizeNumber(entry.value.toFixed(2), "ne")} हेक्टर
                 </span>
               </div>
             ))}
@@ -52,47 +52,33 @@ export default function IrrigatedAreaBarChart({
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
-        data={wardWiseData}
-        margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
-        barSize={40}
+        data={data}
+        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-        <XAxis
-          dataKey="ward"
-          scale="point"
-          padding={{ left: 10, right: 10 }}
-          tick={{ fontSize: 12 }}
+        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+        <YAxis
           tickFormatter={(value) => localizeNumber(value.toString(), "ne")}
-          angle={-45}
-          textAnchor="end"
-          height={80}
-        />
-        <YAxis 
-          tickFormatter={(value) => localizeNumber(value.toString(), "ne")} 
-          label={{ 
-            value: 'क्षेत्रफल (हेक्टर)', 
-            angle: -90, 
-            position: 'insideLeft',
-            style: { textAnchor: 'middle' }
+          label={{
+            value: "हेक्टर",
+            angle: -90,
+            position: "insideLeft",
+            style: { textAnchor: "middle" },
           }}
         />
         <Tooltip content={CustomTooltip} />
-        <Legend
-          wrapperStyle={{ paddingTop: 20 }}
-          layout="horizontal"
-          verticalAlign="bottom"
-          align="center"
-        />
-        
+        <Legend />
         <Bar
-          dataKey="सिंचित क्षेत्र"
-          name="सिंचित क्षेत्र"
-          fill={AREA_COLORS["IRRIGATED"] || "#2ecc71"}
+          dataKey="irrigated"
+          name="सिंचित क्षेत्रफल"
+          fill="#3498db"
+          stackId="a"
         />
         <Bar
-          dataKey="असिंचित क्षेत्र"
-          name="असिंचित क्षेत्र"
-          fill={AREA_COLORS["UNIRRIGATED"] || "#e67e22"}
+          dataKey="unirrigated"
+          name="असिंचित क्षेत्रफल"
+          fill="#e74c3c"
+          stackId="a"
         />
       </BarChart>
     </ResponsiveContainer>

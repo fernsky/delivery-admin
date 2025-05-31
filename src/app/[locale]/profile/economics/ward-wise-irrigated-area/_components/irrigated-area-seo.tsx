@@ -2,68 +2,87 @@ import Script from "next/script";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface IrrigatedAreaSEOProps {
-  totalArea: number;
+  wardData: Array<{
+    wardNumber: number;
+    irrigatedArea: number;
+    unirrigatedArea: number;
+    totalArea: number;
+  }>;
   totalIrrigatedArea: number;
-  irrigationCoverage: number;
-  wardNumbers: number[];
+  totalUnirrigatedArea: number;
+  totalArea: number;
+  irrigatedPercentage: string;
+  mostIrrigatedWard: {
+    wardNumber: number;
+    irrigatedArea: number;
+    unirrigatedArea: number;
+    totalArea: number;
+  } | null;
 }
 
 export default function IrrigatedAreaSEO({
-  totalArea,
+  wardData,
   totalIrrigatedArea,
-  irrigationCoverage,
-  wardNumbers,
+  totalUnirrigatedArea,
+  totalArea,
+  irrigatedPercentage,
+  mostIrrigatedWard,
 }: IrrigatedAreaSEOProps) {
   // Create structured data for SEO
   const generateStructuredData = () => {
-    // Create observations for structured data
-    const observations = [
-      {
-        "@type": "Observation",
-        name: "Irrigated Area in Khajura Rural Municipality",
-        observationDate: new Date().toISOString().split("T")[0],
-        measuredProperty: {
-          "@type": "PropertyValue",
-          name: "Irrigated Area",
-          unitText: "hectares",
-        },
-        measuredValue: totalIrrigatedArea,
-        description: `${totalIrrigatedArea.toLocaleString()} hectares in Khajura Rural Municipality is irrigated land (${irrigationCoverage.toFixed(2)}% of total agricultural land)`,
+    // Convert ward-wise irrigated area stats to structured data format
+    const wardIrrigatedStats = wardData.map((ward) => ({
+      "@type": "Observation",
+      name: `Ward ${ward.wardNumber} Irrigated Area in Khajura Rural Municipality`,
+      observationDate: new Date().toISOString().split("T")[0],
+      measuredProperty: {
+        "@type": "PropertyValue",
+        name: "Irrigated Area",
+        unitText: "hectares",
       },
-      {
-        "@type": "Observation",
-        name: "Unirrigated Area in Khajura Rural Municipality",
-        observationDate: new Date().toISOString().split("T")[0],
-        measuredProperty: {
-          "@type": "PropertyValue",
-          name: "Unirrigated Area",
-          unitText: "hectares",
-        },
-        measuredValue: totalArea - totalIrrigatedArea,
-        description: `${(totalArea - totalIrrigatedArea).toLocaleString()} hectares in Khajura Rural Municipality is unirrigated land (${(100 - irrigationCoverage).toFixed(2)}% of total agricultural land)`,
-      }
-    ];
+      measuredValue: ward.irrigatedArea,
+      description: `Ward ${ward.wardNumber} has ${ward.irrigatedArea.toFixed(2)} hectares of irrigated area and ${ward.unirrigatedArea.toFixed(2)} hectares of unirrigated area (${((ward.irrigatedArea / ward.totalArea) * 100).toFixed(2)}% irrigation coverage)`,
+    }));
+
+    // Find ward with highest irrigation coverage (percentage)
+    const highestIrrigationCoverageWard = [...wardData]
+      .filter((ward) => ward.totalArea > 0)
+      .sort(
+        (a, b) =>
+          b.irrigatedArea / b.totalArea - a.irrigatedArea / a.totalArea
+      )[0];
+
+    // Find ward with lowest irrigation coverage (percentage)
+    const lowestIrrigationCoverageWard = [...wardData]
+      .filter((ward) => ward.totalArea > 0)
+      .sort(
+        (a, b) =>
+          a.irrigatedArea / a.totalArea - b.irrigatedArea / a.totalArea
+      )[0];
+
+    const highestCoveragePercentage = highestIrrigationCoverageWard
+      ? ((highestIrrigationCoverageWard.irrigatedArea / highestIrrigationCoverageWard.totalArea) * 100).toFixed(2)
+      : "0";
+    
+    const lowestCoveragePercentage = lowestIrrigationCoverageWard
+      ? ((lowestIrrigationCoverageWard.irrigatedArea / lowestIrrigationCoverageWard.totalArea) * 100).toFixed(2)
+      : "0";
 
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      name: "Irrigated and Unirrigated Areas in Khajura Rural Municipality (खजुरा गाउँपालिका)",
-      description: `Irrigation statistics across ${wardNumbers.length} wards of Khajura Rural Municipality with a total of ${totalArea.toLocaleString()} hectares of agricultural land. ${irrigationCoverage.toFixed(2)}% of the land is irrigated (${totalIrrigatedArea.toLocaleString()} hectares) while ${(100 - irrigationCoverage).toFixed(2)}% (${(totalArea - totalIrrigatedArea).toLocaleString()} hectares) remains unirrigated.`,
+      name: "Ward-wise Irrigated Area in Khajura Rural Municipality (खजुरा गाउँपालिका)",
+      description: `Ward-wise irrigated and unirrigated area statistics of Khajura Rural Municipality with a total area of ${totalArea.toFixed(2)} hectares. ${irrigatedPercentage}% (${totalIrrigatedArea.toFixed(2)} hectares) of the total area is irrigated. Ward ${mostIrrigatedWard?.wardNumber || ""} has the highest irrigated area with ${mostIrrigatedWard?.irrigatedArea.toFixed(2) || "0"} hectares. Ward ${highestIrrigationCoverageWard?.wardNumber || ""} has the highest irrigation coverage percentage (${highestCoveragePercentage}%) and Ward ${lowestIrrigationCoverageWard?.wardNumber || ""} has the lowest (${lowestCoveragePercentage}%).`,
       keywords: [
         "Khajura Rural Municipality",
         "खजुरा गाउँपालिका",
-        "Irrigated area",
-        "Unirrigated area",
-        "Agricultural land",
-        "Irrigation statistics",
-        "Ward-wise irrigation",
-        "Nepal irrigation data",
-        "Agriculture development",
-        "Irrigation coverage",
-        "सिंचित क्षेत्र",
-        "असिंचित क्षेत्र",
-        "कृषि भूमि",
-        "सिंचाई तथ्याङ्क",
+        "Ward-wise irrigated area",
+        "Irrigation coverage by ward",
+        "Agricultural irrigation statistics",
+        "Ward irrigation analysis",
+        "Nepal irrigation statistics",
+        "वडा अनुसार सिंचित क्षेत्रफल",
+        "सिंचित र असिंचित क्षेत्रफल",
       ],
       url: "https://digital.khajuramun.gov.np/profile/economics/ward-wise-irrigated-area",
       creator: {
@@ -82,32 +101,38 @@ export default function IrrigatedAreaSEO({
         },
       },
       variableMeasured: [
-        {
+        ...wardData.map((ward) => ({
           "@type": "PropertyValue",
-          name: "Total Agricultural Area",
+          name: `Ward ${ward.wardNumber} Irrigated Area`,
           unitText: "hectares",
-          value: totalArea,
-        },
+          value: ward.irrigatedArea,
+        })),
+        ...wardData.map((ward) => ({
+          "@type": "PropertyValue",
+          name: `Ward ${ward.wardNumber} Unirrigated Area`,
+          unitText: "hectares",
+          value: ward.unirrigatedArea,
+        })),
         {
           "@type": "PropertyValue",
-          name: "Irrigated Area",
+          name: "Total Irrigated Area",
           unitText: "hectares",
           value: totalIrrigatedArea,
         },
         {
           "@type": "PropertyValue",
-          name: "Unirrigated Area",
+          name: "Total Unirrigated Area",
           unitText: "hectares",
-          value: totalArea - totalIrrigatedArea,
+          value: totalUnirrigatedArea,
         },
         {
           "@type": "PropertyValue",
-          name: "Irrigation Coverage",
+          name: "Irrigation Coverage Percentage",
           unitText: "percentage",
-          value: irrigationCoverage,
-        }
+          value: parseFloat(irrigatedPercentage),
+        },
       ],
-      observation: observations,
+      observation: wardIrrigatedStats,
     };
   };
 
