@@ -8,6 +8,8 @@ import { validateRequest } from "@/lib/auth/validate-request";
 import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ClientSideNavigation } from "@/components/layout/ClientSideNavigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import SidebarNav from "@/components/layout/SidebarNav";
 
 import "@/app/globals.css";
 
@@ -223,8 +225,29 @@ export default async function RootLayout(props: {
           <Providers user={user}>
             <div className="flex min-h-screen flex-col bg-[#FCFCFD]">
               <SiteHeader />
+
+              <div className="flex-1">
+                <div className="container px-4 sm:px-6 max-w-7xl mx-auto">
+                  <div className="flex flex-col md:grid md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[300px_minmax(0,1fr)] md:gap-6 lg:gap-8 mt-4 md:mt-6">
+                    {/* Desktop sidebar */}
+                    <div className="hidden md:block sticky top-16 self-start h-[calc(100vh-4rem)] w-full">
+                      <ScrollArea className="h-full w-full">
+                        <div className="pt-4 pr-4 w-full">
+                          <SidebarNav />
+                        </div>
+                      </ScrollArea>
+                    </div>
+
+                    {/* Main content area - remove constraints */}
+                    <div className="w-full min-w-0">
+                      {children}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile sidebar */}
               <ClientSideNavigation />
-              {children}
             </div>
           </Providers>
         </NextIntlClientProvider>

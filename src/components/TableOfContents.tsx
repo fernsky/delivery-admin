@@ -1,135 +1,72 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
 
-interface TableOfContentsProps {
-  toc: Array<{
-    level: number;
-    text: string;
-    slug: string;
-  }>;
+interface TocItem {
+  level: number;
+  text: string;
+  slug: string;
 }
 
-export function TableOfContents({ toc }: TableOfContentsProps) {
-  const pathname = usePathname();
-  const [activeHeading, setActiveHeading] = useState<string>("");
-  const observer = useRef<IntersectionObserver | null>(null);
-  const headingElementsRef = useRef<{
-    [key: string]: IntersectionObserverEntry;
-  }>({});
+interface TableOfContentsProps {
+  toc: TocItem[];
+  className?: string;
+}
+
+export function TableOfContents({ toc, className }: TableOfContentsProps) {
+  const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
-    if (toc.length === 0) return;
-
-    const headingElements = toc
-      .map(({ slug }) => document.getElementById(slug))
-      .filter(Boolean);
-
-    // Create an Intersection Observer instance
-    observer.current = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const id = entry.target.id;
-          headingElementsRef.current[id] = entry;
-        });
-
-        // Find the first heading that is visible
-        const visibleHeadings = Object.keys(headingElementsRef.current)
-          .filter((id) => headingElementsRef.current[id]?.isIntersecting)
-          .sort((a, b) => {
-            // Sort by Y position to get the topmost visible heading
-            const aTop =
-              headingElementsRef.current[a]?.boundingClientRect.top || 0;
-            const bTop =
-              headingElementsRef.current[b]?.boundingClientRect.top || 0;
-            return aTop - bTop;
-          });
-
-        if (visibleHeadings.length > 0) {
-          setActiveHeading(visibleHeadings[0]);
-
-          // Update URL hash without scrolling
-          if (typeof window !== "undefined") {
-            const url = new URL(window.location.href);
-            url.hash = visibleHeadings[0];
-            window.history.replaceState({}, "", url);
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
           }
-        }
+        });
       },
-      { rootMargin: "-80px 0px -40% 0px", threshold: [0.1, 0.5, 0.9] },
+      { rootMargin: "-80px 0px -80% 0px" },
     );
 
-    // Observe all heading elements
-    headingElements.forEach((element) => {
-      if (element) observer.current?.observe(element);
+    toc.forEach(({ slug }) => {
+      const element = document.getElementById(slug);
+      if (element) observer.observe(element);
     });
 
-    return () => {
-      headingElements.forEach((element) => {
-        if (element) observer.current?.unobserve(element);
-      });
+    return () => observer.disconnect();
+  }, [toc]);
 
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-    };
-  }, [toc, pathname]);
+  const handleClick = (slug: string) => {
+    const element = document.getElementById(slug);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   if (toc.length === 0) return null;
 
-  // Find deepest nesting level for proper indentation
-  const deepestLevel = toc.reduce(
-    (deep, item) => Math.max(deep, item.level),
-    0,
-  );
-
   return (
-    <div className="relative">
-      <div className="absolute top-0 bottom-0 left-0 w-px bg-muted" />
+    <div className={cn("space-y-2", className)}>
+      <h4 className="font-medium text-sm text-[#123772] mb-3">विषयसूची</h4>
       <div className="space-y-1">
-        {toc.map((heading) => {
-          const levelIndent = heading.level > 2 ? (heading.level - 2) * 12 : 0;
-
-          return (
-            <div key={heading.slug} style={{ paddingLeft: `${levelIndent}px` }}>
-              <a
-                href={`#${heading.slug}`}
-                className={cn(
-                  "block text-sm py-1 pl-3 border-l-2 transition-all hover:text-foreground relative",
-                  activeHeading === heading.slug
-                    ? "text-primary border-primary font-medium"
-                    : "text-muted-foreground border-transparent hover:border-muted-foreground/40",
-                )}
-                onClick={(e) => {
-                  e.preventDefault();
-                  const element = document.getElementById(heading.slug);
-                  if (element) {
-                    // Scroll to the element with offset for fixed header
-                    const yOffset = -100;
-                    const y =
-                      element.getBoundingClientRect().top +
-                      window.pageYOffset +
-                      yOffset;
-                    window.scrollTo({ top: y, behavior: "smooth" });
-                  }
-
-                  setActiveHeading(heading.slug);
-
-                  // Update URL hash
-                  if (typeof window !== "undefined") {
-                    const url = new URL(window.location.href);
-                    url.hash = heading.slug;
-                    window.history.pushState({}, "", url);
-                  }
-                }}
-              >
-                {heading.text}
-              </a>
-            </div>
-          );
-        })}
+        {toc.map(({ level, text, slug }) => (
+          <button
+            key={slug}
+            onClick={() => handleClick(slug)}
+            className={cn(
+              "block w-full text-left text-sm transition-colors hover:text-[#123772]",
+              level === 2 && "pl-0",
+              level === 3 && "pl-4",
+              level === 4 && "pl-8",
+              activeId === slug
+                ? "text-[#123772] font-medium"
+                : "text-gray-600",
+            )}
+          >
+            {text}
+          </button>
+        ))}
       </div>
     </div>
   );

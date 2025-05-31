@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { DocsLayout } from "@/components/layout/DocsLayout";
 import { TableOfContents } from "@/components/TableOfContents";
 import Image from "next/image";
 import LandPossessionCharts from "./_components/land-possession-charts";
@@ -61,7 +60,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ];
 
     // Create detailed description with actual data
-    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार जग्गा भएका घरपरिवारहरूको वितरण, प्रवृत्ति र विश्लेषण। कुल ${totalHouseholdsWithLand} घरपरिवारसँग आफ्नो जग्गा रहेको छ। सबैभन्दा बढी जग्गाधनी परिवार भएका वडाहरूमा वडा ${wardsWithHighestLandPossession[0]?.wardNumber || "N/A"} (${wardsWithHighestLandPossession[0]?.households || 0} घरपरिवार), वडा ${wardsWithHighestLandPossession[1]?.wardNumber || "N/A"} (${wardsWithHighestLandPossession[1]?.households || 0} घरपरिवार) र वडा ${wardsWithHighestLandPossession[2]?.wardNumber || "N/A"} (${wardsWithHighestLandPossession[2]?.households || 0} घरपरिवार) पर्दछन्। विस्तृत तथ्याङ्क र विजुअलाइजेसन यहाँ पेश गरिएको छ।`;
+    const descriptionNP = `खजुरा गाउँपालिकाको वडा अनुसार जग्गा भएका घरपरिवारहरूको वितरण, प्रवृत्ति र विश्लेषण। कुल ${totalHouseholdsWithLand} घरपरिवारसँग आफ्नो जग्गा रहेको छ। सबैभन्दा बढी जग्गाधनी परिवार भएका वडाहरूमा वडा ${wardsWithHighestLandPossession[0]?.wardNumber || "N/A"} (${wardsWithHighestLandPossession[0]?.households || 0} घरपरिवार), वडा ${wardsWithHighestLandPossession[1]?.wardNumber || "N/A"} (${wardsWithHighestLandPossession[1]?.households || 0} घरपरिवार) र वडा ${wardsWithHighestLandPossession[2]?.wardNumber || "N/A"} (${wardsWithHighestLandPossession[2]?.households || 0} घरपरिवार) पर्दछन्। विस्तृत तथ्याङ्क र विजुअलाइजेसन यहाँ पेश गरिएको छ。`;
 
     const descriptionEN = `Ward-wise distribution, trends and analysis of land-owning households in Khajura Rural Municipality. A total of ${totalHouseholdsWithLand} households own land. The wards with the highest number of landowner households are Ward ${wardsWithHighestLandPossession[0]?.wardNumber || "N/A"} (${wardsWithHighestLandPossession[0]?.households || 0} households), Ward ${wardsWithHighestLandPossession[1]?.wardNumber || "N/A"} (${wardsWithHighestLandPossession[1]?.households || 0} households), and Ward ${wardsWithHighestLandPossession[2]?.wardNumber || "N/A"} (${wardsWithHighestLandPossession[2]?.households || 0} households). Detailed statistics and visualizations presented here.`;
 
@@ -187,122 +186,134 @@ export default async function WardHouseholdLandPossessionsPage() {
   ];
 
   return (
-    <DocsLayout toc={<TableOfContents toc={toc} />}>
-      {/* Add structured data for SEO */}
-      <LandPossessionSEO
-        landPossessionData={landPossessionData}
-        totalHouseholdsWithLand={totalHouseholdsWithLand}
-        wardNumbers={wardNumbers}
-        estimatedTotalHouseholds={estimatedTotalHouseholds}
-      />
-
-      <div className="flex flex-col gap-8">
-        <section>
-          <div className="relative rounded-lg overflow-hidden mb-8">
-            <Image
-              src="/images/land-ownership.svg"
-              width={1200}
-              height={400}
-              alt="घरपरिवारको जग्गा स्वामित्व - खजुरा गाउँपालिका (Household Land Ownership - Khajura Rural Municipality)"
-              className="w-full h-[250px] object-cover rounded-sm"
-              priority
-            />
-          </div>
-
-          <div className="prose prose-slate dark:prose-invert max-w-none">
-            <h1 className="scroll-m-20 tracking-tight mb-6">
-              खजुरा गाउँपालिकामा घरपरिवारको जग्गा स्वामित्व
-            </h1>
-
-            <h2 id="introduction" className="scroll-m-20">
-              परिचय
-            </h2>
-            <p>
-              यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा जग्गाधनी
-              घरपरिवारहरूको वितरण सम्बन्धी विस्तृत तथ्याङ्क प्रस्तुत गरिएको छ।
-              यो तथ्याङ्कले जग्गाको स्वामित्व, भूमिको वितरण र समग्र आर्थिक
-              अवस्थाको चित्रण गर्दछ।
-            </p>
-            <p>
-              खजुरा गाउँपालिकामा कुल{" "}
-              {Math.round(estimatedTotalHouseholds).toLocaleString()} घरपरिवार
-              मध्ये {totalHouseholdsWithLand.toLocaleString()} घरपरिवार
-              (अनुमानित{" "}
-              {(
-                (totalHouseholdsWithLand / estimatedTotalHouseholds) *
-                100
-              ).toFixed(1)}
-              %) सँग आफ्नो जग्गाको स्वामित्व रहेको छ। यस तथ्याङ्कले स्थानीय
-              सरकारलाई जग्गा सम्बन्धी नीति निर्माण, भूमि व्यवस्थापन र आर्थिक
-              योजनाहरूमा सहयोग पुर्‍याउँछ।
-            </p>
-
-            <h2
-              id="ward-wise-landowner-households"
-              className="scroll-m-20 border-b pb-2"
-            >
-              वडा अनुसार जग्गाधनी घरपरिवार
-            </h2>
-            <p>
-              खजुरा गाउँपालिकाको विभिन्न वडाहरूमा जग्गाधनी घरपरिवारहरूको संख्या
-              निम्नानुसार छ:
-            </p>
-          </div>
-
-          {/* Client component for charts */}
-          <LandPossessionCharts
-            wardWiseData={wardWiseData}
-            pieChartData={pieChartData}
-            landOwnershipStatusData={landOwnershipStatusData}
+    <div className="relative py-4 lg:py-6">
+      <div className="flex gap-8">
+        {/* Main content */}
+        <article className="prose prose-slate dark:prose-invert max-w-none flex-1">
+          {/* Add structured data for SEO */}
+          <LandPossessionSEO
+            landPossessionData={landPossessionData}
             totalHouseholdsWithLand={totalHouseholdsWithLand}
+            wardNumbers={wardNumbers}
             estimatedTotalHouseholds={estimatedTotalHouseholds}
           />
 
-          <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
-            <h2
-              id="land-ownership-analysis"
-              className="scroll-m-20 border-b pb-2"
-            >
-              जग्गा स्वामित्व विश्लेषण
-            </h2>
-            <p>
-              खजुरा गाउँपालिकामा जग्गा स्वामित्वको वितरण विश्लेषण गर्दा, वडा{" "}
-              {wardWiseData.sort((a, b) => b.households - a.households)[0]
-                ?.wardNumber || ""}{" "}
-              मा सबैभन्दा धेरै{" "}
-              {wardWiseData.sort((a, b) => b.households - a.households)[0]
-                ?.households || 0}{" "}
-              घरपरिवार जग्गाधनी रहेका छन्, जुन कुल जग्गाधनी घरपरिवारको{" "}
-              {wardWiseData.sort((a, b) => b.households - a.households)[0]
-                ?.percentage || "0"}
-              % हो।
-            </p>
+          <div className="flex flex-col gap-8">
+            <section>
+              <div className="relative rounded-lg overflow-hidden mb-8">
+                <Image
+                  src="/images/land-ownership.svg"
+                  width={1200}
+                  height={400}
+                  alt="घरपरिवारको जग्गा स्वामित्व - खजुरा गाउँपालिका (Household Land Ownership - Khajura Rural Municipality)"
+                  className="w-full h-[250px] object-cover rounded-sm"
+                  priority
+                />
+              </div>
 
-            {/* Client component for analysis section */}
-            <LandPossessionAnalysisSection
-              wardWiseData={wardWiseData}
-              totalHouseholdsWithLand={totalHouseholdsWithLand}
-              estimatedTotalHouseholds={estimatedTotalHouseholds}
-            />
+              <div className="prose prose-slate dark:prose-invert max-w-none">
+                <h1 className="scroll-m-20 tracking-tight mb-6">
+                  खजुरा गाउँपालिकामा घरपरिवारको जग्गा स्वामित्व
+                </h1>
 
-            <h2 id="data-source" className="scroll-m-20 border-b pb-2">
-              तथ्याङ्क स्रोत
-            </h2>
-            <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू खजुरा गाउँपालिकाको आर्थिक
-              सर्वेक्षण र मालपोत कार्यालयको अभिलेखबाट संकलन गरिएको हो। यी
-              तथ्याङ्कहरूको महत्व निम्नानुसार छ:
-            </p>
+                <h2 id="introduction" className="scroll-m-20">
+                  परिचय
+                </h2>
+                <p>
+                  यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा जग्गाधनी
+                  घरपरिवारहरूको वितरण सम्बन्धी विस्तृत तथ्याङ्क प्रस्तुत गरिएको छ。
+                  यो तथ्याङ्कले जग्गाको स्वामित्व, भूमिको वितरण र समग्र आर्थिक
+                  अवस्थाको चित्रण गर्दछ。
+                </p>
+                <p>
+                  खजुरा गाउँपालिकामा कुल{" "}
+                  {Math.round(estimatedTotalHouseholds).toLocaleString()} घरपरिवार
+                  मध्ये {totalHouseholdsWithLand.toLocaleString()} घरपरिवार
+                  (अनुमानित{" "}
+                  {(
+                    (totalHouseholdsWithLand / estimatedTotalHouseholds) *
+                    100
+                  ).toFixed(1)}
+                  %) सँग आफ्नो जग्गाको स्वामित्व रहेको छ। यस तथ्याङ्कले स्थानीय
+                  सरकारलाई जग्गा सम्बन्धी नीति निर्माण, भूमि व्यवस्थापन र आर्थिक
+                  योजनाहरूमा सहयोग पुर्‍याउँछ。
+                </p>
 
-            <ul>
-              <li>जग्गा स्वामित्व र भूमि वितरणको अवस्था अध्ययन गर्न</li>
-              <li>भूमि व्यवस्थापन र सुधारका योजनाहरू तर्जुमा गर्न</li>
-              <li>जग्गाविहीन परिवारहरूको पहिचान र सहायताका लागि</li>
-              <li>कृषि योजना र भूमि उपयोग नीति निर्धारण गर्न</li>
-            </ul>
+                <h2
+                  id="ward-wise-landowner-households"
+                  className="scroll-m-20 border-b pb-2"
+                >
+                  वडा अनुसार जग्गाधनी घरपरिवार
+                </h2>
+                <p>
+                  खजुरा गाउँपालिकाको विभिन्न वडाहरूमा जग्गाधनी घरपरिवारहरूको संख्या
+                  निम्नानुसार छ:
+                </p>
+              </div>
+
+              {/* Client component for charts */}
+              <LandPossessionCharts
+                wardWiseData={wardWiseData}
+                pieChartData={pieChartData}
+                landOwnershipStatusData={landOwnershipStatusData}
+                totalHouseholdsWithLand={totalHouseholdsWithLand}
+                estimatedTotalHouseholds={estimatedTotalHouseholds}
+              />
+
+              <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
+                <h2
+                  id="land-ownership-analysis"
+                  className="scroll-m-20 border-b pb-2"
+                >
+                  जग्गा स्वामित्व विश्लेषण
+                </h2>
+                <p>
+                  खजुरा गाउँपालिकामा जग्गा स्वामित्वको वितरण विश्लेषण गर्दा, वडा{" "}
+                  {wardWiseData.sort((a, b) => b.households - a.households)[0]
+                    ?.wardNumber || ""}{" "}
+                  मा सबैभन्दा धेरै{" "}
+                  {wardWiseData.sort((a, b) => b.households - a.households)[0]
+                    ?.households || 0}{" "}
+                  घरपरिवार जग्गाधनी रहेका छन्, जुन कुल जग्गाधनी घरपरिवारको{" "}
+                  {wardWiseData.sort((a, b) => b.households - a.households)[0]
+                    ?.percentage || "0"}
+                  % हो。
+                </p>
+
+                {/* Client component for analysis section */}
+                <LandPossessionAnalysisSection
+                  wardWiseData={wardWiseData}
+                  totalHouseholdsWithLand={totalHouseholdsWithLand}
+                  estimatedTotalHouseholds={estimatedTotalHouseholds}
+                />
+
+                <h2 id="data-source" className="scroll-m-20 border-b pb-2">
+                  तथ्याङ्क स्रोत
+                </h2>
+                <p>
+                  माथि प्रस्तुत गरिएका तथ्याङ्कहरू खजुरा गाउँपालिकाको आर्थिक
+                  सर्वेक्षण र मालपोत कार्यालयको अभिलेखबाट संकलन गरिएको हो। यी
+                  तथ्याङ्कहरूको महत्व निम्नानुसार छ:
+                </p>
+
+                <ul>
+                  <li>जग्गा स्वामित्व र भूमि वितरणको अवस्था अध्ययन गर्न</li>
+                  <li>भूमि व्यवस्थापन र सुधारका योजनाहरू तर्जुमा गर्न</li>
+                  <li>जग्गाविहीन परिवारहरूको पहिचान र सहायताका लागि</li>
+                  <li>कृषि योजना र भूमि उपयोग नीति निर्धारण गर्न</li>
+                </ul>
+              </div>
+            </section>
           </div>
-        </section>
+        </article>
+
+        {/* Table of Contents - Desktop only */}
+        <aside className="hidden xl:block w-64 shrink-0">
+          <div className="sticky top-20 p-4 border border-gray-200 rounded-lg bg-gray-50/50">
+            <TableOfContents toc={toc} />
+          </div>
+        </aside>
       </div>
-    </DocsLayout>
+    </div>
   );
 }

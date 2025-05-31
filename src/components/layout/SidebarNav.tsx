@@ -96,7 +96,7 @@ export const navItems: NavItem[] = [
     items: [
       {
         title: "विशेष सीप भएका मानव संशाधनको विवरण",
-        href: "/profile/economics/ward-wise-household-income-source",
+        href: "/profile/economics/ward-wise-major-skills",
       },
       {
         title: "घरको स्वामित्वको आधारमा घरधुरी",

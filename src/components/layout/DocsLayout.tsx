@@ -11,7 +11,7 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
       <div className="container px-4 sm:px-6 max-w-7xl mx-auto">
         <div className="flex flex-col md:grid md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(0,1fr)_220px] md:gap-6 lg:gap-8 mt-4 md:mt-6">
           {/* Spacer for desktop sidebar */}
-          <div className="hidden md:block" />
+        
 
           {/* Main content */}
           <div className="w-full min-w-0 pb-16">
