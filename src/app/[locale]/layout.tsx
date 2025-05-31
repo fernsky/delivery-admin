@@ -6,7 +6,8 @@ import { locales } from "@/i18n/config";
 import { GeistSans } from "geist/font/sans";
 import { validateRequest } from "@/lib/auth/validate-request";
 import { Providers } from "@/components/providers";
-import { extractRouterConfig } from "uploadthing/server";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { ClientSideNavigation } from "@/components/layout/ClientSideNavigation";
 
 import "@/app/globals.css";
 
@@ -155,7 +156,6 @@ export default async function RootLayout(props: {
   params: Promise<{ locale: string }>;
 }) {
   const params = await props.params;
-
   const { children } = props;
 
   // Extract the locale parameter directly without destructuring
@@ -220,7 +220,13 @@ export default async function RootLayout(props: {
       </head>
       <body className={fontClass}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Providers user={user}>{children}</Providers>
+          <Providers user={user}>
+            <div className="flex min-h-screen flex-col bg-[#FCFCFD]">
+              <SiteHeader />
+              <ClientSideNavigation />
+              {children}
+            </div>
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>
