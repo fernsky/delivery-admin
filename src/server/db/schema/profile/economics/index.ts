@@ -79,3 +79,5 @@ export * from './municipality-wide-vegetables-and-fruits-diseases'
 export * from './municipality-wide-commercial-agricultural-animal-husbandry-farmers-group'
 // Municipality Wide Agriculture Related Farmers Group
 export * from './municipality-wide-agriculture-related-farmers-group'
+// Cooperatives
+export * from './cooperatives'

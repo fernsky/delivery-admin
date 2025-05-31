@@ -7,7 +7,20 @@ import { localizeNumber } from "@/lib/utils/localize-number";
 import AgricultureHouseholdsCharts from "./_components/agriculture-households-charts";
 import AgricultureHouseholdsAnalysisSection from "./_components/agriculture-households-analysis-section";
 import AgricultureHouseholdsSEO from "./_components/agriculture-households-seo";
-import { AGRICULTURE_STATUS } from "@/constants/agriculture-status";
+
+
+const AGRICULTURE_STATUS = {
+  INVOLVED: {
+    name: "कृषि वा पशुपालनमा आबद्ध",
+    nameEn: "Involved in Agriculture",
+    color: "#27AE60", // Green
+  },
+  NOT_INVOLVED: {
+    name: "कृषि वा पशुपालनमा आबद्ध नभएको", 
+    nameEn: "Not Involved in Agriculture",
+    color: "#E74C3C", // Red
+  },
+};
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";

@@ -267,7 +267,7 @@ export const getWardWiseTimeToFinancialOrganizationSummary = publicProcedure.que
       const summaryWithPercentages = summaryData.map(item => ({
         type: item.type,
         households: parseInt(String(item.total_households || "0")),
-        percentage: parseFloat((parseInt(String(item.total_households || "0")) / total * 100).toFixed(2))
+        percentage: Number(((parseInt(String(item.total_households || "0")) / total) * 100).toFixed(2))
       }));
 
       return { 

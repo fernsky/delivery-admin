@@ -32,6 +32,8 @@ import { municipalityWideCommercialAgriculturalAnimalHusbandryFarmersGroupRouter
 import { municipalityWideAgricultureRelatedFarmersGroupRouter } from "./municipality-wide-agriculture-related-farmers-group.procedure";
 import { wardWiseHouseholdsInAgricultureRouter } from "./ward-wise-households-in-agriculture.procedure";
 import { wardWiseTimeToFinancialOrganizationRouter } from "./ward-wise-time-to-financial-organization.procedure";
+import { wardWiseFinancialAccountsRouter } from "./ward-wise-financial-accounts.procedure";
+import {cooperativesRouter} from "./cooperatives.procedure";
 
 export const economicsRouter = createTRPCRouter({
   wardAgeGenderWiseEconomicallyActivePopulation:
@@ -71,4 +73,6 @@ export const economicsRouter = createTRPCRouter({
     municipalityWideAgricultureRelatedFarmersGroupRouter,
   wardWiseHouseholdsInAgriculture: wardWiseHouseholdsInAgricultureRouter,
   wardWiseTimeToFinancialOrganization: wardWiseTimeToFinancialOrganizationRouter,
+  wardWiseFinancialAccounts: wardWiseFinancialAccountsRouter,
+  cooperatives: cooperativesRouter,
 });
