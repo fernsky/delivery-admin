@@ -149,7 +149,7 @@ export const navItems = [
       },
       {
         title: "तेलबाली उत्पादन सम्बन्धी विवरण",
-        href: "/profile/economics/municipality-wide-oilseeds",
+        href: "/profile/economics/municipality-wide-oil-seeds",
       },
       {
         title: "फलफुलबाली उत्पादन सम्बन्धी विवरण",

@@ -129,7 +129,7 @@ export default function VegetableCharts({
                 <PieChart className="w-5 h-5" />
                 उत्पादन वितरण चार्ट
               </h3>
-              <div className="h-[350px]">
+              <div className="h-[550px]">
                 <VegetablePieChart
                   pieChartData={productionPieChartData}
                   VEGETABLE_TYPES={VEGETABLE_TYPES}
@@ -243,7 +243,7 @@ export default function VegetableCharts({
                 <DollarSign className="w-5 h-5" />
                 आम्दानी वितरण चार्ट
               </h3>
-              <div className="h-[350px]">
+              <div className="h-[550px]">
                 <VegetablePieChart
                   pieChartData={revenuePieChartData}
                   VEGETABLE_TYPES={VEGETABLE_TYPES}

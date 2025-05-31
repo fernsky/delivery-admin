@@ -4,7 +4,20 @@ import AnimalProductPieChart from "./charts/animal-product-pie-chart";
 import AnimalProductBarChart from "./charts/animal-product-bar-chart";
 import ProductionSalesDistributionChart from "./charts/production-sales-distribution-chart";
 import CommercializationChart from "../../municipality-wide-oil-seeds/_components/charts/commercialization-chart";
-import { useState } from "react";
+import {
+  Milk,
+  TrendingUp,
+  DollarSign,
+  ShoppingCart,
+  Home,
+  PieChart,
+  BarChart3,
+  Banknote,
+  Calculator,
+  Target,
+  Award,
+  Egg,
+} from "lucide-react";
 
 interface AnimalProductChartsProps {
   overallSummary: Array<{
@@ -113,9 +126,10 @@ export default function AnimalProductCharts({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="shadow-lg">
+          <Card className="border-2">
             <CardContent className="pt-6">
-              <h3 className="text-xl font-semibold mb-4 text-center">
+              <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
+                <PieChart className="w-5 h-5" />
                 उत्पादन वितरण चार्ट
               </h3>
               <div className="h-[350px]">
@@ -131,12 +145,15 @@ export default function AnimalProductCharts({
           </Card>
 
           <div className="space-y-6">
-            <Card className="shadow-lg">
+            <Card className="border-2">
               <CardContent className="pt-6">
-                <h4 className="text-lg font-semibold mb-4">प्रमुख तथ्यहरू</h4>
+                <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Milk className="w-5 h-5" />
+                  प्रमुख तथ्यहरू
+                </h4>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                    <span className="text-blue-600 text-xl">📊</span>
+                    <BarChart3 className="w-5 h-5 text-blue-600 mt-0.5" />
                     <div>
                       <span className="font-medium">
                         कुल पशुपन्छीजन्य वस्तु उत्पादन
@@ -148,7 +165,7 @@ export default function AnimalProductCharts({
                   </li>
                   {overallSummary.length > 0 && (
                     <li className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg">
-                      <span className="text-amber-600 text-xl">🥇</span>
+                      <Award className="w-5 h-5 text-amber-600 mt-0.5" />
                       <div>
                         <span className="font-medium">
                           सबैभन्दा धेरै उत्पादन
@@ -168,7 +185,7 @@ export default function AnimalProductCharts({
                     </li>
                   )}
                   <li className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                    <span className="text-green-600 text-xl">💰</span>
+                    <ShoppingCart className="w-5 h-5 text-green-600 mt-0.5" />
                     <div>
                       <span className="font-medium">बिक्रीमा पठाइएको</span>
                       <div className="text-lg font-bold text-green-600">
@@ -178,7 +195,7 @@ export default function AnimalProductCharts({
                     </div>
                   </li>
                   <li className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
-                    <span className="text-red-600 text-xl">🏠</span>
+                    <Home className="w-5 h-5 text-red-600 mt-0.5" />
                     <div>
                       <span className="font-medium">घरायसी उपभोग</span>
                       <div className="text-lg font-bold text-red-600">
@@ -195,9 +212,10 @@ export default function AnimalProductCharts({
               </CardContent>
             </Card>
 
-            <Card className="shadow-lg">
+            <Card className="border-2">
               <CardContent className="pt-6">
-                <h4 className="text-lg font-semibold mb-4">
+                <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Target className="w-5 h-5" />
                   व्यावसायीकरण स्कोर
                 </h4>
                 <CommercializationChart
@@ -221,9 +239,10 @@ export default function AnimalProductCharts({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="shadow-lg">
+          <Card className="border-2">
             <CardContent className="pt-6">
-              <h3 className="text-xl font-semibold mb-4 text-center">
+              <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
+                <DollarSign className="w-5 h-5" />
                 आम्दानी वितरण चार्ट
               </h3>
               <div className="h-[350px]">
@@ -240,12 +259,15 @@ export default function AnimalProductCharts({
           </Card>
 
           <div className="space-y-6">
-            <Card className="shadow-lg">
+            <Card className="border-2">
               <CardContent className="pt-6">
-                <h4 className="text-lg font-semibold mb-4">आम्दानी तथ्यहरू</h4>
+                <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Banknote className="w-5 h-5" />
+                  आम्दानी तथ्यहरू
+                </h4>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                    <span className="text-blue-600 text-xl">💵</span>
+                    <ShoppingCart className="w-5 h-5 text-blue-600 mt-0.5" />
                     <div>
                       <span className="font-medium">कुल बिक्री</span>
                       <div className="text-xl font-bold text-blue-600">
@@ -254,7 +276,7 @@ export default function AnimalProductCharts({
                     </div>
                   </li>
                   <li className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                    <span className="text-green-600 text-xl">💰</span>
+                    <DollarSign className="w-5 h-5 text-green-600 mt-0.5" />
                     <div>
                       <span className="font-medium">कुल आम्दानी</span>
                       <div className="text-xl font-bold text-green-600">
@@ -265,7 +287,7 @@ export default function AnimalProductCharts({
                   </li>
                   {overallSummary.length > 0 && (
                     <li className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
-                      <span className="text-purple-600 text-xl">🏆</span>
+                      <Award className="w-5 h-5 text-purple-600 mt-0.5" />
                       <div>
                         <span className="font-medium">बढी आम्दानी दिने</span>
                         <div className="text-lg font-bold text-purple-600">
@@ -288,7 +310,7 @@ export default function AnimalProductCharts({
                     </li>
                   )}
                   <li className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg">
-                    <span className="text-amber-600 text-xl">📈</span>
+                    <Calculator className="w-5 h-5 text-amber-600 mt-0.5" />
                     <div>
                       <span className="font-medium">औसत मूल्य प्रति इकाई</span>
                       <div className="text-lg font-bold text-amber-600">
@@ -304,9 +326,12 @@ export default function AnimalProductCharts({
               </CardContent>
             </Card>
 
-            <Card className="shadow-lg">
+            <Card className="border-2">
               <CardContent className="pt-6">
-                <h4 className="text-lg font-semibold mb-4">आम्दानी अनुपात</h4>
+                <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  आम्दानी अनुपात
+                </h4>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
@@ -359,9 +384,10 @@ export default function AnimalProductCharts({
           </p>
         </div>
 
-        <Card className="shadow-lg mb-8">
+        <Card className="border-2 mb-8">
           <CardContent className="pt-6">
-            <h3 className="text-xl font-semibold mb-4 text-center">
+            <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
+              <TrendingUp className="w-5 h-5" />
               उत्पादन बनाम बिक्री वितरण
             </h3>
             <div className="h-[400px]">
@@ -374,9 +400,12 @@ export default function AnimalProductCharts({
         </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="shadow-lg">
+          <Card className="border-2">
             <CardContent className="pt-6">
-              <h4 className="text-lg font-semibold mb-4">अर्थ ब्याख्या</h4>
+              <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <PieChart className="w-5 h-5" />
+                अर्थ ब्याख्या
+              </h4>
               <div className="prose prose-sm">
                 <p>
                   माथिको चार्टमा हरेक पशुपन्छीजन्य वस्तुको उत्पादन र बिक्री
@@ -398,9 +427,10 @@ export default function AnimalProductCharts({
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg">
+          <Card className="border-2">
             <CardContent className="pt-6">
-              <h4 className="text-lg font-semibold mb-4">
+              <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
                 पशुपन्छीजन्य वस्तु बिक्री दर
               </h4>
               <div className="space-y-4">
@@ -442,9 +472,10 @@ export default function AnimalProductCharts({
           </p>
         </div>
 
-        <Card className="shadow-lg mb-8">
+        <Card className="border-2 mb-8">
           <CardContent className="pt-6">
-            <h3 className="text-xl font-semibold mb-4 text-center">
+            <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
+              <TrendingUp className="w-5 h-5" />
               वार्षिक उत्पादन प्रवृत्ति (२०७८-२०८०)
             </h3>
             <div className="h-[400px]">
@@ -453,19 +484,22 @@ export default function AnimalProductCharts({
           </CardContent>
         </Card>
 
-        <Card className="shadow-lg">
+        <Card className="border-2">
           <CardContent className="pt-6">
-            <h4 className="text-lg font-semibold mb-4">प्रवृत्ति विश्लेषण</h4>
+            <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              प्रवृत्ति विश्लेषण
+            </h4>
             <div className="prose prose-sm">
               <p>
                 पछिल्ला वर्षहरूमा दुध उत्पादनमा क्रमिक वृद्धि भएको देखिन्छ। २०७८
                 मा {localizeNumber("2100", "ne")} लिटर उत्पादन भएकोमा २०८० मा
-                बढेर {localizeNumber("3110", "ne")} लिटर पुगेको छ।
+                बढेर {localizeNumber("3110", "ne")} लिटर पुगेको छ。
               </p>
               <p className="mt-2">
                 त्यसैगरी, अण्डा र मासु उत्पादनमा पनि निरन्तर वृद्धि भएको
                 देखिन्छ। यो तथ्याङ्कले खजुरा गाउँपालिकामा पशुपन्छी पालन
-                क्षेत्रको सकारात्मक विकास भइरहेको संकेत गर्दछ।
+                क्षेत्रको सकारात्मक विकास भइरहेको संकेत गर्दछ。
               </p>
             </div>
           </CardContent>
@@ -484,10 +518,10 @@ export default function AnimalProductCharts({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="shadow-lg">
+          <Card className="border-2">
             <CardContent className="pt-6">
               <div className="text-center">
-                <div className="text-4xl mb-2">💎</div>
+                <DollarSign className="w-8 h-8 mx-auto mb-2 text-primary" />
                 <h3 className="text-sm text-muted-foreground mb-1">
                   कुल उत्पादन मूल्य
                 </h3>
@@ -518,10 +552,10 @@ export default function AnimalProductCharts({
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg">
+          <Card className="border-2">
             <CardContent className="pt-6">
               <div className="text-center">
-                <div className="text-4xl mb-2">💰</div>
+                <Banknote className="w-8 h-8 mx-auto mb-2 text-green-600" />
                 <h3 className="text-sm text-muted-foreground mb-1">
                   वास्तविक आम्दानी
                 </h3>
@@ -550,10 +584,10 @@ export default function AnimalProductCharts({
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg">
+          <Card className="border-2">
             <CardContent className="pt-6">
               <div className="text-center">
-                <div className="text-4xl mb-2">🏛️</div>
+                <Milk className="w-8 h-8 mx-auto mb-2 text-blue-600" />
                 <h3 className="text-sm text-muted-foreground mb-1">
                   पशुपन्छीजन्य वस्तु आर्थिक योगदान
                 </h3>
