@@ -30,7 +30,8 @@ import { municipalityWideCropDiseasesRouter } from "./municipality-wide-crop-dis
 import { municipalityWideVegetablesAndFruitsDiseasesRouter } from "./municipality-wide-vegetables-and-fruits-diseases.procedure";
 import { municipalityWideCommercialAgriculturalAnimalHusbandryFarmersGroupRouter } from "./municipality-wide-commercial-agricultural-animal-husbandry-farmers-group.procedure";
 import { municipalityWideAgricultureRelatedFarmersGroupRouter } from "./municipality-wide-agriculture-related-farmers-group.procedure";
-import {wardWiseHouseholdsInAgricultureRouter} from "./ward-wise-households-in-agriculture.procedure";
+import { wardWiseHouseholdsInAgricultureRouter } from "./ward-wise-households-in-agriculture.procedure";
+import { wardWiseTimeToFinancialOrganizationRouter } from "./ward-wise-time-to-financial-organization.procedure";
 
 export const economicsRouter = createTRPCRouter({
   wardAgeGenderWiseEconomicallyActivePopulation:
@@ -69,4 +70,5 @@ export const economicsRouter = createTRPCRouter({
   municipalityWideAgricultureRelatedFarmersGroup:
     municipalityWideAgricultureRelatedFarmersGroupRouter,
   wardWiseHouseholdsInAgriculture: wardWiseHouseholdsInAgricultureRouter,
+  wardWiseTimeToFinancialOrganization: wardWiseTimeToFinancialOrganizationRouter,
 });
