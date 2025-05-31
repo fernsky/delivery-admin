@@ -30,10 +30,6 @@ BEGIN
     -- Mustard (तोरी/सरसोँ)
     INSERT INTO acme_municipality_wide_oil_seeds (id, oil_seed, production_in_tonnes, sales_in_tonnes, revenue_in_rs)
     VALUES
-        (gen_random_uuid(), 'MUSTARD', 202.06, 20.86, 2086000),
-        (gen_random_uuid(), 'SUNFLOWER', 150.75, 15.50, 1575000),
-        (gen_random_uuid(), 'SOYBEAN', 300.40, 30.20, 3020000),
-        (gen_random_uuid(), 'GROUNDNUT', 250.30, 25.10, 2530000),
-        (gen_random_uuid(), 'SESAME', 180.60, 18.00, 1860000);
+        (gen_random_uuid(), 'MUSTARD', 202.06, 20.86, 2086000);
 END
 $$;

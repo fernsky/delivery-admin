@@ -162,6 +162,18 @@ export const navItems: NavItem[] = [
         title: "खाद्यान्न बालीमा लाग्ने रोग विवरण",
         href: "/profile/economics/municipality-wide-crop-diseases",
       },
+      {
+        title: "तरकारी तथा फलफूलमा लाग्ने रोग/किरा",
+        href: "/profile/economics/municipality-wide-vegetables-and-fruits-diseases",
+      },
+      {
+        title: "व्यवसायिक कृषि/पशुपालन फर्महरू",
+        href: "/profile/economics/commercial-agricultural-animal-husbandry-farmers-group",
+      },
+      {
+        title: "कृषि वा पशुपालन उत्पादनमा आबद्ध घरधुरी",
+        href: "/profile/economics/ward-wise-households-in-agriculture",
+      },
     ],
   },
   {

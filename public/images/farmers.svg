@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="400" viewBox="0 0 1200 400"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <!-- Gradients for background and elements -->
+        <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0f172a" />
+            <stop offset="100%" stop-color="#334155" />
+        </linearGradient>
+
+        <!-- Farming types gradients -->
+        <linearGradient id="vegetable-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#27ae60" />
+            <stop offset="100%" stop-color="#2ecc71" />
+        </linearGradient>
+
+        <linearGradient id="goat-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9b59b6" />
+            <stop offset="100%" stop-color="#8e44ad" />
+        </linearGradient>
+
+        <linearGradient id="poultry-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e74c3c" />
+            <stop offset="100%" stop-color="#c0392b" />
+        </linearGradient>
+
+        <linearGradient id="fish-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3498db" />
+            <stop offset="100%" stop-color="#2980b9" />
+        </linearGradient>
+
+        <linearGradient id="cattle-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f1c40f" />
+            <stop offset="100%" stop-color="#f39c12" />
+        </linearGradient>
+
+        <linearGradient id="fruit-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#16a085" />
+            <stop offset="100%" stop-color="#1abc9c" />
+        </linearGradient>
+
+        <linearGradient id="dairy-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2980b9" />
+            <stop offset="100%" stop-color="#3498db" />
+        </linearGradient>
+
+        <linearGradient id="group-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#34495e" />
+            <stop offset="100%" stop-color="#2c3e50" />
+        </linearGradient>
+
+        <linearGradient id="building-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7f8c8d" />
+            <stop offset="100%" stop-color="#95a5a6" />
+        </linearGradient>
+
+        <linearGradient id="ground-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8b4513" />
+            <stop offset="50%" stop-color="#a0522d" />
+            <stop offset="100%" stop-color="#8b4513" />
+        </linearGradient>
+
+        <linearGradient id="sky-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#3498db" stop-opacity="0.1" />
+            <stop offset="100%" stop-color="#3498db" stop-opacity="0" />
+        </linearGradient>
+
+        <!-- Path for curved text at bottom -->
+        <path id="curved-text-path" d="M200,350 Q600,280 1000,350" fill="none" />
+
+        <!-- Farmer figure -->
+        <path id="farmer-male" d="M25,10 C25,4 30,0 35,0 C40,0 45,4 45,10 C45,16 40,20 35,20 C30,20 25,16 25,10 Z M15,45 C15,25 55,25 55,45 L55,80 L45,80 L45,60 L35,80 L25,60 L25,80 L15,80 Z" />
+
+        <path id="farmer-female" d="M25,10 C25,4 30,0 35,0 C40,0 45,4 45,10 C45,16 40,20 35,20 C30,20 25,16 25,10 Z M15,45 C15,25 55,25 55,45 L55,80 L45,80 L45,60 L35,80 L25,60 L25,80 L15,80 Z M25,25 C35,40 35,40 45,25" />
+
+        <!-- Farm animals -->
+        <path id="goat" d="M30,55 L50,55 L50,30 L60,20 L70,30 L50,40 L50,55 L70,55 L70,35 M70,55 L90,55 L90,35 M50,55 L50,75 L40,85 M70,55 L70,75 L60,85 M90,55 L90,75 L80,85 M60,30 C60,25 65,25 65,30" />
+
+        <path id="chicken" d="M30,40 C40,30 50,30 60,40 C70,30 60,10 50,20 L40,20 C30,10 20,30 30,40 Z M40,40 L40,60 L30,70 M50,40 L50,60 L40,70 M60,40 L60,60 L50,70 M45,25 C45,23 55,23 55,25" />
+
+        <path id="cow" d="M20,50 L100,50 L100,20 L90,10 L75,10 L70,20 L70,30 M20,50 L20,20 L30,10 L45,10 L50,20 L50,30 M20,50 L20,80 L30,90 M40,50 L40,80 L50,90 M80,50 L80,80 L90,90 M100,50 L100,80 L110,90 M35,30 C35,25 40,25 40,30 M80,30 C80,25 85,25 85,30" />
+
+        <path id="fish" d="M30,50 C60,30 90,50 90,50 C90,50 60,70 30,50 Z M90,50 L80,60 L80,40 Z M45,50 C45,45 50,45 50,50 C50,55 45,55 45,50" />
+
+        <!-- Plants -->
+        <path id="tree" d="M40,20 C20,20 30,60 50,40 C70,60 80,20 60,20 C60,0 40,0 40,20 M50,40 L50,80" />
+
+        <path id="crops" d="M30,60 C20,40 40,20 50,40 C60,20 80,40 70,60 Z" />
+
+        <path id="vegetable" d="M50,30 C30,30 20,50 30,70 C40,80 60,80 70,70 C80,50 70,30 50,30 Z M50,30 L50,10 M40,35 C30,25 30,45 40,35 M60,35 C70,25 70,45 60,35" />
+
+        <!-- Other elements -->
+        <path id="house" d="M10,50 L50,20 L90,50 L90,100 L10,100 Z M40,100 L40,70 L60,70 L60,100 M50,20 L50,10 L60,10 L60,30" />
+
+        <path id="barn" d="M10,50 L50,20 L90,50 L90,100 L10,100 Z M40,100 L40,70 L60,70 L60,100 M20,60 L30,60 L30,70 L20,70 Z M70,60 L80,60 L80,70 L70,70 Z" />
+
+        <path id="tractor" d="M10,50 L40,50 L50,30 L90,30 L90,50 L100,50 L100,70 L90,70 L90,60 L40,60 L40,70 L30,70 L30,60 L10,60 Z M30,70 C30,80 10,80 10,70 M90,70 C90,80 70,80 70,70" />
+
+        <path id="fence" d="M10,20 L10,60 M20,10 L20,70 M30,20 L30,60 M40,10 L40,70 M50,20 L50,60 M10,40 L50,40" />
+
+        <path id="cooperative" d="M10,70 L50,30 L90,70 L90,100 L10,100 Z M30,100 L30,80 L40,80 L40,100 M60,100 L60,80 L70,80 L70,100 M50,30 L50,20 L70,20 L70,40 M45,65 C35,55 50,40 55,50 C60,40 75,55 65,65 C60,70 50,70 45,65" />
+
+        <!-- Grid pattern for background -->
+        <pattern id="grid-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M0,0 L40,0 L40,40 L0,40 Z" fill="none" stroke="#1e293b" stroke-width="0.5" opacity="0.3" />
+        </pattern>
+
+        <!-- Define arrowhead marker -->
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#3498db" />
+        </marker>
+    </defs>
+
+    <!-- Background with gradient and grid -->
+    <rect width="1200" height="400" fill="url(#bg-gradient)" />
+    <rect width="1200" height="400" fill="url(#grid-pattern)" />
+
+    <!-- Sky area -->
+    <rect width="1200" height="180" fill="url(#sky-gradient)" />
+
+    <!-- Decorative elements -->
+    <g opacity="0.1">
+        <circle cx="150" cy="80" r="40" fill="white" />
+        <circle cx="1050" cy="100" r="50" fill="white" />
+        <circle cx="600" cy="50" r="30" fill="white" />
+        <circle cx="100" cy="320" r="35" fill="white" />
+        <circle cx="1100" cy="300" r="45" fill="white" />
+    </g>
+
+    <!-- Animated clouds -->
+    <g opacity="0.3">
+        <path d="M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z" fill="white">
+            <animate attributeName="d" values="M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z;
+                                        M110,70 Q130,50 160,60 Q180,40 210,50 Q230,30 260,50 Q240,70 210,65 Q190,75 160,70 Q140,80 110,70 Z;
+                                        M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z" dur="20s" repeatCount="indefinite" />
+        </path>
+
+        <path d="M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z" fill="white">
+            <animate attributeName="d" values="M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z;
+                                        M710,50 Q740,30 770,45 Q790,20 820,40 Q800,60 770,55 Q750,65 710,50 Z;
+                                        M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z" dur="15s" repeatCount="indefinite" />
+        </path>
+
+        <path d="M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z" fill="white">
+            <animate attributeName="d" values="M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z;
+                                        M390,90 Q420,60 450,80 Q470,50 500,70 Q480,100 450,90 Q430,110 390,90 Z;
+                                        M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z" dur="18s" repeatCount="indefinite" />
+        </path>
+    </g>
+
+    <!-- Sun -->
+    <g transform="translate(900, 60)">
+        <circle cx="0" cy="0" r="30" fill="#f39c12" opacity="0.7" />
+        <g opacity="0.7">
+            <path d="M0,-40 L0,-35 M28,-28 L25,-25 M40,0 L35,0 M28,28 L25,25 M0,40 L0,35 M-28,28 L-25,25 M-40,0 L-35,0 M-28,-28 L-25,-25" stroke="#f39c12" stroke-width="3" />
+        </g>
+    </g>
+
+    <!-- Ground -->
+    <rect x="0" y="180" width="1200" height="220" fill="url(#ground-gradient)" opacity="0.7" />
+
+    <!-- Main farmer groups visualization -->
+    <!-- Group circle at the center -->
+    <g transform="translate(600, 130)">
+        <circle cx="0" cy="0" r="60" fill="url(#group-gradient)" />
+        <text x="0" y="5" font-family="Arial" font-size="12" fill="white" text-anchor="middle">कृषक समूह</text>
+        
+        <!-- Connection lines to different farming types -->
+        <g opacity="0.6">
+            <path d="M-50,30 L-150,80" stroke="white" stroke-width="2" stroke-dasharray="5,3" />
+            <path d="M-30,50 L-80,130" stroke="white" stroke-width="2" stroke-dasharray="5,3" />
+            <path d="M0,60 L0,150" stroke="white" stroke-width="2" stroke-dasharray="5,3" />
+            <path d="M30,50 L80,130" stroke="white" stroke-width="2" stroke-dasharray="5,3" />
+            <path d="M50,30 L150,80" stroke="white" stroke-width="2" stroke-dasharray="5,3" />
+            <path d="M40,-40 L100,-120" stroke="white" stroke-width="2" stroke-dasharray="5,3" />
+            <path d="M-40,-40 L-100,-120" stroke="white" stroke-width="2" stroke-dasharray="5,3" />
+        </g>
+    </g>
+
+    <!-- Vegetable farming -->
+    <g transform="translate(450, 210)">
+        <circle cx="0" cy="0" r="40" fill="url(#vegetable-gradient)" />
+        <g transform="translate(-20, -20) scale(0.4)">
+            <use href="#vegetable" fill="#27ae60" stroke="white" stroke-width="1" />
+        </g>
+        <text x="0" y="25" font-family="Arial" font-size="10" fill="white" text-anchor="middle">तरकारी खेती</text>
+    </g>
+
+    <!-- Goat farming -->
+    <g transform="translate(520, 260)">
+        <circle cx="0" cy="0" r="40" fill="url(#goat-gradient)" />
+        <g transform="translate(-20, -20) scale(0.4)">
+            <use href="#goat" fill="#9b59b6" stroke="white" stroke-width="1" />
+        </g>
+        <text x="0" y="25" font-family="Arial" font-size="10" fill="white" text-anchor="middle">बाख्रापालन</text>
+    </g>
+
+    <!-- Poultry farming -->
+    <g transform="translate(600, 280)">
+        <circle cx="0" cy="0" r="40" fill="url(#poultry-gradient)" />
+        <g transform="translate(-20, -20) scale(0.4)">
+            <use href="#chicken" fill="#e74c3c" stroke="white" stroke-width="1" />
+        </g>
+        <text x="0" y="25" font-family="Arial" font-size="10" fill="white" text-anchor="middle">कुखुरापालन</text>
+    </g>
+
+    <!-- Fish farming -->
+    <g transform="translate(680, 260)">
+        <circle cx="0" cy="0" r="40" fill="url(#fish-gradient)" />
+        <g transform="translate(-20, -20) scale(0.4)">
+            <use href="#fish" fill="#3498db" stroke="white" stroke-width="1" />
+        </g>
+        <text x="0" y="25" font-family="Arial" font-size="10" fill="white" text-anchor="middle">माछापालन</text>
+    </g>
+
+    <!-- Cattle farming -->
+    <g transform="translate(750, 210)">
+        <circle cx="0" cy="0" r="40" fill="url(#cattle-gradient)" />
+        <g transform="translate(-20, -20) scale(0.4)">
+            <use href="#cow" fill="#f1c40f" stroke="white" stroke-width="1" />
+        </g>
+        <text x="0" y="25" font-family="Arial" font-size="10" fill="white" text-anchor="middle">पशुपालन</text>
+    </g>
+
+    <!-- Fruit farming -->
+    <g transform="translate(700, 10)">
+        <circle cx="0" cy="0" r="40" fill="url(#fruit-gradient)" />
+        <g transform="translate(-20, -20) scale(0.4)">
+            <use href="#tree" fill="#16a085" stroke="white" stroke-width="1" />
+        </g>
+        <text x="0" y="25" font-family="Arial" font-size="10" fill="white" text-anchor="middle">फलफूल खेती</text>
+    </g>
+
+    <!-- Dairy farming -->
+    <g transform="translate(500, 10)">
+        <circle cx="0" cy="0" r="40" fill="url(#dairy-gradient)" />
+        <text x="0" y="-5" font-family="Arial" font-size="20" fill="white" text-anchor="middle">🥛</text>
+        <text x="0" y="25" font-family="Arial" font-size="10" fill="white" text-anchor="middle">डेरी उद्योग</text>
+    </g>
+
+    <!-- Farm structures scene -->
+    <!-- Cooperative building -->
+    <g transform="translate(150, 220) scale(0.6)">
+        <use href="#cooperative" fill="url(#building-gradient)" stroke="#34495e" stroke-width="1" />
+        <text x="50" y="120" font-family="Arial" font-size="10" fill="white" text-anchor="middle">कृषि सहकारी</text>
+    </g>
+
+    <!-- House/Farm -->
+    <g transform="translate(950, 240) scale(0.6)">
+        <use href="#house" fill="url(#building-gradient)" stroke="#34495e" stroke-width="1" />
+        <text x="50" y="120" font-family="Arial" font-size="10" fill="white" text-anchor="middle">किसानको घर</text>
+    </g>
+
+    <!-- Barn -->
+    <g transform="translate(1050, 240) scale(0.6)">
+        <use href="#barn" fill="#c0392b" stroke="#34495e" stroke-width="1" />
+        <text x="50" y="120" font-family="Arial" font-size="10" fill="white" text-anchor="middle">पशुशाला</text>
+    </g>
+
+    <!-- Tractor -->
+    <g transform="translate(250, 300) scale(0.4)">
+        <use href="#tractor" fill="#e67e22" stroke="#34495e" stroke-width="1" />
+    </g>
+
+    <!-- Field with crops -->
+    <g transform="translate(850, 130)">
+        <rect x="0" y="0" width="150" height="80" fill="#27ae60" opacity="0.3" stroke="#27ae60" stroke-width="1" />
+        <!-- Crop rows -->
+        <line x1="15" y1="10" x2="15" y2="70" stroke="#27ae60" stroke-width="2" />
+        <line x1="45" y1="10" x2="45" y2="70" stroke="#27ae60" stroke-width="2" />
+        <line x1="75" y1="10" x2="75" y2="70" stroke="#27ae60" stroke-width="2" />
+        <line x1="105" y1="10" x2="105" y2="70" stroke="#27ae60" stroke-width="2" />
+        <line x1="135" y1="10" x2="135" y2="70" stroke="#27ae60" stroke-width="2" />
+    </g>
+
+    <!-- Fishpond -->
+    <g transform="translate(350, 320)">
+        <ellipse cx="40" cy="20" rx="60" ry="30" fill="#3498db" opacity="0.3" stroke="#3498db" stroke-width="1" />
+        <!-- Ripples in water -->
+        <path d="M20,20 C30,15 50,25 60,20" stroke="#3498db" stroke-width="1" fill="none">
+            <animate attributeName="d" values="M20,20 C30,15 50,25 60,20; M20,22 C30,17 50,27 60,22; M20,20 C30,15 50,25 60,20" dur="3s" repeatCount="indefinite" />
+        </path>
+        <path d="M25,30 C35,25 45,35 55,30" stroke="#3498db" stroke-width="1" fill="none">
+            <animate attributeName="d" values="M25,30 C35,25 45,35 55,30; M25,28 C35,23 45,33 55,28; M25,30 C35,25 45,35 55,30" dur="4s" repeatCount="indefinite" />
+        </path>
+    </g>
+
+    <!-- Farmers working in groups -->
+    <g transform="translate(850, 330) scale(0.4)">
+        <!-- Group of farmers in circular formation -->
+        <g transform="translate(0, 0)">
+            <use href="#farmer-male" fill="#3498db" />
+        </g>
+        <g transform="translate(40, -20)">
+            <use href="#farmer-female" fill="#e74c3c" />
+        </g>
+        <g transform="translate(80, 0)">
+            <use href="#farmer-male" fill="#2ecc71" />
+        </g>
+        <g transform="translate(60, 40)">
+            <use href="#farmer-female" fill="#f1c40f" />
+        </g>
+        <g transform="translate(20, 40)">
+            <use href="#farmer-male" fill="#9b59b6" />
+        </g>
+        <!-- Connection lines between farmers -->
+        <line x1="35" y1="20" x2="60" y2="10" stroke="white" stroke-width="1" opacity="0.6" />
+        <line x1="75" y1="20" x2="95" y2="20" stroke="white" stroke-width="1" opacity="0.6" />
+        <line x1="95" y1="40" x2="75" y2="55" stroke="white" stroke-width="1" opacity="0.6" />
+        <line x1="55" y1="55" x2="35" y2="40" stroke="white" stroke-width="1" opacity="0.6" />
+        <line x1="30" y1="30" x2="60" y2="50" stroke="white" stroke-width="1" opacity="0.6" />
+        <circle cx="55" cy="35" r="30" fill="none" stroke="white" stroke-width="1" opacity="0.3" />
+    </g>
+
+    <!-- Farmers with goats -->
+    <g transform="translate(130, 330) scale(0.4)">
+        <g transform="translate(0, 0)">
+            <use href="#farmer-male" fill="#3498db" />
+        </g>
+        <!-- Goats -->
+        <g transform="translate(60, 10) scale(0.7)">
+            <use href="#goat" fill="#9b59b6" stroke="white" stroke-width="1" />
+        </g>
+        <g transform="translate(100, 10) scale(0.7)">
+            <use href="#goat" fill="#9b59b6" stroke="white" stroke-width="1" />
+        </g>
+    </g>
+
+    <!-- Ward distribution visualization -->
+    <g transform="translate(250, 110)">
+        <!-- Ward map representation -->
+        <rect x="0" y="0" width="200" height="120" rx="10" fill="url(#group-gradient)" opacity="0.7" />
+        <text x="100" y="20" font-family="Arial" font-size="12" fill="white" text-anchor="middle">वडागत वितरण</text>
+        
+        <!-- Ward cells with varying sizes -->
+        <g transform="translate(20, 40)">
+            <rect x="0" y="0" width="30" height="20" fill="#2ecc71" />
+            <text x="15" y="15" font-family="Arial" font-size="10" fill="white" text-anchor="middle">१</text>
+        </g>
+        <g transform="translate(60, 40)">
+            <rect x="0" y="0" width="40" height="20" fill="#e74c3c" />
+            <text x="20" y="15" font-family="Arial" font-size="10" fill="white" text-anchor="middle">२</text>
+        </g>
+        <g transform="translate(110, 40)">
+            <rect x="0" y="0" width="25" height="20" fill="#f1c40f" />
+            <text x="12.5" y="15" font-family="Arial" font-size="10" fill="white" text-anchor="middle">३</text>
+        </g>
+        <g transform="translate(145, 40)">
+            <rect x="0" y="0" width="35" height="20" fill="#3498db" />
+            <text x="17.5" y="15" font-family="Arial" font-size="10" fill="white" text-anchor="middle">४</text>
+        </g>
+        <g transform="translate(20, 70)">
+            <rect x="0" y="0" width="45" height="20" fill="#9b59b6" />
+            <text x="22.5" y="15" font-family="Arial" font-size="10" fill="white" text-anchor="middle">५</text>
+        </g>
+        <g transform="translate(75, 70)">
+            <rect x="0" y="0" width="35" height="20" fill="#1abc9c" />
+            <text x="17.5" y="15" font-family="Arial" font-size="10" fill="white" text-anchor="middle">६</text>
+        </g>
+        <g transform="translate(120, 70)">
+            <rect x="0" y="0" width="60" height="20" fill="#d35400" />
+            <text x="30" y="15" font-family="Arial" font-size="10" fill="white" text-anchor="middle">७</text>
+        </g>
+    </g>
+
+    <!-- Business type distribution chart -->
+    <g transform="translate(950, 140)">
+        <!-- Chart background -->
+        <rect x="0" y="0" width="150" height="80" rx="10" fill="url(#group-gradient)" opacity="0.7" />
+        <text x="75" y="15" font-family="Arial" font-size="10" fill="white" text-anchor="middle">व्यवसायको प्रकार</text>
+        
+        <!-- Business type bars with varying heights -->
+        <g transform="translate(10, 30)">
+            <rect x="0" y="0" width="15" height="40" fill="url(#vegetable-gradient)" />
+            <text x="7.5" y="50" font-family="Arial" font-size="8" fill="white" text-anchor="middle">🥬</text>
+        </g>
+        <g transform="translate(30, 30)">
+            <rect x="0" y="10" width="15" height="30" fill="url(#goat-gradient)" />
+            <text x="7.5" y="50" font-family="Arial" font-size="8" fill="white" text-anchor="middle">🐐</text>
+        </g>
+        <g transform="translate(50, 30)">
+            <rect x="0" y="15" width="15" height="25" fill="url(#poultry-gradient)" />
+            <text x="7.5" y="50" font-family="Arial" font-size="8" fill="white" text-anchor="middle">🐓</text>
+        </g>
+        <g transform="translate(70, 30)">
+            <rect x="0" y="20" width="15" height="20" fill="url(#fish-gradient)" />
+            <text x="7.5" y="50" font-family="Arial" font-size="8" fill="white" text-anchor="middle">🐟</text>
+        </g>
+        <g transform="translate(90, 30)">
+            <rect x="0" y="25" width="15" height="15" fill="url(#cattle-gradient)" />
+            <text x="7.5" y="50" font-family="Arial" font-size="8" fill="white" text-anchor="middle">🐄</text>
+        </g>
+        <g transform="translate(110, 30)">
+            <rect x="0" y="27" width="15" height="13" fill="url(#dairy-gradient)" />
+            <text x="7.5" y="50" font-family="Arial" font-size="8" fill="white" text-anchor="middle">🥛</text>
+        </g>
+        <g transform="translate(130, 30)">
+            <rect x="0" y="30" width="15" height="10" fill="url(#fruit-gradient)" />
+            <text x="7.5" y="50" font-family="Arial" font-size="8" fill="white" text-anchor="middle">🍎</text>
+        </g>
+    </g>
+
+    <!-- Economic impact indicators -->
+    <g transform="translate(50, 110)">
+        <!-- Background -->
+        <rect x="0" y="0" width="140" height="80" rx="10" fill="url(#group-gradient)" opacity="0.7" />
+        <text x="70" y="15" font-family="Arial" font-size="10" fill="white" text-anchor="middle">आर्थिक प्रभाव</text>
+        
+        <!-- Progress indicators -->
+        <g transform="translate(10, 30)">
+            <rect x="0" y="0" width="120" height="10" rx="5" fill="#1e293b" opacity="0.5" />
+            <rect x="0" y="0" width="90" height="10" rx="5" fill="#2ecc71" />
+            <text x="130" y="9" font-family="Arial" font-size="8" fill="white">आम्दानी</text>
+        </g>
+        <g transform="translate(10, 45)">
+            <rect x="0" y="0" width="120" height="10" rx="5" fill="#1e293b" opacity="0.5" />
+            <rect x="0" y="0" width="80" height="10" rx="5" fill="#f1c40f" />
+            <text x="130" y="9" font-family="Arial" font-size="8" fill="white">रोजगारी</text>
+        </g>
+        <g transform="translate(10, 60)">
+            <rect x="0" y="0" width="120" height="10" rx="5" fill="#1e293b" opacity="0.5" />
+            <rect x="0" y="0" width="100" height="10" rx="5" fill="#3498db" />
+            <text x="130" y="9" font-family="Arial" font-size="8" fill="white">उत्पादन</text>
+        </g>
+    </g>
+
+    <!-- Value chain representation -->
+    <g transform="translate(50, 230)">
+        <!-- Production -->
+        <circle cx="20" cy="20" r="15" fill="#27ae60" />
+        <text x="20" y="45" font-family="Arial" font-size="8" fill="white" text-anchor="middle">उत्पादन</text>
+        
+        <!-- Arrow -->
+        <path d="M40,20 L70,20" stroke="#f39c12" stroke-width="2" marker-end="url(#arrowhead)" />
+        
+        <!-- Processing -->
+        <circle cx="90" cy="20" r="15" fill="#f39c12" />
+        <text x="90" y="45" font-family="Arial" font-size="8" fill="white" text-anchor="middle">प्रशोधन</text>
+        
+        <!-- Arrow -->
+        <path d="M110,20 L140,20" stroke="#f39c12" stroke-width="2" marker-end="url(#arrowhead)" />
+        
+        <!-- Marketing/Sales -->
+        <circle cx="160" cy="20" r="15" fill="#e74c3c" />
+        <text x="160" y="45" font-family="Arial" font-size="8" fill="white" text-anchor="middle">बजार</text>
+    </g>
+
+    <!-- Animated elements -->
+    <!-- Birds flying -->
+    <g>
+        <path d="M5,40 C10,35 15,40 10,45 C15,40 20,35 15,40" fill="white" opacity="0.6" transform="translate(50, 50) scale(0.8)">
+            <animate attributeName="transform" values="translate(50, 50) scale(0.8); translate(250, 30) scale(0.8); translate(450, 60) scale(0.8)" dur="20s" repeatCount="indefinite" />
+        </path>
+        <path d="M5,40 C10,35 15,40 10,45 C15,40 20,35 15,40" fill="white" opacity="0.5" transform="translate(70, 60) scale(0.6)">
+            <animate attributeName="transform" values="translate(70, 60) scale(0.6); translate(270, 40) scale(0.6); translate(470, 70) scale(0.6)" dur="25s" repeatCount="indefinite" />
+        </path>
+        <path d="M5,40 C10,35 15,40 10,45 C15,40 20,35 15,40" fill="white" opacity="0.4" transform="translate(40, 30) scale(0.5)">
+            <animate attributeName="transform" values="translate(40, 30) scale(0.5); translate(240, 20) scale(0.5); translate(440, 50) scale(0.5)" dur="30s" repeatCount="indefinite" />
+        </path>
+    </g>
+
+    <!-- Blinking star effect over cooperative -->
+    <g transform="translate(150, 200)">
+        <path d="M0,0 L5,15 L-5,15 Z" fill="white" opacity="0.7">
+            <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2s" repeatCount="indefinite" />
+        </path>
+    </g>
+
+    <!-- Title text at bottom -->
+    <text font-family="Arial" font-size="24" fill="white" text-anchor="middle" font-weight="bold">
+        <textPath href="#curved-text-path" startOffset="50%">व्यावसायिक कृषि तथा पशुपालन समूह - खजुरा गाउँपालिका</textPath>
+    </text>
+</svg>

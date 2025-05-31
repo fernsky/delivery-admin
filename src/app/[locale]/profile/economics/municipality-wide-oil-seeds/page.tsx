@@ -182,7 +182,6 @@ export default async function MunicipalityWideOilSeedsPage() {
   // Fetch all oil seed data using tRPC
   const oilSeedData =
     await api.profile.economics.municipalityWideOilSeeds.getAll.query();
-
   // Try to fetch summary data
   let summaryData = null;
   try {

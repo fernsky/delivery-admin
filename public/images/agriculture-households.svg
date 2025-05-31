@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="400" viewBox="0 0 1200 400"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <!-- Gradients for background and elements -->
+        <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0f172a" />
+            <stop offset="100%" stop-color="#334155" />
+        </linearGradient>
+
+        <!-- Agriculture household types gradients -->
+        <linearGradient id="agriculture-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#27ae60" />
+            <stop offset="100%" stop-color="#2ecc71" />
+        </linearGradient>
+
+        <linearGradient id="non-agriculture-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e74c3c" />
+            <stop offset="100%" stop-color="#c0392b" />
+        </linearGradient>
+
+        <linearGradient id="building-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7f8c8d" />
+            <stop offset="100%" stop-color="#95a5a6" />
+        </linearGradient>
+
+        <linearGradient id="ground-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8b4513" />
+            <stop offset="50%" stop-color="#a0522d" />
+            <stop offset="100%" stop-color="#8b4513" />
+        </linearGradient>
+
+        <linearGradient id="sky-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#3498db" stop-opacity="0.1" />
+            <stop offset="100%" stop-color="#3498db" stop-opacity="0" />
+        </linearGradient>
+
+        <!-- Path for curved text at bottom -->
+        <path id="curved-text-path" d="M200,350 Q600,280 1000,350" fill="none" />
+
+        <!-- Shapes for elements -->
+        <!-- House with farm shape -->
+        <symbol id="farm-house" viewBox="0 0 100 100">
+            <path d="M20,50 L50,30 L80,50 L80,90 L20,90 Z" fill="url(#building-gradient)" stroke="#34495e" stroke-width="1" />
+            <path d="M45,90 L45,70 L55,70 L55,90" fill="none" stroke="#34495e" stroke-width="1" />
+            <path d="M50,30 L50,20 L60,20 L60,35" fill="none" stroke="#34495e" stroke-width="1" />
+            <!-- Farming elements -->
+            <path d="M10,70 C10,60 15,60 15,70" stroke="#27ae60" stroke-width="1" />
+            <path d="M15,70 C15,60 20,60 20,70" stroke="#27ae60" stroke-width="1" />
+            <path d="M85,70 C85,60 90,60 90,70" stroke="#27ae60" stroke-width="1" />
+            <path d="M90,70 C90,60 95,60 95,70" stroke="#27ae60" stroke-width="1" />
+        </symbol>
+
+        <!-- Urban house shape -->
+        <symbol id="urban-house" viewBox="0 0 100 100">
+            <path d="M25,50 L50,35 L75,50 L75,90 L25,90 Z" fill="url(#building-gradient)" stroke="#34495e" stroke-width="1" />
+            <path d="M45,90 L45,70 L55,70 L55,90" fill="none" stroke="#34495e" stroke-width="1" />
+            <rect x="30" y="60" width="10" height="10" fill="#3498db" opacity="0.7" />
+            <rect x="60" y="60" width="10" height="10" fill="#3498db" opacity="0.7" />
+            <!-- Additional urban elements -->
+            <rect x="5" y="70" width="15" height="20" fill="#95a5a6" />
+            <rect x="80" y="70" width="15" height="20" fill="#95a5a6" />
+        </symbol>
+
+        <!-- Farmer figure -->
+        <symbol id="farmer" viewBox="0 0 100 120">
+            <circle cx="50" cy="25" r="15" fill="#f39c12" stroke="#e67e22" stroke-width="1" />
+            <path d="M35,50 C35,35 65,35 65,50 L65,90 L55,90 L55,70 L45,70 L45,90 L35,90 Z" fill="#34495e" stroke="#2c3e50" stroke-width="1" />
+            <line x1="35" y1="50" x2="30" y2="70" stroke="#34495e" stroke-width="3" />
+            <line x1="65" y1="50" x2="70" y2="70" stroke="#34495e" stroke-width="3" />
+            <rect x="40" y="90" width="5" height="20" fill="#34495e" />
+            <rect x="55" y="90" width="5" height="20" fill="#34495e" />
+        </symbol>
+
+        <!-- Urban worker figure -->
+        <symbol id="urban-worker" viewBox="0 0 100 120">
+            <circle cx="50" cy="25" r="15" fill="#3498db" stroke="#2980b9" stroke-width="1" />
+            <path d="M35,50 C35,35 65,35 65,50 L65,90 L35,90 Z" fill="#34495e" stroke="#2c3e50" stroke-width="1" />
+            <line x1="35" y1="50" x2="30" y2="70" stroke="#34495e" stroke-width="3" />
+            <line x1="65" y1="50" x2="70" y2="70" stroke="#34495e" stroke-width="3" />
+            <rect x="40" y="90" width="5" height="20" fill="#34495e" />
+            <rect x="55" y="90" width="5" height="20" fill="#34495e" />
+            <rect x="40" y="40" width="20" height="5" fill="#3498db" />
+        </symbol>
+
+        <!-- Cow shape -->
+        <symbol id="cow" viewBox="0 0 100 70">
+            <path d="M20,30 L80,30 L80,20 L70,10 L60,10 L55,20 M20,30 L20,20 L30,10 L40,10 L45,20 M20,30 L20,60 L30,70 M40,30 L40,60 L50,70 M60,30 L60,60 L70,70 M80,30 L80,60 L90,70" fill="#f39c12" stroke="#e67e22" stroke-width="1" />
+            <circle cx="35" cy="20" r="3" fill="#34495e" />
+            <circle cx="65" cy="20" r="3" fill="#34495e" />
+        </symbol>
+
+        <!-- Goat shape -->
+        <symbol id="goat" viewBox="0 0 100 70">
+            <path d="M25,30 L65,30 L65,15 L75,5 L85,15 L65,25 L65,30 L85,30 L85,15 M65,30 L65,50 L55,60 M85,30 L85,50 L75,60" fill="#95a5a6" stroke="#7f8c8d" stroke-width="1" />
+            <circle cx="75" cy="15" r="3" fill="#34495e" />
+        </symbol>
+
+        <!-- Chicken shape -->
+        <symbol id="chicken" viewBox="0 0 100 70">
+            <path d="M40,20 C50,10 60,10 70,20 C80,10 70,-5 60,5 L50,5 C40,-5 30,10 40,20 Z M50,20 L50,40 L40,50 M60,20 L60,40 L50,50 M70,20 L70,40 L60,50" fill="#e74c3c" stroke="#c0392b" stroke-width="1" />
+            <circle cx="55" cy="10" r="2" fill="#34495e" />
+        </symbol>
+
+        <!-- Crops shape -->
+        <symbol id="crops" viewBox="0 0 100 80">
+            <rect x="10" y="50" width="80" height="30" fill="#8b4513" />
+            <!-- Plant 1 -->
+            <path d="M20,50 C20,35 30,35 30,50" stroke="#27ae60" stroke-width="3" fill="none" />
+            <path d="M25,35 C25,25 30,25 30,35" stroke="#27ae60" stroke-width="2" fill="none" />
+            <!-- Plant 2 -->
+            <path d="M40,50 C40,30 50,30 50,50" stroke="#27ae60" stroke-width="3" fill="none" />
+            <path d="M45,30 C45,20 50,20 50,30" stroke="#27ae60" stroke-width="2" fill="none" />
+            <!-- Plant 3 -->
+            <path d="M60,50 C60,35 70,35 70,50" stroke="#27ae60" stroke-width="3" fill="none" />
+            <path d="M65,35 C65,25 70,25 70,35" stroke="#27ae60" stroke-width="2" fill="none" />
+            <!-- Plant 4 -->
+            <path d="M80,50 C80,30 90,30 90,50" stroke="#27ae60" stroke-width="3" fill="none" />
+            <path d="M85,30 C85,20 90,20 90,30" stroke="#27ae60" stroke-width="2" fill="none" />
+        </symbol>
+
+        <!-- Grid pattern for background -->
+        <pattern id="grid-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M0,0 L40,0 L40,40 L0,40 Z" fill="none" stroke="#1e293b" stroke-width="0.5" opacity="0.3" />
+        </pattern>
+
+        <!-- Define arrowhead marker -->
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#3498db" />
+        </marker>
+    </defs>
+
+    <!-- Background with gradient and grid -->
+    <rect width="1200" height="400" fill="url(#bg-gradient)" />
+    <rect width="1200" height="400" fill="url(#grid-pattern)" />
+
+    <!-- Sky area -->
+    <rect width="1200" height="150" fill="url(#sky-gradient)" />
+
+    <!-- Decorative elements -->
+    <g opacity="0.1">
+        <circle cx="150" cy="80" r="40" fill="white" />
+        <circle cx="1050" cy="100" r="50" fill="white" />
+        <circle cx="600" cy="50" r="30" fill="white" />
+        <circle cx="100" cy="320" r="35" fill="white" />
+        <circle cx="1100" cy="300" r="45" fill="white" />
+    </g>
+
+    <!-- Animated clouds -->
+    <g opacity="0.3">
+        <path d="M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z" fill="white">
+            <animate attributeName="d" values="M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z;
+                                        M110,70 Q130,50 160,60 Q180,40 210,50 Q230,30 260,50 Q240,70 210,65 Q190,75 160,70 Q140,80 110,70 Z;
+                                        M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z" dur="20s" repeatCount="indefinite" />
+        </path>
+
+        <path d="M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z" fill="white">
+            <animate attributeName="d" values="M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z;
+                                        M710,50 Q740,30 770,45 Q790,20 820,40 Q800,60 770,55 Q750,65 710,50 Z;
+                                        M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z" dur="15s" repeatCount="indefinite" />
+        </path>
+
+        <path d="M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z" fill="white">
+            <animate attributeName="d" values="M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z;
+                                        M390,90 Q420,60 450,80 Q470,50 500,70 Q480,100 450,90 Q430,110 390,90 Z;
+                                        M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z" dur="18s" repeatCount="indefinite" />
+        </path>
+    </g>
+
+    <!-- Sun -->
+    <g transform="translate(900, 60)">
+        <circle cx="0" cy="0" r="30" fill="#f39c12" opacity="0.7" />
+        <g opacity="0.7">
+            <path d="M0,-40 L0,-35 M28,-28 L25,-25 M40,0 L35,0 M28,28 L25,25 M0,40 L0,35 M-28,28 L-25,25 M-40,0 L-35,0 M-28,-28 L-25,-25" stroke="#f39c12" stroke-width="3" />
+        </g>
+    </g>
+
+    <!-- Ground -->
+    <rect x="0" y="150" width="1200" height="250" fill="url(#ground-gradient)" opacity="0.7" />
+
+    <!-- Main agriculture and non-agriculture household visualization -->
+    <!-- Central comparison circle -->
+    <g transform="translate(600, 180)">
+        <circle cx="0" cy="0" r="80" fill="#1e293b" opacity="0.8" stroke="white" stroke-width="1" />
+        <!-- Pie chart segments -->
+        <path d="M0,0 L80,0 A80,80 0 0,1 0,80 Z" fill="url(#agriculture-gradient)" />
+        <path d="M0,0 L0,80 A80,80 0 0,1 -80,0 Z" fill="url(#agriculture-gradient)" />
+        <path d="M0,0 L-80,0 A80,80 0 0,1 0,-80 Z" fill="url(#non-agriculture-gradient)" />
+        <path d="M0,0 L0,-80 A80,80 0 0,1 80,0 Z" fill="url(#non-agriculture-gradient)" />
+        
+        <!-- Central circle with text -->
+        <circle cx="0" cy="0" r="30" fill="#1e293b" stroke="white" stroke-width="1" />
+        <text x="0" y="5" font-family="Arial" font-size="12" fill="white" text-anchor="middle">कृषि आबद्धता</text>
+
+        <!-- Percentage labels -->
+        <text x="40" y="40" font-family="Arial" font-size="14" fill="white" font-weight="bold">२९.१%</text>
+        <text x="-40" y="40" font-family="Arial" font-size="14" fill="white" font-weight="bold">२९.१%</text>
+        <text x="-40" y="-40" font-family="Arial" font-size="14" fill="white" font-weight="bold">७०.९%</text>
+        <text x="40" y="-40" font-family="Arial" font-size="14" fill="white" font-weight="bold">७०.९%</text>
+    </g>
+
+    <!-- Agriculture household card -->
+    <g transform="translate(300, 180)">
+        <rect x="0" y="0" width="180" height="170" rx="10" fill="#1e293b" stroke="white" stroke-width="1" opacity="0.8" />
+        <text x="90" y="30" font-family="Arial" font-size="16" fill="white" text-anchor="middle">कृषि वा पशुपालनमा आबद्ध</text>
+        <text x="90" y="50" font-family="Arial" font-size="14" fill="white" text-anchor="middle">घरपरिवार संख्या</text>
+        <text x="90" y="80" font-family="Arial" font-size="24" fill="#2ecc71" font-weight="bold" text-anchor="middle">४,५२४</text>
+        
+        <!-- Farmer figure -->
+        <use href="#farmer" x="30" y="90" width="50" height="70" />
+        
+        <!-- Agriculture icons -->
+        <g transform="translate(100, 110) scale(0.3)">
+            <use href="#cow" x="0" y="0" />
+        </g>
+        <g transform="translate(130, 110) scale(0.3)">
+            <use href="#crops" x="0" y="0" />
+        </g>
+        
+        <text x="90" y="160" font-family="Arial" font-size="12" fill="#2ecc71" text-anchor="middle">कुल घरधुरीको २९.१%</text>
+    </g>
+
+    <!-- Non-agriculture household card -->
+    <g transform="translate(720, 180)">
+        <rect x="0" y="0" width="180" height="170" rx="10" fill="#1e293b" stroke="white" stroke-width="1" opacity="0.8" />
+        <text x="90" y="30" font-family="Arial" font-size="16" fill="white" text-anchor="middle">कृषि वा पशुपालनमा आबद्ध नभएको</text>
+        <text x="90" y="50" font-family="Arial" font-size="14" fill="white" text-anchor="middle">घरपरिवार संख्या</text>
+        <text x="90" y="80" font-family="Arial" font-size="24" fill="#e74c3c" font-weight="bold" text-anchor="middle">११,००६</text>
+        
+        <!-- Urban worker figure -->
+        <use href="#urban-worker" x="30" y="90" width="50" height="70" />
+        
+        <!-- Urban icons -->
+        <g transform="translate(100, 110) scale(0.5)">
+            <use href="#urban-house" x="0" y="0" />
+        </g>
+        
+        <text x="90" y="160" font-family="Arial" font-size="12" fill="#e74c3c" text-anchor="middle">कुल घरधुरीको ७०.९%</text>
+    </g>
+
+    <!-- Ward-wise visualization -->
+    <g transform="translate(600, 380)">
+        <text x="0" y="-10" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा अनुसार कृषि आबद्धता</text>
+        
+        <!-- Ward bars with varying heights -->
+        <g transform="translate(-350, 0)">
+            <rect x="0" y="-50" width="40" height="50" fill="url(#agriculture-gradient)" />
+            <rect x="0" y="-100" width="40" height="50" fill="url(#non-agriculture-gradient)" />
+            <text x="20" y="15" font-family="Arial" font-size="12" fill="white" text-anchor="middle">वडा १</text>
+        </g>
+        <g transform="translate(-250, 0)">
+            <rect x="0" y="-60" width="40" height="60" fill="url(#agriculture-gradient)" />
+            <rect x="0" y="-160" width="40" height="100" fill="url(#non-agriculture-gradient)" />
+            <text x="20" y="15" font-family="Arial" font-size="12" fill="white" text-anchor="middle">वडा २</text>
+        </g>
+        <g transform="translate(-150, 0)">
+            <rect x="0" y="-50" width="40" height="50" fill="url(#agriculture-gradient)" />
+            <rect x="0" y="-130" width="40" height="80" fill="url(#non-agriculture-gradient)" />
+            <text x="20" y="15" font-family="Arial" font-size="12" fill="white" text-anchor="middle">वडा ३</text>
+        </g>
+        <g transform="translate(-50, 0)">
+            <rect x="0" y="-35" width="40" height="35" fill="url(#agriculture-gradient)" />
+            <rect x="0" y="-130" width="40" height="95" fill="url(#non-agriculture-gradient)" />
+            <text x="20" y="15" font-family="Arial" font-size="12" fill="white" text-anchor="middle">वडा ४</text>
+        </g>
+        <g transform="translate(50, 0)">
+            <rect x="0" y="-6" width="40" height="6" fill="url(#agriculture-gradient)" />
+            <rect x="0" y="-110" width="40" height="104" fill="url(#non-agriculture-gradient)" />
+            <text x="20" y="15" font-family="Arial" font-size="12" fill="white" text-anchor="middle">वडा ५</text>
+        </g>
+        <g transform="translate(150, 0)">
+            <rect x="0" y="-80" width="40" height="80" fill="url(#agriculture-gradient)" />
+            <rect x="0" y="-180" width="40" height="100" fill="url(#non-agriculture-gradient)" />
+            <text x="20" y="15" font-family="Arial" font-size="12" fill="white" text-anchor="middle">वडा ६</text>
+        </g>
+        <g transform="translate(250, 0)">
+            <rect x="0" y="-60" width="40" height="60" fill="url(#agriculture-gradient)" />
+            <rect x="0" y="-160" width="40" height="100" fill="url(#non-agriculture-gradient)" />
+            <text x="20" y="15" font-family="Arial" font-size="12" fill="white" text-anchor="middle">वडा ७</text>
+        </g>
+        <g transform="translate(350, 0)">
+            <rect x="0" y="-25" width="40" height="25" fill="url(#agriculture-gradient)" />
+            <rect x="0" y="-125" width="40" height="100" fill="url(#non-agriculture-gradient)" />
+            <text x="20" y="15" font-family="Arial" font-size="12" fill="white" text-anchor="middle">वडा ८</text>
+        </g>
+    </g>
+
+    <!-- Agriculture household visualization -->
+    <!-- Farm scene -->
+    <g transform="translate(150, 310)">
+        <g transform="scale(0.6)">
+            <use href="#farm-house" x="0" y="0" />
+            <use href="#farmer" x="120" y="30" />
+            <use href="#cow" x="200" y="70" />
+            <g transform="translate(150, 70) scale(0.8)">
+                <use href="#goat" x="0" y="0" />
+            </g>
+            <g transform="translate(220, 40) scale(0.6)">
+                <use href="#chicken" x="0" y="0" />
+            </g>
+            <g transform="translate(280, 50) scale(0.8)">
+                <use href="#crops" x="0" y="0" />
+            </g>
+        </g>
+        <text x="120" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">कृषि वा पशुपालन</text>
+    </g>
+
+    <!-- Urban scene -->
+    <g transform="translate(1050, 310)">
+        <g transform="scale(0.6)">
+            <use href="#urban-house" x="0" y="0" />
+            <use href="#urban-worker" x="120" y="30" />
+            <rect x="200" y="30" width="40" height="60" fill="#7f8c8d" stroke="#34495e" stroke-width="1" />
+            <rect x="250" y="50" width="30" height="40" fill="#7f8c8d" stroke="#34495e" stroke-width="1" />
+            <rect x="210" y="40" width="20" height="15" fill="#3498db" opacity="0.7" />
+        </g>
+        <text x="120" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">गैर कृषि आबद्धता</text>
+    </g>
+
+    <!-- Animated elements -->
+    <!-- Birds flying -->
+    <g>
+        <path d="M5,40 C10,35 15,40 10,45 C15,40 20,35 15,40" fill="white" opacity="0.6" transform="translate(50, 50) scale(0.8)">
+            <animate attributeName="transform" values="translate(50, 50) scale(0.8); translate(250, 30) scale(0.8); translate(450, 60) scale(0.8)" dur="20s" repeatCount="indefinite" />
+        </path>
+        <path d="M5,40 C10,35 15,40 10,45 C15,40 20,35 15,40" fill="white" opacity="0.5" transform="translate(70, 60) scale(0.6)">
+            <animate attributeName="transform" values="translate(70, 60) scale(0.6); translate(270, 40) scale(0.6); translate(470, 70) scale(0.6)" dur="25s" repeatCount="indefinite" />
+        </path>
+        <path d="M5,40 C10,35 15,40 10,45 C15,40 20,35 15,40" fill="white" opacity="0.4" transform="translate(40, 30) scale(0.5)">
+            <animate attributeName="transform" values="translate(40, 30) scale(0.5); translate(240, 20) scale(0.5); translate(440, 50) scale(0.5)" dur="30s" repeatCount="indefinite" />
+        </path>
+    </g>
+
+    <!-- Title text at bottom -->
+    <text font-family="Arial" font-size="24" fill="white" text-anchor="middle" font-weight="bold">
+        <textPath href="#curved-text-path" startOffset="50%">कृषि वा पशुपालनमा आबद्ध घरपरिवार - खजुरा गाउँपालिका</textPath>
+    </text>
+</svg>
