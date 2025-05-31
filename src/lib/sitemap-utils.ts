@@ -4,7 +4,7 @@ import { SitemapStream, streamToPromise } from "sitemap";
 import { Readable } from "stream";
 import { locales } from "@/i18n/config";
 import { api } from "@/trpc/server";
-import { navItems } from "@/components/layout/SidebarNav";
+import { navItems } from "@/constants/nav-items";
 
 // Base URL from environment or default
 const baseUrl =
