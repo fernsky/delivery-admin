@@ -66,7 +66,7 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
                   side="left"
                   className="w-[80%] sm:w-[350px] pr-0 z-[100000] border-r-[#123772]/10"
                 >
-                  <ScrollArea className="h-full py-6 pl-6">
+                  <ScrollArea className="h-full py-6">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="p-2 rounded-lg bg-gradient-to-br from-[#123772] to-[#0b1f42] text-white">
                         <Info className="w-4 h-4" />
@@ -87,7 +87,7 @@ export function DocsLayout({ children, toc }: DocsLayoutProps) {
             {/* Desktop sidebar */}
             <div className="hidden md:block sticky top-16 self-start h-[calc(100vh-4rem)]">
               <ScrollArea className="h-full pb-10">
-                <div className="pr-2 pt-4">
+                <div className="pt-4">
                   <SidebarNav />
                 </div>
               </ScrollArea>
