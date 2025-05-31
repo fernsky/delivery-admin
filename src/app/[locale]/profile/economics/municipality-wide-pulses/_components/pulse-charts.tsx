@@ -1,19 +1,25 @@
-"use client";
-
-import { useState } from "react";
 import PulsePieChart from "./charts/pulse-pie-chart";
 import PulseBarChart from "./charts/pulse-bar-chart";
 import ProductionSalesDistributionChart from "./charts/production-sales-distribution-chart";
 import CommercializationChart from "./charts/commercialization-chart";
 import { localizeNumber } from "@/lib/utils/localize-number";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
+import {
+  Bean,
+  TrendingUp,
+  DollarSign,
+  ShoppingCart,
+  Home,
+  PieChart,
+  BarChart3,
+  Banknote,
+  Calculator,
+  Target,
+  Award,
+} from "lucide-react";
 
 interface PulseChartsProps {
   overallSummary: Array<{
@@ -65,9 +71,6 @@ export default function PulseCharts({
   selfConsumptionPercentage,
   commercializationScore,
 }: PulseChartsProps) {
-  // State for active tab
-  const [activeTab, setActiveTab] = useState("production");
-
   // Generate yearly trend data for pulse production (mocked data)
   const yearlyTrendData = [
     {
@@ -136,37 +139,37 @@ export default function PulseCharts({
       };
     });
 
+  // Format sales pie chart data
+  const salesPieChartData = overallSummary.map((item) => ({
+    name: item.typeName,
+    value: item.sales,
+    percentage:
+      totalSales > 0
+        ? ((item.sales / totalSales) * 100).toFixed(2)
+        : "0",
+  }));
+
   return (
-    <div className="space-y-8 mt-8" id="production-and-sales">
-      <h2 className="text-2xl font-bold tracking-tight border-b pb-2 scroll-m-20">
-        उत्पादन र बिक्री
-      </h2>
+    <div className="mt-12 space-y-16">
+      {/* Production Distribution Section */}
+      <section id="production-distribution">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-primary mb-2">
+            उत्पादन वितरण विश्लेषण
+          </h2>
+          <p className="text-muted-foreground">
+            दालबालीको प्रकार अनुसार उत्पादन वितरण र मुख्य तथ्यहरू
+          </p>
+        </div>
 
-      {/* Tabs for switching between chart views */}
-      <Tabs
-        defaultValue="production"
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="w-full"
-      >
-        <TabsList className="grid grid-cols-3 mb-6">
-          <TabsTrigger value="production">उत्पादन वितरण</TabsTrigger>
-          <TabsTrigger value="sales">बिक्री वितरण</TabsTrigger>
-          <TabsTrigger value="revenue">आम्दानी वितरण</TabsTrigger>
-        </TabsList>
-
-        {/* Production Distribution Tab */}
-        <TabsContent value="production" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">दालबाली उत्पादन वितरण</CardTitle>
-                <CardDescription>
-                  कुल उत्पादन {localizeNumber(totalProduction.toFixed(2), "ne")}{" "}
-                  मे.टन
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="h-[380px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
+                <PieChart className="w-5 h-5" />
+                उत्पादन वितरण चार्ट
+              </h3>
+              <div className="h-[350px]">
                 <PulsePieChart
                   pieChartData={productionPieChartData}
                   PULSE_TYPES={PULSE_TYPES}
@@ -174,195 +177,407 @@ export default function PulseCharts({
                   dataType="उत्पादन"
                   unit="मे.टन"
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="space-y-6">
+            <Card className="border-2">
+              <CardContent className="pt-6">
+                <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Bean className="w-5 h-5" />
+                  प्रमुख तथ्यहरू
+                </h4>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                    <BarChart3 className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <span className="font-medium">
+                        कुल दालबाली उत्पादन
+                      </span>
+                      <div className="text-xl font-bold text-blue-600">
+                        {localizeNumber(totalProduction.toFixed(2), "ne")}{" "}
+                        मेट्रिक टन
+                      </div>
+                    </div>
+                  </li>
+                  {overallSummary.length > 0 && (
+                    <li className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg">
+                      <Award className="w-5 h-5 text-amber-600 mt-0.5" />
+                      <div>
+                        <span className="font-medium">
+                          सबैभन्दा धेरै उत्पादन
+                        </span>
+                        <div className="text-lg font-bold text-amber-600">
+                          {overallSummary[0].typeName} (
+                          {localizeNumber(
+                            (
+                              (overallSummary[0].production / totalProduction) *
+                              100
+                            ).toFixed(2),
+                            "ne",
+                          )}
+                          %)
+                        </div>
+                      </div>
+                    </li>
+                  )}
+                  <li className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                    <ShoppingCart className="w-5 h-5 text-green-600 mt-0.5" />
+                    <div>
+                      <span className="font-medium">बिक्रीमा पठाइएको</span>
+                      <div className="text-lg font-bold text-green-600">
+                        {localizeNumber(soldPercentage, "ne")}% (
+                        {localizeNumber(totalSales.toFixed(2), "ne")} मे.टन)
+                      </div>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
+                    <Home className="w-5 h-5 text-red-600 mt-0.5" />
+                    <div>
+                      <span className="font-medium">घरायसी उपभोग</span>
+                      <div className="text-lg font-bold text-red-600">
+                        {localizeNumber(selfConsumptionPercentage, "ne")}% (
+                        {localizeNumber(
+                          (totalProduction - totalSales).toFixed(2),
+                          "ne",
+                        )}{" "}
+                        मे.टन)
+                      </div>
+                    </div>
+                  </li>
+                </ul>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">
-                  वार्षिक उत्पादन प्रवृत्ति
-                </CardTitle>
-                <CardDescription>
-                  प्रमुख दालबालीको वार्षिक उत्पादन
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="h-[380px]">
-                <PulseBarChart data={yearlyTrendData} />
+            <Card className="border-2">
+              <CardContent className="pt-6">
+                <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Target className="w-5 h-5" />
+                  व्यावसायीकरण स्कोर
+                </h4>
+                <CommercializationChart
+                  commercializationScore={commercializationScore}
+                />
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">उत्पादन र बिक्री वितरण</CardTitle>
-              <CardDescription>
-                प्रमुख ६ दालबालीको उत्पादन, बिक्री र आन्तरिक उपभोग अनुपात
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-[400px]">
-              <ProductionSalesDistributionChart
-                productionSalesData={productionSalesData}
-                totalProduction={totalProduction}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {/* Sales and Revenue Section */}
+      <section id="sales-revenue">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-primary mb-2">
+            बिक्री र आम्दानी विश्लेषण
+          </h2>
+          <p className="text-muted-foreground">
+            दालबालीको प्रकार अनुसार बिक्री र आम्दानी वितरण
+          </p>
+        </div>
 
-        {/* Sales Distribution Tab */}
-        <TabsContent value="sales" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="h-[400px]">
-              <CardHeader>
-                <CardTitle className="text-lg">दालबाली बिक्री वितरण</CardTitle>
-                <CardDescription>
-                  कुल बिक्री {localizeNumber(totalSales.toFixed(2), "ne")} मे.टन
-                  ({localizeNumber(soldPercentage, "ne")}% उत्पादनको)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="h-[320px]">
-                {/* Modified production pie chart to show only sold amounts */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
+                <ShoppingCart className="w-5 h-5" />
+                बिक्री वितरण चार्ट
+              </h3>
+              <div className="h-[350px]">
                 <PulsePieChart
-                  pieChartData={overallSummary.map((item) => ({
-                    name: item.typeName,
-                    value: item.sales,
-                    percentage:
-                      totalSales > 0
-                        ? ((item.sales / totalSales) * 100).toFixed(2)
-                        : "0",
-                  }))}
+                  pieChartData={salesPieChartData}
                   PULSE_TYPES={PULSE_TYPES}
                   PULSE_COLORS={PULSE_COLORS}
                   dataType="बिक्री"
                   unit="मे.टन"
                 />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">व्यावसायीकरण स्तर</CardTitle>
-                <CardDescription>
-                  दालबाली उत्पादनको व्यावसायीकरणको स्तर
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col justify-center h-[320px]">
-                <CommercializationChart
-                  commercializationScore={commercializationScore}
-                />
-                <div className="mt-8 grid grid-cols-2 gap-4">
-                  <div className="text-center p-3 bg-muted rounded-md">
-                    <p className="text-sm mb-1">बिक्रीमा गएको</p>
-                    <p className="text-lg font-bold">
-                      {localizeNumber(soldPercentage, "ne")}%
-                    </p>
-                  </div>
-                  <div className="text-center p-3 bg-muted rounded-md">
-                    <p className="text-sm mb-1">आन्तरिक उपभोग</p>
-                    <p className="text-lg font-bold">
-                      {localizeNumber(selfConsumptionPercentage, "ne")}%
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        {/* Revenue Distribution Tab */}
-        <TabsContent value="revenue" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">आम्दानी वितरण</CardTitle>
-              <CardDescription>
-                कुल आम्दानी रु.{" "}
-                {localizeNumber((totalRevenue / 1000000).toFixed(2), "ne")}{" "}
-                मिलियन
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-[400px]">
-              <PulsePieChart
-                pieChartData={revenuePieChartData}
-                PULSE_TYPES={PULSE_TYPES}
-                PULSE_COLORS={PULSE_COLORS}
-                dataType="आम्दानी"
-                unit="रु."
-                isRevenue={true}
-              />
+              </div>
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-muted/50 rounded-lg p-4 text-center flex flex-col justify-center h-[200px]">
-              <h4 className="text-lg font-medium mb-2">औसत बिक्री मूल्य</h4>
-              <p className="text-3xl font-bold">
-                रु.{" "}
-                {localizeNumber(
-                  pulseAnalysis.averagePricePerKg.toFixed(2),
-                  "ne",
-                )}
-              </p>
-              <p className="text-sm mt-2">प्रति किलो</p>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4 text-center flex flex-col justify-center h-[200px]">
-              <h4 className="text-lg font-medium mb-2">कुल आम्दानी</h4>
-              <p className="text-3xl font-bold">
-                रु. {localizeNumber((totalRevenue / 1000000).toFixed(2), "ne")}
-              </p>
-              <p className="text-sm mt-2">मिलियन रुपैयाँमा</p>
-            </div>
-
-            <div className="bg-muted/50 rounded-lg p-4 text-center flex flex-col justify-center h-[200px]">
-              <h4 className="text-lg font-medium mb-2">प्रति हेक्टर आम्दानी</h4>
-              {/* Estimated income per hectare (assuming 1.5 tonnes per hectare on average) */}
-              <p className="text-3xl font-bold">
-                रु.{" "}
-                {localizeNumber(
-                  (totalRevenue / (totalProduction / 1.5) / 1000).toFixed(2),
-                  "ne",
-                )}
-              </p>
-              <p className="text-sm mt-2">हजार रुपैयाँमा</p>
-            </div>
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      <div className="mt-12" id="economic-impact">
-        <h2 className="text-2xl font-bold tracking-tight border-b pb-2 scroll-m-20">
-          आर्थिक प्रभाव
-        </h2>
-
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-muted/50 rounded-lg p-4 text-center flex flex-col justify-center aspect-square">
-            <div className="text-3xl font-bold mb-2 text-amber-500">
-              {localizeNumber(totalProduction.toFixed(2), "ne")}
-            </div>
-            <div className="text-sm">मे.टन कुल उत्पादन</div>
-          </div>
-
-          <div className="bg-muted/50 rounded-lg p-4 text-center flex flex-col justify-center aspect-square">
-            <div className="text-3xl font-bold mb-2 text-blue-500">
-              {localizeNumber(totalSales.toFixed(2), "ne")}
-            </div>
-            <div className="text-sm">मे.टन कुल बिक्री</div>
-          </div>
-
-          <div className="bg-muted/50 rounded-lg p-4 text-center flex flex-col justify-center aspect-square">
-            <div className="text-3xl font-bold mb-2 text-green-500">
-              रु. {localizeNumber((totalRevenue / 1000000).toFixed(2), "ne")}
-            </div>
-            <div className="text-sm">मिलियन कुल आम्दानी</div>
-          </div>
-
-          <div className="bg-muted/50 rounded-lg p-4 text-center flex flex-col justify-center aspect-square">
-            <div className="text-3xl font-bold mb-2 text-purple-500">
-              {localizeNumber(commercializationScore.toString(), "ne")}%
-            </div>
-            <div className="text-sm">व्यावसायीकरण स्कोर</div>
-          </div>
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
+                <DollarSign className="w-5 h-5" />
+                आम्दानी वितरण चार्ट
+              </h3>
+              <div className="h-[350px]">
+                <PulsePieChart
+                  pieChartData={revenuePieChartData}
+                  PULSE_TYPES={PULSE_TYPES}
+                  PULSE_COLORS={PULSE_COLORS}
+                  dataType="आम्दानी"
+                  unit="रु."
+                  isRevenue={true}
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <Calculator className="w-8 h-8 mx-auto mb-2 text-amber-600" />
+                <h3 className="text-sm text-muted-foreground mb-1">
+                  औसत बिक्री मूल्य
+                </h3>
+                <p className="text-3xl font-bold text-amber-600">
+                  रु.{" "}
+                  {localizeNumber(
+                    pulseAnalysis.averagePricePerKg.toFixed(2),
+                    "ne",
+                  )}
+                </p>
+                <p className="text-sm mt-2">प्रति किलो</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <Banknote className="w-8 h-8 mx-auto mb-2 text-green-600" />
+                <h3 className="text-sm text-muted-foreground mb-1">
+                  कुल आम्दानी
+                </h3>
+                <p className="text-3xl font-bold text-green-600">
+                  रु.{" "}
+                  {localizeNumber((totalRevenue / 1000000).toFixed(2), "ne")}
+                </p>
+                <p className="text-sm mt-2">मिलियन रुपैयाँमा</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <TrendingUp className="w-8 h-8 mx-auto mb-2 text-blue-600" />
+                <h3 className="text-sm text-muted-foreground mb-1">
+                  प्रति हेक्टर आम्दानी
+                </h3>
+                <p className="text-3xl font-bold text-blue-600">
+                  रु.{" "}
+                  {localizeNumber(
+                    (totalRevenue / (totalProduction / 1.5) / 1000).toFixed(2),
+                    "ne",
+                  )}
+                </p>
+                <p className="text-sm mt-2">हजार रुपैयाँमा</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Production vs Sales Comparison */}
+      <section id="production-sales-comparison">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-primary mb-2">
+            उत्पादन र बिक्री तुलनात्मक विश्लेषण
+          </h2>
+          <p className="text-muted-foreground">
+            प्रत्येक दालबालीको उत्पादन र बिक्री अनुपातको तुलनात्मक अध्ययन
+          </p>
+        </div>
+
+        <Card className="border-2 mb-8">
+          <CardContent className="pt-6">
+            <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              उत्पादन बनाम बिक्री वितरण
+            </h3>
+            <div className="h-[400px]">
+              <ProductionSalesDistributionChart
+                productionSalesData={productionSalesData}
+                totalProduction={totalProduction}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <PieChart className="w-5 h-5" />
+                अर्थ ब्याख्या
+              </h4>
+              <div className="prose prose-sm">
+                <p>
+                  माथिको चार्टमा हरेक दालबालीको उत्पादन र बिक्री अनुपात
+                  देखाइएको छ। हरियो भाग आन्तरिक उपभोग र निलो भाग बिक्री परिमाण
+                  हो。
+                </p>
+                <p className="mt-2">
+                  सबैभन्दा बढी बिक्री अनुपात{" "}
+                  <span className="font-bold text-primary">
+                    {productionSalesData.length > 0
+                      ? productionSalesData.sort(
+                          (a, b) => b.percentageSold - a.percentageSold,
+                        )[0].name
+                      : ""}
+                  </span>
+                  को रहेको छ。
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
+                दालबाली बिक्री दर
+              </h4>
+              <div className="space-y-4">
+                {productionSalesData
+                  .sort((a, b) => b.percentageSold - a.percentageSold)
+                  .map((item, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{item.name}</span>
+                        <span className="font-bold text-primary">
+                          {localizeNumber(item.percentageSold.toFixed(2), "ne")}
+                          %
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500"
+                          style={{
+                            width: `${Math.min(item.percentageSold, 100)}%`,
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Historical Trend */}
+      <section id="historical-trend">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-primary mb-2">
+            ऐतिहासिक प्रवृत्ति विश्लेषण
+          </h2>
+          <p className="text-muted-foreground">
+            दालबालीको उत्पादनमा भएको ऐतिहासिक परिवर्तन र विकास
+          </p>
+        </div>
+
+        <Card className="border-2 mb-8">
+          <CardContent className="pt-6">
+            <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              वार्षिक उत्पादन प्रवृत्ति (२०७८-२०८०)
+            </h3>
+            <div className="h-[400px]">
+              <PulseBarChart data={yearlyTrendData} />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-2">
+          <CardContent className="pt-6">
+            <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              प्रवृत्ति विश्लेषण
+            </h4>
+            <div className="prose prose-sm">
+              <p>
+                पछिल्ला वर्षहरूमा दालबाली उत्पादनमा क्रमिक वृद्धि भएको देखिन्छ。
+                मसुरो, चना र केराउ उत्पादनमा निरन्तर वृद्धि भएको छ。
+              </p>
+              <p className="mt-2">
+                यो तथ्याङ्कले खजुरा गाउँपालिकामा दालबालीको क्षेत्रमा
+                सकारात्मक विकास भइरहेको संकेत गर्दछ। किसानहरूले परम्परागत
+                बालीका साथै नयाँ किसिमका दालबालीको खेती गर्न थालेका छन्。
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Economic Impact Section */}
+      <section id="economic-impact">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-primary mb-2">
+            आर्थिक प्रभाव
+          </h2>
+          <p className="text-muted-foreground">
+            दालबाली उत्पादनको स्थानीय अर्थतन्त्रमा पारेको प्रभाव
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <Bean className="w-8 h-8 mx-auto mb-2 text-amber-600" />
+                <h3 className="text-sm text-muted-foreground mb-1">
+                  कुल उत्पादन
+                </h3>
+                <p className="text-3xl font-bold text-amber-600">
+                  {localizeNumber(totalProduction.toFixed(2), "ne")}
+                </p>
+                <p className="text-sm mt-2">मेट्रिक टन</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <ShoppingCart className="w-8 h-8 mx-auto mb-2 text-blue-600" />
+                <h3 className="text-sm text-muted-foreground mb-1">
+                  कुल बिक्री
+                </h3>
+                <p className="text-3xl font-bold text-blue-600">
+                  {localizeNumber(totalSales.toFixed(2), "ne")}
+                </p>
+                <p className="text-sm mt-2">मेट्रिक टन</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <Banknote className="w-8 h-8 mx-auto mb-2 text-green-600" />
+                <h3 className="text-sm text-muted-foreground mb-1">
+                  कुल आम्दानी
+                </h3>
+                <p className="text-3xl font-bold text-green-600">
+                  रु.{" "}
+                  {localizeNumber((totalRevenue / 1000000).toFixed(2), "ne")}
+                </p>
+                <p className="text-sm mt-2">मिलियन</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-2">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <Target className="w-8 h-8 mx-auto mb-2 text-purple-600" />
+                <h3 className="text-sm text-muted-foreground mb-1">
+                  व्यावसायीकरण स्कोर
+                </h3>
+                <p className="text-3xl font-bold text-purple-600">
+                  {localizeNumber(commercializationScore.toString(), "ne")}
+                </p>
+                <p className="text-sm mt-2">प्रतिशत</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
     </div>
   );
 }
