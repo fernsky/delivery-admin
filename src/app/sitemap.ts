@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { locales } from "@/i18n/config";
 import { api } from "@/trpc/server";
-import { navItems } from "@/components/layout/SidebarNav";
+import {navItems} from "@/constants/nav-items"
 
 // Base URL from environment or default
 const baseUrl =
@@ -49,21 +49,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Fetch dynamic demographic data routes
-  try {
-    // Example: Get all the ward-wise religion population data to generate URLs for them
-    const religionData =
-      await api.profile.demographics.wardWiseReligionPopulation.getAll.query();
-
-    // Get unique ward numbers
-    const wardNumbers = Array.from(
-      new Set(religionData.map((item) => item.wardNumber)),
-    ).sort((a, b) => a - b);
-
-    // Add any additional dynamic content here if needed
-  } catch (error) {
-    console.error("Error generating dynamic sitemap entries:", error);
-  }
 
   // Add other dynamic routes here as the application grows
   // For example, fetch and add news articles, events, etc.
