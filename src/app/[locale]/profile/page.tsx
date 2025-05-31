@@ -129,7 +129,8 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="prose prose-slate dark:prose-invert max-w-none">
+            {/* Content with responsive max-width */}
+            <div className="prose prose-slate dark:prose-invert max-w-4xl">
               <h2 id="introduction" className="scroll-m-20">
                 परिचय
               </h2>
@@ -147,7 +148,8 @@ export default function ProfilePage() {
             </div>
           </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Cards grid - full width */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 not-prose max-w-none">
             {categories.map((category) => (
               <Card key={category.title} className="overflow-hidden">
                 <CardHeader className={cn("p-4", category.color)}>
@@ -175,7 +177,8 @@ export default function ProfilePage() {
           </div>
 
           <section className="py-6">
-            <div className="prose prose-slate dark:prose-invert max-w-none">
+            {/* Content with responsive max-width */}
+            <div className="prose prose-slate dark:prose-invert max-w-4xl">
               <h2 id="how-to-use" className="scroll-m-20">
                 प्रोफाइलको प्रयोग विधि
               </h2>

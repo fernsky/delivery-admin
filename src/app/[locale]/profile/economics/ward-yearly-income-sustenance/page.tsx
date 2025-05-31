@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { DocsLayout } from "@/components/layout/DocsLayout";
 import { TableOfContents } from "@/components/TableOfContents";
 import Image from "next/image";
 import YearlyIncomeSustenanceCharts from "./_components/yearly-income-sustenance-charts";
@@ -166,12 +165,12 @@ export default async function WardYearlyIncomeSustenancePage() {
     await api.profile.economics.wardWiseAnnualIncomeSustenance.getAll.query();
 
   // Try to fetch summary data
-  // Try to fetch summary data
   try {
     await api.profile.economics.wardWiseAnnualIncomeSustenance.summary.query();
   } catch (error) {
     console.error("Could not fetch summary data", error);
   }
+
   // Process data for overall summary
   const overallSummary = Object.entries(
     incomeSustenanceData.reduce((acc: Record<string, number>, item) => {
@@ -256,133 +255,149 @@ export default async function WardYearlyIncomeSustenancePage() {
   });
 
   return (
-    <DocsLayout toc={<TableOfContents toc={toc} />}>
-      {/* Add structured data for SEO */}
-      <YearlyIncomeSustenanceSEO
-        overallSummary={overallSummary}
-        totalHouseholds={totalHouseholds}
-        MONTHS_SUSTAINED_NAMES={MONTHS_SUSTAINED_NAMES}
-        wardNumbers={wardNumbers}
-      />
-
-      <div className="flex flex-col gap-8">
-        <section>
-          <div className="relative rounded-lg overflow-hidden mb-8">
-            <Image
-              src="/images/income-sustenance.svg"
-              width={1200}
-              height={400}
-              alt="वार्षिक आयको पर्याप्तता - खजुरा गाउँपालिका (Yearly Income Sustenance - Khajura Rural Municipality)"
-              className="w-full h-[250px] object-cover rounded-sm"
-              priority
-            />
-          </div>
-
-          <div className="prose prose-slate dark:prose-invert max-w-none">
-            <h1 className="scroll-m-20 tracking-tight mb-6">
-              खजुरा गाउँपालिकामा वार्षिक आयको पर्याप्तता
-            </h1>
-
-            <h2 id="introduction" className="scroll-m-20">
-              परिचय
-            </h2>
-            <p>
-              यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा रहेका घरपरिवारहरूको
-              वार्षिक आयको पर्याप्तता सम्बन्धी विस्तृत तथ्याङ्क प्रस्तुत गरिएको
-              छ। यो तथ्याङ्कले घरपरिवारको आय, खर्च, आर्थिक अवस्था र खाद्य
-              सुरक्षाको अवस्थालाई प्रतिबिम्बित गर्दछ।
-            </p>
-            <p>
-              खजुरा गाउँपालिकामा कुल {totalHouseholds.toLocaleString()} घरपरिवार
-              मध्ये सबैभन्दा धेरै{" "}
-              {(
-                ((overallSummary.sort((a, b) => b.households - a.households)[0]
-                  ?.households || 0) /
-                  totalHouseholds) *
-                100
-              ).toFixed(1)}
-              % घरपरिवारहरूको वार्षिक आय{" "}
-              {overallSummary.sort((a, b) => b.households - a.households)[0]
-                ?.monthsSustainedName || ""}{" "}
-              मात्र पुग्ने देखिन्छ। यस तथ्याङ्कले स्थानीय सरकारलाई आर्थिक विकास
-              योजना र गरीबी निवारणका कार्यक्रमहरू तर्जुमा गर्न सहयोग पुर्‍याउँछ।
-            </p>
-
-            <h2
-              id="income-sustenance-distribution"
-              className="scroll-m-20 border-b pb-2"
-            >
-              वार्षिक आयको पर्याप्तता
-            </h2>
-            <p>
-              खजुरा गाउँपालिकामा वार्षिक आयको पर्याप्तता अनुसार घरपरिवारहरूको
-              वितरण निम्नानुसार रहेको छ:
-            </p>
-          </div>
-
-          {/* Client component for charts */}
-          <YearlyIncomeSustenanceCharts
+    <div className="relative py-4 lg:py-6">
+      <div className="flex gap-8 max-w-none">
+        {/* Main content - let it expand to fill available space */}
+        <article className="prose prose-slate dark:prose-invert flex-1 min-w-0 max-w-none">
+          {/* Add structured data for SEO */}
+          <YearlyIncomeSustenanceSEO
             overallSummary={overallSummary}
             totalHouseholds={totalHouseholds}
-            pieChartData={pieChartData}
-            wardWiseData={wardWiseData}
-            wardNumbers={wardNumbers}
-            incomeSustenanceData={incomeSustenanceData}
             MONTHS_SUSTAINED_NAMES={MONTHS_SUSTAINED_NAMES}
+            wardNumbers={wardNumbers}
           />
 
-          <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
-            <h2
-              id="income-sustenance-analysis"
-              className="scroll-m-20 border-b pb-2"
-            >
-              आयको पर्याप्तताको विश्लेषण
-            </h2>
-            <p>
-              खजुरा गाउँपालिकाका घरपरिवारहरूको वार्षिक आयको पर्याप्तता विश्लेषण
-              गर्दा, वर्षभरि लागि आफ्नै आय पुग्ने घरपरिवारको संख्या{" "}
-              {overallSummary
-                .find((item) => item.monthsSustained === "TWELVE_MONTHS")
-                ?.households.toLocaleString() || "0"}{" "}
-              (
-              {(
-                ((overallSummary.find(
-                  (item) => item.monthsSustained === "TWELVE_MONTHS",
-                )?.households || 0) /
-                  totalHouseholds) *
-                100
-              ).toFixed(1)}
-              %) मात्र रहेको देखिन्छ। यसले खजुरामा खाद्य सुरक्षा, आर्थिक
-              स्वावलम्बन र गरीबीको स्थितिलाई संकेत गर्दछ।
-            </p>
+          <div className="flex flex-col gap-8">
+            <section>
+              <div className="relative rounded-lg overflow-hidden mb-8">
+                <Image
+                  src="/images/income-sustenance.svg"
+                  width={1200}
+                  height={400}
+                  alt="वार्षिक आयको पर्याप्तता - खजुरा गाउँपालिका (Yearly Income Sustenance - Khajura Rural Municipality)"
+                  className="w-full h-[250px] object-cover rounded-sm"
+                  priority
+                />
+              </div>
 
-            {/* Client component for analysis section */}
-            <YearlyIncomeSustenanceAnalysis
-              overallSummary={overallSummary}
-              totalHouseholds={totalHouseholds}
-              MONTHS_SUSTAINED_NAMES={MONTHS_SUSTAINED_NAMES}
-              wardNumbers={wardNumbers}
-              incomeSustenanceData={incomeSustenanceData}
-            />
+              {/* Content with responsive max-width for readability */}
+              <div className="prose prose-slate dark:prose-invert max-w-4xl">
+                <h1 className="scroll-m-20 tracking-tight mb-6">
+                  खजुरा गाउँपालिकामा वार्षिक आयको पर्याप्तता
+                </h1>
 
-            <h2 id="data-source" className="scroll-m-20 border-b pb-2">
-              तथ्याङ्क स्रोत
-            </h2>
-            <p>
-              माथि प्रस्तुत गरिएका तथ्याङ्कहरू खजुरा गाउँपालिकाको घरधुरी
-              सर्वेक्षण र पालिकाको आर्थिक अध्ययनबाट संकलन गरिएको हो। यी
-              तथ्याङ्कहरूको महत्व निम्न अनुसार छ:
-            </p>
+                <h2 id="introduction" className="scroll-m-20">
+                  परिचय
+                </h2>
+                <p>
+                  यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा रहेका घरपरिवारहरूको
+                  वार्षिक आयको पर्याप्तता सम्बन्धी विस्तृत तथ्याङ्क प्रस्तुत गरिएको
+                  छ। यो तथ्याङ्कले घरपरिवारको आय, खर्च, आर्थिक अवस्था र खाद्य
+                  सुरक्षाको अवस्थालाई प्रतिबिम्बित गर्दछ。
+                </p>
+                <p>
+                  खजुरा गाउँपालिकामा कुल {totalHouseholds.toLocaleString()} घरपरिवार
+                  मध्ये सबैभन्दा धेरै{" "}
+                  {(
+                    ((overallSummary.sort((a, b) => b.households - a.households)[0]
+                      ?.households || 0) /
+                      totalHouseholds) *
+                    100
+                  ).toFixed(1)}
+                  % घरपरिवारहरूको वार्षिक आय{" "}
+                  {overallSummary.sort((a, b) => b.households - a.households)[0]
+                    ?.monthsSustainedName || ""}{" "}
+                  मात्र पुग्ने देखिन्छ। यस तथ्याङ्कले स्थानीय सरकारलाई आर्थिक विकास
+                  योजना र गरीबी निवारणका कार्यक्रमहरू तर्जुमा गर्न सहयोग पुर्‍याउँछ。
+                </p>
 
-            <ul>
-              <li>जीविकोपार्जन र खाद्य सुरक्षाको अवस्था अध्ययन गर्न</li>
-              <li>आय वृद्धि र गरीबी न्यूनीकरणका कार्यक्रमहरू लक्षित गर्न</li>
-              <li>स्थानीय अर्थतन्त्रको संरचना र प्रवृत्ति बुझ्न</li>
-              <li>आर्थिक विकासका योजना र नीतिहरू तयार गर्न</li>
-            </ul>
+                <h2
+                  id="income-sustenance-distribution"
+                  className="scroll-m-20 border-b pb-2"
+                >
+                  वार्षिक आयको पर्याप्तता
+                </h2>
+                <p>
+                  खजुरा गाउँपालिकामा वार्षिक आयको पर्याप्तता अनुसार घरपरिवारहरूको
+                  वितरण निम्नानुसार रहेको छ:
+                </p>
+              </div>
+
+              {/* Client component for charts - full width */}
+              <div className="max-w-none not-prose">
+                <YearlyIncomeSustenanceCharts
+                  overallSummary={overallSummary}
+                  totalHouseholds={totalHouseholds}
+                  pieChartData={pieChartData}
+                  wardWiseData={wardWiseData}
+                  wardNumbers={wardNumbers}
+                  incomeSustenanceData={incomeSustenanceData}
+                  MONTHS_SUSTAINED_NAMES={MONTHS_SUSTAINED_NAMES}
+                />
+              </div>
+
+              {/* Content with responsive max-width for readability */}
+              <div className="prose prose-slate dark:prose-invert max-w-4xl mt-8">
+                <h2
+                  id="income-sustenance-analysis"
+                  className="scroll-m-20 border-b pb-2"
+                >
+                  आयको पर्याप्तताको विश्लेषण
+                </h2>
+                <p>
+                  खजुरा गाउँपालिकाका घरपरिवारहरूको वार्षिक आयको पर्याप्तता विश्लेषण
+                  गर्दा, वर्षभरि लागि आफ्नै आय पुग्ने घरपरिवारको संख्या{" "}
+                  {overallSummary
+                    .find((item) => item.monthsSustained === "TWELVE_MONTHS")
+                    ?.households.toLocaleString() || "0"}{" "}
+                  (
+                  {(
+                    ((overallSummary.find(
+                      (item) => item.monthsSustained === "TWELVE_MONTHS",
+                    )?.households || 0) /
+                      totalHouseholds) *
+                    100
+                  ).toFixed(1)}
+                  %) मात्र रहेको देखिन्छ। यसले खजुरामा खाद्य सुरक्षा, आर्थिक
+                  स्वावलम्बन र गरीबीको स्थितिलाई संकेत गर्दछ。
+                </p>
+
+                {/* Client component for analysis section */}
+                <YearlyIncomeSustenanceAnalysis
+                  overallSummary={overallSummary}
+                  totalHouseholds={totalHouseholds}
+                  MONTHS_SUSTAINED_NAMES={MONTHS_SUSTAINED_NAMES}
+                  wardNumbers={wardNumbers}
+                  incomeSustenanceData={incomeSustenanceData}
+                />
+
+                <h2 id="data-source" className="scroll-m-20 border-b pb-2">
+                  तथ्याङ्क स्रोत
+                </h2>
+                <p>
+                  माथि प्रस्तुत गरिएका तथ्याङ्कहरू खजुरा गाउँपालिकाको घरधुरी
+                  सर्वेक्षण र पालिकाको आर्थिक अध्ययनबाट संकलन गरिएको हो। यी
+                  तथ्याङ्कहरूको महत्व निम्न अनुसार छ:
+                </p>
+
+                <ul>
+                  <li>जीविकोपार्जन र खाद्य सुरक्षाको अवस्था अध्ययन गर्न</li>
+                  <li>आय वृद्धि र गरीबी न्यूनीकरणका कार्यक्रमहरू लक्षित गर्न</li>
+                  <li>स्थानीय अर्थतन्त्रको संरचना र प्रवृत्ति बुझ्न</li>
+                  <li>आर्थिक विकासका योजना र नीतिहरू तयार गर्न</li>
+                </ul>
+              </div>
+            </section>
           </div>
-        </section>
+        </article>
+
+        {/* Table of Contents - Desktop only, reduced width */}
+        <aside className="hidden xl:block w-56 shrink-0">
+          <div className="sticky top-20 p-3 border border-gray-200 rounded-lg bg-gray-50/50 max-w-[224px]">
+            <TableOfContents toc={toc} />
+          </div>
+        </aside>
       </div>
-    </DocsLayout>
+    </div>
   );
 }

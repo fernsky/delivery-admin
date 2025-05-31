@@ -187,9 +187,9 @@ export default async function WardHouseholdLandPossessionsPage() {
 
   return (
     <div className="relative py-4 lg:py-6">
-      <div className="flex gap-8">
-        {/* Main content */}
-        <article className="prose prose-slate dark:prose-invert max-w-none flex-1">
+      <div className="flex gap-8 max-w-none">
+        {/* Main content - let it expand to fill available space */}
+        <article className="prose prose-slate dark:prose-invert flex-1 min-w-0 max-w-none">
           {/* Add structured data for SEO */}
           <LandPossessionSEO
             landPossessionData={landPossessionData}
@@ -211,7 +211,8 @@ export default async function WardHouseholdLandPossessionsPage() {
                 />
               </div>
 
-              <div className="prose prose-slate dark:prose-invert max-w-none">
+              {/* Content with responsive max-width for readability */}
+              <div className="prose prose-slate dark:prose-invert max-w-4xl">
                 <h1 className="scroll-m-20 tracking-tight mb-6">
                   खजुरा गाउँपालिकामा घरपरिवारको जग्गा स्वामित्व
                 </h1>
@@ -251,16 +252,19 @@ export default async function WardHouseholdLandPossessionsPage() {
                 </p>
               </div>
 
-              {/* Client component for charts */}
-              <LandPossessionCharts
-                wardWiseData={wardWiseData}
-                pieChartData={pieChartData}
-                landOwnershipStatusData={landOwnershipStatusData}
-                totalHouseholdsWithLand={totalHouseholdsWithLand}
-                estimatedTotalHouseholds={estimatedTotalHouseholds}
-              />
+              {/* Client component for charts - full width */}
+              <div className="max-w-none not-prose">
+                <LandPossessionCharts
+                  wardWiseData={wardWiseData}
+                  pieChartData={pieChartData}
+                  landOwnershipStatusData={landOwnershipStatusData}
+                  totalHouseholdsWithLand={totalHouseholdsWithLand}
+                  estimatedTotalHouseholds={estimatedTotalHouseholds}
+                />
+              </div>
 
-              <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
+              {/* Content with responsive max-width for readability */}
+              <div className="prose prose-slate dark:prose-invert max-w-4xl mt-8">
                 <h2
                   id="land-ownership-analysis"
                   className="scroll-m-20 border-b pb-2"
@@ -307,9 +311,9 @@ export default async function WardHouseholdLandPossessionsPage() {
           </div>
         </article>
 
-        {/* Table of Contents - Desktop only */}
-        <aside className="hidden xl:block w-64 shrink-0">
-          <div className="sticky top-20 p-4 border border-gray-200 rounded-lg bg-gray-50/50">
+        {/* Table of Contents - Desktop only, reduced width */}
+        <aside className="hidden xl:block w-56 shrink-0">
+          <div className="sticky top-20 p-3 border border-gray-200 rounded-lg bg-gray-50/50 max-w-[224px]">
             <TableOfContents toc={toc} />
           </div>
         </aside>

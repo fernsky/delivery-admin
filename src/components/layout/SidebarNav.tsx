@@ -239,8 +239,8 @@ export default function SidebarNav() {
   if (!isMounted) return null;
 
   return (
-    <div className="w-full space-y-2">
-      <div className="text-sm font-semibold text-[#123772] mb-3 pl-2">
+    <div className="w-full space-y-2 max-w-[290px] lg:max-w-[260px]">
+      <div className="text-sm font-semibold text-[#123772] mb-3 pl-2 truncate">
         तथ्याङ्क वर्गहरू
       </div>
       {navItems.map((section) => {
@@ -255,7 +255,7 @@ export default function SidebarNav() {
               >
                 <CollapsibleTrigger
                   className={cn(
-                    "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm transition-all duration-200 group relative",
+                    "flex w-full items-center justify-between rounded-lg px-2.5 py-2.5 text-sm transition-all duration-200 group relative",
                     isSectionCurrentlyActive
                       ? "bg-gradient-to-r from-[#0b1f42]/15 to-[#1a4894]/15 text-[#123772] font-semibold shadow-sm border border-[#123772]/20"
                       : "hover:bg-[#123772]/5 text-gray-600 hover:text-[#123772]",
@@ -263,13 +263,13 @@ export default function SidebarNav() {
                 >
                   {/* Active section indicator */}
                   {isSectionCurrentlyActive && (
-                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-[#123772] to-[#1a4894] rounded-r-full" />
+                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-7 bg-gradient-to-b from-[#123772] to-[#1a4894] rounded-r-full" />
                   )}
                   
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
                     <div
                       className={cn(
-                        "p-1.5 rounded-md transition-all duration-200 group-hover:scale-105",
+                        "p-1.5 rounded-md transition-all duration-200 group-hover:scale-105 flex-shrink-0",
                         isSectionCurrentlyActive
                           ? "bg-[#123772]/15 text-[#123772] shadow-sm"
                           : "bg-gray-100 group-hover:bg-[#123772]/10",
@@ -278,20 +278,20 @@ export default function SidebarNav() {
                       {section.icon}
                     </div>
                     <span className={cn(
-                      "font-medium",
+                      "font-medium truncate text-sm",
                       isSectionCurrentlyActive ? "text-[#123772]" : ""
                     )}>
                       {section.title}
                     </span>
                     {section.badge && (
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="secondary" className="text-xs flex-shrink-0 px-1.5 py-0.5">
                         {section.badge}
                       </Badge>
                     )}
                   </div>
                   <ChevronDown
                     className={cn(
-                      "h-4 w-4 shrink-0 transition-all duration-200",
+                      "h-4 w-4 shrink-0 transition-all duration-200 ml-2",
                       openSections[section.title] ? "rotate-180" : "rotate-0",
                       isSectionCurrentlyActive
                         ? "text-[#123772]"
@@ -309,25 +309,26 @@ export default function SidebarNav() {
                           key={item.href}
                           href={item.href}
                           className={cn(
-                            "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-all duration-200 group relative",
+                            "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-all duration-200 group relative w-full",
                             isCurrentlyActive
                               ? "bg-gradient-to-r from-[#123772] to-[#1a4894] text-white font-semibold shadow-md"
                               : "text-gray-600 hover:bg-[#123772]/8 hover:text-[#123772]",
                           )}
+                          title={item.title} // Add tooltip for long text
                         >
                           <FileText
                             className={cn(
-                              "w-3 h-3 transition-colors",
+                              "w-3 h-3 transition-colors flex-shrink-0",
                               isCurrentlyActive
                                 ? "text-white"
                                 : "text-[#123772] opacity-70 group-hover:opacity-100",
                             )}
                           />
-                          <span className="truncate">{item.title}</span>
+                          <span className="truncate flex-1 min-w-0 text-sm leading-snug">{item.title}</span>
                           {isCurrentlyActive && (
                             <>
                               <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-white rounded-r-full" />
-                              <div className="ml-auto">
+                              <div className="flex-shrink-0 ml-2">
                                 <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                               </div>
                             </>
@@ -342,20 +343,21 @@ export default function SidebarNav() {
               <Link
                 href={section.href}
                 className={cn(
-                  "flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 w-full group relative",
+                  "flex items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-sm transition-all duration-200 w-full group relative",
                   isPathActive(section.href, pathname)
                     ? "bg-gradient-to-r from-[#123772] to-[#1a4894] text-white font-semibold shadow-md"
                     : "text-gray-600 hover:bg-[#123772]/5 hover:text-[#123772]",
                 )}
+                title={section.title} // Add tooltip for long text
               >
                 {/* Active section indicator for single items */}
                 {isPathActive(section.href, pathname) && (
-                  <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-white rounded-r-full" />
+                  <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-7 bg-white rounded-r-full" />
                 )}
                 
                 <div
                   className={cn(
-                    "p-1.5 rounded-md transition-all duration-200 group-hover:scale-105",
+                    "p-1.5 rounded-md transition-all duration-200 group-hover:scale-105 flex-shrink-0",
                     isPathActive(section.href, pathname) 
                       ? "bg-white/20 shadow-sm" 
                       : "bg-gray-100 group-hover:bg-[#123772]/10",
@@ -363,17 +365,17 @@ export default function SidebarNav() {
                 >
                   {section.icon}
                 </div>
-                <span className="font-medium">{section.title}</span>
+                <span className="font-medium truncate flex-1 min-w-0 text-sm">{section.title}</span>
                 {section.badge && (
                   <Badge 
                     variant={isPathActive(section.href, pathname) ? "secondary" : "outline"} 
-                    className="text-xs ml-auto"
+                    className="text-xs flex-shrink-0 ml-2 px-1.5 py-0.5"
                   >
                     {section.badge}
                   </Badge>
                 )}
                 {isPathActive(section.href, pathname) && (
-                  <div className="ml-auto">
+                  <div className="flex-shrink-0 ml-2">
                     <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                   </div>
                 )}
