@@ -20,7 +20,7 @@ import {
   Building,
 } from "lucide-react";
 
-const navItems = [
+export const navItems = [
   {
     title: "खजुरा प्रोफाइल",
     href: "/profile",
