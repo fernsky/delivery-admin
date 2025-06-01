@@ -105,6 +105,56 @@ export default function BusinessView() {
     },
   );
 
+  // Extract location data from the business object instead of making a separate API call
+  const formatBusinessLocation = (business: any) => {
+    if (!business) return null;
+
+    // Parse the location data
+    const parseLocationArray = (field: any): string[] => {
+      if (!field) return [];
+      if (Array.isArray(field)) return field;
+      if (
+        typeof field === "string" &&
+        field.startsWith("{") &&
+        field.endsWith("}")
+      ) {
+        return field
+          .substring(1, field.length - 1)
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
+      }
+      return [];
+    };
+
+    const location = parseLocationArray(business.businessLocation);
+
+    // Extract latitude and longitude if available
+    let latitude: number | null = null;
+    let longitude: number | null = null;
+
+    // Try to extract from business_location array
+    if (location.length >= 2) {
+      const possibleLat = parseFloat(location[0]);
+      const possibleLng = parseFloat(location[1]);
+
+      if (!isNaN(possibleLat) && !isNaN(possibleLng)) {
+        latitude = possibleLat;
+        longitude = possibleLng;
+      }
+    }
+
+    return {
+      raw: location,
+      latitude,
+      longitude,
+    };
+  };
+
+  // Prepare location data from business object
+  const locationData = business ? formatBusinessLocation(business) : null;
+  const isLoadingLocation = isLoadingBusiness;
+
   // Loading state
   if (isLoadingBusiness) {
     return (
@@ -196,7 +246,7 @@ export default function BusinessView() {
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to List
           </Button>
           <Link
-            href={`/dashboard/businesses/edit/${encodeURIComponent(id)}`}
+            href={`/dashboard/businesses/edit/${encodeURIComponent(rawId)}`}
             passHref
           >
             <Button>
@@ -316,22 +366,6 @@ export default function BusinessView() {
                           Ward Number
                         </span>
                         <span className="font-medium">{wardNo}</span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b">
-                        <span className="text-muted-foreground">
-                          Business Location
-                        </span>
-                        <span className="font-medium">
-                          {business.businessLocality || "N/A"}
-                        </span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b">
-                        <span className="text-muted-foreground">
-                          Business Location Ownership
-                        </span>
-                        <span className="font-medium">
-                          {business.businessLocationOwnership || "N/A"}
-                        </span>
                       </div>
                     </div>
                   </div>
@@ -902,11 +936,15 @@ export default function BusinessView() {
               </CardHeader>
               <CardContent>
                 <BusinessLocationMap
-                  id={id}
+                  id={businessId}
                   businessName={businessName}
-                  location={locationData?.location}
+                  location={locationData}
                   isLoading={isLoadingLocation}
-                  error={locationError?.message}
+                  error={
+                    !locationData?.latitude && !locationData?.longitude
+                      ? "No location data available"
+                      : undefined
+                  }
                 />
               </CardContent>
             </Card>
