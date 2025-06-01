@@ -75,12 +75,11 @@ export function ListBusinesses({ user }: { user: User }) {
     }));
   };
 
-  if (businessesError || statsError) {
+  if (businessesError ) {
     return (
       <Alert variant="destructive" className="m-4">
         <AlertDescription>
           {businessesError?.message ||
-            statsError?.message ||
             "An error occurred"}
         </AlertDescription>
       </Alert>
