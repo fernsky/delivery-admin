@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 400" width="1200" height="400">
+  <defs>
+    <!-- Modern gradient backgrounds -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+    
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    
+    <!-- Additional decorative gradients -->
+    <linearGradient id="decorGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0.05" />
+    </linearGradient>
+    
+    <linearGradient id="decorGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05" />
+    </linearGradient>
+    
+    <!-- Modern stylized house ownership icons -->
+    <symbol id="iconPrivate" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M25,60 L25,40 L50,20 L75,40 L75,60 Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="3" stroke-linejoin="round" />
+      <path d="M25,60 L75,60 L75,80 L25,80 Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="3" stroke-linejoin="round" />
+      <rect x="42" y="65" width="16" height="15" rx="1" fill="#3b82f6" />
+      <rect x="33" y="45" width="10" height="10" fill="#bfdbfe" stroke="#3b82f6" stroke-width="2" />
+      <rect x="57" y="45" width="10" height="10" fill="#bfdbfe" stroke="#3b82f6" stroke-width="2" />
+    </symbol>
+    
+    <symbol id="iconRent" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M25,65 L25,35 L50,20 L75,35 L75,65 Z" fill="#fee2e2" stroke="#ef4444" stroke-width="3" stroke-linejoin="round" />
+      <path d="M25,65 L75,65 L75,80 L25,80 Z" fill="#fee2e2" stroke="#ef4444" stroke-width="3" stroke-linejoin="round" />
+      <rect x="42" y="65" width="16" height="15" rx="1" fill="#ef4444" />
+      <path d="M40,40 C45,33 55,33 60,40" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" />
+      <circle cx="40" cy="52" r="4" fill="#ef4444" />
+      <circle cx="60" cy="52" r="4" fill="#ef4444" />
+    </symbol>
+    
+    <symbol id="iconInstitutional" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M20,80 L20,35 L50,25 L80,35 L80,80 Z" fill="#d1fae5" stroke="#10b981" stroke-width="3" stroke-linejoin="round" />
+      <rect x="45" y="60" width="10" height="20" fill="#10b981" />
+      <path d="M25,40 L75,40 M25,55 L75,55 M25,70 L75,70" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" />
+      <rect x="30" y="25" width="40" height="10" fill="#d1fae5" stroke="#10b981" stroke-width="2" />
+      <path d="M30,25 L50,15 L70,25" fill="none" stroke="#10b981" stroke-width="2" />
+    </symbol>
+    
+    <symbol id="iconVillageBlock" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M15,80 L25,30 L45,30 L55,30 L75,30 L85,80 Z" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" stroke-linejoin="round" />
+      <path d="M30,80 L30,50 L45,40 L60,50 L60,80" fill="none" stroke="#f59e0b" stroke-width="2" />
+      <path d="M45,65 L45,80 M60,50 L70,55 L70,80" fill="none" stroke="#f59e0b" stroke-width="2" />
+      <path d="M35,35 L35,45 L40,45 L40,35 Z M50,35 L50,45 L55,45 L55,35 Z M65,35 L65,45 L70,45 L70,35 Z" fill="#f59e0b" />
+    </symbol>
+    
+    <symbol id="iconOther" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M30,70 C20,60 20,40 30,30 C40,20 60,20 70,30 C80,40 80,60 70,70 C60,80 40,80 30,70 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="3" stroke-linejoin="round" />
+      <path d="M40,40 L60,40 M40,50 L60,50 M40,60 L60,60" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" />
+      <path d="M50,25 L50,75" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+    </symbol>
+
+    <!-- Modern wavy pattern -->
+    <pattern id="modernPattern" width="100" height="40" patternUnits="userSpaceOnUse">
+      <path d="M0,20 Q20,5 40,20 T80,20 T120,20" fill="none" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.1"/>
+      <path d="M0,40 Q20,25 40,40 T80,40 T120,40" fill="none" stroke="#60a5fa" stroke-width="1" stroke-opacity="0.1"/>
+    </pattern>
+
+    <!-- Filter for elegant shadows -->
+    <filter id="modernShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#334155" flood-opacity="0.15"/>
+    </filter>
+    
+    <!-- Dot patterns for background -->
+    <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1" fill="#cbd5e1" fill-opacity="0.5"/>
+    </pattern>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="100%" height="100%" fill="url(#bgGradient)"/>
+  <rect width="100%" height="100%" fill="url(#modernPattern)" opacity="0.6"/>
+  <rect width="100%" height="100%" fill="url(#dotPattern)"/>
+  
+  <!-- Enhanced decorative elements to provide visual interest without titles -->
+  <path d="M0,0 L1200,0 L1200,400 L0,400 Z" fill="url(#decorGradient1)"/>
+  <path d="M1200,0 L0,0 L0,400 L1200,400 Z" fill="url(#decorGradient2)"/>
+  <circle cx="100" cy="50" r="150" fill="#3b82f6" opacity="0.03"/>
+  <circle cx="1100" cy="350" r="120" fill="#60a5fa" opacity="0.03"/>
+  <path d="M-50,300 Q300,250 600,320 T1300,280" fill="none" stroke="#3b82f6" stroke-width="40" stroke-opacity="0.04"/>
+  
+  <!-- Abstract flowing lines -->
+  <path d="M-50,100 C200,130 400,50 600,80 S900,180 1300,120" fill="none" stroke="#3b82f6" stroke-width="2" stroke-opacity="0.1"/>
+  <path d="M-50,140 C200,170 400,90 600,120 S900,220 1300,160" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.08"/>
+  <path d="M-50,320 C200,290 400,350 600,320 S900,250 1300,280" fill="none" stroke="#60a5fa" stroke-width="2" stroke-opacity="0.1"/>
+  
+  <!-- Centered house ownership cards -->
+  <g filter="url(#modernShadow)" transform="translate(0, 15)">
+    <!-- Private -->
+    <rect x="100" y="110" width="180" height="180" rx="15" fill="white"/>
+    <use xlink:href="#iconPrivate" x="140" y="120" width="100" height="100"/>
+    <text x="190" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#1d4ed8">निजी</text>
+    
+    <!-- Rent -->
+    <rect x="310" y="110" width="180" height="180" rx="15" fill="white"/>
+    <use xlink:href="#iconRent" x="350" y="120" width="100" height="100"/>
+    <text x="400" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#b91c1c">भाडामा</text>
+    
+    <!-- Institutional -->
+    <rect x="520" y="110" width="180" height="180" rx="15" fill="white"/>
+    <use xlink:href="#iconInstitutional" x="560" y="120" width="100" height="100"/>
+    <text x="610" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#047857">संस्थागत</text>
+    
+    <!-- Village Block -->
+    <rect x="730" y="110" width="180" height="180" rx="15" fill="white"/>
+    <use xlink:href="#iconVillageBlock" x="770" y="120" width="100" height="100"/>
+    <text x="820" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#92400e">गाउँ ब्लक</text>
+    
+    <!-- Other -->
+    <rect x="940" y="110" width="160" height="180" rx="15" fill="white"/>
+    <use xlink:href="#iconOther" x="970" y="120" width="100" height="100"/>
+    <text x="1020" y="240" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#475569">अन्य</text>
+  </g>
+  
+  <!-- Enhanced connecting lines with animated-like effect -->
+  <g>
+    <path d="M280,170 C295,170 295,170 310,170" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+    <path d="M490,170 C505,170 505,170 520,170" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+    <path d="M700,170 C715,170 715,170 730,170" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+    <path d="M910,170 C925,170 925,170 940,170" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+    
+    <!-- Additional connecting dotted lines for visual flair -->
+    <path d="M280,200 C295,210 295,210 310,200" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="1,3" stroke-opacity="0.3"/>
+    <path d="M490,200 C505,210 505,210 520,200" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="1,3" stroke-opacity="0.3"/>
+    <path d="M700,200 C715,210 715,210 730,200" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="1,3" stroke-opacity="0.3"/>
+    <path d="M910,200 C925,210 925,210 940,200" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="1,3" stroke-opacity="0.3"/>
+  </g>
+  
+  <!-- Subtle geometric decorative elements -->
+  <g opacity="0.15">
+    <path d="M50,350 L150,320 L100,280 Z" fill="#3b82f6"/>
+    <path d="M1150,50 L1100,100 L1180,120 Z" fill="#60a5fa"/>
+    <circle cx="200" cy="320" r="15" fill="#0ea5e9"/>
+    <circle cx="950" cy="330" r="12" fill="#0284c7"/>
+    <circle cx="1100" cy="290" r="10" fill="#3b82f6"/>
+    <rect x="180" y="60" width="20" height="20" rx="4" fill="#60a5fa"/>
+    <rect x="960" y="80" width="15" height="15" rx="3" fill="#3b82f6"/>
+  </g>
+
+  <!-- Bottom row of small houses silhouette -->
+  <g opacity="0.2">
+    <path d="M20,330 L35,310 L50,330 L50,350 L20,350 Z" fill="#3b82f6"/>
+    <path d="M60,320 L75,300 L90,320 L90,350 L60,350 Z" fill="#0ea5e9"/>
+    <path d="M100,330 L115,310 L130,330 L130,350 L100,350 Z" fill="#3b82f6"/>
+    <path d="M140,325 L155,305 L170,325 L170,350 L140,350 Z" fill="#0284c7"/>
+    
+    <path d="M970,330 L985,310 L1000,330 L1000,350 L970,350 Z" fill="#3b82f6"/>
+    <path d="M1010,320 L1025,300 L1040,320 L1040,350 L1010,350 Z" fill="#0ea5e9"/>
+    <path d="M1050,330 L1065,310 L1080,330 L1080,350 L1050,350 Z" fill="#3b82f6"/>
+    <path d="M1090,325 L1105,305 L1120,325 L1120,350 L1090,350 Z" fill="#0284c7"/>
+  </g>
+  
+  <!-- Horizontal bar chart visualization at the bottom -->
+  <g opacity="0.2" transform="translate(200, 300)">
+    <rect x="0" y="0" width="700" height="15" rx="2" fill="#3b82f6" />
+    <rect x="0" y="20" width="120" height="15" rx="2" fill="#ef4444" />
+    <rect x="0" y="40" width="30" height="15" rx="2" fill="#10b981" />
+    <rect x="0" y="60" width="40" height="15" rx="2" fill="#f59e0b" />
+    <rect x="0" y="80" width="20" height="15" rx="2" fill="#64748b" />
+  </g>
+</svg>

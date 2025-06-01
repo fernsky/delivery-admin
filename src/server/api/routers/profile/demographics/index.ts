@@ -20,6 +20,10 @@ import { wardWiseMajorSubjectRouter } from "../education/ward-wise-major-subject
 import { wardWiseSchoolDropoutRouter } from "../education/ward-wise-school-dropout.procedure";
 import { wardWiseDisabilityCauseRouter } from "./ward-wise-disability-cause.procedure";
 import { wardWiseBirthplaceHouseholdsRouter } from "./ward-wise-birthplace-households.procedure";
+import { wardWiseMigratedHouseholdsRouter } from "./ward-wise-migrated-households.procedure";
+import { wardWiseBirthCertificatePopulationRouter } from "./ward-wise-birth-certificate-population.procedure";
+import {wardAgeGenderWiseDeceasedPopulationRouter} from "./ward-age-gender-wise-deceased-population.procedure";
+import { wardWiseDeathCauseRouter } from "./ward-wise-death-cause.procedure";
 
 export const demographicsRouter = createTRPCRouter({
   summary: demographicSummaryRouter,
@@ -45,4 +49,8 @@ export const demographicsRouter = createTRPCRouter({
     wardAgeWiseEconomicallyActivePopulationRouter,
   wardWiseDisabilityCause: wardWiseDisabilityCauseRouter,
   wardWiseBirthplaceHouseholds: wardWiseBirthplaceHouseholdsRouter,
+  wardWiseMigratedHouseholds: wardWiseMigratedHouseholdsRouter,
+  wardWiseBirthCertificatePopulation: wardWiseBirthCertificatePopulationRouter,
+  wardAgeGenderWiseDeceasedPopulation: wardAgeGenderWiseDeceasedPopulationRouter,
+  wardWiseDeathCause: wardWiseDeathCauseRouter,
 });

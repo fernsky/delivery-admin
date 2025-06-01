@@ -35,3 +35,49 @@ export * from "./ward-wise-remittance-expenses";
 
 // Trained Population
 export * from "./ward-wise-trained-population";
+
+// House Ownership
+export * from "./ward-wise-house-ownership";
+
+// House Base
+export * from "./ward-wise-household-base";
+
+// House Outer wall
+export *  from "./ward-wise-household-outer-wall";
+
+// Remittance Amount
+export * from './ward-wise-remittance'
+
+// Land Ownership
+export * from './ward-wise-land-ownership'
+
+// Irrigated Area
+export * from './ward-wise-irrigated-area'
+
+// Irrigation Source
+export * from './municipality-wide-irrigation-source'
+
+// Municipality Wide Food Crops
+export * from './municipality-wide-food-crops'
+// Municipality Wide Pulses
+export * from './municipality-wide-pulses'
+// Municipality Wide Oil Seeds
+export * from './municipality-wide-oil-seeds'
+// Municipality Wide Fruits
+export * from './municipality-wide-fruits'
+// Municipality Wide Spices
+export * from './municipality-wide-spices'
+// Municipality Wide Vegetables
+export * from './municipality-wide-vegetables'
+// Municipality Wide Animal Products
+export * from './municipality-wide-animal-products'
+// Municipality Wide Crop Diseases
+export * from './municipality-wide-crop-diseases'
+// Municipality Wide Vegetables and Fruits Diseases
+export * from './municipality-wide-vegetables-and-fruits-diseases'
+// Municipality Wide Commercial Agricultural Animal Husbandry Farmers Group
+export * from './municipality-wide-commercial-agricultural-animal-husbandry-farmers-group'
+// Municipality Wide Agriculture Related Farmers Group
+export * from './municipality-wide-agriculture-related-farmers-group'
+// Cooperatives
+export * from './cooperatives'

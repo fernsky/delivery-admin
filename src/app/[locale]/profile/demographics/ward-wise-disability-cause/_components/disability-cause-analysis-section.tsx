@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect } from "react";
 import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface DisabilityCauseAnalysisSectionProps {
@@ -43,52 +40,24 @@ export default function DisabilityCauseAnalysisSection({
   const highestDisabilityWard = [...wardWiseAnalysis].sort((a, b) => b.totalDisabilityPopulation - a.totalDisabilityPopulation)[0];
   const lowestDisabilityWard = [...wardWiseAnalysis].sort((a, b) => a.totalDisabilityPopulation - b.totalDisabilityPopulation)[0];
 
-  // Add SEO-friendly data attributes to enhance crawler understanding
-  useEffect(() => {
-    // Add data to document.body for SEO (will be crawled but not visible to users)
-    if (document && document.body) {
-      document.body.setAttribute(
-        "data-municipality",
-        "Khajura Rural Municipality / खजुरा गाउँपालिका",
-      );
-      document.body.setAttribute(
-        "data-total-disability-population",
-        totalPopulationWithDisability.toString(),
-      );
-
-      // Add most common cause data
-      if (overallSummary.length > 0) {
-        document.body.setAttribute(
-          "data-most-common-disability-cause",
-          `${overallSummary[0].disabilityCauseName} / ${DISABILITY_CAUSE_NAMES_EN[overallSummary[0].disabilityCause as keyof typeof DISABILITY_CAUSE_NAMES_EN] || overallSummary[0].disabilityCause}`,
-        );
-        document.body.setAttribute(
-          "data-most-common-cause-percentage",
-          ((overallSummary[0].population / totalPopulationWithDisability) * 100).toFixed(2),
-        );
-      }
-      
-      // Add ward data
-      document.body.setAttribute(
-        "data-highest-disability-ward",
-        highestDisabilityWard?.wardNumber.toString() || "",
-      );
-      document.body.setAttribute(
-        "data-lowest-disability-ward",
-        lowestDisabilityWard?.wardNumber.toString() || "",
-      );
-    }
-  }, [
-    overallSummary,
-    totalPopulationWithDisability,
-    highestDisabilityWard,
-    lowestDisabilityWard,
-    DISABILITY_CAUSE_NAMES_EN,
-  ]);
+  // SEO attributes to include directly in JSX
+  const seoAttributes = {
+    "data-municipality": "Khajura Rural Municipality / खजुरा गाउँपालिका",
+    "data-total-disability-population": totalPopulationWithDisability.toString(),
+    "data-most-common-disability-cause": overallSummary.length > 0 ? 
+      `${overallSummary[0].disabilityCauseName} / ${DISABILITY_CAUSE_NAMES_EN[overallSummary[0].disabilityCause as keyof typeof DISABILITY_CAUSE_NAMES_EN] || overallSummary[0].disabilityCause}` : "",
+    "data-most-common-cause-percentage": overallSummary.length > 0 ? 
+      ((overallSummary[0].population / totalPopulationWithDisability) * 100).toFixed(2) : "0",
+    "data-highest-disability-ward": highestDisabilityWard?.wardNumber.toString() || "",
+    "data-lowest-disability-ward": lowestDisabilityWard?.wardNumber.toString() || ""
+  };
 
   return (
     <>
-      <div className="mt-6 flex flex-wrap gap-4 justify-center">
+      <div 
+        className="mt-6 flex flex-wrap gap-4 justify-center"
+        {...seoAttributes}
+      >
         {overallSummary.map((item, index) => {
           // Calculate percentage
           const percentage = (

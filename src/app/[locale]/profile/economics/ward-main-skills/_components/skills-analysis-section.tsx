@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface SkillsAnalysisSectionProps {
   overallSummary: Array<{
@@ -229,9 +230,11 @@ export default function SkillsAnalysisSection({
                     {SKILL_NAMES_EN[item.skill] || item.skill}
                   </span>
                 </h3>
-                <p className="text-2xl font-bold">{percentage}%</p>
+                <p className="text-2xl font-bold">
+                  {localizeNumber(percentage, "ne")}%
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  {item.population.toLocaleString()} व्यक्ति
+                  {localizeNumber(item.population.toLocaleString(), "ne")} व्यक्ति
                   <span className="sr-only">
                     ({item.population.toLocaleString()} people)
                   </span>
@@ -271,7 +274,7 @@ export default function SkillsAnalysisSection({
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {topSkill
-                ? `कुल दक्ष जनसंख्याको ${((topSkill.population / totalPopulation) * 100).toFixed(2)}% व्यक्ति`
+                ? `कुल दक्ष जनसंख्याको ${localizeNumber(((topSkill.population / totalPopulation) * 100).toFixed(2), "ne")}% व्यक्ति`
                 : ""}
               <span className="sr-only">
                 {topSkill
@@ -294,10 +297,12 @@ export default function SkillsAnalysisSection({
                 Primary to Secondary Skill Ratio in Khajura
               </span>
             </h4>
-            <p className="text-3xl font-bold">{topTwoSkillRatio}</p>
+            <p className="text-3xl font-bold">
+              {localizeNumber(topTwoSkillRatio, "ne")}
+            </p>
             <p className="text-sm text-muted-foreground mt-2">
               {topSkill && secondSkill
-                ? `हरेक ${topTwoSkillRatio} ${topSkill.skillName} सीप भएका व्यक्तिका लागि १ ${secondSkill.skillName} सीप भएका व्यक्ति`
+                ? `हरेक ${localizeNumber(topTwoSkillRatio, "ne")} ${topSkill.skillName} सीप भएका व्यक्तिका लागि १ ${secondSkill.skillName} सीप भएका व्यक्ति`
                 : ""}
               <span className="sr-only">
                 {topSkill && secondSkill
@@ -318,9 +323,9 @@ export default function SkillsAnalysisSection({
           <div className="bg-card p-3 rounded border">
             <h5 className="text-sm font-medium">प्राविधिक सीप</h5>
             <p className="text-sm flex justify-between">
-              <span>{technicalPopulation.toLocaleString()} व्यक्ति</span>
+              <span>{localizeNumber(technicalPopulation.toLocaleString(), "ne")} व्यक्ति</span>
               <span className="font-medium">
-                {((technicalPopulation / totalPopulation) * 100).toFixed(1)}%
+                {localizeNumber(((technicalPopulation / totalPopulation) * 100).toFixed(1), "ne")}%
               </span>
             </p>
             <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -336,9 +341,9 @@ export default function SkillsAnalysisSection({
           <div className="bg-card p-3 rounded border">
             <h5 className="text-sm font-medium">पेशागत सीप</h5>
             <p className="text-sm flex justify-between">
-              <span>{professionalPopulation.toLocaleString()} व्यक्ति</span>
+              <span>{localizeNumber(professionalPopulation.toLocaleString(), "ne")} व्यक्ति</span>
               <span className="font-medium">
-                {((professionalPopulation / totalPopulation) * 100).toFixed(1)}%
+                {localizeNumber(((professionalPopulation / totalPopulation) * 100).toFixed(1), "ne")}%
               </span>
             </p>
             <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -354,9 +359,9 @@ export default function SkillsAnalysisSection({
           <div className="bg-card p-3 rounded border">
             <h5 className="text-sm font-medium">कृषि सम्बन्धी सीप</h5>
             <p className="text-sm flex justify-between">
-              <span>{agriculturalPopulation.toLocaleString()} व्यक्ति</span>
+              <span>{localizeNumber(agriculturalPopulation.toLocaleString(), "ne")} व्यक्ति</span>
               <span className="font-medium">
-                {((agriculturalPopulation / totalPopulation) * 100).toFixed(1)}%
+                {localizeNumber(((agriculturalPopulation / totalPopulation) * 100).toFixed(1), "ne")}%
               </span>
             </p>
             <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -372,9 +377,9 @@ export default function SkillsAnalysisSection({
           <div className="bg-card p-3 rounded border">
             <h5 className="text-sm font-medium">सेवा सम्बन्धी सीप</h5>
             <p className="text-sm flex justify-between">
-              <span>{servicePopulation.toLocaleString()} व्यक्ति</span>
+              <span>{localizeNumber(servicePopulation.toLocaleString(), "ne")} व्यक्ति</span>
               <span className="font-medium">
-                {((servicePopulation / totalPopulation) * 100).toFixed(1)}%
+                {localizeNumber(((servicePopulation / totalPopulation) * 100).toFixed(1), "ne")}%
               </span>
             </p>
             <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -390,9 +395,9 @@ export default function SkillsAnalysisSection({
           <div className="bg-card p-3 rounded border">
             <h5 className="text-sm font-medium">हस्तकला तथा कला सम्बन्धी</h5>
             <p className="text-sm flex justify-between">
-              <span>{artisanPopulation.toLocaleString()} व्यक्ति</span>
+              <span>{localizeNumber(artisanPopulation.toLocaleString(), "ne")} व्यक्ति</span>
               <span className="font-medium">
-                {((artisanPopulation / totalPopulation) * 100).toFixed(1)}%
+                {localizeNumber(((artisanPopulation / totalPopulation) * 100).toFixed(1), "ne")}%
               </span>
             </p>
             <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -408,9 +413,9 @@ export default function SkillsAnalysisSection({
           <div className="bg-card p-3 rounded border">
             <h5 className="text-sm font-medium">अन्य</h5>
             <p className="text-sm flex justify-between">
-              <span>{otherPopulation.toLocaleString()} व्यक्ति</span>
+              <span>{localizeNumber(otherPopulation.toLocaleString(), "ne")} व्यक्ति</span>
               <span className="font-medium">
-                {((otherPopulation / totalPopulation) * 100).toFixed(1)}%
+                {localizeNumber(((otherPopulation / totalPopulation) * 100).toFixed(1), "ne")}%
               </span>
             </p>
             <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -425,29 +430,7 @@ export default function SkillsAnalysisSection({
         </div>
       </div>
 
-      <div className="bg-muted/50 p-4 rounded-lg mt-6">
-        <h3 className="text-xl font-medium mb-2">
-          थप जानकारी
-          <span className="sr-only">
-            Additional Information about Skills in Khajura
-          </span>
-        </h3>
-        <p>
-          खजुरा गाउँपालिकाको प्रमुख सीप र दक्षता सम्बन्धी थप जानकारी वा विस्तृत
-          तथ्याङ्कको लागि, कृपया{" "}
-          <Link href="/contact" className="text-primary hover:underline">
-            हामीलाई सम्पर्क
-          </Link>{" "}
-          गर्नुहोस् वा{" "}
-          <Link
-            href="/profile/economics"
-            className="text-primary hover:underline"
-          >
-            आर्थिक तथ्याङ्क
-          </Link>{" "}
-          खण्डमा हेर्नुहोस्।
-        </p>
-      </div>
+     
     </>
   );
 }

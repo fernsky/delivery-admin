@@ -1,0 +1,348 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 400" width="1200" height="400">
+  <defs>
+    <!-- Modern gradient backgrounds -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    
+    <!-- Additional decorative gradients -->
+    <linearGradient id="decorGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.05" />
+    </linearGradient>
+    
+    <linearGradient id="decorGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05" />
+    </linearGradient>
+    
+    <!-- Skill bubble path definition -->
+    <path id="skill-bubble" 
+          d="M0,0 Q5,-15 20,-15 L80,-15 Q95,-15 100,0 L100,40 Q100,55 85,55 L60,55 L45,70 L30,55 L15,55 Q0,55 0,40 Z" />
+    
+    <!-- Modern stylized skill icons -->
+    <symbol id="iconAgriculture" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M30,70 L70,70 L70,50 C70,40 65,30 50,30 C35,30 30,40 30,50 Z" fill="#d1fae5" stroke="#10b981" stroke-width="3" stroke-linejoin="round" />
+      <path d="M50,30 L50,15 M40,35 L30,25 M60,35 L70,25" stroke="#10b981" stroke-width="3" stroke-linecap="round" />
+      <path d="M45,48 L55,48 M45,55 L55,55 M45,62 L55,62" stroke="#10b981" stroke-width="2" />
+    </symbol>
+    
+    <symbol id="iconTeaching" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M25,35 L75,35 L75,75 L25,75 Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="3" />
+      <path d="M25,35 L50,20 L75,35" fill="#dbeafe" stroke="#3b82f6" stroke-width="3" />
+      <path d="M45,75 L45,55 L55,55 L55,75" fill="none" stroke="#3b82f6" stroke-width="3" />
+      <circle cx="50" cy="45" r="5" fill="#3b82f6" />
+    </symbol>
+    
+    <symbol id="iconEngineering" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M40,25 L60,25 L65,35 L70,45 L70,50 L65,65 L60,75 L40,75 L35,65 L30,50 L30,45 L35,35 Z" fill="#ede9fe" stroke="#8b5cf6" stroke-width="3" />
+      <circle cx="50" cy="50" r="12" fill="none" stroke="#8b5cf6" stroke-width="3" />
+      <path d="M50,40 L50,50 L55,55" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" />
+    </symbol>
+    
+    <symbol id="iconMedical" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M30,30 L70,30 L70,70 L30,70 Z" fill="#fee2e2" stroke="#ef4444" stroke-width="3" />
+      <path d="M40,50 L60,50 M50,40 L50,60" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
+    </symbol>
+    
+    <symbol id="iconComputer" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M25,30 L75,30 L75,60 L25,60 Z" fill="#e0f2fe" stroke="#38bdf8" stroke-width="3" />
+      <path d="M40,70 L60,70 L58,60 L42,60 Z" fill="#e0f2fe" stroke="#38bdf8" stroke-width="3" />
+      <path d="M35,40 L45,45 L35,50 M55,40 L65,45 L55,50" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+    </symbol>
+    
+    <symbol id="iconCarpentry" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#fff" />
+      <path d="M30,70 L40,30 L60,30 L70,70 Z" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" />
+      <path d="M40,50 L60,50 M40,40 L60,40 M40,60 L60,60" stroke="#f59e0b" stroke-width="2" />
+    </symbol>
+
+    <!-- Person silhouette -->
+    <g id="person">
+      <circle cx="0" cy="-15" r="10" fill="currentColor" />
+      <path d="M-5,0 L5,0 L8,20 L-8,20 Z" fill="currentColor" />
+      <path d="M-8,20 L-10,40 M8,20 L10,40" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <path d="M-5,-5 L5,-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity="0.7" />
+    </g>
+
+    <!-- Tool symbols -->
+    <g id="tools">
+      <path d="M-25,-5 L25,-5 L25,5 L-25,5 Z" fill="#60a5fa" opacity="0.8" />
+      <path d="M-15,-15 L15,-15 L15,-5 L-15,-5 Z" fill="#818cf8" opacity="0.8" />
+      <path d="M-5,-25 L5,-25 L5,-15 L-5,-15 Z" fill="#a78bfa" opacity="0.8" />
+      <path d="M5,15 L15,15 L15,5 L5,5 Z M-15,15 L-5,15 L-5,5 L-15,5 Z" fill="#818cf8" opacity="0.6" />
+      <path d="M-5,25 L5,25 L5,15 L-5,15 Z" fill="#60a5fa" opacity="0.7" />
+    </g>
+
+    <!-- Modern wavy pattern -->
+    <pattern id="modernPattern" width="100" height="40" patternUnits="userSpaceOnUse">
+      <path d="M0,20 Q20,5 40,20 T80,20 T120,20" fill="none" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.1"/>
+      <path d="M0,40 Q20,25 40,40 T80,40 T120,40" fill="none" stroke="#6366f1" stroke-width="1" stroke-opacity="0.1"/>
+    </pattern>
+
+    <!-- Filter for elegant shadows -->
+    <filter id="modernShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#334155" flood-opacity="0.25"/>
+    </filter>
+    
+    <!-- Dot patterns for background -->
+    <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1" fill="#60a5fa" fill-opacity="0.2"/>
+    </pattern>
+    
+    <!-- Text path for curved text -->
+    <path id="curved-text-path" d="M150,350 Q600,200 1050,350" fill="none" />
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="100%" height="100%" fill="url(#bgGradient)"/>
+  <rect width="100%" height="100%" fill="url(#modernPattern)" opacity="0.8"/>
+  <rect width="100%" height="100%" fill="url(#dotPattern)"/>
+  
+  <!-- Enhanced decorative elements to provide visual interest without titles -->
+  <path d="M0,0 L1200,0 L1200,400 L0,400 Z" fill="url(#decorGradient1)"/>
+  <path d="M1200,0 L0,0 L0,400 L1200,400 Z" fill="url(#decorGradient2)"/>
+  
+  <!-- Abstract flowing lines representing skill connections -->
+  <path d="M-50,100 C200,130 400,50 600,80 S900,180 1300,120" fill="none" stroke="#3b82f6" stroke-width="2" stroke-opacity="0.3"/>
+  <path d="M-50,140 C200,170 400,90 600,120 S900,220 1300,160" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-opacity="0.2"/>
+  <path d="M-50,320 C200,290 400,350 600,320 S900,250 1300,280" fill="none" stroke="#818cf8" stroke-width="2" stroke-opacity="0.3"/>
+  
+  <!-- Skill Group Bubbles -->
+  <g>
+    <!-- Agriculture -->
+    <g transform="translate(150, 120) scale(1.1)">
+      <use href="#skill-bubble" fill="#10b981" />
+      <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">कृषि</text>
+    </g>
+    
+    <!-- Teaching -->
+    <g transform="translate(250, 70) scale(0.95)">
+      <use href="#skill-bubble" fill="#3b82f6" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">शिक्षण</text>
+    </g>
+    
+    <!-- Engineering -->
+    <g transform="translate(380, 90) scale(1)">
+      <use href="#skill-bubble" fill="#8b5cf6" />
+      <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">इन्जिनियरिङ</text>
+    </g>
+    
+    <!-- Medical -->
+    <g transform="translate(280, 160) scale(0.9)">
+      <use href="#skill-bubble" fill="#ef4444" />
+      <text x="50" y="25" font-family="Arial" font-size="13" fill="white" text-anchor="middle">चिकित्सा</text>
+    </g>
+    
+    <!-- IT/Computer -->
+    <g transform="translate(420, 170) scale(0.95)">
+      <use href="#skill-bubble" fill="#38bdf8" />
+      <text x="50" y="25" font-family="Arial" font-size="13" fill="white" text-anchor="middle">कम्प्युटर</text>
+    </g>
+    
+    <!-- Carpentry -->
+    <g transform="translate(510, 100) scale(0.85)">
+      <use href="#skill-bubble" fill="#f59e0b" />
+      <text x="50" y="25" font-family="Arial" font-size="12" fill="white" text-anchor="middle">सिकर्मी</text>
+    </g>
+  </g>
+  
+  <!-- Centered skill cards -->
+  <g filter="url(#modernShadow)" transform="translate(0, 15)">
+    <!-- Agriculture -->
+    <rect x="600" y="60" width="150" height="180" rx="15" fill="white"/>
+    <use xlink:href="#iconAgriculture" x="625" y="70" width="100" height="100"/>
+    <text x="675" y="190" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#047857">कृषि</text>
+    
+    <!-- Teaching -->
+    <rect x="770" y="60" width="150" height="180" rx="15" fill="white"/>
+    <use xlink:href="#iconTeaching" x="795" y="70" width="100" height="100"/>
+    <text x="845" y="190" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#1d4ed8">शिक्षण</text>
+    
+    <!-- Engineering -->
+    <rect x="940" y="60" width="150" height="180" rx="15" fill="white"/>
+    <use xlink:href="#iconEngineering" x="965" y="70" width="100" height="100"/>
+    <text x="1015" y="190" font-size="18" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif" fill="#5b21b6">इन्जिनियरिङ</text>
+    
+    <!-- Medical -->
+    <rect x="600" y="250" width="150" height="100" rx="15" fill="white"/>
+    <use xlink:href="#iconMedical" x="635" y="260" width="80" height="80"/>
+    
+    <!-- Computer -->
+    <rect x="770" y="250" width="150" height="100" rx="15" fill="white"/>
+    <use xlink:href="#iconComputer" x="805" y="260" width="80" height="80"/>
+    
+    <!-- Carpentry -->
+    <rect x="940" y="250" width="150" height="100" rx="15" fill="white"/>
+    <use xlink:href="#iconCarpentry" x="975" y="260" width="80" height="80"/>
+  </g>
+  
+  <!-- Enhanced connecting lines with animated-like effect -->
+  <g>
+    <path d="M750,150 C765,150 755,150 770,150" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+    <path d="M920,150 C935,150 925,150 940,150" stroke="url(#accentGradient)" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+    
+    <!-- Vertical connections -->
+    <path d="M675,240 C675,245 675,245 675,250" stroke="#60a5fa" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+    <path d="M845,240 C845,245 845,245 845,250" stroke="#60a5fa" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+    <path d="M1015,240 C1015,245 1015,245 1015,250" stroke="#60a5fa" stroke-width="3" stroke-dasharray="1,8" stroke-opacity="0.6"/>
+  </g>
+  
+  <!-- Skill connections visualization -->
+  <g opacity="0.7" transform="translate(300, 250)">
+    <!-- Central hub -->
+    <circle cx="0" cy="0" r="30" fill="#3b82f6" opacity="0.2" stroke="#60a5fa" stroke-width="1" />
+    <text x="0" y="5" font-size="12" font-weight="600" text-anchor="middle" fill="#f8fafc">सीप</text>
+    
+    <!-- Connecting nodes -->
+    <g>
+      <!-- Agriculture node -->
+      <circle cx="-100" cy="-70" r="20" fill="#10b981" opacity="0.7" />
+      <text x="-100" y="-67" font-size="10" font-weight="600" text-anchor="middle" fill="#f8fafc">कृषि</text>
+      <path d="M-75,-55 L-25,-20" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2,2" />
+    </g>
+    
+    <g>
+      <!-- Teaching node -->
+      <circle cx="80" cy="-80" r="20" fill="#3b82f6" opacity="0.7" />
+      <text x="80" y="-77" font-size="10" font-weight="600" text-anchor="middle" fill="#f8fafc">शिक्षण</text>
+      <path d="M65,-65 L20,-20" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="2,2" />
+    </g>
+    
+    <g>
+      <!-- Engineering node -->
+      <circle cx="100" cy="50" r="20" fill="#8b5cf6" opacity="0.7" />
+      <text x="100" y="53" font-size="10" font-weight="600" text-anchor="middle" fill="#f8fafc">इन्जिनियरिङ</text>
+      <path d="M80,40 L25,15" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="2,2" />
+    </g>
+    
+    <g>
+      <!-- Medical node -->
+      <circle cx="-20" cy="90" r="20" fill="#ef4444" opacity="0.7" />
+      <text x="-20" y="93" font-size="10" font-weight="600" text-anchor="middle" fill="#f8fafc">चिकित्सा</text>
+      <path d="M-10,70 L-5,30" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2,2" />
+    </g>
+    
+    <g>
+      <!-- IT node -->
+      <circle cx="-120" cy="30" r="20" fill="#38bdf8" opacity="0.7" />
+      <text x="-120" y="33" font-size="10" font-weight="600" text-anchor="middle" fill="#f8fafc">कम्प्युटर</text>
+      <path d="M-100,25 L-25,10" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="2,2" />
+    </g>
+  </g>
+  
+  <!-- People silhouettes with different skills -->
+  <g>
+    <g transform="translate(100, 320)">
+      <g color="#10b981">
+        <use href="#person" />
+      </g>
+      <circle cx="0" cy="-30" r="12" fill="#10b981" fill-opacity="0.2" />
+      <text x="0" y="-28" font-size="8" text-anchor="middle" fill="#f8fafc">कृषि</text>
+    </g>
+    
+    <g transform="translate(140, 320)">
+      <g color="#3b82f6">
+        <use href="#person" />
+      </g>
+      <circle cx="0" cy="-30" r="12" fill="#3b82f6" fill-opacity="0.2" />
+      <text x="0" y="-28" font-size="8" text-anchor="middle" fill="#f8fafc">शिक्षण</text>
+    </g>
+    
+    <g transform="translate(180, 320)">
+      <g color="#8b5cf6">
+        <use href="#person" />
+      </g>
+      <circle cx="0" cy="-30" r="12" fill="#8b5cf6" fill-opacity="0.2" />
+      <text x="0" y="-27" font-size="6" text-anchor="middle" fill="#f8fafc">इन्जिनियरिङ</text>
+    </g>
+    
+    <g transform="translate(220, 320)">
+      <g color="#ef4444">
+        <use href="#person" />
+      </g>
+      <circle cx="0" cy="-30" r="12" fill="#ef4444" fill-opacity="0.2" />
+      <text x="0" y="-28" font-size="8" text-anchor="middle" fill="#f8fafc">चिकित्सा</text>
+    </g>
+    
+    <g transform="translate(260, 320)">
+      <g color="#38bdf8">
+        <use href="#person" />
+      </g>
+      <circle cx="0" cy="-30" r="12" fill="#38bdf8" fill-opacity="0.2" />
+      <text x="0" y="-28" font-size="8" text-anchor="middle" fill="#f8fafc">कम्प्युटर</text>
+    </g>
+    
+    <g transform="translate(300, 320)">
+      <g color="#f59e0b">
+        <use href="#person" />
+      </g>
+      <circle cx="0" cy="-30" r="12" fill="#f59e0b" fill-opacity="0.2" />
+      <text x="0" y="-28" font-size="8" text-anchor="middle" fill="#f8fafc">सिकर्मी</text>
+    </g>
+    
+    <!-- More people on the far right -->
+    <g transform="translate(1050, 320)">
+      <g color="#3b82f6">
+        <use href="#person" />
+      </g>
+    </g>
+    
+    <g transform="translate(1090, 320)">
+      <g color="#10b981">
+        <use href="#person" />
+      </g>
+    </g>
+    
+    <g transform="translate(1130, 320)">
+      <g color="#8b5cf6">
+        <use href="#person" />
+      </g>
+    </g>
+  </g>
+  
+  <!-- Tool kit symbol -->
+  <g transform="translate(470, 310) scale(0.8)">
+    <use href="#tools" />
+  </g>
+  
+  <!-- Title at bottom -->
+  <text font-family="Arial" font-size="20" fill="white" text-anchor="middle" font-weight="bold">
+    <textPath href="#curved-text-path" startOffset="50%">प्रमुख सीप र दक्षता वितरण</textPath>
+  </text>
+  
+  <!-- Abstract network connections in background symbolizing skill relationships -->
+  <g opacity="0.1">
+    <path d="M50,50 L200,100 L350,70 L500,120 L650,50 L800,90 L950,60 L1100,100" 
+          stroke="white" stroke-width="1.5" fill="none" />
+    <path d="M50,150 L200,130 L350,170 L500,140 L650,180 L800,150 L950,190 L1100,160" 
+          stroke="white" stroke-width="1.5" fill="none" />
+    <circle cx="50" cy="50" r="5" fill="white" />
+    <circle cx="200" cy="100" r="5" fill="white" />
+    <circle cx="350" cy="70" r="5" fill="white" />
+    <circle cx="500" cy="120" r="5" fill="white" />
+    <circle cx="650" cy="50" r="5" fill="white" />
+    <circle cx="800" cy="90" r="5" fill="white" />
+    <circle cx="950" cy="60" r="5" fill="white" />
+    <circle cx="1100" cy="100" r="5" fill="white" />
+    <circle cx="50" cy="150" r="5" fill="white" />
+    <circle cx="200" cy="130" r="5" fill="white" />
+    <circle cx="350" cy="170" r="5" fill="white" />
+    <circle cx="500" cy="140" r="5" fill="white" />
+    <circle cx="650" cy="180" r="5" fill="white" />
+    <circle cx="800" cy="150" r="5" fill="white" />
+    <circle cx="950" cy="190" r="5" fill="white" />
+    <circle cx="1100" cy="160" r="5" fill="white" />
+  </g>
+</svg>

@@ -3,6 +3,7 @@ import { FileDown } from "lucide-react";
 import SkillsPieChart from "./charts/skills-pie-chart";
 import SkillsBarChart from "./charts/skills-bar-chart";
 import WardSkillsPieCharts from "./charts/ward-skills-pie-charts";
+import { localizeNumber } from "@/lib/utils/localize-number";
 
 // Define skills colors for consistency
 const SKILL_COLORS = {
@@ -73,11 +74,27 @@ export default function SkillsCharts({
   return (
     <>
       {/* Overall skills distribution - with pre-rendered table and client-side chart */}
-      <div className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div
+        className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Skills Distribution in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content={`Distribution of skills in Khajura with a total of ${totalPopulation} skilled population`}
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">सीप अनुसार जनसंख्या वितरण</h3>
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            सीप अनुसार जनसंख्या वितरण
+          </h3>
           <p className="text-sm text-muted-foreground">
-            कुल दक्ष जनसंख्या: {totalPopulation.toLocaleString()} व्यक्ति
+            कुल दक्ष जनसंख्या:{" "}
+            {localizeNumber(totalPopulation.toLocaleString(), "ne")} व्यक्ति
           </p>
         </div>
 
@@ -85,7 +102,7 @@ export default function SkillsCharts({
           {/* Client-side pie chart */}
           <div className="lg:col-span-1">
             <h4 className="text-lg font-medium mb-4 text-center">पाई चार्ट</h4>
-            <div className="h-[400px]">
+            <div className="h-[700px]">
               <SkillsPieChart
                 pieChartData={pieChartData}
                 skillLabels={skillLabels}
@@ -110,13 +127,18 @@ export default function SkillsCharts({
                 <tbody>
                   {overallSummary.map((item, i) => (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/40" : ""}>
-                      <td className="border p-2">{i + 1}</td>
+                      <td className="border p-2">
+                        {localizeNumber(i + 1, "ne")}
+                      </td>
                       <td className="border p-2">{item.skillName}</td>
                       <td className="border p-2 text-right">
-                        {item.population.toLocaleString()}
+                        {localizeNumber(item.population.toLocaleString(), "ne")}
                       </td>
                       <td className="border p-2 text-right">
-                        {((item.population / totalPopulation) * 100).toFixed(2)}
+                        {localizeNumber(
+                          ((item.population / totalPopulation) * 100).toFixed(2),
+                          "ne"
+                        )}
                         %
                       </td>
                     </tr>
@@ -128,19 +150,16 @@ export default function SkillsCharts({
                       जम्मा
                     </td>
                     <td className="border p-2 text-right">
-                      {totalPopulation.toLocaleString()}
+                      {localizeNumber(totalPopulation.toLocaleString(), "ne")}
                     </td>
-                    <td className="border p-2 text-right">100.00%</td>
+                    <td className="border p-2 text-right">
+                      {localizeNumber("100.00", "ne")}%
+                    </td>
                   </tr>
                 </tfoot>
               </table>
             </div>
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" size="sm">
-                <FileDown className="mr-2 h-4 w-4" />
-                Excel डाउनलोड
-              </Button>
-            </div>
+           
           </div>
         </div>
 
@@ -163,7 +182,11 @@ export default function SkillsCharts({
                   <div className="flex justify-between items-center">
                     <span>{item.skillName}</span>
                     <span className="font-medium">
-                      {((item.population / totalPopulation) * 100).toFixed(1)}%
+                      {localizeNumber(
+                        ((item.population / totalPopulation) * 100).toFixed(1),
+                        "ne"
+                      )}
+                      %
                     </span>
                   </div>
                   <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -184,23 +207,38 @@ export default function SkillsCharts({
           </div>
           <p className="text-sm text-muted-foreground pt-4">
             {overallSummary.length > 5
-              ? `${overallSummary.length - 5} अन्य सीपहरू पनि छन्।`
+              ? `${localizeNumber(overallSummary.length - 5, "ne")} अन्य सीपहरू पनि छन्।`
               : ""}
           </p>
         </div>
       </div>
 
       {/* Ward-wise distribution - pre-rendered table with client-side chart */}
-      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div
+        className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Ward-wise Skills Distribution in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content="Skills distribution across wards in Khajura"
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">वडा अनुसार सीप वितरण</h3>
+          <h3 className="text-xl font-semibold" itemProp="headline">
+            वडा अनुसार सीप वितरण
+          </h3>
           <p className="text-sm text-muted-foreground">
             वडा र सीप अनुसार जनसंख्या वितरण
           </p>
         </div>
 
         <div className="p-6">
-          <div className="h-[500px]">
+          <div className="h-[800px]">
             <SkillsBarChart
               wardWiseData={wardWiseData}
               SKILL_COLORS={SKILL_COLORS}
@@ -211,9 +249,22 @@ export default function SkillsCharts({
       </div>
 
       {/* Detailed ward analysis - with pre-rendered HTML table for SEO */}
-      <div className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card">
+      <div
+        className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card"
+        itemScope
+        itemType="https://schema.org/Dataset"
+      >
+        <meta
+          itemProp="name"
+          content="Detailed Skills Analysis by Ward in Khajura Rural Municipality"
+        />
+        <meta
+          itemProp="description"
+          content="Detailed skills composition of each ward in Khajura"
+        />
+
         <div className="border-b px-4 py-3">
-          <h3 className="text-xl font-semibold">
+          <h3 className="text-xl font-semibold" itemProp="headline">
             वडा अनुसार विस्तृत सीप विश्लेषण
           </h3>
           <p className="text-sm text-muted-foreground">
@@ -239,23 +290,25 @@ export default function SkillsCharts({
               <tbody>
                 {wardNumbers.map((wardNumber, i) => {
                   const wardItems = skillsData.filter(
-                    (item) => item.wardNumber === wardNumber,
+                    (item) => item.wardNumber === wardNumber
                   );
                   const wardTotal = wardItems.reduce(
                     (sum, item) => sum + (item.population || 0),
-                    0,
+                    0
                   );
 
                   // Sort by population to find primary and secondary skills
                   const sortedItems = [...wardItems].sort(
-                    (a, b) => (b.population || 0) - (a.population || 0),
+                    (a, b) => (b.population || 0) - (a.population || 0)
                   );
                   const primarySkill = sortedItems[0];
                   const secondarySkill = sortedItems[1];
 
                   return (
                     <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                      <td className="border p-2">वडा {wardNumber}</td>
+                      <td className="border p-2">
+                        वडा {localizeNumber(wardNumber, "ne")}
+                      </td>
                       <td className="border p-2">
                         {primarySkill
                           ? skillLabels[primarySkill.skill] ||
@@ -263,15 +316,22 @@ export default function SkillsCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {primarySkill?.population?.toLocaleString() || "0"}
+                        {primarySkill?.population
+                          ? localizeNumber(
+                              primarySkill.population.toLocaleString(),
+                              "ne"
+                            )
+                          : "०"}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && primarySkill?.population
-                          ? (
-                              (primarySkill.population / wardTotal) *
-                              100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                          ? localizeNumber(
+                              ((primarySkill.population / wardTotal) * 100).toFixed(
+                                2
+                              ),
+                              "ne"
+                            ) + "%"
+                          : "०%"}
                       </td>
                       <td className="border p-2">
                         {secondarySkill
@@ -280,15 +340,22 @@ export default function SkillsCharts({
                           : "-"}
                       </td>
                       <td className="border p-2 text-right">
-                        {secondarySkill?.population?.toLocaleString() || "0"}
+                        {secondarySkill?.population
+                          ? localizeNumber(
+                              secondarySkill.population.toLocaleString(),
+                              "ne"
+                            )
+                          : "०"}
                       </td>
                       <td className="border p-2 text-right">
                         {wardTotal > 0 && secondarySkill?.population
-                          ? (
-                              (secondarySkill.population / wardTotal) *
-                              100
-                            ).toFixed(2) + "%"
-                          : "0%"}
+                          ? localizeNumber(
+                              ((secondarySkill.population / wardTotal) * 100).toFixed(
+                                2
+                              ),
+                              "ne"
+                            ) + "%"
+                          : "०%"}
                       </td>
                     </tr>
                   );
@@ -296,12 +363,7 @@ export default function SkillsCharts({
               </tbody>
             </table>
           </div>
-          <div className="mt-4 flex justify-end">
-            <Button variant="outline" size="sm">
-              <FileDown className="mr-2 h-4 w-4" />
-              Excel डाउनलोड
-            </Button>
-          </div>
+         
 
           {/* Ward pie charts (client component) */}
           <h4 className="text-lg font-medium mt-8 mb-4">वडागत पाई चार्ट</h4>

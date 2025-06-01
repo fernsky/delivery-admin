@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
-type SheetStore = {
+interface SheetState {
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  setIsOpen: (open: boolean) => void;
   toggle: () => void;
-};
+}
 
-export const useSheetStore = create<SheetStore>((set) => ({
+export const useSheetStore = create<SheetState>((set) => ({
   isOpen: false,
-  setIsOpen: (isOpen) => set({ isOpen }),
+  setIsOpen: (open: boolean) => set({ isOpen: open }),
   toggle: () => set((state) => ({ isOpen: !state.isOpen })),
 }));

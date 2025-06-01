@@ -1,0 +1,50 @@
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bg-gradient)" />
+  
+  <!-- Central symbolic heart/pulse representation -->
+  <g transform="translate(600, 200)">
+    <!-- Stylized heart -->
+    <path d="M0,50 C-100,-50 -180,20 0,100 C180,20 100,-50 0,50" 
+          fill="#fecaca" stroke="#ef4444" stroke-width="2" opacity="0.7" />
+          
+    <!-- Simplified ECG line through the heart -->
+    <path d="M-150,0 L-50,0 L-30,-40 L-10,30 L10,-20 L30,0 L150,0" 
+          fill="none" stroke="#ef4444" stroke-width="3" opacity="0.7" />
+  </g>
+  
+  <!-- Simplified symbols for common death causes -->
+  <g>
+    <!-- Heart disease -->
+    <circle cx="350" cy="200" r="40" fill="#fecaca" opacity="0.7" />
+    <path d="M350,180 L350,220 M330,200 L370,200" stroke="#ef4444" stroke-width="2" />
+    
+    <!-- Respiratory -->
+    <circle cx="500" cy="200" r="40" fill="#d1fae5" opacity="0.7" />
+    <path d="M500,180 C485,190 515,210 500,220" stroke="#10b981" stroke-width="2" fill="none" />
+    
+    <!-- Accident -->
+    <circle cx="650" cy="200" r="40" fill="#ede9fe" opacity="0.7" />
+    <path d="M635,185 L665,215 M665,185 L635,215" stroke="#8b5cf6" stroke-width="2" />
+    
+    <!-- Age related -->
+    <circle cx="800" cy="200" r="40" fill="#e2e8f0" opacity="0.7" />
+    <path d="M800,180 C790,200 810,200 800,220" stroke="#64748b" stroke-width="2" fill="none" />
+  </g>
+  
+  <!-- Connection lines between causes -->
+  <path d="M390,200 L460,200" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 2" />
+  <path d="M540,200 L610,200" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 2" />
+  <path d="M690,200 L760,200" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 2" />
+  
+  <!-- Subtle decorative elements -->
+  <circle cx="200" cy="100" r="80" fill="#ef4444" opacity="0.05" />
+  <circle cx="1000" cy="300" r="120" fill="#8b5cf6" opacity="0.05" />
+</svg>
