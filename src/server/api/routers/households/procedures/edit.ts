@@ -100,7 +100,7 @@ export const getHouseholdEditRequestsProcedure = protectedProcedure
         FROM ${householdEditRequests} e
         JOIN ${households} h ON h.id = e.household_id
         ORDER BY e.requested_at DESC
-        LIMIT ${input.limit || 10} OFFSET ${input.offset || 0}
+        LIMIT ${input?.limit || 10} OFFSET ${input?.offset || 0}
       `;
       
       const editRequests = await ctx.db.execute(query);
