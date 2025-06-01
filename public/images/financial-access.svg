@@ -5,110 +5,26 @@
       <stop offset="0%" stop-color="#f8fafc" />
       <stop offset="100%" stop-color="#e2e8f0" />
     </linearGradient>
-    
-    <linearGradient id="bank-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3b82f6" />
-      <stop offset="100%" stop-color="#2563eb" />
-    </linearGradient>
   </defs>
   
   <!-- Background -->
   <rect width="1200" height="400" fill="url(#bg-gradient)" />
   
-  <!-- Bank/Financial Institution -->
-  <g transform="translate(600, 180)">
-    <!-- Building -->
-    <rect x="-80" y="-60" width="160" height="120" fill="url(#bank-gradient)" rx="5" />
-    
-    <!-- Columns -->
-    <rect x="-70" y="-60" width="10" height="70" fill="#f8fafc" rx="2" />
-    <rect x="-35" y="-60" width="10" height="70" fill="#f8fafc" rx="2" />
-    <rect x="0" y="-60" width="10" height="70" fill="#f8fafc" rx="2" />
-    <rect x="35" y="-60" width="10" height="70" fill="#f8fafc" rx="2" />
-    <rect x="70" y="-60" width="10" height="70" fill="#f8fafc" rx="2" />
-    
-    <!-- Steps -->
-    <rect x="-80" y="60" width="160" height="10" fill="#f8fafc" />
-    <rect x="-70" y="50" width="140" height="10" fill="#f8fafc" />
-    
-    <!-- Roof -->
-    <path d="M-90,-60 L90,-60 L70,-90 L-70,-90 Z" fill="#60a5fa" />
-    
-    <!-- Door -->
-    <rect x="-15" y="10" width="30" height="50" fill="#f8fafc" rx="3" />
+  <!-- Minimal Path to Financial Services -->
+  <path d="M400,220 Q600,180 800,220" stroke="#94a3b8" stroke-width="2" fill="none" opacity="0.5" />
+  
+  <!-- Simple Person Silhouette -->
+  <g transform="translate(400, 220)">
+    <circle cx="0" cy="0" r="15" fill="#475569" opacity="0.7" />
+    <rect x="-10" y="15" width="20" height="35" rx="5" fill="#475569" opacity="0.7" />
   </g>
   
-  <!-- Roads/Paths to Bank -->
-  <g transform="translate(600, 180)">
-    <!-- Main Road -->
-    <path d="M-80,80 L-200,120 M80,80 L200,120" stroke="#94a3b8" stroke-width="10" stroke-linecap="round" fill="none" />
-    
-    <!-- Road Markings -->
-    <path d="M-80,80 L-200,120 M80,80 L200,120" stroke="white" stroke-width="2" stroke-linecap="round" stroke-dasharray="10,10" fill="none" />
+  <!-- Currency Symbol -->
+  <g transform="translate(800, 220)">
+    <text x="0" y="15" font-family="Arial" font-size="40" font-weight="bold" fill="#64748b" opacity="0.7" text-anchor="middle">₹</text>
   </g>
   
-  <!-- Houses at Different Distances -->
-  <!-- Close House -->
-  <g transform="translate(450, 150)">
-    <path d="M0,0 L40,0 L40,30 L0,30 Z" fill="#94a3b8" />
-    <path d="M-5,0 L20,-20 L45,0 Z" fill="#64748b" />
-    <rect x="15" y="10" width="10" height="20" fill="#f8fafc" />
-  </g>
-  
-  <!-- Medium Distance House -->
-  <g transform="translate(350, 170)">
-    <path d="M0,0 L30,0 L30,20 L0,20 Z" fill="#94a3b8" />
-    <path d="M-5,0 L15,-15 L35,0 Z" fill="#64748b" />
-    <rect x="10" y="5" width="10" height="15" fill="#f8fafc" />
-  </g>
-  
-  <!-- Far House -->
-  <g transform="translate(800, 150)">
-    <path d="M0,0 L40,0 L40,30 L0,30 Z" fill="#94a3b8" />
-    <path d="M-5,0 L20,-20 L45,0 Z" fill="#64748b" />
-    <rect x="15" y="10" width="10" height="20" fill="#f8fafc" />
-  </g>
-  
-  <!-- Clock Icons for Time Indication -->
-  <g transform="translate(300, 100)">
-    <circle cx="0" cy="0" r="25" fill="white" stroke="#64748b" stroke-width="2" />
-    <line x1="0" y1="0" x2="0" y2="-10" stroke="#64748b" stroke-width="2" />
-    <line x1="0" y1="0" x2="10" y2="5" stroke="#64748b" stroke-width="2" />
-  </g>
-  
-  <g transform="translate(900, 100)">
-    <circle cx="0" cy="0" r="25" fill="white" stroke="#64748b" stroke-width="2" />
-    <line x1="0" y1="0" x2="0" y2="-15" stroke="#64748b" stroke-width="2" />
-    <line x1="0" y1="0" x2="10" y2="0" stroke="#64748b" stroke-width="2" />
-  </g>
-  
-  <!-- People Moving to Bank -->
-  <g transform="translate(500, 240)">
-    <circle cx="0" cy="-10" r="8" fill="#475569" />
-    <line x1="0" y1="0" x2="0" y2="15" stroke="#475569" stroke-width="4" />
-    <line x1="-8" y1="5" x2="8" y2="5" stroke="#475569" stroke-width="2" />
-    <line x1="-5" y1="20" x2="0" y2="15" stroke="#475569" stroke-width="2" />
-    <line x1="5" y1="20" x2="0" y2="15" stroke="#475569" stroke-width="2" />
-  </g>
-  
-  <g transform="translate(700, 240)">
-    <circle cx="0" cy="-10" r="8" fill="#475569" />
-    <line x1="0" y1="0" x2="0" y2="15" stroke="#475569" stroke-width="4" />
-    <line x1="-8" y1="5" x2="8" y2="5" stroke="#475569" stroke-width="2" />
-    <line x1="-5" y1="20" x2="0" y2="15" stroke="#475569" stroke-width="2" />
-    <line x1="5" y1="20" x2="0" y2="15" stroke="#475569" stroke-width="2" />
-  </g>
-  
-  <!-- Currency Symbols -->
-  <g transform="translate(200, 250)">
-    <text x="0" y="0" font-family="Arial" font-size="40" font-weight="bold" fill="#64748b">₹</text>
-  </g>
-  
-  <g transform="translate(1000, 250)">
-    <text x="0" y="0" font-family="Arial" font-size="40" font-weight="bold" fill="#64748b">₹</text>
-  </g>
-  
-  <!-- Decorative elements -->
+  <!-- Subtle decorative elements -->
   <circle cx="200" cy="100" r="80" fill="#3b82f6" opacity="0.05" />
   <circle cx="1000" cy="300" r="120" fill="#3b82f6" opacity="0.05" />
 </svg>

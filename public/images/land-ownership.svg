@@ -1,310 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Gradients for background and elements -->
     <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f172a" />
-      <stop offset="100%" stop-color="#1e293b" />
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
     </linearGradient>
-    
-    <linearGradient id="private-land-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#2980b9" />
-      <stop offset="100%" stop-color="#3498db" />
-    </linearGradient>
-    
-    <linearGradient id="guthi-land-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#c0392b" />
-      <stop offset="100%" stop-color="#e74c3c" />
-    </linearGradient>
-    
-    <linearGradient id="public-land-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#27ae60" />
-      <stop offset="100%" stop-color="#2ecc71" />
-    </linearGradient>
-    
-    <linearGradient id="village-block-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#d35400" />
-      <stop offset="100%" stop-color="#f39c12" />
-    </linearGradient>
-    
-    <linearGradient id="other-land-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#8e44ad" />
-      <stop offset="100%" stop-color="#9b59b6" />
-    </linearGradient>
-    
-    <!-- Path for curved text -->
-    <path id="curved-text-path" d="M200,350 Q600,280 1000,350" fill="none" />
-    
-    <!-- House shape -->
-    <path id="house" d="M0,40 L50,0 L100,40 L100,100 L0,100 Z" />
-    
-    <!-- Plot of land -->
-    <path id="land-plot" d="M0,0 L100,0 L120,20 L120,80 L100,100 L0,100 L0,0 Z" />
-    
-    <!-- Small house symbol -->
-    <path id="small-house" d="M0,20 L25,0 L50,20 L50,50 L0,50 Z" />
-    
-    <!-- Temple for Guthi land -->
-    <path id="temple" d="M10,30 L50,0 L90,30 L90,90 L70,90 L70,60 L60,60 L60,90 L40,90 L40,60 L30,60 L30,90 L10,90 Z" />
-    
-    <!-- Public land park symbol -->
-    <g id="public-land-park">
-      <rect x="0" y="70" width="100" height="30" fill="#2ecc71" />
-      <path d="M20,70 L20,30 C20,10 40,0 50,0 C60,0 80,10 80,30 L80,70" fill="#27ae60" />
-      <path d="M50,20 C55,20 60,25 60,45 L60,70 L40,70 L40,45 C40,25 45,20 50,20 Z" fill="#2ecc71" />
-      <rect x="40" y="70" width="20" height="30" fill="#27ae60" />
-    </g>
-    
-    <!-- Village block housing -->
-    <g id="village-block">
-      <rect x="0" y="0" width="100" height="100" fill="#f39c12" />
-      <rect x="10" y="10" width="35" height="35" fill="#e67e22" />
-      <rect x="55" y="10" width="35" height="35" fill="#e67e22" />
-      <rect x="10" y="55" width="35" height="35" fill="#e67e22" />
-      <rect x="55" y="55" width="35" height="35" fill="#e67e22" />
-      <rect x="45" y="0" width="10" height="100" fill="#e67e22" />
-      <rect x="0" y="45" width="100" height="10" fill="#e67e22" />
-    </g>
-    
-    <!-- Document/Certificate symbol -->
-    <path id="land-certificate" d="M0,0 L80,0 L80,100 L0,100 Z" />
-    
-    <!-- Seed/grain pattern for agriculture land -->
-    <path id="agriculture-pattern" d="M0,0 C5,-5 15,-5 20,0 C25,5 25,15 20,20 C15,25 5,25 0,20 C-5,15 -5,5 0,0 Z" />
-
-    <!-- Ward circle -->
-    <circle id="ward-circle" cx="50" cy="50" r="40" />
-
-    <!-- Farmer with plow -->
-    <path id="farmer" d="M30,0 C40,0 50,10 50,20 C50,30 40,40 30,40 C20,40 10,30 10,20 C10,10 20,0 30,0 Z M15,45 L45,45 L50,90 L45,90 L45,60 L35,50 L25,60 L15,60 L15,90 L10,90 Z" />
-    
-    <!-- Pattern for field/land -->
-    <pattern id="field-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-      <path d="M0,10 L20,10 M10,0 L10,20" stroke="#27ae60" stroke-width="1" opacity="0.3" />
-    </pattern>
-    
-    <!-- Terrain pattern -->
-    <pattern id="terrain-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-      <path d="M0,25 Q25,0 50,25 Q75,50 100,25" stroke="#3498db" stroke-width="2" fill="none" opacity="0.2" />
-      <path d="M0,75 Q25,50 50,75 Q75,100 100,75" stroke="#3498db" stroke-width="2" fill="none" opacity="0.2" />
-    </pattern>
-
-    <!-- Building group -->
-    <g id="building-group">
-      <rect x="0" y="40" width="30" height="60" fill="#34495e" />
-      <rect x="40" y="20" width="40" height="80" fill="#2c3e50" />
-      <rect x="90" y="30" width="30" height="70" fill="#34495e" />
-      <rect x="5" y="50" width="10" height="10" fill="#ecf0f1" />
-      <rect x="15" y="50" width="10" height="10" fill="#ecf0f1" />
-      <rect x="5" y="70" width="10" height="10" fill="#ecf0f1" />
-      <rect x="15" y="70" width="10" height="10" fill="#ecf0f1" />
-      <rect x="50" y="30" width="10" height="10" fill="#ecf0f1" />
-      <rect x="60" y="30" width="10" height="10" fill="#ecf0f1" />
-      <rect x="50" y="50" width="10" height="10" fill="#ecf0f1" />
-      <rect x="60" y="50" width="10" height="10" fill="#ecf0f1" />
-      <rect x="50" y="70" width="10" height="10" fill="#ecf0f1" />
-      <rect x="60" y="70" width="10" height="10" fill="#ecf0f1" />
-      <rect x="100" y="40" width="10" height="10" fill="#ecf0f1" />
-      <rect x="100" y="60" width="10" height="10" fill="#ecf0f1" />
-      <rect x="100" y="80" width="10" height="10" fill="#ecf0f1" />
-    </g>
   </defs>
   
-  <!-- Background with gradient -->
+  <!-- Background -->
   <rect width="1200" height="400" fill="url(#bg-gradient)" />
   
-  <!-- Terrain grid overlay -->
-  <g opacity="0.1">
-    <rect width="1200" height="400" fill="url(#terrain-pattern)" />
-  </g>
-  
-  <!-- Land parcels background - representing the landscape -->
-  <g opacity="0.3">
-    <polygon points="0,250 200,220 400,260 600,230 800,250 1000,220 1200,240 1200,400 0,400" fill="#2ecc71" />
-    <polygon points="0,300 200,280 400,310 600,290 800,320 1000,300 1200,290 1200,400 0,400" fill="#27ae60" />
-    <path d="M0,350 C100,330 200,340 300,330 C400,320 500,335 600,325 C700,315 800,335 900,330 C1000,325 1100,335 1200,330 L1200,400 L0,400 Z" fill="#229954" />
-  </g>
-  
-  <!-- Mountains in the far background -->
-  <g opacity="0.5">
-    <path d="M-100,200 Q0,100 100,180 Q200,80 300,190 Q400,50 500,170 Q600,120 700,190 Q800,90 900,200 Q1000,130 1100,180 Q1200,90 1300,190 L1300,200 L-100,200 Z" fill="#34495e" />
-  </g>
-  
-  <!-- Main visualization elements -->
-  
-  <!-- Private Land (Blue) - Largest section -->
-  <g transform="translate(250, 150) scale(1.8)">
-    <polygon points="0,30 50,0 100,20 120,50 100,80 40,90 0,60" fill="url(#private-land-gradient)" opacity="0.8" />
-    <g transform="translate(25, 25) scale(0.4)">
-      <use href="#house" fill="#2980b9" stroke="white" stroke-width="1" />
-      <rect x="30" y="60" width="15" height="40" fill="white" />
-      <rect x="55" y="60" width="15" height="40" fill="white" />
-    </g>
-    <g transform="translate(75, 45) scale(0.3) rotate(15)">
-      <use href="#house" fill="#2980b9" stroke="white" stroke-width="1" />
-      <rect x="30" y="60" width="15" height="40" fill="white" />
-      <rect x="55" y="60" width="15" height="40" fill="white" />
-    </g>
-    <text x="50" y="45" font-family="Arial" font-size="12" fill="white" text-anchor="middle">निजी जग्गा</text>
-  </g>
-  
-  <!-- Guthi Land (Red) -->
-  <g transform="translate(600, 100) scale(1.1)">
-    <polygon points="0,0 80,20 100,60 70,80 20,70 0,40" fill="url(#guthi-land-gradient)" opacity="0.8" />
-    <g transform="translate(30, 30) scale(0.4)">
-      <use href="#temple" fill="#c0392b" stroke="white" stroke-width="1" />
-    </g>
-    <text x="50" y="40" font-family="Arial" font-size="12" fill="white" text-anchor="middle">गुठी</text>
-  </g>
-  
-  <!-- Public/Eilani Land (Green) -->
-  <g transform="translate(850, 160) scale(1.3)">
-    <polygon points="0,0 70,20 100,50 80,80 30,70 0,30" fill="url(#public-land-gradient)" opacity="0.8" />
-    <g transform="translate(30, 30) scale(0.4)">
-      <use href="#public-land-park" />
-    </g>
-    <text x="50" y="45" font-family="Arial" font-size="10" fill="white" text-anchor="middle">सार्वजनिक/ऐलानी</text>
-  </g>
-  
-  <!-- Village Block Land (Orange) -->
-  <g transform="translate(700, 250) scale(1.2)">
-    <polygon points="0,0 60,10 90,40 70,80 20,70 0,30" fill="url(#village-block-gradient)" opacity="0.8" />
-    <g transform="translate(30, 30) scale(0.4)">
-      <use href="#village-block" />
-    </g>
-    <text x="45" y="45" font-family="Arial" font-size="11" fill="white" text-anchor="middle">गाउँ ब्लक</text>
-  </g>
-  
-  <!-- Other Land Types (Purple) -->
-  <g transform="translate(450, 280) scale(0.9)">
-    <polygon points="0,0 70,10 90,40 70,70 20,60 0,30" fill="url(#other-land-gradient)" opacity="0.8" />
-    <g transform="translate(40, 30) scale(0.3)">
-      <circle cx="0" cy="0" r="20" fill="#8e44ad" stroke="white" stroke-width="1" />
-      <text x="0" y="5" font-family="Arial" font-size="24" fill="white" text-anchor="middle">?</text>
-    </g>
-    <text x="45" y="45" font-family="Arial" font-size="12" fill="white" text-anchor="middle">अन्य</text>
-  </g>
-  
-  <!-- Ward symbols -->
-  <!-- Ward 1 -->
-  <g transform="translate(120, 100) scale(0.4)">
-    <circle cx="50" cy="50" r="40" fill="#3498db" opacity="0.8" stroke="white" stroke-width="2" />
-    <text x="50" y="60" font-family="Arial" font-size="40" font-weight="bold" fill="white" text-anchor="middle">१</text>
-  </g>
-  
-  <!-- Ward 2 -->
-  <g transform="translate(140, 300) scale(0.5)">
-    <circle cx="50" cy="50" r="40" fill="#e74c3c" opacity="0.8" stroke="white" stroke-width="2" />
-    <text x="50" y="60" font-family="Arial" font-size="40" font-weight="bold" fill="white" text-anchor="middle">२</text>
-  </g>
-  
-  <!-- Ward 3 -->
-  <g transform="translate(900, 90) scale(0.45)">
-    <circle cx="50" cy="50" r="40" fill="#2ecc71" opacity="0.8" stroke="white" stroke-width="2" />
-    <text x="50" y="60" font-family="Arial" font-size="40" font-weight="bold" fill="white" text-anchor="middle">३</text>
-  </g>
-  
-  <!-- Ward 4 -->
-  <g transform="translate(1050, 200) scale(0.4)">
-    <circle cx="50" cy="50" r="40" fill="#f39c12" opacity="0.8" stroke="white" stroke-width="2" />
-    <text x="50" y="60" font-family="Arial" font-size="40" font-weight="bold" fill="white" text-anchor="middle">४</text>
-  </g>
-  
-  <!-- Land ownership documents -->
-  <g transform="translate(80, 180) scale(0.5) rotate(-15)">
-    <rect x="0" y="0" width="80" height="100" fill="#ecf0f1" />
-    <rect x="10" y="20" width="60" height="10" fill="#7f8c8d" />
-    <rect x="10" y="40" width="60" height="5" fill="#7f8c8d" />
-    <rect x="10" y="55" width="40" height="5" fill="#7f8c8d" />
-    <rect x="10" y="70" width="60" height="5" fill="#7f8c8d" />
-    <rect x="10" y="85" width="30" height="5" fill="#7f8c8d" />
-    <text x="40" y="15" font-family="Arial" font-size="10" fill="#2c3e50" text-anchor="middle">जग्गाधनी</text>
-  </g>
-  
-  <g transform="translate(100, 210) scale(0.4) rotate(10)">
-    <rect x="0" y="0" width="80" height="100" fill="#ecf0f1" />
-    <rect x="10" y="20" width="60" height="10" fill="#7f8c8d" />
-    <rect x="10" y="40" width="60" height="5" fill="#7f8c8d" />
-    <rect x="10" y="55" width="40" height="5" fill="#7f8c8d" />
-    <rect x="10" y="70" width="60" height="5" fill="#7f8c8d" />
-    <rect x="10" y="85" width="30" height="5" fill="#7f8c8d" />
-    <text x="40" y="15" font-family="Arial" font-size="10" fill="#2c3e50" text-anchor="middle">प्रमाण-पत्र</text>
-  </g>
-  
-  <!-- Farmlands with field patterns -->
-  <g transform="translate(550, 200) scale(1.2)">
-    <rect x="0" y="0" width="120" height="80" fill="#27ae60" opacity="0.5" />
-    <rect x="0" y="0" width="120" height="80" fill="url(#field-pattern)" />
-    <g transform="translate(60, 40) scale(0.3)">
-      <use href="#farmer" fill="#2c3e50" />
-    </g>
-  </g>
-  
-  <!-- Urban area with buildings -->
-  <g transform="translate(950, 270) scale(0.8)">
-    <use href="#building-group" />
-  </g>
-
-  <!-- Random houses scattered across private lands -->
-  <g transform="translate(380, 110) scale(0.3)">
-    <use href="#house" fill="#3498db" />
-    <rect x="30" y="60" width="15" height="40" fill="#ecf0f1" />
-    <rect x="55" y="60" width="15" height="40" fill="#ecf0f1" />
-  </g>
-  
-  <g transform="translate(340, 200) scale(0.25) rotate(-10)">
-    <use href="#house" fill="#3498db" />
-    <rect x="30" y="60" width="15" height="40" fill="#ecf0f1" />
-    <rect x="55" y="60" width="15" height="40" fill="#ecf0f1" />
-  </g>
-  
-  <g transform="translate(810, 230) scale(0.3) rotate(5)">
-    <use href="#house" fill="#2ecc71" />
-    <rect x="30" y="60" width="15" height="40" fill="#ecf0f1" />
-    <rect x="55" y="60" width="15" height="40" fill="#ecf0f1" />
-  </g>
-  
-  <!-- Land security visualization -->
-  <g transform="translate(130, 400) scale(0.6)" opacity="0.9">
-    <rect x="-30" y="-30" width="400" height="30" rx="5" fill="#7f8c8d" />
-    <rect x="-30" y="-30" width="240" height="30" rx="5" fill="#27ae60" />
-    <text x="170" y="-10" font-family="Arial" font-size="16" fill="white" text-anchor="middle">सुरक्षित जग्गा</text>
-  </g>
-  
-  <!-- Legend for land ownership types -->
-  <g transform="translate(650, 390) scale(0.8)" opacity="0.9">
-    <circle cx="0" cy="0" r="6" fill="#3498db" />
-    <text x="12" y="4" font-family="Arial" font-size="12" fill="white">निजी</text>
+  <!-- Central land representation -->
+  <g transform="translate(600, 200)">
+    <!-- Land plot with subtle border -->
+    <polygon points="-200,-60 -100,-80 100,-60 200,-40 200,60 100,80 -100,60 -200,40" 
+             fill="#4ade80" opacity="0.6" stroke="#16a34a" stroke-width="2" />
     
-    <circle cx="50" cy="0" r="6" fill="#e74c3c" />
-    <text x="62" y="4" font-family="Arial" font-size="12" fill="white">गुठी</text>
+    <!-- Property divider lines -->
+    <line x1="-100" y1="-80" x2="-100" y2="60" stroke="#16a34a" stroke-width="1" opacity="0.7" />
+    <line x1="0" y1="-70" x2="0" y2="70" stroke="#16a34a" stroke-width="1" opacity="0.7" />
+    <line x1="100" y1="-60" x2="100" y2="80" stroke="#16a34a" stroke-width="1" opacity="0.7" />
     
-    <circle cx="100" cy="0" r="6" fill="#2ecc71" />
-    <text x="145" y="4" font-family="Arial" font-size="12" fill="white">सार्वजनिक/ऐलानी</text>
+    <!-- Simple house symbol representing ownership -->
+    <g transform="translate(-150, 0)">
+      <rect x="-25" y="-10" width="50" height="40" fill="#15803d" opacity="0.7" />
+      <path d="M-30,-10 L0,-40 L30,-10" fill="#15803d" opacity="0.7" />
+    </g>
     
-    <circle cx="220" cy="0" r="6" fill="#f39c12" />
-    <text x="250" y="4" font-family="Arial" font-size="12" fill="white">गाउँ ब्लक</text>
-    
-    <circle cx="300" cy="0" r="6" fill="#9b59b6" />
-    <text x="320" y="4" font-family="Arial" font-size="12" fill="white">अन्य</text>
+    <!-- Simple document symbol representing deed/certificate -->
+    <g transform="translate(150, 0)">
+      <rect x="-20" y="-30" width="40" height="60" fill="#15803d" opacity="0.7" />
+      <line x1="-10" y1="-15" x2="10" y2="-15" stroke="#f8fafc" stroke-width="2" />
+      <line x1="-10" y1="0" x2="10" y2="0" stroke="#f8fafc" stroke-width="2" />
+      <line x1="-10" y1="15" x2="10" y2="15" stroke="#f8fafc" stroke-width="2" />
+    </g>
   </g>
   
-  <!-- Surrounding elements -->
-  <g transform="translate(400, 60) scale(0.2)">
-    <circle cx="0" cy="0" r="40" fill="#f39c12" opacity="0.9" />
-    <circle cx="0" cy="0" r="43" fill="none" stroke="#f1c40f" stroke-width="3" />
-    <path d="M-50,-50 L50,-50 M-50,-25 L50,-25 M-50,0 L50,0 M-50,25 L50,25 M-50,50 L50,50" stroke="#f1c40f" stroke-width="2" opacity="0.6" />
-    <path d="M-50,-50 L-50,50 M-25,-50 L-25,50 M0,-50 L0,50 M25,-50 L25,50 M50,-50 L50,50" stroke="#f1c40f" stroke-width="2" opacity="0.6" />
-  </g>
+  <!-- Simple ground line -->
+  <path d="M300,300 Q600,320 900,300" stroke="#16a34a" stroke-width="2" opacity="0.3" fill="none" />
   
-  <g transform="translate(1100, 80) scale(0.15) rotate(10)">
-    <circle cx="0" cy="0" r="60" fill="#3498db" opacity="0.2" />
-    <circle cx="0" cy="0" r="63" fill="none" stroke="#3498db" stroke-width="3" opacity="0.3" />
-    <circle cx="0" cy="0" r="67" fill="none" stroke="#3498db" stroke-width="2" opacity="0.2" />
-  </g>
-  
-  <!-- Title text -->
-  <text font-family="Arial" font-size="24" fill="white" text-anchor="middle" font-weight="bold">
-    <textPath href="#curved-text-path" startOffset="50%">जग्गा स्वामित्वको प्रकार अनुसार घरपरिवार</textPath>
-  </text>
+  <!-- Subtle decorative elements -->
+  <circle cx="200" cy="100" r="80" fill="#16a34a" opacity="0.05" />
+  <circle cx="1000" cy="300" r="120" fill="#15803d" opacity="0.05" />
 </svg>
