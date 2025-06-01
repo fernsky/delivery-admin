@@ -3,8 +3,6 @@ import { SurveyInfoSection } from "./sections/survey-info-section";
 import { BusinessBasicSection } from "./sections/business-basic-section";
 import { LegalInfoSection } from "./sections/legal-info-section";
 import { WorkforceSection } from "./sections/workforce-section";
-import { ApicultureSection } from "./sections/apiculture-section";
-import { AquacultureSection } from "./sections/aquaculture-section";
 import { HotelSection } from "./sections/hotel-section";
 import { LocationSection } from "./sections/location-section";
 import { OperatorSection } from "./sections/operator-section";

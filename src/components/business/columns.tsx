@@ -14,12 +14,12 @@ import {
   Edit2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { BusinessSchema } from "@/server/db/schema/business/business";
+import { Business } from "@/server/db/schema/business/business";
 import Link from "next/link";
 
 export const businessColumns = (
   onSort: (field: string) => void,
-): ColumnDef<BusinessSchema>[] => [
+): ColumnDef<Business>[] => [
   {
     accessorKey: "wardId",
     header: ({ column }) => (
