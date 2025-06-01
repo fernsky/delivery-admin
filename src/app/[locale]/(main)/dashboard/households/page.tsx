@@ -33,11 +33,23 @@ import {
 } from "@/components/ui/select";
 import { formatDate } from "@/lib/utils";
 
+// Define types for the household data structure
+type Household = {
+  id: string;
+  familyHeadName?: string;
+  familyHeadPhoneNo?: string;
+  wardNo?: number | null;
+  totalMembers?: number | null;
+  locality?: string;
+  houseSymbolNo?: string;
+  dateOfInterview?: Date | null;
+};
+
 export default function HouseholdsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(25); // Increased page size
+  const [pageSize, setPageSize] = useState(25);
   const [wardFilter, setWardFilter] = useState<number | undefined>(undefined);
   const [sortBy, setSortBy] = useState<
     | "family_head_name"
@@ -86,6 +98,11 @@ export default function HouseholdsPage() {
   const handleSearch = (value: string) => {
     setSearchQuery(value);
     setCurrentPage(1); // Reset to first page on new search
+  };
+
+  // Function to safely format UUID for navigation
+  const formatUuidForNav = (id: string): string => {
+    return id.replace(/^uuid:/, "");
   };
 
   return (
@@ -224,28 +241,28 @@ export default function HouseholdsPage() {
                 {data?.households && data.households.length > 0 ? (
                   data.households.map((household) => (
                     <TableRow
-                      key={household.id as string}
+                      key={String(household.id)}
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() =>
                         router.push(
-                          `/dashboard/households/view/${household.id}`,
+                          `/dashboard/households/view/${formatUuidForNav(household.id as string)}`,
                         )
                       }
                     >
                       <TableCell className="font-medium">
-                        {household.familyHeadName as string}
+                        {(household.familyHeadName as string) || ""}
                       </TableCell>
-                      <TableCell>{household.wardNo as number}</TableCell>
-                      <TableCell>{household.locality as string}</TableCell>
+                      <TableCell>{household.wardNo || ""}</TableCell>
                       <TableCell>
-                        {household.familyHeadPhoneNo as string}
+                        {(household.locality as string) || ""}
                       </TableCell>
-                      <TableCell>{household.totalMembers as number}</TableCell>
+                      <TableCell>
+                        {(household.familyHeadPhoneNo as string) || ""}
+                      </TableCell>
+                      <TableCell>{household.totalMembers || ""}</TableCell>
                       <TableCell>
                         {household.dateOfInterview
-                          ? formatDate(
-                              household.dateOfInterview as unknown as string,
-                            )
+                          ? formatDate(household.dateOfInterview.toString())
                           : "-"}
                       </TableCell>
                       <TableCell className="text-right">
@@ -255,7 +272,7 @@ export default function HouseholdsPage() {
                           onClick={(e) => {
                             e.stopPropagation();
                             router.push(
-                              `/dashboard/households/edit/${household.id}`,
+                              `/dashboard/households/edit/${formatUuidForNav(household.id as string)}`,
                             );
                           }}
                           title="विवरण सम्पादन"

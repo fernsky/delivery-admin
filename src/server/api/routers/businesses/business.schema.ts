@@ -1,163 +1,154 @@
 import { z } from "zod";
 
 export const businessSchema = z.object({
+  // Primary identification - required fields
   id: z.string(),
-  // Enumerator Information
-  enumeratorName: z.string(),
-  phone: z.string(),
-
-  // Business Basic Information
-  businessName: z.string(),
   wardNo: z.number(),
-  areaCode: z.number(),
-  businessNo: z.string(),
-  locality: z.string(),
+  tenantId: z.string().nullable(),
+  deviceId: z.string(),
 
-  // Operator Details
-  operatorName: z.string(),
-  operatorPhone: z.string(),
-  operatorAge: z.number(),
-  operatorGender: z.string(),
-  operatorEducation: z.string(),
+  // Location and basic information
+  businessLocation: z.array(z.string()).nullable(),
+  dateOfInterview: z.string().or(z.date()).nullable(),
+  businessName: z.string().nullable(),
+  businessProvince: z.string().nullable(),
+  businessDistrict: z.string().nullable(),
+  businessLocalLevel: z.string().nullable(),
+  businessLocality: z.string().nullable(),
 
-  // Business Classification
-  businessNature: z.string(),
-  businessNatureOther: z.string().optional(),
-  businessType: z.string(),
-  businessTypeOther: z.string().optional(),
+  // Operator details
+  operatorName: z.string().nullable(),
+  operatorPhone: z.string().nullable(),
+  operatorAge: z.number().nullable(),
+  operatorGender: z.string().nullable(),
+  operatorEducationalLevel: z.string().nullable(),
 
-  // Media fields
-  surveyAudioRecording: z.string().optional(),
-  buildingImage: z.string().optional(),
-  enumeratorSelfie: z.string().optional(),
+  // Business classification
+  businessNature: z.string().nullable(),
+  businessNatureOther: z.string().nullable(),
+  businessType: z.string().nullable(),
+  businessTypeOther: z.string().nullable(),
 
-  // Registration and Legal Information
-  registrationStatus: z.string(),
-  registeredBodies: z.string(), // Changed from array to string to match DB schema
-  registeredBodiesOther: z.string().optional(),
-  statutoryStatus: z.string(),
-  statutoryStatusOther: z.string().optional(),
-  panStatus: z.string(),
-  panNumber: z.string().optional(),
+  // Registration and legal information
+  isBusinessRegistered: z.string().nullable(),
+  registeredBodies: z.array(z.string()).nullable(),
+  registeredBodiesOther: z.array(z.string()).nullable(),
+  statutoryStatus: z.string().nullable(),
+  statutoryStatusOther: z.string().nullable(),
+  hasPanNumber: z.string().nullable(),
+  panNumber: z.number().nullable(),
 
-  // Location Data
-  gps: z.string(), // We'll handle Point geometry as string in the schema
-  altitude: z.number().nullable(),
-  gpsAccuracy: z.number().nullable(),
+  // Ownership and property information
+  businessOwnershipStatus: z.string().nullable(),
+  businessOwnershipStatusOther: z.string().nullable(),
+  businessLocationOwnership: z.string().nullable(),
+  businessLocationOwnershipOther: z.string().nullable(),
 
-  // Financial and Property Information
-  investmentAmount: z.number(),
-  businessLocationOwnership: z.string(),
-  businessLocationOwnershipOther: z.string().optional(),
+  // Hotel-specific information
+  hotelAccomodationType: z.string().nullable(),
+  hotelRoomNumbers: z.number().nullable(),
+  hotelBedNumbers: z.number().nullable(),
+  hotelRoomTypes: z.array(z.string()).nullable(),
 
-  // Hotel details
-  hotelAccommodationType: z.string().optional(),
-  hotelRoomCount: z.number().optional(),
-  hotelBedCount: z.number().optional(),
-  hotelRoomType: z.string().optional(),
-  hotelHasHall: z.string().optional(),
-  hotelHallCapacity: z.number().optional(),
+  // Agricultural business details
+  agriculturalBusinesses: z.array(z.string()).nullable(),
+  businessFoodCrops: z.array(z.string()).nullable(),
+  businessPulses: z.array(z.string()).nullable(),
+  businessOilSeeds: z.array(z.string()).nullable(),
+  businessVegetables: z.array(z.string()).nullable(),
+  businessFruits: z.array(z.string()).nullable(),
+  businessSpices: z.array(z.string()).nullable(),
+  businessCashCrops: z.array(z.string()).nullable(),
+  businessAnimals: z.array(z.string()).nullable(),
+  businessAnimalProducts: z.array(z.string()).nullable(),
 
-  // Employee Information
-  hasPartners: z.string(),
-  totalPartners: z.number().optional(),
-  nepaliMalePartners: z.number().optional(),
-  nepaliFemalePartners: z.number().optional(),
-  hasForeignPartners: z.string(),
-  foreignMalePartners: z.number().optional(),
-  foreignFemalePartners: z.number().optional(),
+  // Financial information
+  businessInvestment: z.number().nullable(),
+  businessProfit: z.number().nullable(),
+  businessPastYearInvestment: z.number().nullable(),
 
-  hasInvolvedFamily: z.string(),
-  totalInvolvedFamily: z.number().optional(),
-  maleInvolvedFamily: z.number().optional(),
-  femaleInvolvedFamily: z.number().optional(),
+  // Partner information
+  hasBusinessPartners: z.string().nullable(),
+  totalPartners: z.number().nullable(),
+  nepaliMalePartners: z.number().nullable(),
+  nepaliFemalePartners: z.number().nullable(),
+  hasForeignPartners: z.string().nullable(),
+  foreignMalePartners: z.number().nullable(),
+  foreignFemalePartners: z.number().nullable(),
 
-  hasPermanentEmployees: z.string(),
-  totalPermanentEmployees: z.number().optional(),
-  nepaliMalePermanentEmployees: z.number().optional(),
-  nepaliFemalePermanentEmployees: z.number().optional(),
-  hasForeignPermanentEmployees: z.string(),
-  foreignMalePermanentEmployees: z.number().optional(),
-  foreignFemalePermanentEmployees: z.number().optional(),
+  // Family involvement
+  hasInvolvedFamily: z.string().nullable(),
+  totalInvolvedFamily: z.number().nullable(),
+  maleInvolvedFamily: z.number().nullable(),
+  femaleInvolvedFamily: z.number().nullable(),
 
-  hasTemporaryEmployees: z.string(),
-  totalTemporaryEmployees: z.number().optional(),
-  nepaliMaleTemporaryEmployees: z.number().optional(),
-  nepaliFemaleTemporaryEmployees: z.number().optional(),
-  hasForeignTemporaryEmployees: z.string(),
-  foreignMaleTemporaryEmployees: z.number().optional(),
-  foreignFemaleTemporaryEmployees: z.number().optional(),
+  // Permanent employee information
+  hasPermanentEmployees: z.string().nullable(),
+  totalPermanentEmployees: z.number().nullable(),
+  nepaliMalePermanentEmployees: z.number().nullable(),
+  nepaliFemalePermanentEmployees: z.number().nullable(),
+  hasForeignPermanentEmployees: z.string().nullable(),
+  foreignMalePermanentEmployees: z.number().nullable(),
+  foreignFemalePermanentEmployees: z.number().nullable(),
+  foreignPermanentEmployeeCountries: z.array(z.string()).nullable(),
 
-  // Aquaculture Information
-  aquacultureWardNo: z.number().optional(),
-  pondCount: z.number().optional(),
-  pondArea: z.number().optional(),
-  fishProduction: z.number().optional(),
-  fingerlingNumber: z.number().optional(),
-  totalInvestment: z.number().optional(),
-  annualIncome: z.number().optional(),
-  employmentCount: z.number().optional(),
+  // Temporary employee information
+  hasTemporaryEmployees: z.string().nullable(),
+  totalTemporaryEmployees: z.number().nullable(),
+  nepaliMaleTemporaryEmployees: z.number().nullable(),
+  nepaliTemporaryFemaleEmployees: z.number().nullable(),
+  hasForeignTemporaryEmployees: z.string().nullable(),
+  foreignMaleTemporaryEmployees: z.number().nullable(),
+  foreignFemaleTemporaryEmployees: z.number().nullable(),
+  foreignTemporaryEmployeeCountries: z.array(z.string()).nullable(),
 
-  // Apiculture Information
-  apicultureWardNo: z.number().optional(),
-  hiveCount: z.number().optional(),
-  honeyProduction: z.number().optional(),
-  hasApiculture: z.string().optional(),
+  // Geospatial data and name
+  geom: z.any().nullable(), // Using any for geometry type since it's complex
+  name: z.string().nullable(),
 
-  // Temporary fields
-  tmpAreaCode: z.string().optional(),
-  tmpWardNumber: z.number().optional(),
-  tmpEnumeratorId: z.string().optional(),
-  tmpBuildingToken: z.string().optional(),
-
-  // Foreign key fields
-  areaId: z.string().optional(),
-  enumeratorId: z.string().optional(),
-  wardId: z.number().optional(),
-  buildingToken: z.string().optional(),
-
-  // Status and validation fields
+  // Status field
   status: z
     .enum(["approved", "pending", "requested_for_edit", "rejected"])
     .default("pending"),
-  isAreaValid: z.boolean().default(false),
-  isWardValid: z.boolean().default(false),
-  isBuildingTokenValid: z.boolean().default(false),
-  isEnumeratorValid: z.boolean().default(false),
 });
 
-// Rest of the code remains the same
+// Schema for creating a new business (omits id)
 export const createBusinessSchema = businessSchema.omit({ id: true });
+
+// Schema for updating a business (all fields optional)
 export const updateBusinessSchema = businessSchema.partial();
+
+// Schema for querying businesses
 export const businessQuerySchema = z.object({
   limit: z.number().min(1).max(100).default(10),
   offset: z.number().min(0).default(0),
   sortBy: z
     .enum([
       "business_name",
-      "ward_id",
-      "area_code",
-      "enumerator_name",
+      "ward_no",
+      "business_district",
+      "operator_name",
       "status",
     ])
-    .default("ward_id"),
-  sortOrder: z.enum(["asc", "desc"]).default("desc"),
+    .default("ward_no"),
+  sortOrder: z.enum(["asc", "desc"]).default("asc"),
   filters: z
     .object({
-      wardId: z.number().optional(),
-      areaCode: z.string().optional(),
-      enumeratorId: z.string().optional(),
+      wardNo: z.number().optional(),
+      businessDistrict: z.string().optional(),
+      businessProvince: z.string().optional(),
       status: z
         .enum(["all", "pending", "approved", "rejected", "requested_for_edit"])
         .optional(),
     })
     .optional(),
+  search: z.string().optional(),
 });
 
+// Schema for business status updates
 export const businessStatusSchema = z.object({
   businessId: z.string(),
   status: z.enum([
-    "all",
     "approved",
     "pending",
     "requested_for_edit",

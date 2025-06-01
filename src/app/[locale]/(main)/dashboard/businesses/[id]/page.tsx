@@ -29,6 +29,7 @@ export default function BusinessDetails({
   params: { id: string };
 }) {
   const decodedId = decodeURIComponent(params.id);
+  console.log("Business Details Page Params:",decodedId); );
   const {
     data: business,
     isLoading,
@@ -75,20 +76,6 @@ export default function BusinessDetails({
           <div className="grid gap-4 md:grid-cols-[2fr,1fr]">
             {/* Left Column - Audio and Stats */}
             <div className="space-y-4">
-              {business?.surveyAudioRecording && (
-                <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
-                  <div className="border-b bg-muted/50 px-4 py-3">
-                    <h3 className="text-sm font-medium">Audio Monitoring</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Survey recording for verification
-                    </p>
-                  </div>
-                  <div className="p-4">
-                    <CustomAudioPlayer src={business.surveyAudioRecording} />
-                  </div>
-                </div>
-              )}
-
               <BusinessStatsGrid
                 totalEmployees={
                   (business?.totalPermanentEmployees ?? 0) +
@@ -116,48 +103,6 @@ export default function BusinessDetails({
 
           {/* @ts-ignore */}
           <BusinessInvalidSection business={business} />
-
-          {/* Media Section */}
-          {(business?.businessImage || business?.enumeratorSelfie) && (
-            <div className="grid grid-cols-1 lg:grid-cols-[3fr,1fr] gap-6">
-              {business?.businessImage && (
-                <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
-                  <div className="border-b bg-muted/50 p-4">
-                    <h3 className="font-semibold">Business Photo</h3>
-                    <p className="text-xs text-muted-foreground">
-                      Main photo of the surveyed business
-                    </p>
-                  </div>
-                  <div className="aspect-video relative">
-                    <Image
-                      src={business.businessImage}
-                      alt="Business"
-                      fill
-                      className="object-cover transition-all hover:scale-105"
-                    />
-                  </div>
-                </div>
-              )}
-              {business?.enumeratorSelfie && (
-                <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
-                  <div className="border-b bg-muted/50 p-4">
-                    <h3 className="font-semibold">Enumerator Selfie</h3>
-                    <p className="text-xs text-muted-foreground">
-                      Photo verification of surveyor
-                    </p>
-                  </div>
-                  <div className="aspect-square relative">
-                    <Image
-                      src={business.enumeratorSelfie}
-                      alt="Enumerator Selfie"
-                      fill
-                      className="object-cover transition-all hover:scale-105"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
 
           {/* Info Grid with Location */}
           <BusinessInfoGrid

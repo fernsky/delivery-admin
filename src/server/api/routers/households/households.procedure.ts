@@ -9,6 +9,10 @@ import {
     requestHouseholdEditProcedure,
     getHouseholdEditRequestsProcedure
 } from "./procedures/edit";
+import {
+    getHouseholdLocationProcedure,
+    getHouseholdsLocationsProcedure
+} from "./procedures/location";
 
 export const householdRouter = createTRPCRouter({
     createHousehold: createHouseholdProcedure,
@@ -16,5 +20,7 @@ export const householdRouter = createTRPCRouter({
     getHouseholdById: getHouseholdByIdProcedure,
     updateHousehold: updateHouseholdProcedure,
     requestHouseholdEdit: requestHouseholdEditProcedure,
-    getHouseholdEditRequests: getHouseholdEditRequestsProcedure
+    getHouseholdEditRequests: getHouseholdEditRequestsProcedure,
+    getHouseholdLocation: getHouseholdLocationProcedure,
+    getHouseholdsLocations: getHouseholdsLocationsProcedure
 });
