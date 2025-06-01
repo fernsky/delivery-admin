@@ -9,31 +9,24 @@ export function HotelSection({ business }: { business: BusinessSchema }) {
       <DetailRow
         icon={Hotel}
         label="Accommodation Type"
-        value={business?.hotelAccommodationType}
+        value={business?.hotelAccomodationType}
       />
       <DetailRow
         icon={Hotel}
         label="Room Count"
-        value={business?.hotelRoomCount?.toString()}
+        value={business?.hotelRoomNumbers?.toString()}
       />
       <DetailRow
         icon={Hotel}
         label="Bed Count"
-        value={business?.hotelBedCount?.toString()}
+        value={business?.hotelBedNumbers?.toString()}
       />
       <DetailRow
         icon={Hotel}
         label="Room Type"
-        value={business?.hotelRoomType}
+        value={business?.hotelRoomTypes?.join(", ") || "N/A"}
       />
-      <DetailRow icon={Hotel} label="Has Hall" value={business?.hotelHasHall} />
-      {business?.hotelHallCapacity && (
-        <DetailRow
-          icon={Hotel}
-          label="Hall Capacity"
-          value={business.hotelHallCapacity.toString()}
-        />
-      )}
+     
     </Card>
   );
 }
