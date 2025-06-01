@@ -7,7 +7,7 @@ export const postgis = (name: string) =>
       return 'geometry(Point, 4326)';
     },
     toDriver(value) {
-      const data = value.data;
+      const data = value;
       if (typeof data === 'string') return data;
       if (Array.isArray(data) && data.length === 2) {
         const [lng, lat] = data;
