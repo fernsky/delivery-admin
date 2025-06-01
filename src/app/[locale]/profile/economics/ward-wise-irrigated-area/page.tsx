@@ -33,14 +33,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
     // Calculate total areas
     const totalIrrigatedArea = summaryData?.total_irrigated_area
-      ? parseFloat(summaryData.total_irrigated_area)
+      ? parseFloat(summaryData.total_irrigated_area as string)
       : irrigatedAreaData.reduce(
           (sum, item) => sum + (parseFloat(String(item.irrigatedAreaHectares)) || 0),
           0
         );
 
     const totalUnirrigatedArea = summaryData?.total_unirrigated_area
-      ? parseFloat(summaryData.total_unirrigated_area)
+      ? parseFloat(summaryData.total_unirrigated_area as string)
       : irrigatedAreaData.reduce(
           (sum, item) => sum + (parseFloat(String(item.unirrigatedAreaHectares)) || 0),
           0
@@ -160,11 +160,11 @@ export default async function WardWiseIrrigatedAreaPage() {
 
   // Calculate overall totals
   const totalIrrigatedArea = summaryData?.total_irrigated_area
-    ? parseFloat(summaryData.total_irrigated_area)
+    ? parseFloat(summaryData.total_irrigated_area as string)
     : wardData.reduce((sum, item) => sum + item.irrigatedArea, 0);
 
   const totalUnirrigatedArea = summaryData?.total_unirrigated_area
-    ? parseFloat(summaryData.total_unirrigated_area)
+    ? parseFloat(summaryData.total_unirrigated_area as string)
     : wardData.reduce((sum, item) => sum + item.unirrigatedArea, 0);
 
   const totalArea = totalIrrigatedArea + totalUnirrigatedArea;

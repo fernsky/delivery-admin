@@ -84,7 +84,7 @@ export const navItems: NavItem[] = [
       items: [
         {
           title: "विशेष सीप भएका मानव संशाधनको विवरण",
-          href: "/profile/economics/ward-wise-major-skills",
+          href: "/profile/economics/ward-main-skills",
         },
         {
           title: "घरको स्वामित्वको आधारमा घरधुरी",
@@ -164,49 +164,49 @@ export const navItems: NavItem[] = [
         },
       ],
     },
-    {
-      title: "शिक्षा",
-      href: "/profile/education",
-      icon: <BookOpen className="w-4 h-4" />,
-      items: [
-        {
-          title: "शैक्षिक स्थिति",
-          href: "/profile/education/summary",
-        },
-        {
-          title: "विद्यालय तथा शिक्षकहरू",
-          href: "/profile/education/schools",
-        },
-      ],
-    },
-    {
-      title: "स्वास्थ्य",
-      href: "/profile/health",
-      icon: <Activity className="w-4 h-4" />,
-      items: [
-        {
-          title: "स्वास्थ्य सुविधाहरू",
-          href: "/profile/health/facilities",
-        },
-        {
-          title: "स्वास्थ्य सूचकांक",
-          href: "/profile/health/indicators",
-        },
-      ],
-    },
-    {
-      title: "भौतिक पूर्वाधार",
-      href: "/profile/infrastructure",
-      icon: <Building className="w-4 h-4" />,
-      items: [
-        {
-          title: "सडक नेटवर्क",
-          href: "/profile/infrastructure/road-network",
-        },
-        {
-          title: "खानेपानी आपूर्ति",
-          href: "/profile/infrastructure/water-supply",
-        },
-      ],
-    },
+    // {
+    //   title: "शिक्षा",
+    //   href: "/profile/education",
+    //   icon: <BookOpen className="w-4 h-4" />,
+    //   items: [
+    //     {
+    //       title: "शैक्षिक स्थिति",
+    //       href: "/profile/education/summary",
+    //     },
+    //     {
+    //       title: "विद्यालय तथा शिक्षकहरू",
+    //       href: "/profile/education/schools",
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "स्वास्थ्य",
+    //   href: "/profile/health",
+    //   icon: <Activity className="w-4 h-4" />,
+    //   items: [
+    //     {
+    //       title: "स्वास्थ्य सुविधाहरू",
+    //       href: "/profile/health/facilities",
+    //     },
+    //     {
+    //       title: "स्वास्थ्य सूचकांक",
+    //       href: "/profile/health/indicators",
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "भौतिक पूर्वाधार",
+    //   href: "/profile/infrastructure",
+    //   icon: <Building className="w-4 h-4" />,
+    //   items: [
+    //     {
+    //       title: "सडक नेटवर्क",
+    //       href: "/profile/infrastructure/road-network",
+    //     },
+    //     {
+    //       title: "खानेपानी आपूर्ति",
+    //       href: "/profile/infrastructure/water-supply",
+    //     },
+    //   ],
+    // },
   ];

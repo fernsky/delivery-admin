@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 
 const categories = [
   {
-    title: "जनसांख्यिकी",
+    title: "जनसांख्यिक विवरण",
     description:
       "जनसंख्या, उमेर, लिङ्ग, जात, धर्म र भाषा सम्बन्धी विस्तृत तथ्याङ्क।",
     href: "/profile/demographics",
@@ -56,47 +56,49 @@ const categories = [
     textColor: "text-blue-700 dark:text-blue-300",
   },
   {
-    title: "शिक्षा",
-    description:
-      "साक्षरता दर, विद्यालयहरू, शैक्षिक स्थिति र अन्य शिक्षा सम्बन्धी तथ्याङ्क।",
-    href: "/profile/education",
-    icon: <GraduationCap className="h-6 w-6" />,
-    color: "bg-green-100 dark:bg-green-900",
-    textColor: "text-green-700 dark:text-green-300",
-  },
-  {
-    title: "स्वास्थ्य",
-    description:
-      "स्वास्थ्य सुविधाहरू, स्वास्थ्य सूचकांकहरू र सेवा पहुँच सम्बन्धी तथ्याङ्क।",
-    href: "/profile/health",
-    icon: <Activity className="h-6 w-6" />,
-    color: "bg-red-100 dark:bg-red-900",
-    textColor: "text-red-700 dark:text-red-300",
-  },
-  {
-    title: "भौतिक पूर्वाधार",
-    description: "सडक, बिजुली, खानेपानी र अन्य पूर्वाधार सम्बन्धी जानकारी।",
-    href: "/profile/infrastructure",
-    icon: <Building className="h-6 w-6" />,
-    color: "bg-yellow-100 dark:bg-yellow-900",
-    textColor: "text-yellow-700 dark:text-yellow-300",
-  },
-  {
-    title: "अर्थतन्त्र",
+    title: "आर्थिक अवस्था",
     description: "रोजगारी, आर्थिक गतिविधि र व्यापार सम्बन्धी तथ्याङ्क।",
-    href: "/profile/economy",
+    href: "/profile/economics",
     icon: <PieChart className="h-6 w-6" />,
     color: "bg-purple-100 dark:bg-purple-900",
     textColor: "text-purple-700 dark:text-purple-300",
   },
-  {
-    title: "सामाजिक",
-    description: "भौगोलिक नक्सा, स्थानीय सीमाना र अन्य स्थानिक जानकारी।",
-    href: "/profile/maps",
-    icon: <MapPin className="h-6 w-6" />,
-    color: "bg-indigo-100 dark:bg-indigo-900",
-    textColor: "text-indigo-700 dark:text-indigo-300",
-  },
+  // {
+  //   title: "शिक्षा",
+  //   description:
+  //     "साक्षरता दर, विद्यालयहरू, शैक्षिक स्थिति र अन्य शिक्षा सम्बन्धी तथ्याङ्क।",
+  //   href: "/profile/education",
+  //   icon: <GraduationCap className="h-6 w-6" />,
+  //   color: "bg-green-100 dark:bg-green-900",
+  //   textColor: "text-green-700 dark:text-green-300",
+  // },
+
+  // {
+  //   title: "स्वास्थ्य",
+  //   description:
+  //     "स्वास्थ्य सुविधाहरू, स्वास्थ्य सूचकांकहरू र सेवा पहुँच सम्बन्धी तथ्याङ्क।",
+  //   href: "/profile/health",
+  //   icon: <Activity className="h-6 w-6" />,
+  //   color: "bg-red-100 dark:bg-red-900",
+  //   textColor: "text-red-700 dark:text-red-300",
+  // },
+  // {
+  //   title: "भौतिक पूर्वाधार",
+  //   description: "सडक, बिजुली, खानेपानी र अन्य पूर्वाधार सम्बन्धी जानकारी।",
+  //   href: "/profile/infrastructure",
+  //   icon: <Building className="h-6 w-6" />,
+  //   color: "bg-yellow-100 dark:bg-yellow-900",
+  //   textColor: "text-yellow-700 dark:text-yellow-300",
+  // },
+
+  // {
+  //   title: "सामाजिक",
+  //   description: "भौगोलिक नक्सा, स्थानीय सीमाना र अन्य स्थानिक जानकारी।",
+  //   href: "/profile/maps",
+  //   icon: <MapPin className="h-6 w-6" />,
+  //   color: "bg-indigo-100 dark:bg-indigo-900",
+  //   textColor: "text-indigo-700 dark:text-indigo-300",
+  // },
 ];
 
 export default function ProfilePage() {
@@ -197,33 +199,6 @@ export default function ProfilePage() {
                 </li>
                 <li>तथ्याङ्क डाउनलोड गर्न सम्बन्धित बटनहरू प्रयोग गर्नुहोस्。</li>
               </ul>
-
-              <h2 id="data-sources" className="scroll-m-20">
-                तथ्याङ्कका स्रोतहरू
-              </h2>
-              <p>
-                यस प्रोफाइलमा प्रस्तुत गरिएका तथ्याङ्कहरू निम्न स्रोतहरूबाट संकलन
-                गरिएका हुन्:
-              </p>
-              <ul>
-                <li>नेपाल सरकारको राष्ट्रिय जनगणना २०७८</li>
-                <li>पालिकाको वार्षिक सर्वेक्षण</li>
-                <li>केन्द्रीय तथ्याङ्क विभागका प्रकाशनहरू</li>
-                <li>स्थानीय स्वास्थ्य र शिक्षा विभागका रेकर्डहरू</li>
-                <li>अन्य आधिकारिक सरकारी स्रोतहरू</li>
-              </ul>
-
-              <h2 id="contact" className="scroll-m-20">
-                सम्पर्क
-              </h2>
-              <p>
-                तथ्याङ्क सम्बन्धी कुनै प्रश्न, सुझाव वा थप जानकारीको लागि, कृपया
-                हामीलाई{" "}
-                <a href="mailto:info@palika-profile.gov.np">
-                  info@palika-profile.gov.np
-                </a>{" "}
-                मा सम्पर्क गर्नुहोस् वा हाम्रो कार्यालयमा आउनुहोस्。
-              </p>
             </div>
           </section>
         </div>
