@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { BusinessActions } from "@/components/business/business-actions";
 import { z } from "zod";
 import Image from "next/image";
 import { BusinessDetailsSection } from "@/components/business/business-details-section";
@@ -92,14 +91,7 @@ export default function BusinessDetails({
               />
             </div>
 
-            {/* Right Column - Verification Status */}
-            <div className="h-full">
-              <BusinessActions
-                businessId={business.id}
-                currentStatus={business.status ?? "pending"}
-                onStatusChange={businessRefetch}
-              />
-            </div>
+          
           </div>
 
           {/* @ts-ignore */}

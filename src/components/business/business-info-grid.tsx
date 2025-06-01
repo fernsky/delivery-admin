@@ -28,7 +28,7 @@ export function BusinessInfoGrid({
         <BusinessBasicSection business={business} />
         {/* @ts-ignore */}
         <LegalInfoSection business={business} />
-        {(business?.hotelAccommodationType || business?.hotelRoomCount) && (
+        {(business?.hotelAccomodationType || business?.hotelRoomNumbers) && (
           <HotelSection business={business} />
         )}
       </div>
@@ -41,12 +41,7 @@ export function BusinessInfoGrid({
         />
         <OperatorSection business={business} />
         <WorkforceSection business={business} />
-        {business?.aquacultureWardNo && (
-          <AquacultureSection business={business} />
-        )}
-        {business?.hasApiculture === "yes" && (
-          <ApicultureSection business={business} />
-        )}
+      
       </div>
     </div>
   );

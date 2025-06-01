@@ -1,8 +1,8 @@
-import { BusinessSchema } from "@/server/db/schema/business/business";
+import { Business } from "@/server/db/schema/business/business";
 import { Building2, MapPin, Store, User2 } from "lucide-react";
 import Link from "next/link";
 
-export function BusinessCard({ business }: { business: BusinessSchema }) {
+export function BusinessCard({ business }: { business: Business }) {
   return (
     <Link href={`/businesses/${business.id}`}>
       <div className="rounded-lg border bg-card p-4 shadow-sm transition-all hover:shadow-md">
@@ -22,7 +22,7 @@ export function BusinessCard({ business }: { business: BusinessSchema }) {
             <div className="flex flex-col">
               <span className="text-sm text-muted-foreground">Location</span>
               <span className="text-sm">
-                Ward {business.wardId}, {business.locality || "—"}
+                Ward {business.wardNo}, {business.businessLocality || "—"}
               </span>
             </div>
           </div>
