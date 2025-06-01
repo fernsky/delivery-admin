@@ -31,121 +31,87 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { formatDate } from "@/lib/utils";
 
-// Update business type to match our schema
-type Business = {
+// Define types for the household data structure
+type Household = {
   id: string;
-  businessName?: string;
-  operatorName?: string;
+  familyHeadName?: string;
+  familyHeadPhoneNo?: string;
   wardNo?: number | null;
-  businessNature?: string;
-  businessType?: string;
-  operatorPhone?: string;
-  isBusinessRegistered?: string;
-  businessInvestment?: number;
-  status: string;
+  totalMembers?: number | null;
+  locality?: string;
+  houseSymbolNo?: string;
+  dateOfInterview?: Date | null;
 };
 
-export default function BusinessesPage() {
+export default function HouseholdsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [wardFilter, setWardFilter] = useState<number | undefined>(undefined);
-  const [statusFilter, setStatusFilter] = useState<string | undefined>(
-    undefined,
-  );
-  // Fix the sortBy to use the correct enum values from schema
   const [sortBy, setSortBy] = useState<
-    | "business_name"
+    | "family_head_name"
     | "ward_no"
-    | "business_district"
-    | "operator_name"
-    | "status"
-  >("business_name"); // Changed from businessName to business_name
+    | "locality"
+    | "house_symbol_no"
+    | "date_of_interview"
+  >("family_head_name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  // Fetch businesses data with pagination
-  const { data, isLoading, error } = api.business.getAll.useQuery({
-    limit: pageSize,
-    offset: (currentPage - 1) * pageSize,
-    sortBy: sortBy,
-    sortOrder: sortOrder,
-    filters: {
-      wardNo: wardFilter,
-      status: statusFilter as
-        | "all"
-        | "pending"
-        | "approved"
-        | "rejected"
-        | "requested_for_edit"
-        | undefined,
-    },
-    search: searchQuery.length > 2 ? searchQuery : undefined,
-  });
+  // Fetch households data with pagination
+  const { data, isLoading, error, refetch } =
+    api.households.getHouseholds.useQuery({
+      limit: pageSize,
+      offset: (currentPage - 1) * pageSize,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+      filters: {
+        wardNo: wardFilter,
+      },
+      search: searchQuery.length > 2 ? searchQuery : undefined, // Only search if query has at least 3 characters
+    });
 
-  const totalPages = data?.pagination?.total
-    ? Math.ceil(data.pagination.total / pageSize)
-    : 0;
+  const totalPages = data?.meta ? Math.ceil(data.meta.total / pageSize) : 0;
 
-  // Handle sort toggle - update to use correct schema field names
+  // Handle sort toggle
   const toggleSort = (
     column:
-      | "business_name"
+      | "family_head_name"
       | "ward_no"
-      | "business_district"
-      | "operator_name"
-      | "status",
+      | "locality"
+      | "house_symbol_no"
+      | "date_of_interview",
   ) => {
     if (sortBy === column) {
+      // Toggle sort order if already sorting by this column
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
+      // Otherwise switch to the new column with ascending order
       setSortBy(column);
       setSortOrder("asc");
     }
   };
 
-  // Handle search
+  // Handle search with debounce
   const handleSearch = (value: string) => {
     setSearchQuery(value);
-    setCurrentPage(1);
+    setCurrentPage(1); // Reset to first page on new search
   };
 
-  const formatStatusLabel = (status: string) => {
-    switch (status) {
-      case "approved":
-        return "स्वीकृत";
-      case "rejected":
-        return "अस्वीकृत";
-      case "requested_for_edit":
-        return "संशोधन आवश्यक";
-      case "pending":
-      default:
-        return "प्रक्रियामा";
-    }
-  };
-
-  const formatStatusClass = (status: string) => {
-    switch (status) {
-      case "approved":
-        return "bg-green-100 text-green-800";
-      case "rejected":
-        return "bg-red-100 text-red-800";
-      case "requested_for_edit":
-        return "bg-yellow-100 text-yellow-800";
-      case "pending":
-      default:
-        return "bg-blue-100 text-blue-800";
-    }
+  // Function to safely format UUID for navigation
+  const formatUuidForNav = (id: string): string => {
+    return id.replace(/^uuid:/, "");
   };
 
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">व्यवसाय सूची</h1>
-        <Button onClick={() => router.push("/dashboard/businesses/create")}>
+        <h1 className="text-2xl font-bold">घरधुरी सूची</h1>
+        <Button onClick={() => router.push("/dashboard/households/create")}>
           <Plus className="mr-2 h-4 w-4" />
-          नयाँ व्यवसाय थप्नुहोस्
+          नयाँ घरधुरी थप्नुहोस्
         </Button>
       </div>
 
@@ -153,7 +119,7 @@ export default function BusinessesPage() {
         <div className="relative flex-grow">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="व्यवसायको नाम, प्रकार वा संचालकको नाम खोज्नुहोस्"
+            placeholder="परिवार मूलीको नाम, फोन नम्बर, वा स्थान द्वारा खोज्नुहोस्"
             className="pl-8"
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
@@ -178,25 +144,6 @@ export default function BusinessesPage() {
                   वडा {ward}
                 </SelectItem>
               ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={statusFilter || ""}
-            onValueChange={(value) => {
-              setStatusFilter(value || undefined);
-              setCurrentPage(1);
-            }}
-          >
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder="स्थिति" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">सबै स्थिति</SelectItem>
-              <SelectItem value="approved">स्वीकृत</SelectItem>
-              <SelectItem value="pending">प्रक्रियामा</SelectItem>
-              <SelectItem value="rejected">अस्वीकृत</SelectItem>
-              <SelectItem value="requested_for_edit">संशोधन आवश्यक</SelectItem>
             </SelectContent>
           </Select>
 
@@ -235,32 +182,17 @@ export default function BusinessesPage() {
           <div className="rounded-md border">
             <Table>
               <TableCaption>
-                कुल {data?.pagination?.total || 0} व्यवसायहरु
+                कुल {data?.meta?.total || 0} परिवारहरु
               </TableCaption>
               <TableHeader>
                 <TableRow>
                   <TableHead
                     className="cursor-pointer"
-                    onClick={() => toggleSort("business_name")}
+                    onClick={() => toggleSort("family_head_name")}
                   >
                     <div className="flex items-center">
-                      व्यवसायको नाम
-                      {sortBy === "business_name" && (
-                        <ArrowUpDown
-                          className={`ml-2 h-4 w-4 ${
-                            sortOrder === "asc" ? "transform rotate-180" : ""
-                          }`}
-                        />
-                      )}
-                    </div>
-                  </TableHead>
-                  <TableHead
-                    className="cursor-pointer"
-                    onClick={() => toggleSort("operator_name")}
-                  >
-                    <div className="flex items-center">
-                      संचालकको नाम
-                      {sortBy === "operator_name" && (
+                      परिवार मूलीको नाम
+                      {sortBy === "family_head_name" && (
                         <ArrowUpDown
                           className={`ml-2 h-4 w-4 ${
                             sortOrder === "asc" ? "transform rotate-180" : ""
@@ -284,15 +216,16 @@ export default function BusinessesPage() {
                       )}
                     </div>
                   </TableHead>
-                  <TableHead>प्रकृति</TableHead>
-                  <TableHead>प्रकार</TableHead>
+                  <TableHead>स्थान</TableHead>
+                  <TableHead>फोन नम्बर</TableHead>
+                  <TableHead>सदस्य संख्या</TableHead>
                   <TableHead
                     className="cursor-pointer"
-                    onClick={() => toggleSort("status")}
+                    onClick={() => toggleSort("date_of_interview")}
                   >
                     <div className="flex items-center">
-                      स्थिति
-                      {sortBy === "status" && (
+                      अन्तरवार्ता मिति
+                      {sortBy === "date_of_interview" && (
                         <ArrowUpDown
                           className={`ml-2 h-4 w-4 ${
                             sortOrder === "asc" ? "transform rotate-180" : ""
@@ -305,31 +238,32 @@ export default function BusinessesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data?.data && data.data.length > 0 ? (
-                  //@ts-ignore
-                  data.data.map((business: Business) => (
+                {data?.households && data.households.length > 0 ? (
+                  data.households.map((household) => (
                     <TableRow
-                      key={String(business.id)}
+                      key={String(household.id)}
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() =>
                         router.push(
-                          `/dashboard/businesses/view/${encodeURIComponent(business.id)}`,
+                          `/dashboard/households/view/${formatUuidForNav(household.id as string)}`,
                         )
                       }
                     >
                       <TableCell className="font-medium">
-                        {business.businessName || ""}
+                        {(household.familyHeadName as string) || ""}
                       </TableCell>
-                      <TableCell>{business.operatorName || ""}</TableCell>
-                      <TableCell>{business.wardNo || ""}</TableCell>
-                      <TableCell>{business.businessNature || ""}</TableCell>
-                      <TableCell>{business.businessType || ""}</TableCell>
+                      <TableCell>{household.wardNo || ""}</TableCell>
                       <TableCell>
-                        <div
-                          className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${formatStatusClass(business.status)}`}
-                        >
-                          {formatStatusLabel(business.status)}
-                        </div>
+                        {(household.locality as string) || ""}
+                      </TableCell>
+                      <TableCell>
+                        {(household.familyHeadPhoneNo as string) || ""}
+                      </TableCell>
+                      <TableCell>{household.totalMembers || ""}</TableCell>
+                      <TableCell>
+                        {household.dateOfInterview
+                          ? formatDate(household.dateOfInterview.toString())
+                          : "-"}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button
@@ -338,7 +272,7 @@ export default function BusinessesPage() {
                           onClick={(e) => {
                             e.stopPropagation();
                             router.push(
-                              `/dashboard/businesses/edit/${encodeURIComponent(business.id)}`,
+                              `/dashboard/households/edit/${formatUuidForNav(household.id as string)}`,
                             );
                           }}
                           title="विवरण सम्पादन"
@@ -353,10 +287,10 @@ export default function BusinessesPage() {
                     <TableCell colSpan={7} className="text-center h-24">
                       <div>
                         <p className="text-xl font-semibold text-muted-foreground">
-                          कुनै व्यवसाय फेला परेन
+                          कुनै घरधुरी फेला परेन
                         </p>
                         <p className="mt-2">
-                          खोज मापदण्ड परिवर्तन गर्नुहोस् वा नयाँ व्यवसाय
+                          खोज मापदण्ड परिवर्तन गर्नुहोस् वा नयाँ घरधुरी
                           थप्नुहोस्
                         </p>
                       </div>
@@ -371,7 +305,7 @@ export default function BusinessesPage() {
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground">
                 पृष्ठ {currentPage} / {totalPages} (जम्मा{" "}
-                {data?.pagination?.total || 0} व्यवसाय)
+                {data?.meta?.total || 0} घरधुरी)
               </div>
 
               <Pagination>

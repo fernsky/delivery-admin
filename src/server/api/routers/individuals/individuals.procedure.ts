@@ -1,8 +1,8 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import { getAll, getById, getStats } from "./procedures/query";
+import { getIndividualsProcedure, getIndividualByIdProcedure, getIndividualsByHouseholdIdProcedure } from "./procedures/query";
 
 export const individualRouter = createTRPCRouter({
-  getAll,
-  getById,
-  getStats,
+  getIndividuals: getIndividualsProcedure,
+  getIndividualById: getIndividualByIdProcedure,
+  getIndividualsByHouseholdId: getIndividualsByHouseholdIdProcedure,
 });

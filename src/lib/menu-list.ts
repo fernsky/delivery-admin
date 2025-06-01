@@ -21,7 +21,9 @@ import {
   MapPin, // For local areas icon
   Route, // For roads icon
   ParkingCircle, // For parking facilities icon
-  Bus, // For public transport icon
+  Bus,
+  TowerControl,
+  StoreIcon, // For public transport icon
 } from "lucide-react";
 
 export type Role = "admin" | "superadmin" | "enumerator";
@@ -52,6 +54,18 @@ const menuConfig: Menu[] = [
     href: "/",
     label: "होम",
     icon: LayoutGrid,
+    roles: ["admin", "superadmin", "enumerator"],
+  },
+  {
+    href: "/dashboard/households",
+    label: "घरधुरीहरू",
+    icon: Home,
+    roles: ["admin", "superadmin", "enumerator"],
+  },
+  {
+    href: "/dashboard/businesses",
+    label: "व्यवसायहरू",
+    icon: StoreIcon,
     roles: ["admin", "superadmin", "enumerator"],
   },
   // Demographics submenu with children
