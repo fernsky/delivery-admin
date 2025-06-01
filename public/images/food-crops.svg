@@ -1,397 +1,131 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1200" height="400" viewBox="0 0 1200 400"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink">
-    <defs>
-        <!-- Gradients for background and elements -->
-        <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#0f172a" />
-            <stop offset="100%" stop-color="#334155" />
-        </linearGradient>
-
-        <linearGradient id="paddy-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#f39c12" />
-            <stop offset="100%" stop-color="#f1c40f" />
-        </linearGradient>
-
-        <linearGradient id="corn-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#f1c40f" />
-            <stop offset="100%" stop-color="#f7dc6f" />
-        </linearGradient>
-
-        <linearGradient id="wheat-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#e67e22" />
-            <stop offset="100%" stop-color="#f39c12" />
-        </linearGradient>
-
-        <linearGradient id="millet-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#d35400" />
-            <stop offset="100%" stop-color="#e67e22" />
-        </linearGradient>
-
-        <linearGradient id="barley-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#c0392b" />
-            <stop offset="100%" stop-color="#e74c3c" />
-        </linearGradient>
-
-        <linearGradient id="buckwheat-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#e74c3c" />
-            <stop offset="100%" stop-color="#ec7063" />
-        </linearGradient>
-
-        <linearGradient id="money-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#2ecc71" />
-            <stop offset="100%" stop-color="#27ae60" />
-        </linearGradient>
-
-        <!-- Path for curved text at bottom -->
-        <path id="curved-text-path" d="M200,350 Q600,280 1000,350" fill="none" />
-
-        <!-- Rice/Paddy crop -->
-        <path id="paddy-crop" d="M0,50 C10,20 30,30 30,0 C30,30 40,20 50,50 C60,20 70,30 70,0 C70,30 80,20 90,50 L90,100 L0,100 Z" />
-
-        <!-- Corn/Maize crop -->
-        <path id="corn-crop" d="M25,0 L30,50 L50,60 L70,50 L75,0 Z M30,50 L30,90 L70,90 L70,50 Z" />
-
-        <!-- Wheat crop -->
-        <path id="wheat-crop" d="M10,20 L20,0 L30,20 L40,0 L50,20 L60,0 L70,20 L80,0 L90,20 L90,100 L10,100 Z" />
-
-        <!-- Millet crop -->
-        <path id="millet-crop" d="M20,0 L20,80 L80,80 L80,0 C70,10 65,5 60,15 C55,5 50,10 40,0 C35,10 30,5 20,0 Z" />
-
-        <!-- Barley crop -->
-        <path id="barley-crop" d="M0,15 L5,0 L10,15 L15,0 L20,15 L25,0 L30,15 L35,0 L40,15 L45,0 L50,15 L50,90 L0,90 Z" />
-
-        <!-- Sack of grain -->
-        <path id="grain-sack" d="M10,30 C0,20 0,0 25,0 C50,0 50,20 40,30 L40,90 C40,110 10,110 10,90 Z" />
-
-        <!-- Rupee symbol -->
-        <path id="rupee-symbol" d="M0,0 L30,0 L30,10 L20,10 L30,30 L0,30 L0,20 L10,20 L0,0 Z" />
-
-        <!-- Market stall -->
-        <path id="market-stall" d="M0,20 L100,20 L90,0 L10,0 Z M10,20 L10,70 L90,70 L90,20 Z M0,20 L0,80 L100,80 L100,20 Z" />
-
-        <!-- Farmer -->
-        <path id="farmer" d="M25,10 C25,4.5 29.5,0 35,0 C40.5,0 45,4.5 45,10 C45,15.5 40.5,20 35,20 C29.5,20 25,15.5 25,10 Z M15,45 C15,25 55,25 55,45 L55,80 L45,80 L45,60 L35,80 L25,60 L25,80 L15,80 Z" />
-
-        <!-- Field/Farm plot -->
-        <path id="farm-plot" d="M0,0 L100,0 L100,60 L0,60 Z" />
-
-        <!-- Pie chart segment -->
-        <path id="pie-segment-25" d="M50,50 L50,0 A50,50 0 0,1 85,15 Z" />
-        <path id="pie-segment-50" d="M50,50 L50,0 A50,50 0 0,1 100,50 Z" />
-        <path id="pie-segment-75" d="M50,50 L50,0 A50,50 0 0,1 50,100 Z" />
-
-        <!-- Food crop title bubble -->
-        <path id="crop-bubble" d="M0,0 Q5,-15 20,-15 L80,-15 Q95,-15 100,0 L100,40 Q100,55 85,55 L60,55 L45,70 L30,55 L15,55 Q0,55 0,40 Z" />
-
-        <!-- Water droplet -->
-        <path id="water-drop" d="M10,0 C15,-5 25,-5 30,0 C25,10 15,10 10,0 Z" />
-
-        <!-- Grid pattern for background -->
-        <pattern id="grid-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M0,0 L40,0 L40,40 L0,40 Z" fill="none" stroke="#1e293b" stroke-width="0.5" opacity="0.3" />
-        </pattern>
-    </defs>
-
-    <!-- Background with gradient and grid -->
-    <rect width="1200" height="400" fill="url(#bg-gradient)" />
-    <rect width="1200" height="400" fill="url(#grid-pattern)" />
-
-    <!-- Decorative elements -->
-    <g opacity="0.1">
-        <circle cx="150" cy="80" r="40" fill="white" />
-        <circle cx="1050" cy="100" r="50" fill="white" />
-        <circle cx="600" cy="50" r="30" fill="white" />
-        <circle cx="100" cy="320" r="35" fill="white" />
-        <circle cx="1100" cy="300" r="45" fill="white" />
-    </g>
-
-    <!-- Animated clouds -->
-    <g opacity="0.3">
-        <path d="M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z" fill="white">
-            <animate attributeName="d" values="M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z;
-                                        M110,70 Q130,50 160,60 Q180,40 210,50 Q230,30 260,50 Q240,70 210,65 Q190,75 160,70 Q140,80 110,70 Z;
-                                        M100,70 Q120,50 150,60 Q170,40 200,50 Q220,30 250,50 Q230,70 200,65 Q180,75 150,70 Q130,80 100,70 Z" dur="20s" repeatCount="indefinite" />
-        </path>
-
-        <path d="M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z" fill="white">
-            <animate attributeName="d" values="M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z;
-                                        M710,50 Q740,30 770,45 Q790,20 820,40 Q800,60 770,55 Q750,65 710,50 Z;
-                                        M700,50 Q730,30 760,45 Q780,20 810,40 Q790,60 760,55 Q740,65 700,50 Z" dur="15s" repeatCount="indefinite" />
-        </path>
-
-        <path d="M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z" fill="white">
-            <animate attributeName="d" values="M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z;
-                                        M390,90 Q420,60 450,80 Q470,50 500,70 Q480,100 450,90 Q430,110 390,90 Z;
-                                        M400,90 Q430,60 460,80 Q480,50 510,70 Q490,100 460,90 Q440,110 400,90 Z" dur="18s" repeatCount="indefinite" />
-        </path>
-    </g>
-
-    <!-- Sun -->
-    <g transform="translate(900, 60)">
-        <circle cx="0" cy="0" r="30" fill="#f39c12" opacity="0.7" />
-        <g opacity="0.7">
-            <path d="M0,-40 L0,-35 M28,-28 L25,-25 M40,0 L35,0 M28,28 L25,25 M0,40 L0,35 M-28,28 L-25,25 M-40,0 L-35,0 M-28,-28 L-25,-25" stroke="#f39c12" stroke-width="3" />
-        </g>
-    </g>
-
-    <!-- Main crops visualization section -->
-    <!-- Paddy Rice -->
-    <g transform="translate(100, 100)">
-        <g transform="scale(0.8)">
-            <use href="#paddy-crop" fill="url(#paddy-gradient)" />
-            <!-- Rice field water -->
-            <path d="M5,80 L85,80 L85,95 L5,95 Z" fill="#3498db" opacity="0.5" />
-            <path d="M10,85 Q20,80 30,85 Q40,90 50,85 Q60,80 70,85 Q80,90 90,85" stroke="#74b9ff" stroke-width="1" fill="none" opacity="0.8" />
-        </g>
-        <g transform="translate(10, 90) scale(1)">
-            <use href="#crop-bubble" fill="url(#paddy-gradient)" />
-            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">धान</text>
-        </g>
-    </g>
-
-    <!-- Corn/Maize -->
-    <g transform="translate(240, 100)">
-        <g transform="scale(0.8)">
-            <use href="#corn-crop" fill="url(#corn-gradient)" />
-            <!-- Corn details -->
-            <path d="M40,10 L60,10 M40,20 L60,20 M40,30 L60,30 M40,40 L60,40" stroke="#f7dc6f" stroke-width="3" stroke-linecap="round" />
-        </g>
-        <g transform="translate(10, 90) scale(1)">
-            <use href="#crop-bubble" fill="url(#corn-gradient)" />
-            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">मकै</text>
-        </g>
-    </g>
-
-    <!-- Wheat -->
-    <g transform="translate(380, 100)">
-        <g transform="scale(0.8)">
-            <use href="#wheat-crop" fill="url(#wheat-gradient)" />
-            <!-- Wheat details -->
-            <path d="M20,15 L30,5 M40,15 L50,5 M60,15 L70,5 M80,15 L90,5" stroke="#f39c12" stroke-width="1" />
-        </g>
-        <g transform="translate(10, 90) scale(1)">
-            <use href="#crop-bubble" fill="url(#wheat-gradient)" />
-            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">गहुँ</text>
-        </g>
-    </g>
-
-    <!-- Millet -->
-    <g transform="translate(520, 100)">
-        <g transform="scale(0.8)">
-            <use href="#millet-crop" fill="url(#millet-gradient)" />
-            <!-- Millet details -->
-            <ellipse cx="50" cy="20" rx="20" ry="10" fill="none" stroke="#e67e22" stroke-width="2" />
-        </g>
-        <g transform="translate(10, 90) scale(1)">
-            <use href="#crop-bubble" fill="url(#millet-gradient)" />
-            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">कोदो</text>
-        </g>
-    </g>
-
-    <!-- Barley -->
-    <g transform="translate(660, 100)">
-        <g transform="scale(1.2)">
-            <use href="#barley-crop" fill="url(#barley-gradient)" />
-        </g>
-        <g transform="translate(10, 90) scale(1)">
-            <use href="#crop-bubble" fill="url(#barley-gradient)" />
-            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">जौ</text>
-        </g>
-    </g>
-
-    <!-- Buckwheat -->
-    <g transform="translate(800, 100)">
-        <g transform="scale(0.8)">
-            <path d="M10,50 L20,10 L50,0 L80,10 L90,50 L90,90 L10,90 Z" fill="url(#buckwheat-gradient)" />
-            <!-- Buckwheat details -->
-            <path d="M30,20 L70,20 M30,40 L70,40 M30,60 L70,60" stroke="#ec7063" stroke-width="2" />
-        </g>
-        <g transform="translate(10, 90) scale(1)">
-            <use href="#crop-bubble" fill="url(#buckwheat-gradient)" />
-            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">फापर</text>
-        </g>
-    </g>
-
-    <!-- Other crops -->
-    <g transform="translate(940, 100)">
-        <g transform="scale(0.8)">
-            <rect x="10" y="10" width="80" height="80" rx="5" fill="#7f8c8d" />
-            <!-- Other crops details -->
-            <path d="M30,30 L70,30 M30,50 L70,50 M30,70 L70,70" stroke="#bdc3c7" stroke-width="2" />
-        </g>
-        <g transform="translate(10, 90) scale(1)">
-            <use href="#crop-bubble" fill="#7f8c8d" />
-            <text x="50" y="25" font-family="Arial" font-size="14" fill="white" text-anchor="middle">अन्य</text>
-        </g>
-    </g>
-
-    <!-- Production and sales visualization -->
-    <!-- Production pie chart -->
-    <g transform="translate(200, 230)">
-        <circle cx="60" cy="60" r="50" fill="#212f3d" stroke="#fff" stroke-width="1" opacity="0.8" />
-        <!-- Pie segments (representing different crops) -->
-        <path d="M60,60 L60,10 A50,50 0 0,1 107,77 Z" fill="url(#paddy-gradient)" />
-        <!-- Rice: 55% -->
-        <path d="M60,60 L107,77 A50,50 0 0,1 80,106 Z" fill="url(#corn-gradient)" />
-        <!-- Corn: 15% -->
-        <path d="M60,60 L80,106 A50,50 0 0,1 22,85 Z" fill="url(#wheat-gradient)" />
-        <!-- Wheat: 20% -->
-        <path d="M60,60 L22,85 A50,50 0 0,1 60,10 Z" fill="#7f8c8d" />
-        <!-- Others: 10% -->
-
-        <circle cx="60" cy="60" r="20" fill="#212f3d" />
-        <text x="60" y="65" font-family="Arial" font-size="10" fill="white" text-anchor="middle">उत्पादन</text>
-    </g>
-
-    <!-- Sales pie chart -->
-    <g transform="translate(400, 230)">
-        <circle cx="60" cy="60" r="50" fill="#212f3d" stroke="#fff" stroke-width="1" opacity="0.8" />
-        <!-- Pie segments (representing different crops) -->
-        <path d="M60,60 L60,10 A50,50 0 0,1 110,60 Z" fill="url(#paddy-gradient)" />
-        <!-- Rice: 25% -->
-        <path d="M60,60 L110,60 A50,50 0 0,1 60,110 Z" fill="url(#corn-gradient)" />
-        <!-- Corn: 25% -->
-        <path d="M60,60 L60,110 A50,50 0 0,1 10,60 Z" fill="url(#wheat-gradient)" />
-        <!-- Wheat: 25% -->
-        <path d="M60,60 L10,60 A50,50 0 0,1 60,10 Z" fill="#7f8c8d" />
-        <!-- Others: 25% -->
-
-        <circle cx="60" cy="60" r="20" fill="#212f3d" />
-        <text x="60" y="65" font-family="Arial" font-size="10" fill="white" text-anchor="middle">बिक्री</text>
-    </g>
-
-    <!-- Revenue chart -->
-    <g transform="translate(600, 230)">
-        <rect x="20" y="20" width="30" height="80" fill="url(#paddy-gradient)" />
-        <rect x="60" y="40" width="30" height="60" fill="url(#corn-gradient)" />
-        <rect x="100" y="70" width="30" height="30" fill="url(#wheat-gradient)" />
-
-        <text x="35" y="110" font-family="Arial" font-size="10" fill="white" text-anchor="middle">धान</text>
-        <text x="75" y="110" font-family="Arial" font-size="10" fill="white" text-anchor="middle">मकै</text>
-        <text x="115" y="110" font-family="Arial" font-size="10" fill="white" text-anchor="middle">गहुँ</text>
-
-        <text x="75" y="130" font-family="Arial" font-size="14" fill="white" text-anchor="middle">आम्दानी (रु)</text>
-    </g>
-
-    <!-- Self-consumption vs. Sales visualization -->
-    <g transform="translate(800, 230)">
-        <rect x="20" y="20" width="120" height="30" fill="#3498db" opacity="0.8" />
-        <rect x="20" y="60" width="80" height="30" fill="#2ecc71" opacity="0.8" />
-
-        <text x="80" y="40" font-family="Arial" font-size="12" fill="white" text-anchor="middle">कुल उत्पादन</text>
-        <text x="60" y="80" font-family="Arial" font-size="12" fill="white" text-anchor="middle">बिक्री</text>
-
-        <path d="M20,110 L140,110" stroke="white" stroke-width="1" />
-        <text x="80" y="130" font-family="Arial" font-size="14" fill="white" text-anchor="middle">उपभोग / बिक्री अनुपात</text>
-    </g>
-
-    <!-- Farmers & Market Icons -->
-    <g transform="translate(80, 270) scale(0.7)">
-        <use href="#farmer" fill="#3498db" />
-    </g>
-
-    <g transform="translate(130, 270) scale(0.7)">
-        <use href="#farmer" fill="#2ecc71" />
-    </g>
-
-    <!-- Arrow showing flow from farmers to market -->
-    <path d="M160,290 L190,290" stroke="#f39c12" stroke-width="3" marker-end="url(#arrowhead)" />
-
-    <!-- Define arrowhead marker -->
-    <defs>
-        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#f39c12" />
-        </marker>
-    </defs>
-
-    <!-- Market stall -->
-    <g transform="translate(200, 270) scale(0.5)">
-        <use href="#market-stall" fill="#e74c3c" />
-        <rect x="20" y="30" width="20" height="30" fill="url(#paddy-gradient)" />
-        <rect x="50" y="30" width="20" height="30" fill="url(#corn-gradient)" />
-        <rect x="80" y="30" width="10" height="10" fill="url(#wheat-gradient)" />
-    </g>
-
-    <!-- Arrow showing flow from market to money -->
-    <path d="M260,290 L290,290" stroke="#f39c12" stroke-width="3" marker-end="url(#arrowhead)" />
-
-    <!-- Money/Revenue -->
-    <g transform="translate(300, 270) scale(0.8)">
-        <circle cx="25" cy="25" r="25" fill="url(#money-gradient)" />
-        <text x="25" y="35" font-family="Arial" font-size="30" font-weight="bold" fill="white" text-anchor="middle">रु</text>
-    </g>
-
-    <!-- Commercialization indicator -->
-    <g transform="translate(450, 320)">
-        <rect x="0" y="0" width="300" height="20" rx="10" fill="#1e293b" opacity="0.8" />
-        <rect x="0" y="0" width="200" height="20" rx="10" fill="#2ecc71" opacity="0.8" />
-        <!-- 60% commercialized -->
-        <text x="150" y="15" font-family="Arial" font-size="12" fill="white" text-anchor="middle">व्यावसायीकरण स्कोर</text>
-    </g>
-
-    <!-- Rice fields showing productivity visualization (animated) -->
-    <g transform="translate(900, 270) scale(0.5)" opacity="0.8">
-        <rect x="0" y="0" width="40" height="40" fill="#3498db" opacity="0.5" />
-        <rect x="50" y="0" width="40" height="40" fill="#3498db" opacity="0.5" />
-        <rect x="100" y="0" width="40" height="40" fill="#3498db" opacity="0.5" />
-        <rect x="0" y="50" width="40" height="40" fill="#3498db" opacity="0.5" />
-        <rect x="50" y="50" width="40" height="40" fill="#3498db" opacity="0.5" />
-        <rect x="100" y="50" width="40" height="40" fill="#3498db" opacity="0.5" />
-
-        <!-- Rice crop icons with scale animation -->
-        <g transform="translate(10, 5)">
-            <use href="#paddy-crop" fill="url(#paddy-gradient)" transform="scale(0.5)">
-                <animate attributeName="transform" values="scale(0.4);scale(0.5);scale(0.4)" dur="3s" repeatCount="indefinite" />
-            </use>
-        </g>
-        <g transform="translate(60, 5)">
-            <use href="#paddy-crop" fill="url(#paddy-gradient)" transform="scale(0.5)">
-                <animate attributeName="transform" values="scale(0.4);scale(0.5);scale(0.4)" dur="4s" repeatCount="indefinite" />
-            </use>
-        </g>
-        <g transform="translate(110, 5)">
-            <use href="#paddy-crop" fill="url(#paddy-gradient)" transform="scale(0.5)">
-                <animate attributeName="transform" values="scale(0.4);scale(0.5);scale(0.4)" dur="5s" repeatCount="indefinite" />
-            </use>
-        </g>
-        <g transform="translate(10, 55)">
-            <use href="#paddy-crop" fill="url(#paddy-gradient)" transform="scale(0.5)">
-                <animate attributeName="transform" values="scale(0.4);scale(0.5);scale(0.4)" dur="3.5s" repeatCount="indefinite" />
-            </use>
-        </g>
-        <g transform="translate(60, 55)">
-            <use href="#paddy-crop" fill="url(#paddy-gradient)" transform="scale(0.5)">
-                <animate attributeName="transform" values="scale(0.4);scale(0.5);scale(0.4)" dur="4.5s" repeatCount="indefinite" />
-            </use>
-        </g>
-        <g transform="translate(110, 55)">
-            <use href="#paddy-crop" fill="url(#paddy-gradient)" transform="scale(0.5)">
-                <animate attributeName="transform" values="scale(0.4);scale(0.5);scale(0.4)" dur="5.5s" repeatCount="indefinite" />
-            </use>
-        </g>
-    </g>
-
-    <!-- Grain sacks representing harvested crops -->
-    <g transform="translate(1000, 290) scale(0.4)">
-        <use href="#grain-sack" fill="url(#paddy-gradient)" />
-    </g>
-
-    <g transform="translate(1030, 290) scale(0.4)">
-        <use href="#grain-sack" fill="url(#corn-gradient)" />
-    </g>
-
-    <g transform="translate(1060, 290) scale(0.4)">
-        <use href="#grain-sack" fill="url(#wheat-gradient)" />
-    </g>
-
-    <g transform="translate(1090, 290) scale(0.4)">
-        <use href="#grain-sack" fill="url(#barley-gradient)" />
-    </g>
-
-    <!-- Title text at bottom -->
-    <text font-family="Arial" font-size="24" fill="white" text-anchor="middle" font-weight="bold">
-        <textPath href="#curved-text-path" startOffset="50%">खाद्यान्न बालीको प्रकार अनुसार उत्पादन र बिक्री</textPath>
-    </text>
+<svg width="1200" height="400" viewBox="0 0 1200 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bg-gradient)" />
+  
+  <!-- Sun Element -->
+  <g transform="translate(1000, 100)">
+    <circle cx="0" cy="0" r="40" fill="#fbbf24" opacity="0.6" />
+    <path d="M0,-55 L0,-45 M39,-39 L32,-32 M55,0 L45,0 M39,39 L32,32 M0,55 L0,45 M-39,39 L-32,32 M-55,0 L-45,0 M-39,-39 L-32,-32" 
+          stroke="#fbbf24" stroke-width="4" />
+  </g>
+  
+  <!-- Ground/Field -->
+  <rect x="150" y="250" width="900" height="150" fill="#92400e" opacity="0.4" rx="5" />
+  
+  <!-- Plowed Field Rows -->
+  <g transform="translate(150, 280)">
+    <path d="M0,0 L900,0 M0,30 L900,30 M0,60 L900,60 M0,90 L900,90" stroke="#7c2d12" stroke-width="2" stroke-opacity="0.3" />
+  </g>
+  
+  <!-- Rice/Wheat Plant Group -->
+  <g transform="translate(250, 200)">
+    <!-- Stems -->
+    <path d="M0,50 L0,15 M10,50 L10,10 M20,50 L20,12 M30,50 L30,8 M40,50 L40,10" 
+          stroke="#16a34a" stroke-width="1.5" />
+    
+    <!-- Leaves/Tips -->
+    <path d="M0,15 L-5,5 M0,25 L-6,20 M10,10 L5,0 M10,20 L4,15 M20,12 L25,2 M20,25 L26,18 M30,8 L35,-2 M30,20 L36,15 M40,10 L35,0 M40,25 L34,15" 
+          stroke="#16a34a" stroke-width="1.5" />
+    
+    <!-- Grains -->
+    <ellipse cx="0" cy="15" rx="3" ry="6" fill="#f59e0b" />
+    <ellipse cx="10" cy="10" rx="3" ry="6" fill="#f59e0b" />
+    <ellipse cx="20" cy="12" rx="3" ry="6" fill="#f59e0b" />
+    <ellipse cx="30" cy="8" rx="3" ry="6" fill="#f59e0b" />
+    <ellipse cx="40" cy="10" rx="3" ry="6" fill="#f59e0b" />
+  </g>
+  
+  <!-- Corn Plant Group -->
+  <g transform="translate(450, 200)">
+    <!-- Stems -->
+    <path d="M20,50 L20,0" stroke="#15803d" stroke-width="3" />
+    
+    <!-- Leaves -->
+    <path d="M20,10 C0,15 10,25 20,20 M20,25 C0,30 10,40 20,35 M20,10 C40,15 30,25 20,20 M20,25 C40,30 30,40 20,35"
+          stroke="#16a34a" stroke-width="1.5" fill="#16a34a" fill-opacity="0.4" />
+    
+    <!-- Corn Cobs -->
+    <ellipse cx="15" cy="15" rx="5" ry="10" transform="rotate(-20 15 15)" fill="#fbbf24" />
+    <ellipse cx="25" cy="30" rx="5" ry="10" transform="rotate(20 25 30)" fill="#fbbf24" />
+  </g>
+  
+  <!-- Millet Plant Group -->
+  <g transform="translate(650, 200)">
+    <!-- Stems -->
+    <path d="M0,50 L0,10 M10,50 L10,5 M20,50 L20,8 M30,50 L30,12" 
+          stroke="#16a34a" stroke-width="1.5" />
+    
+    <!-- Seed Heads -->
+    <path d="M0,10 C-5,0 5,0 0,10 M10,5 C5,-5 15,-5 10,5 M20,8 C15,-2 25,-2 20,8 M30,12 C25,2 35,2 30,12"
+          fill="#d6b656" stroke="#ca8a04" stroke-width="1" />
+  </g>
+  
+  <!-- Potato Plant Group -->
+  <g transform="translate(850, 200)">
+    <!-- Stems and Leaves -->
+    <path d="M0,50 L0,20 M20,50 L20,15 M40,50 L40,25" stroke="#16a34a" stroke-width="2" />
+    
+    <!-- Potato Plant Foliage -->
+    <path d="M0,20 C-10,10 -15,20 -5,25 C-15,30 -10,40 0,30 M20,15 C10,5 5,15 15,20 C5,25 10,35 20,25 M40,25 C30,15 25,25 35,30 C25,35 30,45 40,35"
+          fill="#16a34a" fill-opacity="0.5" stroke="#15803d" stroke-width="1" />
+    
+    <!-- Potatoes Underground -->
+    <ellipse cx="0" cy="60" rx="8" ry="5" fill="#a16207" />
+    <ellipse cx="20" cy="65" rx="10" ry="6" fill="#a16207" />
+    <ellipse cx="40" cy="62" rx="9" ry="5" fill="#a16207" />
+  </g>
+  
+  <!-- Farmer Figure -->
+  <g transform="translate(150, 200)">
+    <!-- Body -->
+    <circle cx="0" cy="0" r="15" fill="#64748b" />
+    <path d="M0,15 L0,40" stroke="#64748b" stroke-width="10" />
+    
+    <!-- Arms -->
+    <path d="M0,20 L-15,30" stroke="#64748b" stroke-width="5" />
+    <path d="M0,20 L15,30" stroke="#64748b" stroke-width="5" />
+    
+    <!-- Legs -->
+    <path d="M0,40 L-10,60" stroke="#64748b" stroke-width="5" />
+    <path d="M0,40 L10,60" stroke="#64748b" stroke-width="5" />
+    
+    <!-- Farmer's Hat -->
+    <path d="M-15,-5 L15,-5 L10,-10 L-10,-10 Z" fill="#92400e" />
+    <path d="M-10,-10 L0,-20 L10,-10" fill="#92400e" />
+  </g>
+  
+  <!-- Basket/Harvest -->
+  <g transform="translate(1050, 230)">
+    <!-- Basket -->
+    <path d="M-30,20 C-30,-10 30,-10 30,20" fill="none" stroke="#92400e" stroke-width="3" />
+    <path d="M-30,20 L-25,40 L25,40 L30,20" fill="#ca8a04" stroke="#92400e" stroke-width="2" />
+    
+    <!-- Crops in Basket -->
+    <circle cx="-10" cy="15" r="6" fill="#f59e0b" />
+    <circle cx="10" cy="10" r="8" fill="#f59e0b" />
+    <ellipse cx="0" cy="20" rx="10" ry="5" fill="#a16207" />
+    <ellipse cx="15" cy="25" rx="5" ry="3" fill="#a16207" />
+  </g>
+  
+  <!-- Rain Cloud -->
+  <g transform="translate(200, 100)">
+    <path d="M0,20 Q20,0 40,10 Q60,-10 80,5 Q100,-5 120,15 Q100,35 70,30 Q50,45 20,35 Q0,45 -10,30 Q-5,15 0,20 Z" 
+          fill="#cbd5e1" opacity="0.6" />
+    
+    <!-- Rain Drops -->
+    <path d="M30,35 L25,45 M50,40 L45,50 M70,35 L65,45 M90,30 L85,40" 
+          stroke="#60a5fa" stroke-width="2" stroke-linecap="round" />
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="150" cy="100" r="80" fill="#16a34a" opacity="0.05" />
+  <circle cx="1050" cy="300" r="120" fill="#f59e0b" opacity="0.05" />
 </svg>

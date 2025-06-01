@@ -107,9 +107,8 @@ export default function ProfilePage() {
       <article className="prose prose-slate dark:prose-invert max-w-none">
         <div className="flex flex-col gap-8">
           <section className="py-6">
-            <div className="relative rounded-md overflow-hidden mb-8">
-              <div className="bg-black relative rounded-md">
-                <div className="absolute inset-0 bg-black/60 z-10 rounded-md" />
+            <div className="mb-8">
+              <div className="rounded-md overflow-hidden">
                 <Image
                   src="/images/municipality-profile-hero.svg"
                   width={1200}
@@ -119,23 +118,14 @@ export default function ProfilePage() {
                   priority
                 />
               </div>
-              <div className="absolute inset-0 flex items-center z-20">
-                <div className="p-8">
-                  <h1 className="text-4xl font-bold mb-3 text-white drop-shadow-lg">
-                    खजुरा प्रोफाइल
-                  </h1>
-                  <p className="text-lg text-white/90 max-w-xl drop-shadow-lg">
-                    तथ्य र तथ्याङ्क मार्फत खजुरा गाउँपालिकालाई चिन्नुहोस्。
-                  </p>
-                </div>
-              </div>
             </div>
-
+            <div className="mt-6 px-2">
+              <h1 className="text-4xl font-bold mb-3">
+                खजुरा गाउँपालिका | डिजिटल प्रोफाइल
+              </h1>
+            </div>
             {/* Content with responsive max-width */}
             <div className="prose prose-slate dark:prose-invert max-w-4xl">
-              <h2 id="introduction" className="scroll-m-20">
-                परिचय
-              </h2>
               <p>
                 खजुरा गाउँपालिकाको प्रोफाइलमा स्वागत छ! यहाँ तपाईंले खजुरा
                 गाउँपालिकाको विस्तृत तथ्याङ्क र विश्लेषणहरू पाउनुहुनेछ। यो
@@ -170,8 +160,7 @@ export default function ProfilePage() {
                     href={category.href}
                     className="inline-flex items-center text-sm text-primary hover:underline"
                   >
-                    थप हेर्नुहोस्{" "}
-                    <ChevronRight className="h-4 w-4 ml-1" />
+                    थप हेर्नुहोस् <ChevronRight className="h-4 w-4 ml-1" />
                   </Link>
                 </CardFooter>
               </Card>
@@ -191,13 +180,16 @@ export default function ProfilePage() {
               <ul>
                 <li>बायाँ साइडबारको मेनुबाट आवश्यक श्रेणी छनोट गर्नुहोस्।</li>
                 <li>
-                  तथ्याङ्क टेबलहरू, ग्राफहरू र चार्टहरू मार्फत जानकारी हेर्नुहोस्।
+                  तथ्याङ्क टेबलहरू, ग्राफहरू र चार्टहरू मार्फत जानकारी
+                  हेर्नुहोस्।
                 </li>
                 <li>
-                  आवश्यकता अनुसार फिल्टरहरू प्रयोग गरेर तपाईंलाई चाहिएको तथ्याङ्क
-                  पाउनुहोस्।
+                  आवश्यकता अनुसार फिल्टरहरू प्रयोग गरेर तपाईंलाई चाहिएको
+                  तथ्याङ्क पाउनुहोस्।
                 </li>
-                <li>तथ्याङ्क डाउनलोड गर्न सम्बन्धित बटनहरू प्रयोग गर्नुहोस्。</li>
+                <li>
+                  तथ्याङ्क डाउनलोड गर्न सम्बन्धित बटनहरू प्रयोग गर्नुहोस्。
+                </li>
               </ul>
             </div>
           </section>

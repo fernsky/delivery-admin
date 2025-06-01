@@ -184,10 +184,16 @@ const economicCategories = [
     href: "/profile/economics/ward-wise-households-in-agriculture",
     icon: <Utensils className="h-5 w-5" />,
   },
-];
+  {
+    title: "सहकारी संस्थाहरू सम्बन्धी विवरण",
+    description: "खजुरा गाउँपालिकामा सञ्चालित सहकारी संस्थाहरूको प्रकार, सदस्य संख्या र कार्यक्षेत्र सम्बन्धी विवरण।",
+    href: "/profile/economics/cooperatives",
+    icon: <Store className="h-5 w-5" />,
+  }
+]
 
 export default async function EconomicsPage() {
-  // Fetch overall economic summary for the municipality
+
   let agriculturalData;
   let landData;
   let remittanceData;
@@ -200,55 +206,67 @@ export default async function EconomicsPage() {
   } catch (error) {
     console.error("Error fetching economic summary data:", error);
   }
-
   // Calculate municipality totals if data is available
-  const agriculturalHouseholds = agriculturalData ? 
-    agriculturalData.reduce((sum, item) => sum + (item.households || 0), 0) : null;
+  const agriculturalHouseholds = agriculturalData
+    ? agriculturalData.reduce(
+        (sum, item) => sum + (item.involvedInAgriculture || 0),
+        0,
+      )
+    : null;
 
-  const landOwningHouseholds = landData ? 
-    landData.reduce((sum, item) => 
-      item.landOwnership === "OWN_LAND" ? sum + (item.households || 0) : sum, 0) : null;
+  const landOwningHouseholds = landData
+    ? landData.reduce(
+        (sum, item) =>
+          item.landOwnershipType === "PRIVATE"
+            ? sum + (item.households || 0)
+            : sum,
+        0,
+      )
+    : null;
 
-  const remittanceReceivingHouseholds = remittanceData ?
-    remittanceData.reduce((sum, item) => sum + (item.households || 0), 0) : null;
+  const remittanceReceivingHouseholds = remittanceData
+    ? remittanceData.reduce(
+        (sum, item) => sum + (item.sendingPopulation || 0),
+        0,
+      )
+    : null;
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col gap-8">
         {/* Hero Section */}
         <div className="relative rounded-lg overflow-hidden">
-          <Image 
-            src="/images/economics-hero.svg" 
+          <Image
+            src="/images/economics-hero.svg"
             alt="खजुरा गाउँपालिका आर्थिक अवस्था"
             width={1200}
             height={400}
             className="w-full h-[300px] object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">खजुरा गाउँपालिकाको आर्थिक अवस्था</h1>
-              <p className="text-xl max-w-2xl mx-auto">
-                कृषि, पशुपालन, रोजगारी, आय स्रोत, घरायसी सम्पत्ति तथा आर्थिक विकासको विवरण
-              </p>
-            </div>
-          </div>
+        </div>
+        <div className="mt-6 px-2">
+          <h1 className="text-4xl font-bold mb-3">
+            खजुरा गाउँपालिकाको आर्थिक अवस्था
+          </h1>
         </div>
 
         {/* Introduction Section */}
         <section id="introduction">
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">परिचय</h2>
             <p>
-              खजुरा गाउँपालिकाको आर्थिक प्रोफाइलमा यहाँका नागरिकहरूको आय स्रोत, रोजगारीको अवस्था,
-              कृषि तथा पशुपालनको स्थिति, वैदेशिक रोजगारी, विप्रेषण लगायतका आर्थिक सूचकहरू समेटिएका छन्।
-              यी तथ्याङ्कहरूले स्थानीय अर्थतन्त्रको अवस्था बुझ्न, आर्थिक विकासका लागि योजना बनाउन र प्राथमिकताहरू
-              निर्धारण गर्न महत्वपूर्ण आधार प्रदान गर्दछन्।
+              खजुरा गाउँपालिकाको आर्थिक प्रोफाइलमा यहाँका नागरिकहरूको आय स्रोत,
+              रोजगारीको अवस्था, कृषि तथा पशुपालनको स्थिति, वैदेशिक रोजगारी,
+              विप्रेषण लगायतका आर्थिक सूचकहरू समेटिएका छन्। यी तथ्याङ्कहरूले
+              स्थानीय अर्थतन्त्रको अवस्था बुझ्न, आर्थिक विकासका लागि योजना बनाउन
+              र प्राथमिकताहरू निर्धारण गर्न महत्वपूर्ण आधार प्रदान गर्दछन्।
             </p>
             <p>
-              यस खण्डमा प्रस्तुत गरिएका आर्थिक तथ्याङ्कहरूले खजुरा गाउँपालिकाको आर्थिक विकासको वर्तमान अवस्था,
-              चुनौतीहरू र सम्भावनाहरूलाई प्रकाश पार्दछन्। यसबाट स्थानीय सरकार, निजी क्षेत्र, गैरसरकारी संस्थाहरू
-              र अन्य सरोकारवालाहरूलाई आर्थिक नीति निर्माण, कार्यक्रम कार्यान्वयन र प्रभावकारिता मूल्याङ्कनमा सघाउ पुग्नेछ।
+              यस खण्डमा प्रस्तुत गरिएका आर्थिक तथ्याङ्कहरूले खजुरा गाउँपालिकाको
+              आर्थिक विकासको वर्तमान अवस्था, चुनौतीहरू र सम्भावनाहरूलाई प्रकाश
+              पार्दछन्। यसबाट स्थानीय सरकार, निजी क्षेत्र, गैरसरकारी संस्थाहरू र
+              अन्य सरोकारवालाहरूलाई आर्थिक नीति निर्माण, कार्यक्रम कार्यान्वयन र
+              प्रभावकारिता मूल्याङ्कनमा सघाउ पुग्नेछ।
             </p>
           </div>
         </section>
@@ -256,40 +274,54 @@ export default async function EconomicsPage() {
         {/* Key Economics Section */}
         <section id="key-economics">
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2 mb-6">प्रमुख आर्थिक तथ्यहरू</h2>
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2 mb-6">
+              प्रमुख आर्थिक तथ्यहरू
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Key stats cards */}
             <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-medium mb-2">कृषिमा आबद्ध घरधुरी</h3>
               <p className="text-3xl font-bold text-primary">
                 {agriculturalHouseholds !== null
-                  ? localizeNumber(agriculturalHouseholds.toLocaleString(), "ne")
+                  ? localizeNumber(
+                      agriculturalHouseholds.toLocaleString(),
+                      "ne",
+                    )
                   : "लोड हुँदैछ..."}
               </p>
             </div>
-            
+
             <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-medium mb-2">आफ्नो जग्गा भएका घरधुरी</h3>
+              <h3 className="text-lg font-medium mb-2">
+                आफ्नो जग्गा भएका घरधुरी
+              </h3>
               <p className="text-3xl font-bold text-primary">
                 {landOwningHouseholds !== null
                   ? localizeNumber(landOwningHouseholds.toLocaleString(), "ne")
                   : "लोड हुँदैछ..."}
               </p>
             </div>
-            
+
             <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-medium mb-2">विप्रेषण प्राप्त घरधुरी</h3>
+              <h3 className="text-lg font-medium mb-2">
+                विप्रेषण प्राप्त घरधुरी
+              </h3>
               <p className="text-3xl font-bold text-primary">
                 {remittanceReceivingHouseholds !== null
-                  ? localizeNumber(remittanceReceivingHouseholds.toLocaleString(), "ne")
+                  ? localizeNumber(
+                      remittanceReceivingHouseholds.toLocaleString(),
+                      "ne",
+                    )
                   : "लोड हुँदैछ..."}
               </p>
             </div>
-            
+
             <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-medium mb-2">प्रमुख आर्थिक क्षेत्र</h3>
+              <h3 className="text-lg font-medium mb-2">
+                प्रमुख आर्थिक क्षेत्र
+              </h3>
               <p className="text-3xl font-bold text-primary">कृषि</p>
             </div>
           </div>
@@ -298,16 +330,19 @@ export default async function EconomicsPage() {
         {/* Economic Categories Section */}
         <section id="economic-categories" className="my-8">
           <div className="prose prose-lg dark:prose-invert max-w-none mb-6">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">आर्थिक श्रेणीहरू</h2>
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">
+              आर्थिक श्रेणीहरू
+            </h2>
             <p>
-              खजुरा गाउँपालिकाको आर्थिक अवस्था सम्बन्धी विस्तृत जानकारीका लागि तलका श्रेणीहरू हेर्नुहोस्।
-              प्रत्येक श्रेणीमा विस्तृत तथ्याङ्क, चार्ट र विश्लेषण प्रस्तुत गरिएको छ।
+              खजुरा गाउँपालिकाको आर्थिक अवस्था सम्बन्धी विस्तृत जानकारीका लागि
+              तलका श्रेणीहरू हेर्नुहोस्। प्रत्येक श्रेणीमा विस्तृत तथ्याङ्क,
+              चार्ट र विश्लेषण प्रस्तुत गरिएको छ।
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {economicCategories.map((category, i) => (
-              <Link 
+              <Link
                 key={i}
                 href={category.href}
                 className="flex flex-col h-full group hover:shadow-md transition-all duration-200 bg-background border rounded-lg overflow-hidden"
@@ -329,7 +364,7 @@ export default async function EconomicsPage() {
                 </div>
                 <div className="px-6 py-3 bg-muted/20 flex items-center justify-end">
                   <span className="text-sm text-primary font-medium flex items-center">
-                    हेर्नुहोस् <ChevronRight className="h-4 w-4 ml-1"/>
+                    हेर्नुहोस् <ChevronRight className="h-4 w-4 ml-1" />
                   </span>
                 </div>
               </Link>
@@ -340,16 +375,26 @@ export default async function EconomicsPage() {
         {/* Agriculture and Livestock Section */}
         <section id="agriculture-livestock" className="my-8">
           <div className="prose prose-lg dark:prose-invert max-w-none mb-6">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">कृषि तथा पशुपालन</h2>
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">
+              कृषि तथा पशुपालन
+            </h2>
             <p>
-              खजुरा गाउँपालिकाको प्रमुख आर्थिक क्षेत्र कृषि तथा पशुपालन हो। यहाँ विभिन्न प्रकारका अन्नबाली,
-              दलहनबाली, तेलबाली, फलफूल, तरकारी र मसलाबालीहरूको उत्पादन हुन्छ। कृषि तथा पशुपालनमा आबद्ध
-              घरधुरीको विस्तृत विवरण हेर्न&nbsp;
-              <Link href="/profile/economics/ward-wise-households-in-agriculture" className="text-primary hover:text-primary/80 font-medium">
+              खजुरा गाउँपालिकाको प्रमुख आर्थिक क्षेत्र कृषि तथा पशुपालन हो। यहाँ
+              विभिन्न प्रकारका अन्नबाली, दलहनबाली, तेलबाली, फलफूल, तरकारी र
+              मसलाबालीहरूको उत्पादन हुन्छ। कृषि तथा पशुपालनमा आबद्ध घरधुरीको
+              विस्तृत विवरण हेर्न&nbsp;
+              <Link
+                href="/profile/economics/ward-wise-households-in-agriculture"
+                className="text-primary hover:text-primary/80 font-medium"
+              >
                 कृषि वा पशुपालनमा आबद्ध घरधुरी
               </Link>
-              मा जानुहोस्। व्यवसायिक कृषि तथा पशुपालन फर्महरूको जानकारीका लागि&nbsp;
-              <Link href="/profile/economics/commercial-agricultural-animal-husbandry-farmers-group" className="text-primary hover:text-primary/80 font-medium">
+              मा जानुहोस्। व्यवसायिक कृषि तथा पशुपालन फर्महरूको जानकारीका
+              लागि&nbsp;
+              <Link
+                href="/profile/economics/commercial-agricultural-animal-husbandry-farmers-group"
+                className="text-primary hover:text-primary/80 font-medium"
+              >
                 व्यवसायिक कृषि/पशुपालन फर्महरू
               </Link>
               मा जानुहोस्।

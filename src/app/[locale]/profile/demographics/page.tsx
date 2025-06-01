@@ -181,33 +181,32 @@ export default async function DemographicsPage() {
       <div className="flex flex-col gap-8">
         {/* Hero Section */}
         <div className="relative rounded-lg overflow-hidden">
-          <Image 
-            src="/images/demographics-hero.svg" 
+          <Image
+            src="/images/demographics-hero.svg"
             alt="खजुरा गाउँपालिका जनसांख्यिकी"
             width={1200}
             height={400}
             className="w-full h-[300px] object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">खजुरा गाउँपालिकाको जनसांख्यिकी विवरण</h1>
-              <p className="text-xl max-w-2xl mx-auto">
-                जनसंख्या, उमेर, लिङ्ग, जात, धर्म, मातृभाषा लगायत महत्वपूर्ण जनसांख्यिकी तथ्याङ्क
-              </p>
-            </div>
-          </div>
         </div>
 
+        <div className="mt-6 px-2">
+          <h1 className="text-4xl font-bold mb-3">
+            खजुरा गाउँपालिकाको जनसांख्यिक विवरण
+          </h1>
+        </div>
         {/* Introduction Section */}
         <section id="introduction">
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">परिचय</h2>
+           
             <p>
-              जनसांख्यिकी तथ्याङ्क गाउँपालिका विकास, योजना र नीति निर्माणका लागि अत्यन्त महत्त्वपूर्ण हुन्छ। 
-              खजुरा गाउँपालिकाको जनसांख्यिकी प्रोफाइलमा जनसंख्या, वडागत वितरण, लिङ्ग, उमेर, जात, धर्म, मातृभाषा, 
-              वैवाहिक स्थिति लगायतका तथ्याङ्कहरू समेटिएका छन्। यी तथ्याङ्कहरूले स्थानीय सरकारलाई स्रोत 
-              विनियोजन, विकास योजना तयारी र सेवा प्रवाहलाई लक्षित समुदायसम्म पुर्‍याउन सहयोग पुर्‍याउँछन्。
+              जनसांख्यिकी तथ्याङ्क गाउँपालिका विकास, योजना र नीति निर्माणका लागि
+              अत्यन्त महत्त्वपूर्ण हुन्छ। खजुरा गाउँपालिकाको जनसांख्यिकी
+              प्रोफाइलमा जनसंख्या, वडागत वितरण, लिङ्ग, उमेर, जात, धर्म,
+              मातृभाषा, वैवाहिक स्थिति लगायतका तथ्याङ्कहरू समेटिएका छन्। यी
+              तथ्याङ्कहरूले स्थानीय सरकारलाई स्रोत विनियोजन, विकास योजना तयारी र
+              सेवा प्रवाहलाई लक्षित समुदायसम्म पुर्‍याउन सहयोग पुर्‍याउँछन्。
             </p>
           </div>
         </section>
@@ -215,39 +214,47 @@ export default async function DemographicsPage() {
         {/* Key Demographics Section */}
         <section id="key-demographics">
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2 mb-6">प्रमुख जनसांख्यिकी तथ्यहरू</h2>
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2 mb-6">
+              प्रमुख जनसांख्यिकी तथ्यहरू
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Key stats cards */}
             <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-medium mb-2">कुल जनसंख्या</h3>
               <p className="text-3xl font-bold text-primary">
-                {municipalityStats 
-                  ? localizeNumber(municipalityStats.totalPopulation.toLocaleString(), "ne")
+                {municipalityStats
+                  ? localizeNumber(
+                      municipalityStats.totalPopulation.toLocaleString(),
+                      "ne",
+                    )
                   : "लोड हुँदैछ..."}
               </p>
             </div>
-            
+
             <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-medium mb-2">कुल घरधुरी</h3>
               <p className="text-3xl font-bold text-primary">
-                {municipalityStats 
-                  ? localizeNumber(municipalityStats.totalHouseholds.toLocaleString(), "ne")
+                {municipalityStats
+                  ? localizeNumber(
+                      municipalityStats.totalHouseholds.toLocaleString(),
+                      "ne",
+                    )
                   : "लोड हुँदैछ..."}
               </p>
             </div>
-            
+
             <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-medium mb-2">लैङ्गिक अनुपात</h3>
               <p className="text-3xl font-bold text-primary">
-                {sexRatio 
-                  ? localizeNumber(sexRatio, "ne")
-                  : "लोड हुँदैछ..."}
+                {sexRatio ? localizeNumber(sexRatio, "ne") : "लोड हुँदैछ..."}
               </p>
-              <p className="text-sm text-muted-foreground">(प्रति १०० पुरुषमा महिला)</p>
+              <p className="text-sm text-muted-foreground">
+                (प्रति १०० पुरुषमा महिला)
+              </p>
             </div>
-            
+
             <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-medium mb-2">वडा संख्या</h3>
               <p className="text-3xl font-bold text-primary">८</p>
@@ -258,16 +265,19 @@ export default async function DemographicsPage() {
         {/* Demographic Categories Section */}
         <section id="demographic-categories" className="my-8">
           <div className="prose prose-lg dark:prose-invert max-w-none mb-6">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">जनसांख्यिकी श्रेणीहरू</h2>
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">
+              जनसांख्यिकी श्रेणीहरू
+            </h2>
             <p>
-              खजुरा गाउँपालिकाको जनसांख्यिकी सम्बन्धी विस्तृत जानकारीका लागि तलका श्रेणीहरू हेर्नुहोस्。
-              प्रत्येक श्रेणीमा विस्तृत तथ्याङ्क, चार्ट र विश्लेषण प्रस्तुत गरिएको छ。
+              खजुरा गाउँपालिकाको जनसांख्यिकी सम्बन्धी विस्तृत जानकारीका लागि
+              तलका श्रेणीहरू हेर्नुहोस्。 प्रत्येक श्रेणीमा विस्तृत तथ्याङ्क,
+              चार्ट र विश्लेषण प्रस्तुत गरिएको छ。
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {demographicCategories.map((category, i) => (
-              <Link 
+              <Link
                 key={i}
                 href={category.href}
                 className="flex flex-col h-full group hover:shadow-md transition-all duration-200 bg-background border rounded-lg overflow-hidden"
@@ -289,7 +299,7 @@ export default async function DemographicsPage() {
                 </div>
                 <div className="px-6 py-3 bg-muted/20 flex items-center justify-end">
                   <span className="text-sm text-primary font-medium flex items-center">
-                    हेर्नुहोस् <ChevronRight className="h-4 w-4 ml-1"/>
+                    हेर्नुहोस् <ChevronRight className="h-4 w-4 ml-1" />
                   </span>
                 </div>
               </Link>
@@ -300,10 +310,19 @@ export default async function DemographicsPage() {
         {/* Population Distribution Section */}
         <section id="population-distribution" className="my-8">
           <div className="prose prose-lg dark:prose-invert max-w-none mb-6">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">जनसंख्या वितरण</h2>
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">
+              जनसंख्या वितरण
+            </h2>
             <p>
-              खजुरा गाउँपालिकाको विस्तृत जनसंख्या वितरण, वडागत विश्लेषण, लैङ्गिक अनुपात लगायत
-              अन्य महत्वपूर्ण तथ्याङ्कहरू हेर्न <Link href="/profile/demographics/ward-wise-summary" className="text-primary hover:text-primary/80 font-medium">जनसंख्या सारांश</Link> मा जानुहोस्。
+              खजुरा गाउँपालिकाको विस्तृत जनसंख्या वितरण, वडागत विश्लेषण, लैङ्गिक
+              अनुपात लगायत अन्य महत्वपूर्ण तथ्याङ्कहरू हेर्न{" "}
+              <Link
+                href="/profile/demographics/ward-wise-summary"
+                className="text-primary hover:text-primary/80 font-medium"
+              >
+                जनसंख्या सारांश
+              </Link>{" "}
+              मा जानुहोस्。
             </p>
           </div>
         </section>

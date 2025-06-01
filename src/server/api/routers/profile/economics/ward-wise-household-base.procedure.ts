@@ -235,7 +235,7 @@ export const getWardWiseHouseholdBaseSummary = publicProcedure.query(
           base_type, 
           SUM(households) as total_households
         FROM 
-          ward_wise_household_base
+          acme_ward_wise_household_base
         GROUP BY 
           base_type
         ORDER BY 
