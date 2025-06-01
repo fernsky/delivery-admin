@@ -21,21 +21,12 @@ export function LocationSection({
           label="Ward Number"
           value={business?.wardNo?.toString()}
         />
-        <DetailRow
-          icon={MapPin}
-          label="Area Code"
-          value={business?.areaCode?.toString()}
-        />
-        <DetailRow
-          icon={MapPin}
-          label="Business Number"
-          value={business?.businessNo}
-        />
-        <DetailRow icon={Globe} label="Locality" value={business?.locality} />
+       
+        <DetailRow icon={Globe} label="Locality" value={business?.businessLocality} />
       </Card>
 
       {/* Show map if coordinates are available */}
-      {business.gps && locationDetails?.coordinates && (
+      {business.geom && locationDetails?.coordinates && (
         <LocationDetailsSection
           coordinates={locationDetails.coordinates}
           gpsAccuracy={locationDetails.gpsAccuracy || undefined}
