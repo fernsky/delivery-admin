@@ -1,24 +1,22 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { DocsLayout } from "@/components/layout/DocsLayout";
-import { TableOfContents } from "@/components/TableOfContents";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   ChevronRight,
   BarChart3,
   PieChart,
   Users,
   UserCheck,
+  Activity,
+  Skull,
+  HeartPulse,
+  Building,
+  BabyIcon,
+  Home,
+  Clock,
 } from "lucide-react";
 import { api } from "@/trpc/server";
 import Image from "next/image";
 import { localizeNumber } from "@/lib/utils/localize-number";
+import type { Metadata } from "next";
+import Link from "next/link";
 
 // Force dynamic rendering since we're using tRPC which relies on headers
 export const dynamic = "force-dynamic";
@@ -60,21 +58,13 @@ const demographicCategories = [
     title: "जनसंख्या सारांश",
     description:
       "खजुरा गाउँपालिकाको समग्र जनसंख्या, लिङ्ग अनुपात र घरधुरी सम्बन्धी सारांश तथ्याङ्क।",
-    href: "/profile/demographics/summary",
+    href: "/profile/demographics/ward-wise-summary",
     icon: <BarChart3 className="h-5 w-5" />,
   },
   {
-    title: "वडा अनुसार जनसंख्या",
-    description:
-      "खजुरा गाउँपालिकाका विभिन्न वडाहरूको जनसंख्या, घरधुरी र लिङ्ग अनुपात सम्बन्धी तथ्याङ्क।",
-    href: "/profile/demographics/ward-wise-summary",
-    icon: <PieChart className="h-5 w-5" />,
-  },
-  {
-    title: "जात/जनजाति अनुसार जनसंख्या",
-    description:
-      "खजुरा गाउँपालिकामा विभिन्न जात र जनजातिको जनसंख्या र वितरण सम्बन्धी विस्तृत जानकारी।",
-    href: "/profile/demographics/ward-wise-caste-population",
+    title: "उमेर अनुसार जनसंख्या",
+    description: "खजुरा गाउँपालिकामा उमेर समूह अनुसार जनसंख्या वितरण र वडागत विश्लेषण।",
+    href: "/profile/demographics/ward-age-wise-population",
     icon: <Users className="h-5 w-5" />,
   },
   {
@@ -92,260 +82,232 @@ const demographicCategories = [
     icon: <Users className="h-5 w-5" />,
   },
   {
-    title: "वैवाहिक स्थिति अनुसार जनसंख्या",
-    description: "खजुरा गाउँपालिकामा उमेर अनुसार वैवाहिक स्थिति सम्बन्धी तथ्याङ्क र विवाह दर।",
-    href: "/profile/demographics/ward-age-wise-marital-status",
-    icon: <UserCheck className="h-5 w-5" />,
-  },
-  {
-    title: "उमेर अनुसार जनसंख्या",
-    description: "खजुरा गाउँपालिकामा उमेर समूह अनुसार जनसंख्या वितरण र वडागत विश्लेषण।",
-    href: "/profile/demographics/ward-age-wise-population",
+    title: "जात/जनजाति अनुसार जनसंख्या",
+    description:
+      "खजुरा गाउँपालिकामा विभिन्न जात र जनजातिको जनसंख्या र वितरण सम्बन्धी विस्तृत जानकारी।",
+    href: "/profile/demographics/ward-wise-caste-population",
     icon: <Users className="h-5 w-5" />,
   },
   {
     title: "घरमूली लिङ्ग अनुसार जनसंख्या",
     description: "खजुरा गाउँपालिकामा वडागत घरमूली लिङ्ग वितरण र लैङ्गिक समानताको अवस्था।",
     href: "/profile/demographics/ward-wise-househead-gender",
-    icon: <Users className="h-5 w-5" />,
+    icon: <Home className="h-5 w-5" />,
+  },
+  {
+    title: "वैवाहिक स्थिति अनुसार जनसंख्या",
+    description: "खजुरा गाउँपालिकामा उमेर अनुसार वैवाहिक स्थिति सम्बन्धी तथ्याङ्क र विवाह दर।",
+    href: "/profile/demographics/ward-age-wise-marital-status",
+    icon: <UserCheck className="h-5 w-5" />,
+  },
+  {
+    title: "आर्थिक रुपले सक्रिय जनसंख्या",
+    description: "खजुरा गाउँपालिकामा उमेर समूह अनुसार आर्थिक रुपले सक्रिय जनसंख्याको विश्लेषण।",
+    href: "/profile/demographics/ward-age-wise-economically-active-population",
+    icon: <Activity className="h-5 w-5" />,
+  },
+  {
+    title: "अपाङ्गता कारणका आधारमा जनसंख्या",
+    description: "खजुरा गाउँपालिकामा अपाङ्गताको कारण अनुसार जनसंख्याको वितरण र विश्लेषण।",
+    href: "/profile/demographics/ward-wise-disability-cause",
+    icon: <HeartPulse className="h-5 w-5" />,
+  },
+  {
+    title: "जन्म स्थानको आधारमा घरधुरी",
+    description: "खजुरा गाउँपालिकामा घरपरिवारको जन्मस्थान अनुसार वितरण र बसाई सराईको प्रवृत्ति।",
+    href: "/profile/demographics/ward-wise-birthplace-households",
+    icon: <Building className="h-5 w-5" />,
+  },
+  {
+    title: "बालबालिकाको जन्मदर्ताको आधारमा जनसंख्या",
+    description: "खजुरा गाउँपालिकामा पाँच वर्षमुनिका बालबालिकाहरूको जन्मदर्ता सम्बन्धी तथ्याङ्क।",
+    href: "/profile/demographics/ward-wise-birth-certificate-population",
+    icon: <BabyIcon className="h-5 w-5" />,
+  },
+  {
+    title: "विगत १२ महिनामा मृत्यु भएकाको विवरण",
+    description: "खजुरा गाउँपालिकामा उमेर तथा लिङ्ग अनुसार मृत्यु विवरण र मृत्युदर विश्लेषण।",
+    href: "/profile/demographics/ward-age-gender-wise-deceased-population",
+    icon: <Clock className="h-5 w-5" />,
+  },
+  {
+    title: "मृत्युको कारण अनुसार मृतकको संख्या",
+    description: "खजुरा गाउँपालिकामा मृत्युका विभिन्न कारणहरूको वितरण र विश्लेषण।",
+    href: "/profile/demographics/ward-death-causes",
+    icon: <Skull className="h-5 w-5" />,
   },
 ];
 
 export default async function DemographicsPage() {
-  // Fetch population summary data
-  const summary = await api.profile.demographics.summary.get.query();
+  // Fetch overall demographic summary for the municipality
+  let summaryData;
+  try {
+    summaryData = await api.profile.demographics.wardWiseDemographicSummary.getAll.query();
+  } catch (error) {
+    console.error("Error fetching demographic summary:", error);
+  }
+
+  // Calculate municipality totals if data is available
+  const municipalityStats = summaryData ? {
+    totalPopulation: summaryData.reduce(
+      (sum, ward) => sum + 
+        (ward.totalPopulation || 
+          (ward.populationMale || 0) + 
+          (ward.populationFemale || 0) + 
+          (ward.populationOther || 0)),
+      0
+    ),
+    totalHouseholds: summaryData.reduce(
+      (sum, ward) => sum + (ward.totalHouseholds || 0),
+      0
+    ),
+    malePopulation: summaryData.reduce(
+      (sum, ward) => sum + (ward.populationMale || 0),
+      0
+    ),
+    femalePopulation: summaryData.reduce(
+      (sum, ward) => sum + (ward.populationFemale || 0),
+      0
+    ),
+  } : null;
+
+  // Calculate sex ratio if data is available
+  const sexRatio = municipalityStats && municipalityStats.malePopulation > 0 
+    ? ((municipalityStats.femalePopulation / municipalityStats.malePopulation) * 100).toFixed(2)
+    : null;
 
   return (
-    <DocsLayout toc={<TableOfContents toc={toc} />}>
+    <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col gap-8">
-        <section>
-          <div className="relative rounded-lg overflow-hidden mb-8">
-            <div className="bg-black relative rounded-md">
-              <div className="absolute inset-0 bg-black/60 z-10 rounded-md" />
-              <Image
-                src="/images/demographics-hero.svg"
-                width={1200}
-                height={400}
-                alt="खजुरा गाउँपालिका जनसांख्यिकी तथ्याङ्क"
-                className="w-full h-[300px] object-cover rounded-md"
-                priority
-              />
-            </div>
-            <div className="absolute inset-0 flex items-center z-20">
-              <div className="p-8">
-                <h1 className="text-4xl font-bold mb-3 text-white drop-shadow-lg">
-                  खजुरा गाउँपालिका जनसांख्यिकी
-                </h1>
-                <p className="text-lg text-white/90 max-w-xl drop-shadow-lg">
-                  जनसंख्या, उमेर, लिङ्ग, जात, धर्म र अन्य जनसांख्यिकी विवरणहरू
-                </p>
-              </div>
+        {/* Hero Section */}
+        <div className="relative rounded-lg overflow-hidden">
+          <Image 
+            src="/images/demographics-hero.svg" 
+            alt="खजुरा गाउँपालिका जनसांख्यिकी"
+            width={1200}
+            height={400}
+            className="w-full h-[300px] object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <div className="text-center text-white">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">खजुरा गाउँपालिकाको जनसांख्यिकी विवरण</h1>
+              <p className="text-xl max-w-2xl mx-auto">
+                जनसंख्या, उमेर, लिङ्ग, जात, धर्म, मातृभाषा लगायत महत्वपूर्ण जनसांख्यिकी तथ्याङ्क
+              </p>
             </div>
           </div>
+        </div>
 
-          <div className="prose prose-slate dark:prose-invert max-w-none">
-            <h2 id="introduction" className="scroll-m-20">
-              परिचय
-            </h2>
+        {/* Introduction Section */}
+        <section id="introduction">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight mb-4">परिचय</h2>
             <p>
-              यस खण्डमा खजुरा गाउँपालिकाको जनसांख्यिकी तथ्याङ्कहरू प्रस्तुत गरिएका छन्।
-              यहाँ जनसंख्या, उमेर समूह, लिङ्ग, जात, धर्म, मातृभाषा र वैवाहिक
-              स्थिति जस्ता विभिन्न जनसांख्यिकी विशेषताहरूको विस्तृत विवरण पाउन
-              सकिन्छ।
+              जनसांख्यिकी तथ्याङ्क गाउँपालिका विकास, योजना र नीति निर्माणका लागि अत्यन्त महत्त्वपूर्ण हुन्छ। 
+              खजुरा गाउँपालिकाको जनसांख्यिकी प्रोफाइलमा जनसंख्या, वडागत वितरण, लिङ्ग, उमेर, जात, धर्म, मातृभाषा, 
+              वैवाहिक स्थिति लगायतका तथ्याङ्कहरू समेटिएका छन्। यी तथ्याङ्कहरूले स्थानीय सरकारलाई स्रोत 
+              विनियोजन, विकास योजना तयारी र सेवा प्रवाहलाई लक्षित समुदायसम्म पुर्‍याउन सहयोग पुर्‍याउँछन्。
             </p>
-            <p>
-              यी तथ्याङ्कहरू खजुरा गाउँपालिकाको योजना निर्माण, स्रोत विनियोजन र नीति
-              निर्धारणमा महत्वपूर्ण भूमिका खेल्दछन्। साथै, यिनले सामाजिक अध्ययन,
-              अनुसन्धान र विकासका प्रयासहरूलाई समेत सहयोग गर्दछन्।
-            </p>
-
-            <h2 id="key-demographics" className="scroll-m-20 border-b pb-2">
-              प्रमुख जनसांख्यिकी तथ्यहरू
-            </h2>
           </div>
+        </section>
 
-          {/* Key demographic indicators */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 my-6">
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle className="text-lg">कुल जनसंख्या</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 pb-2 px-4">
-                <div className="text-3xl font-bold text-primary">
-                  {summary?.totalPopulation
-                    ? localizeNumber(summary.totalPopulation.toLocaleString(), "ne")
-                    : "डाटा उपलब्ध छैन"}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle className="text-lg">लिङ्ग अनुपात</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 pb-2 px-4">
-                <div className="text-3xl font-bold text-primary">
-                  {summary?.sexRatio 
-                    ? localizeNumber(summary.sexRatio.toString(), "ne") 
-                    : "डाटा उपलब्ध छैन"}
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  प्रति १०० महिलामा पुरुष
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle className="text-lg">कुल घरधुरी</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 pb-2 px-4">
-                <div className="text-3xl font-bold text-primary">
-                  {summary?.totalHouseholds 
-                    ? localizeNumber(summary.totalHouseholds.toLocaleString(), "ne") 
-                    : "डाटा उपलब्ध छैन"}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle className="text-lg">औसत घरधुरी आकार</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 pb-2 px-4">
-                <div className="text-3xl font-bold text-primary">
-                  {summary?.averageHouseholdSize 
-                    ? localizeNumber(summary.averageHouseholdSize.toString(), "ne") 
-                    : "डाटा उपलब्ध छैन"}
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  व्यक्ति प्रति घरधुरी
-                </p>
-              </CardContent>
-            </Card>
+        {/* Key Demographics Section */}
+        <section id="key-demographics">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2 mb-6">प्रमुख जनसांख्यिकी तथ्यहरू</h2>
           </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Key stats cards */}
+            <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-medium mb-2">कुल जनसंख्या</h3>
+              <p className="text-3xl font-bold text-primary">
+                {municipalityStats 
+                  ? localizeNumber(municipalityStats.totalPopulation.toLocaleString(), "ne")
+                  : "लोड हुँदैछ..."}
+              </p>
+            </div>
+            
+            <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-medium mb-2">कुल घरधुरी</h3>
+              <p className="text-3xl font-bold text-primary">
+                {municipalityStats 
+                  ? localizeNumber(municipalityStats.totalHouseholds.toLocaleString(), "ne")
+                  : "लोड हुँदैछ..."}
+              </p>
+            </div>
+            
+            <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-medium mb-2">लैङ्गिक अनुपात</h3>
+              <p className="text-3xl font-bold text-primary">
+                {sexRatio 
+                  ? localizeNumber(sexRatio, "ne")
+                  : "लोड हुँदैछ..."}
+              </p>
+              <p className="text-sm text-muted-foreground">(प्रति १०० पुरुषमा महिला)</p>
+            </div>
+            
+            <div className="bg-muted/20 border rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-medium mb-2">वडा संख्या</h3>
+              <p className="text-3xl font-bold text-primary">८</p>
+            </div>
+          </div>
+        </section>
 
-          <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
-            <h2
-              id="demographic-categories"
-              className="scroll-m-20 border-b pb-2"
-            >
-              जनसांख्यिकी श्रेणीहरू
-            </h2>
+        {/* Demographic Categories Section */}
+        <section id="demographic-categories" className="my-8">
+          <div className="prose prose-lg dark:prose-invert max-w-none mb-6">
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">जनसांख्यिकी श्रेणीहरू</h2>
             <p>
-              विभिन्न जनसांख्यिकी तथ्याङ्कहरू निम्न श्रेणीहरूमा हेर्न सकिन्छ:
+              खजुरा गाउँपालिकाको जनसांख्यिकी सम्बन्धी विस्तृत जानकारीका लागि तलका श्रेणीहरू हेर्नुहोस्。
+              प्रत्येक श्रेणीमा विस्तृत तथ्याङ्क, चार्ट र विश्लेषण प्रस्तुत गरिएको छ。
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-            {demographicCategories.map((category) => (
-              <Card key={category.title} className="flex flex-col h-full">
-                <CardHeader className="pb-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="bg-primary/10 p-2 rounded">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {demographicCategories.map((category, i) => (
+              <Link 
+                key={i}
+                href={category.href}
+                className="flex flex-col h-full group hover:shadow-md transition-all duration-200 bg-background border rounded-lg overflow-hidden"
+              >
+                <div className="p-6 flex-grow">
+                  <div className="flex items-start gap-4">
+                    <div className="mt-1 rounded-full bg-primary/10 p-2 text-primary">
                       {category.icon}
                     </div>
-                    <CardTitle className="text-lg">{category.title}</CardTitle>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                        {category.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
+                        {category.description}
+                      </p>
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent className="py-2 flex-grow">
-                  <p className="text-muted-foreground">
-                    {category.description}
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <Link
-                    href={category.href}
-                    className="inline-flex items-center text-sm text-primary hover:underline"
-                  >
-                    विस्तृत हेर्नुहोस् <ChevronRight className="h-4 w-4 ml-1" />
-                  </Link>
-                </CardFooter>
-              </Card>
+                </div>
+                <div className="px-6 py-3 bg-muted/20 flex items-center justify-end">
+                  <span className="text-sm text-primary font-medium flex items-center">
+                    हेर्नुहोस् <ChevronRight className="h-4 w-4 ml-1"/>
+                  </span>
+                </div>
+              </Link>
             ))}
           </div>
+        </section>
 
-          <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
-            <h2
-              id="population-distribution"
-              className="scroll-m-20 border-b pb-2"
-            >
-              जनसंख्या वितरण
-            </h2>
+        {/* Population Distribution Section */}
+        <section id="population-distribution" className="my-8">
+          <div className="prose prose-lg dark:prose-invert max-w-none mb-6">
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight border-b pb-2">जनसंख्या वितरण</h2>
             <p>
-              खजुरा गाउँपालिकाको जनसंख्या उमेर समूह, लिङ्ग अनुपात र स्थानीय वितरणका आधारमा
-              बाँडिएको छ। उमेर समूह अनुसार जनसंख्याको वितरणले गाउँपालिकामा युवा,
-              वयस्क र वृद्ध जनसंख्याको अनुपात देखाउँछ, जुन स्वास्थ्य, शिक्षा र
-              सामाजिक सुरक्षा जस्ता सेवाहरूको योजना बनाउन महत्वपूर्ण हुन्छ।
-            </p>
-
-            <div className="flex flex-wrap gap-4 my-6 justify-center">
-              {/* Population by age groups */}
-              <div className="bg-muted/50 rounded-lg p-4 text-center min-w-[250px]">
-                <h3 className="text-lg font-medium mb-2">०-१४ वर्ष</h3>
-                <p className="text-2xl font-bold text-primary">
-                  {summary?.population0To14 
-                    ? localizeNumber(summary.population0To14.toLocaleString(), "ne") 
-                    : "डाटा उपलब्ध छैन"}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  कुल जनसंख्याको{" "}
-                  {summary?.totalPopulation && summary?.population0To14
-                    ? localizeNumber(
-                        ((summary.population0To14 / summary.totalPopulation) * 100).toFixed(1), 
-                        "ne"
-                      )
-                    : "?"}
-                  %
-                </p>
-              </div>
-
-              <div className="bg-muted/50 rounded-lg p-4 text-center min-w-[250px]">
-                <h3 className="text-lg font-medium mb-2">१५-५९ वर्ष</h3>
-                <p className="text-2xl font-bold text-primary">
-                  {summary?.population15To59 
-                    ? localizeNumber(summary.population15To59.toLocaleString(), "ne") 
-                    : "डाटा उपलब्ध छैन"}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  कुल जनसंख्याको{" "}
-                  {summary?.totalPopulation && summary?.population15To59
-                    ? localizeNumber(
-                        ((summary.population15To59 / summary.totalPopulation) * 100).toFixed(1), 
-                        "ne"
-                      )
-                    : "?"}
-                  %
-                </p>
-              </div>
-
-              <div className="bg-muted/50 rounded-lg p-4 text-center min-w-[250px]">
-                <h3 className="text-lg font-medium mb-2">६० वर्ष वा माथि</h3>
-                <p className="text-2xl font-bold text-primary">
-                  {summary?.population60AndAbove 
-                    ? localizeNumber(summary.population60AndAbove.toLocaleString(), "ne") 
-                    : "डाटा उपलब्ध छैन"}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  कुल जनसंख्याको{" "}
-                  {summary?.totalPopulation && summary?.population60AndAbove
-                    ? localizeNumber(
-                        ((summary.population60AndAbove / summary.totalPopulation) * 100).toFixed(1),
-                        "ne"
-                      )
-                    : "?"}
-                  %
-                </p>
-              </div>
-            </div>
-
-            <p>
-              थप विस्तृत जनसांख्यिकी विश्लेषण र विशेष श्रेणीका तथ्याङ्कहरू हेर्न
-              माथिका लिंकहरूमा क्लिक गर्नुहोस्।
+              खजुरा गाउँपालिकाको विस्तृत जनसंख्या वितरण, वडागत विश्लेषण, लैङ्गिक अनुपात लगायत
+              अन्य महत्वपूर्ण तथ्याङ्कहरू हेर्न <Link href="/profile/demographics/ward-wise-summary" className="text-primary hover:text-primary/80 font-medium">जनसंख्या सारांश</Link> मा जानुहोस्。
             </p>
           </div>
         </section>
       </div>
-    </DocsLayout>
+    </div>
   );
 }
