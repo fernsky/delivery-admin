@@ -81,7 +81,10 @@ export const requestHouseholdEditProcedure = protectedProcedure
 
 
 export const getHouseholdEditRequestsProcedure = protectedProcedure
-  // ... existing input definition
+  .input(z.object({
+    limit: z.number().optional().default(10),
+    offset: z.number().optional().default(0)
+  }))
   .query(async ({ ctx, input }) => {
     try {
       // Use parameterized queries with the sql template tag
@@ -97,7 +100,7 @@ export const getHouseholdEditRequestsProcedure = protectedProcedure
         FROM ${householdEditRequests} e
         JOIN ${households} h ON h.id = e.household_id
         ORDER BY e.requested_at DESC
-        LIMIT ${input.limit} OFFSET ${input.offset}
+        LIMIT ${input.limit || 10} OFFSET ${input.offset || 0}
       `;
       
       const editRequests = await ctx.db.execute(query);
