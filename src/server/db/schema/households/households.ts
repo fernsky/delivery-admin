@@ -2,7 +2,7 @@ import {
   pgTable,
   text,
   integer,
-  decimal,
+  real,
   timestamp,
   varchar,
   pgEnum,
@@ -18,10 +18,10 @@ export const householdStatusEnum = pgEnum("household_status_enum", [
 ]);
 
 // Main household table
-export const households = pgTable("acme_khajura_household", {
+export const households = pgTable("acme_khajura_households", {
   // Primary identification
   id: text("id").primaryKey().notNull(),
-  profileId: text("profile_id").default("khajura"),
+  profileId: text("profile_id"),
   
   // Location information
   province: text("province"),
@@ -55,20 +55,24 @@ export const households = pgTable("acme_khajura_household", {
   houseRoofOther: text("house_roof_other"),
   houseFloor: text("house_floor"),
   houseFloorOther: text("house_floor_other"),
-  houseFloors: integer("house_floors"),
-  roomCount: integer("room_count"),
+  
+  // Missing house_floors and room_count in the provided schema
+  // houseFloors: integer("house_floors"),
+  // roomCount: integer("room_count"),
   
   // Safety information
   isHousePassed: text("is_house_passed"),
   isMapArchived: text("is_map_archived"),
-  isEarthquakeResistant: text("is_earthquake_resistant"),
-  disasterRiskStatus: text("disaster_risk_status"),
+  // Missing is_earthquake_resistant and disaster_risk_status in the provided schema
+  // isEarthquakeResistant: text("is_earthquake_resistant"),
+  // disasterRiskStatus: text("disaster_risk_status"),
   naturalDisasters: text("natural_disasters").array(),
   isSafe: text("is_safe"),
   
   // Water, sanitation and energy
   waterSource: text("water_source"),
-  waterPurificationMethods: text("water_purification_methods").array(),
+  // Note: this is not an array in the provided schema
+  waterPurificationMethods: text("water_purification_methods"),
   toiletType: text("toilet_type"),
   solidWasteManagement: text("solid_waste_management"),
   primaryCookingFuel: text("primary_cooking_fuel"),
@@ -88,8 +92,9 @@ export const households = pgTable("acme_khajura_household", {
   loanUses: text("loan_uses").array(),
   timeToBank: text("time_to_bank"),
   financialAccounts: text("financial_accounts").array(),
-  haveRemittance: text("have_remittance"),
-  remittanceExpenses: text("remittance_expenses").array(),
+  
+  // New field from provided schema
+  incomeSources: text("income_sources").array(),
   
   // Health
   haveHealthInsurance: text("have_health_insurance"),
@@ -117,18 +122,24 @@ export const households = pgTable("acme_khajura_household", {
   // Aquaculture & Apiary
   haveAquaculture: text("have_aquaculture"),
   pondNumber: integer("pond_number"),
-  pondArea: decimal("pond_area"),
-  fishProduction: decimal("fish_production"),
+  // Changed from decimal to real per the schema
+  pondArea: real("pond_area"),
+  fishProduction: real("fish_production"),
   haveApiary: text("have_apiary"),
   hiveNumber: integer("hive_number"),
-  honeyProduction: decimal("honey_production"),
-  honeySales: decimal("honey_sales"),
-  honeyRevenue: decimal("honey_revenue"),
+  // Changed from decimal to real per the schema
+  honeyProduction: real("honey_production"),
+  honeySales: real("honey_sales"),
+  honeyRevenue: real("honey_revenue"),
   
   // Agricultural operations
   hasAgriculturalInsurance: text("has_agricultural_insurance"),
   monthsInvolvedInAgriculture: text("months_involved_in_agriculture"),
   agriculturalMachines: text("agricultural_machines").array(),
+  
+  // Remittance fields moved per schema order
+  haveRemittance: text("have_remittance"),
+  remittanceExpenses: text("remittance_expenses").array(),
   
   // Migration details
   birthPlace: text("birth_place"),
@@ -149,15 +160,15 @@ export const households = pgTable("acme_khajura_household", {
   geom: postgis("geom"),
   name: text("name"),
   
-  // Status for workflow
-  status: householdStatusEnum("status").default("pending"),
+  // Status field - not in the provided schema, consider removing if not in actual DB
+  // status: householdStatusEnum("status").default("pending"),
 });
 
-// Staging table for data validation
+// Staging table for data validation - Update to match the same schema as households
 export const stagingHouseholds = pgTable("staging_acme_khajura_household", {
   // Copy the same structure as the main households table
   id: text("id").primaryKey().notNull(),
-  profileId: text("profile_id").default("khajura"),
+  profileId: text("profile_id"),
   
   // Location information
   province: text("province"),
@@ -191,20 +202,16 @@ export const stagingHouseholds = pgTable("staging_acme_khajura_household", {
   houseRoofOther: text("house_roof_other"),
   houseFloor: text("house_floor"),
   houseFloorOther: text("house_floor_other"),
-  houseFloors: integer("house_floors"),
-  roomCount: integer("room_count"),
   
   // Safety information
   isHousePassed: text("is_house_passed"),
   isMapArchived: text("is_map_archived"),
-  isEarthquakeResistant: text("is_earthquake_resistant"),
-  disasterRiskStatus: text("disaster_risk_status"),
   naturalDisasters: text("natural_disasters").array(),
   isSafe: text("is_safe"),
   
   // Water, sanitation and energy
   waterSource: text("water_source"),
-  waterPurificationMethods: text("water_purification_methods").array(),
+  waterPurificationMethods: text("water_purification_methods"),
   toiletType: text("toilet_type"),
   solidWasteManagement: text("solid_waste_management"),
   primaryCookingFuel: text("primary_cooking_fuel"),
@@ -224,8 +231,7 @@ export const stagingHouseholds = pgTable("staging_acme_khajura_household", {
   loanUses: text("loan_uses").array(),
   timeToBank: text("time_to_bank"),
   financialAccounts: text("financial_accounts").array(),
-  haveRemittance: text("have_remittance"),
-  remittanceExpenses: text("remittance_expenses").array(),
+  incomeSources: text("income_sources").array(),
   
   // Health
   haveHealthInsurance: text("have_health_insurance"),
@@ -253,18 +259,22 @@ export const stagingHouseholds = pgTable("staging_acme_khajura_household", {
   // Aquaculture & Apiary
   haveAquaculture: text("have_aquaculture"),
   pondNumber: integer("pond_number"),
-  pondArea: decimal("pond_area"),
-  fishProduction: decimal("fish_production"),
+  pondArea: real("pond_area"),
+  fishProduction: real("fish_production"),
   haveApiary: text("have_apiary"),
   hiveNumber: integer("hive_number"),
-  honeyProduction: decimal("honey_production"),
-  honeySales: decimal("honey_sales"),
-  honeyRevenue: decimal("honey_revenue"),
+  honeyProduction: real("honey_production"),
+  honeySales: real("honey_sales"),
+  honeyRevenue: real("honey_revenue"),
   
   // Agricultural operations
   hasAgriculturalInsurance: text("has_agricultural_insurance"),
   monthsInvolvedInAgriculture: text("months_involved_in_agriculture"),
   agriculturalMachines: text("agricultural_machines").array(),
+  
+  // Remittance
+  haveRemittance: text("have_remittance"),
+  remittanceExpenses: text("remittance_expenses").array(),
   
   // Migration details
   birthPlace: text("birth_place"),

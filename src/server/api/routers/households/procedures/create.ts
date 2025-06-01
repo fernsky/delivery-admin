@@ -52,14 +52,10 @@ export const createHouseholdProcedure = publicProcedure
         houseRoofOther: input.houseRoofOther || null,
         houseFloor: input.houseFloor || null,
         houseFloorOther: input.houseFloorOther || null,
-        houseFloors: input.houseFloors || null,
-        roomCount: input.roomCount || null,
         
         // Safety information
         isHousePassed: input.isHousePassed || null,
         isMapArchived: input.isMapArchived || null,
-        isEarthquakeResistant: input.isEarthquakeResistant || null,
-        disasterRiskStatus: input.disasterRiskStatus || null,
         naturalDisasters: input.naturalDisasters || null,
         isSafe: input.isSafe || null,
         
@@ -85,6 +81,9 @@ export const createHouseholdProcedure = publicProcedure
         loanUses: input.loanUses || null,
         timeToBank: input.timeToBank || null,
         financialAccounts: input.financialAccounts || null,
+        incomeSources: input.incomeSources || null,
+        
+        // Remittance fields
         haveRemittance: input.haveRemittance || null,
         remittanceExpenses: input.remittanceExpenses || null,
         
@@ -142,8 +141,7 @@ export const createHouseholdProcedure = publicProcedure
         hasBusiness: input.hasBusiness || null,
         
         // System fields
-        
-        // Set default status as pending for new households
+        deviceId: input.deviceId || null,
       };
 
       // Insert household into database

@@ -16,8 +16,18 @@ export default function EditHouseholdPage() {
   const currentStepIndex = HOUSEHOLD_STEPS.findIndex((s) => s === step);
   const params = useParams();
   const router = useRouter();
-  const householdId = params.id as string;
 
+  console.log("Edit Household Page Params:", params);
+
+  // Format and clean the household ID
+  let rawHouseholdId = params.id as string;
+  // Decode URI components and clean the ID
+  const householdId = decodeURIComponent(rawHouseholdId)
+    .replace(/:/g, "") // Remove any colons
+    .replace(/[^a-f0-9-]/gi, ""); // Remove any non-hex/hyphen chars
+
+  const finalHouseholdId = `uuid:${householdId.slice(1)}`;
+  console.log("Final Household ID:", finalHouseholdId);
   // Get Zustand household store methods
   const { resetCurrentHousehold } = useHouseholdStore();
 
@@ -28,7 +38,7 @@ export default function EditHouseholdPage() {
     error,
   } = api.households.getHouseholdById.useQuery(
     {
-      id: householdId,
+      id: finalHouseholdId,
     },
     {
       retry: 1,

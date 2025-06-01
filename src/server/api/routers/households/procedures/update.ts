@@ -7,12 +7,17 @@ import { TRPCError } from "@trpc/server";
 export const updateHouseholdProcedure = protectedProcedure
   .input(updateHouseholdSchema.extend({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
-    const { id, ...data } = input;
+    let { id: rawId, ...data } = input;
+    
+    // Ensure proper UUID format with 'uuid:' prefix
+    const id = rawId.startsWith('uuid:') ? rawId : `uuid:${rawId}`;
+    
+    console.log("Using household ID for update:", id);
 
     // First check if the household exists and belongs to the right profile
     const checkQuery = sql`
       SELECT COUNT(*) as count 
-      FROM acme_khajura_household
+      FROM acme_khajura_households
       WHERE id = ${id} AND profile_id = ${'khajura'}
     `;
     
@@ -69,14 +74,10 @@ export const updateHouseholdProcedure = protectedProcedure
     if (data.houseRoofOther !== undefined) addField('house_roof_other', data.houseRoofOther);
     if (data.houseFloor !== undefined) addField('house_floor', data.houseFloor);
     if (data.houseFloorOther !== undefined) addField('house_floor_other', data.houseFloorOther);
-    if (data.houseFloors !== undefined) addField('house_floors', data.houseFloors);
-    if (data.roomCount !== undefined) addField('room_count', data.roomCount);
     
     // Safety information
     if (data.isHousePassed !== undefined) addField('is_house_passed', data.isHousePassed);
     if (data.isMapArchived !== undefined) addField('is_map_archived', data.isMapArchived);
-    if (data.isEarthquakeResistant !== undefined) addField('is_earthquake_resistant', data.isEarthquakeResistant);
-    if (data.disasterRiskStatus !== undefined) addField('disaster_risk_status', data.disasterRiskStatus);
     if (data.naturalDisasters !== undefined) addField('natural_disasters', data.naturalDisasters);
     if (data.isSafe !== undefined) addField('is_safe', data.isSafe);
     
@@ -102,6 +103,7 @@ export const updateHouseholdProcedure = protectedProcedure
     if (data.loanUses !== undefined) addField('loan_uses', data.loanUses);
     if (data.timeToBank !== undefined) addField('time_to_bank', data.timeToBank);
     if (data.financialAccounts !== undefined) addField('financial_accounts', data.financialAccounts);
+    if (data.incomeSources !== undefined) addField('income_sources', data.incomeSources);
     if (data.haveRemittance !== undefined) addField('have_remittance', data.haveRemittance);
     if (data.remittanceExpenses !== undefined) addField('remittance_expenses', data.remittanceExpenses);
     
@@ -178,7 +180,7 @@ export const updateHouseholdProcedure = protectedProcedure
       
       // Build the complete update query with parameters
       const updateQuery = sql`
-        UPDATE acme_khajura_household
+        UPDATE acme_khajura_households
         SET ${setClause}
         WHERE id = ${id} AND profile_id = ${'khajura'}
         RETURNING id

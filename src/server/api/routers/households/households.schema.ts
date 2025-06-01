@@ -13,7 +13,7 @@ export const householdSchema = z.object({
   houseSymbolNo: z.string(),
   familySymbolNo: z.string(),
   dateOfInterview: z.date().nullable(),
-  householdLocation: z.array(z.number()).nullable(),
+  householdLocation: z.array(z.string()).nullable(),
   locality: z.string(),
   developmentOrganization: z.string(),
   
@@ -37,20 +37,17 @@ export const householdSchema = z.object({
   houseRoofOther: z.string().nullable(),
   houseFloor: z.string(),
   houseFloorOther: z.string().nullable(),
-  houseFloors: z.number().nullable(),
-  roomCount: z.number().nullable(),
   
   // Safety information
   isHousePassed: z.string(),
   isMapArchived: z.string().nullable(),
-  isEarthquakeResistant: z.string(),
-  disasterRiskStatus: z.string(),
   naturalDisasters: z.array(z.string()).nullable(),
   isSafe: z.string().nullable(),
   
   // Water, sanitation and energy
   waterSource: z.string(),
-  waterPurificationMethods: z.array(z.string()).nullable(),
+  // Changed from array to string to match schema
+  waterPurificationMethods: z.string().nullable(),
   toiletType: z.string(),
   solidWasteManagement: z.string(),
   primaryCookingFuel: z.string(),
@@ -70,6 +67,10 @@ export const householdSchema = z.object({
   loanUses: z.array(z.string()).nullable(),
   timeToBank: z.string(),
   financialAccounts: z.array(z.string()).nullable(),
+  // Added income sources to match schema
+  incomeSources: z.array(z.string()).nullable(),
+  
+  // Remittance (moved to match schema order)
   haveRemittance: z.string(),
   remittanceExpenses: z.array(z.string()).nullable(),
   
@@ -154,7 +155,7 @@ export const householdQuerySchema = z.object({
       district: z.string().optional(),
       haveAgriculturalLand: z.string().optional(),
       houseOwnership: z.string().optional(),
-      isEarthquakeResistant: z.string().optional(),
+      // Removed isEarthquakeResistant as it's not in the schema
       timeToPublicBus: z.string().optional(),
     })
     .optional(),

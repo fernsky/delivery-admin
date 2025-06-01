@@ -50,6 +50,27 @@ export function formatDate(dateString: string): string {
   }
 }
 
+// utils/uuid.ts
+export function formatDbUuid(uuid: string): string {
+  // Remove any existing prefix and whitespace
+  const cleanUuid = uuid.replace(/^(uuid:)?/, '').trim();
+  // Add the prefix consistently
+  return `uuid:${cleanUuid}`;
+}
+
+export function extractRawUuid(uuid: string): string {
+  return uuid.replace(/^uuid:/, '');
+}
+
+// Format date to YYYY-MM-DD
+export function formatDateToYYYYMMDD(date: Date): string {
+  try {
+    return date.toISOString().split("T")[0];
+  } catch (error) {
+    return "";
+  }
+}
+
 export function formatPrice(
   price: number | string,
   options: Intl.NumberFormatOptions = {},
