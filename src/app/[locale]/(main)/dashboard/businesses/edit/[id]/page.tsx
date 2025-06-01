@@ -5,9 +5,7 @@ import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { EnumeratorAssignment } from "@/components/business/enumerator-assignment";
-import { WardAssignment } from "@/components/business/ward-assignment";
-import { BusinessAreaAssignment } from "@/components/business/area-assignment";
+
 import { EditPageLayout } from "@/components/business/edit/edit-page-layout";
 
 export default function EditBusiness({ params }: { params: { id: string } }) {
