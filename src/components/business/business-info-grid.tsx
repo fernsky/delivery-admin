@@ -1,5 +1,4 @@
 import type { BusinessSchema, LocationDetails } from "./types";
-import { SurveyInfoSection } from "./sections/survey-info-section";
 import { BusinessBasicSection } from "./sections/business-basic-section";
 import { LegalInfoSection } from "./sections/legal-info-section";
 import { WorkforceSection } from "./sections/workforce-section";

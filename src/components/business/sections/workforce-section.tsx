@@ -13,7 +13,7 @@ export function WorkforceSection({ business }: WorkforceSectionProps) {
   return (
     <Card title="Workforce Information" icon={Briefcase}>
       {/* Partners Section */}
-      {business?.hasPartners === "yes" && (
+      {business?.hasBusinessPartners === "छ" && (
         <>
           <DetailRow
             icon={Users}
@@ -34,7 +34,7 @@ export function WorkforceSection({ business }: WorkforceSectionProps) {
               value={business?.nepaliFemalePartners?.toString()}
             />
           )}
-          {business?.hasForeignPartners === "yes" && (
+          {business?.hasForeignPartners === "छ" && (
             <>
               {hasValue(business?.foreignMalePartners) && (
                 <DetailRow
@@ -56,7 +56,7 @@ export function WorkforceSection({ business }: WorkforceSectionProps) {
       )}
 
       {/* Family Members Section */}
-      {business?.hasInvolvedFamily === "yes" && (
+      {business?.hasInvolvedFamily === "छ" && (
         <>
           <DetailRow
             icon={Users}
@@ -81,7 +81,7 @@ export function WorkforceSection({ business }: WorkforceSectionProps) {
       )}
 
       {/* Permanent Employees Section */}
-      {business?.hasPermanentEmployees === "yes" && (
+      {business?.hasPermanentEmployees === "छ" && (
         <>
           <DetailRow
             icon={Users}
@@ -102,7 +102,7 @@ export function WorkforceSection({ business }: WorkforceSectionProps) {
               value={business?.nepaliFemalePermanentEmployees?.toString()}
             />
           )}
-          {business?.hasForeignPermanentEmployees === "yes" && (
+          {business?.hasForeignPermanentEmployees === "छ" && (
             <>
               {hasValue(business?.foreignMalePermanentEmployees) && (
                 <DetailRow
@@ -124,7 +124,7 @@ export function WorkforceSection({ business }: WorkforceSectionProps) {
       )}
 
       {/* Temporary Employees Section */}
-      {business?.hasTemporaryEmployees === "yes" && (
+      {business?.hasTemporaryEmployees === "छ" && (
         <>
           <DetailRow
             icon={Users}
@@ -138,14 +138,14 @@ export function WorkforceSection({ business }: WorkforceSectionProps) {
               value={business?.nepaliMaleTemporaryEmployees?.toString()}
             />
           )}
-          {hasValue(business?.nepaliFemaleTemporaryEmployees) && (
+          {hasValue(business?.nepaliTemporaryFemaleEmployees) && (
             <DetailRow
               icon={Users}
               label="Nepali Female Temporary"
-              value={business?.nepaliFemaleTemporaryEmployees?.toString()}
+              value={business?.nepaliTemporaryFemaleEmployees?.toString()}
             />
           )}
-          {business?.hasForeignTemporaryEmployees === "yes" && (
+          {business?.hasForeignTemporaryEmployees === "छ" && (
             <>
               {hasValue(business?.foreignMaleTemporaryEmployees) && (
                 <DetailRow
