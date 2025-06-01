@@ -58,27 +58,7 @@ export default function EditBusiness({ params }: { params: { id: string } }) {
       }
     >
       <EditPageLayout>
-        <EnumeratorAssignment
-          refetchBusiness={refetchBusiness}
-          businessId={decodedId}
-          currentEnumeratorId={business?.enumeratorId ?? undefined}
-        />
-
-        <WardAssignment
-          businessId={decodedId}
-          currentWardNumber={business?.wardId?.toString() ?? undefined}
-          isWardValid={business?.isWardValid ?? false}
-          refetchBusiness={refetchBusiness}
-        />
-
-        <BusinessAreaAssignment
-          //@ts-ignore
-          businessId={decodedId}
-          currentAreaId={business?.areaId ?? undefined}
-          currentBuildingToken={business?.buildingToken ?? undefined}
-          isAreaValid={business?.isAreaValid ?? false}
-          refetchBusiness={refetchBusiness}
-        />
+       <></>
       </EditPageLayout>
     </ContentLayout>
   );

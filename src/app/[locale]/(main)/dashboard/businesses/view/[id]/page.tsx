@@ -1,3 +1,4 @@
+//@ts-nocheck
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
@@ -196,7 +197,7 @@ export default function BusinessView() {
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to List
           </Button>
           <Link
-            href={`/dashboard/businesses/edit/${encodeURIComponent(id)}`}
+            href={`/dashboard/businesses/edit/${encodeURIComponent(businessId)}`}
             passHref
           >
             <Button>
