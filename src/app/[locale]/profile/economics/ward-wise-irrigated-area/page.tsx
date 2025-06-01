@@ -206,7 +206,7 @@ export default async function WardWiseIrrigatedAreaPage() {
         <section>
           <div className="relative rounded-lg overflow-hidden mb-8">
             <Image
-              src="/images/irrigated-area.svg"
+              src="/images/irrigation.svg"
               width={1200}
               height={400}
               alt="वडा अनुसार सिंचित र असिंचित क्षेत्रफल - खजुरा गाउँपालिका (Ward-wise Irrigated and Unirrigated Area - Khajura Rural Municipality)"
