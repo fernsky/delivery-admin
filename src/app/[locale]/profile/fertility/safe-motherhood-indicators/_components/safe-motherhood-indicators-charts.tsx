@@ -183,7 +183,7 @@ export default function SafeMotherhoodIndicatorsCharts({
             गर्भवती स्वास्थ्य सेवा
           </h3>
           <p className="text-sm text-muted-foreground">
-            वर्ष {latestYear} मा विभिन्न गर्भवती स्वास्थ्य सेवाको कभरेज
+            वर्ष {localizeNumber(latestYear, "ne")} मा विभिन्न गर्भवती स्वास्थ्य सेवाको कभरेज
           </p>
         </div>
 
@@ -198,19 +198,18 @@ export default function SafeMotherhoodIndicatorsCharts({
 
         <div className="p-6 border-t">
           <div className="overflow-auto">
-            <table className="w-full border-collapse min-w-[800px]">
+            <table className="w-full border-collapse min-w-[600px]">
               <thead className="sticky top-0 z-10">
                 <tr className="bg-muted">
-                  <th className="border p-2 text-left">सूचक</th>
-                  <th className="border p-2 text-right">कभरेज (%)</th>
                   <th className="border p-2 text-left">विवरण</th>
+                  <th className="border p-2 text-right">कभरेज (%)</th>
                 </tr>
               </thead>
               <tbody>
                 {antenatalData.map((item, i) => (
                   <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
                     <td className="border p-2">
-                      {item.indicator}
+                      {indicatorLabels[item.indicator] || item.indicator}
                     </td>
                     <td className="border p-2 text-right">
                       <span className={`font-medium ${
@@ -221,9 +220,6 @@ export default function SafeMotherhoodIndicatorsCharts({
                       }`}>
                         {localizeNumber(parseFloat(item.value).toFixed(1), "ne")}%
                       </span>
-                    </td>
-                    <td className="border p-2 text-sm">
-                      {indicatorLabels[item.indicator] || ""}
                     </td>
                   </tr>
                 ))}
@@ -254,7 +250,7 @@ export default function SafeMotherhoodIndicatorsCharts({
             संस्थागत प्रसूति सेवा
           </h3>
           <p className="text-sm text-muted-foreground">
-            वर्ष {latestYear} मा संस्थागत प्रसूति र सम्बन्धित सूचकहरू
+            वर्ष {localizeNumber(latestYear, "ne")} मा संस्थागत प्रसूति र सम्बन्धित सूचकहरू
           </p>
         </div>
 
@@ -269,19 +265,18 @@ export default function SafeMotherhoodIndicatorsCharts({
 
         <div className="p-6 border-t">
           <div className="overflow-auto">
-            <table className="w-full border-collapse min-w-[800px]">
+            <table className="w-full border-collapse min-w-[600px]">
               <thead className="sticky top-0 z-10">
                 <tr className="bg-muted">
-                  <th className="border p-2 text-left">सूचक</th>
-                  <th className="border p-2 text-right">कभरेज (%)</th>
                   <th className="border p-2 text-left">विवरण</th>
+                  <th className="border p-2 text-right">कभरेज (%)</th>
                 </tr>
               </thead>
               <tbody>
                 {deliveryData.map((item, i) => (
                   <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
                     <td className="border p-2">
-                      {item.indicator}
+                      {indicatorLabels[item.indicator] || item.indicator}
                     </td>
                     <td className="border p-2 text-right">
                       <span className={`font-medium ${
@@ -292,9 +287,6 @@ export default function SafeMotherhoodIndicatorsCharts({
                       }`}>
                         {localizeNumber(parseFloat(item.value).toFixed(1), "ne")}%
                       </span>
-                    </td>
-                    <td className="border p-2 text-sm">
-                      {indicatorLabels[item.indicator] || ""}
                     </td>
                   </tr>
                 ))}

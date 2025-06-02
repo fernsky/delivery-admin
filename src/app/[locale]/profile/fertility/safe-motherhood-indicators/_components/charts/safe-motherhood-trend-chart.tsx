@@ -34,7 +34,7 @@ export default function SafeMotherhoodTrendChart({
   
   // Format data for line chart
   const chartData = years.map((year, idx) => {
-    const dataPoint: any = { name: year };
+    const dataPoint: any = { name: localizeNumber(year, "ne") };
     
     trendData.forEach(indicator => {
       dataPoint[indicator.indicator] = indicator.values[idx]?.value || 0;

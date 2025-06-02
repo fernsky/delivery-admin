@@ -57,8 +57,7 @@ export default function PostnatalCareChart({
 
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="text-sm font-medium mb-1">{data.indicator}</p>
-          <p className="text-xs mb-2">{data.fullName}</p>
+          <p className="text-sm font-medium mb-2">{data.fullName}</p>
           <div className="flex justify-between gap-4">
             <span>कभरेज:</span>
             <span className="font-medium">

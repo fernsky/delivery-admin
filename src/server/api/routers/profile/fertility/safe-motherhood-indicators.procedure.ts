@@ -306,7 +306,7 @@ export const getNewbornHealthSummary = publicProcedure.query(
       // Get the most recent year for which we have data
       const latestYearQuery = sql`
         SELECT MAX(year) as latest_year
-        FROM safe_motherhood_indicators
+        FROM acme_safe_motherhood_indicators
         WHERE indicator IN (
           'NEWBORNS_CHX_APPLIED_AFTER_BIRTH',
           'NEWBORNS_CHECKUP_24HRS_BIRTH',
@@ -321,15 +321,15 @@ export const getNewbornHealthSummary = publicProcedure.query(
       `;
 
       const latestYearResult = await ctx.db.execute(latestYearQuery);
-      let latestYear = new Date().getFullYear(); // Default to current year
-
-      if (
-        latestYearResult &&
-        latestYearResult.length > 0 &&
-        latestYearResult[0].latest_year
-      ) {
-        latestYear = parseInt(String(latestYearResult[0].latest_year));
+      
+      if (!latestYearResult || latestYearResult.length === 0 || !latestYearResult[0]?.latest_year) {
+        return {
+          latestYear: null,
+          keyIndicators: [],
+        };
       }
+
+      const latestYear = parseInt(String(latestYearResult[0].latest_year));
 
       // Get key newborn health indicators for the latest year
       const keyIndicatorsSql = sql`
@@ -337,7 +337,7 @@ export const getNewbornHealthSummary = publicProcedure.query(
           indicator, 
           value
         FROM 
-          safe_motherhood_indicators
+          acme_safe_motherhood_indicators
         WHERE 
           year = ${latestYear}
           AND indicator IN (
@@ -377,7 +377,7 @@ export const getNutritionSummary = publicProcedure.query(async ({ ctx }) => {
     // Get the most recent year for which we have data
     const latestYearQuery = sql`
         SELECT MAX(year) as latest_year
-        FROM safe_motherhood_indicators
+        FROM acme_safe_motherhood_indicators
         WHERE indicator IN (
           'POSTPARTUM_MOTHERS_45DAYS_IRON_FOLIC_ACID',
           'POSTPARTUM_MOTHERS_VITAMIN_A',
@@ -388,15 +388,15 @@ export const getNutritionSummary = publicProcedure.query(async ({ ctx }) => {
       `;
 
     const latestYearResult = await ctx.db.execute(latestYearQuery);
-    let latestYear = new Date().getFullYear(); // Default to current year
-
-    if (
-      latestYearResult &&
-      latestYearResult.length > 0 &&
-      latestYearResult[0].latest_year
-    ) {
-      latestYear = parseInt(String(latestYearResult[0].latest_year));
+    
+    if (!latestYearResult || latestYearResult.length === 0 || !latestYearResult[0]?.latest_year) {
+      return {
+        latestYear: null,
+        keyIndicators: [],
+      };
     }
+
+    const latestYear = parseInt(String(latestYearResult[0].latest_year));
 
     // Get key nutrition indicators for the latest year
     const keyIndicatorsSql = sql`
@@ -404,7 +404,7 @@ export const getNutritionSummary = publicProcedure.query(async ({ ctx }) => {
           indicator, 
           value
         FROM 
-          safe_motherhood_indicators
+        acme_safe_motherhood_indicators
         WHERE 
           year = ${latestYear}
           AND indicator IN (
@@ -439,7 +439,7 @@ export const getDeliverySummary = publicProcedure.query(async ({ ctx }) => {
     // Get the most recent year for which we have data
     const latestYearQuery = sql`
       SELECT MAX(year) as latest_year
-      FROM safe_motherhood_indicators
+      FROM acme_safe_motherhood_indicators
       WHERE indicator IN (
         'INSTITUTIONAL_DELIVERIES',
         'NORMAL_VAGINAL_DELIVERIES',
@@ -450,15 +450,15 @@ export const getDeliverySummary = publicProcedure.query(async ({ ctx }) => {
     `;
 
     const latestYearResult = await ctx.db.execute(latestYearQuery);
-    let latestYear = new Date().getFullYear(); // Default to current year
-
-    if (
-      latestYearResult &&
-      latestYearResult.length > 0 &&
-      latestYearResult[0].latest_year
-    ) {
-      latestYear = parseInt(String(latestYearResult[0].latest_year));
+    
+    if (!latestYearResult || latestYearResult.length === 0 || !latestYearResult[0]?.latest_year) {
+      return {
+        latestYear: null,
+        keyIndicators: [],
+      };
     }
+
+    const latestYear = parseInt(String(latestYearResult[0].latest_year));
 
     // Get key delivery indicators for the latest year
     const keyIndicatorsSql = sql`
@@ -466,7 +466,7 @@ export const getDeliverySummary = publicProcedure.query(async ({ ctx }) => {
         indicator, 
         value
       FROM 
-        safe_motherhood_indicators
+        acme_safe_motherhood_indicators
       WHERE 
         year = ${latestYear}
         AND indicator IN (
@@ -502,19 +502,23 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
       // Get the most recent year from all relevant indicator types
       const latestYearQuery = sql`
         SELECT MAX(year) as latest_year
-        FROM safe_motherhood_indicators
+        FROM acme_safe_motherhood_indicators
       `;
 
       const latestYearResult = await ctx.db.execute(latestYearQuery);
-      let latestYear = new Date().getFullYear(); // Default to current year
-
-      if (
-        latestYearResult &&
-        latestYearResult.length > 0 &&
-        latestYearResult[0].latest_year
-      ) {
-        latestYear = parseInt(String(latestYearResult[0].latest_year));
+      
+      if (!latestYearResult || latestYearResult.length === 0 || !latestYearResult[0]?.latest_year) {
+        return {
+          latestYear: null,
+          newbornHealth: [],
+          antenatal: [],
+          postnatal: [],
+          delivery: [],
+          trends: [],
+        };
       }
+
+      const latestYear = parseInt(String(latestYearResult[0].latest_year));
 
       // Get newborn health indicators for the latest year
       const newbornHealthSql = sql`
@@ -522,7 +526,7 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
           indicator, 
           value
         FROM 
-          safe_motherhood_indicators
+          acme_safe_motherhood_indicators
         WHERE 
           year = ${latestYear}
           AND indicator IN (
@@ -548,7 +552,7 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
           indicator, 
           value
         FROM 
-          safe_motherhood_indicators
+          acme_safe_motherhood_indicators
         WHERE 
           year = ${latestYear}
           AND indicator IN (
@@ -572,7 +576,7 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
           indicator, 
           value
         FROM 
-          safe_motherhood_indicators
+          acme_safe_motherhood_indicators
         WHERE 
           year = ${latestYear}
           AND indicator IN (
@@ -594,7 +598,7 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
           indicator, 
           value
         FROM 
-          safe_motherhood_indicators
+          acme_safe_motherhood_indicators
         WHERE 
           year = ${latestYear}
           AND indicator IN (
@@ -603,9 +607,10 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
             'BIRTHS_ATTENDED_SBA_TRAINED_ANMS',
             'BIRTHS_ATTENDED_SKILLED_HEALTH_PERSONNEL',
             'BIRTHS_ATTENDED_NON_SBA_SHP',
-            'DELIVERIES_BELOW_20_YEARS_INSTITUTIONAL',y,
+            'DELIVERIES_BELOW_20_YEARS_INSTITUTIONAL',
             'ASSISTED_VACUUM_FORCEPS_DELIVERIES',
-            'DELIVERIES_CAESAREAN_SECTION_REPORTED'          )
+            'DELIVERIES_CAESAREAN_SECTION_REPORTED'
+          )
         ORDER BY 
           indicator
       `;
@@ -619,7 +624,7 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
           year, 
           value
         FROM 
-          safe_motherhood_indicators
+          acme_safe_motherhood_indicators
         WHERE 
           year >= ${latestYear - 4}
           AND indicator IN (

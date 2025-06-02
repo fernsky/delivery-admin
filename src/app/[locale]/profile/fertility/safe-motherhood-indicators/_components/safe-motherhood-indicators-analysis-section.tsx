@@ -131,7 +131,7 @@ export default function SafeMotherhoodIndicatorsAnalysisSection({
           <p className="flex gap-2">
             <span className="text-blue-500">•</span>
             <span>
-              <strong>समग्र अवस्था:</strong> खजुरा गाउँपालिकामा वर्ष {latestYear} मा सुरक्षित मातृत्व सेवाको गुणस्तर सूचकाङ्क {localizeNumber(maternalHealthIndex.toFixed(1), "ne")} रहेको छ, जुन {maternalHealthIndex >= 80 ? "सन्तोषजनक" : "सुधार आवश्यक"} अवस्थामा छ।
+              <strong>समग्र अवस्था:</strong> खजुरा गाउँपालिकामा वर्ष {localizeNumber(latestYear, "ne")} मा सुरक्षित मातृत्व सेवाको गुणस्तर सूचकाङ्क {localizeNumber(maternalHealthIndex.toFixed(1), "ne")} रहेको छ, जुन {maternalHealthIndex >= 80 ? "सन्तोषजनक" : "सुधार आवश्यक"} अवस्थामा छ।
             </span>
           </p>
 
@@ -157,29 +157,7 @@ export default function SafeMotherhoodIndicatorsAnalysisSection({
           </p>
         </div>
 
-        <div className="mt-6 pt-4 border-t">
-          <h4 className="font-medium mb-2">सम्बन्धित तथ्याङ्क र स्रोत</h4>
-          <div className="flex flex-wrap gap-2 mt-3">
-            <Link
-              href="/profile/fertility/birth-rate"
-              className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-            >
-              जन्मदर
-            </Link>
-            <Link
-              href="/profile/fertility/maternal-mortality"
-              className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-            >
-              मातृ मृत्युदर
-            </Link>
-            <Link
-              href="/profile/health/ward-wise-health-facilities"
-              className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-            >
-              स्वास्थ्य संस्थाहरू
-            </Link>
-          </div>
-        </div>
+       
       </div>
     </>
   );

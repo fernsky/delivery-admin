@@ -1,12 +1,10 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import { immunizationIndicatorsRouter } from "./immunization-indicators.procedure";
 import { safeMotherhoodIndicatorsRouter } from "./safe-motherhood-indicators.procedure";
 import { wardWiseDeliveryPlacesRouter } from "./ward-wise-delivery-place.procedure";
 import { wardWiseChildBearersRouter } from "./ward-wise-child-bearers.procedure";
 import { wardAgeWiseFirstChildBirthAgeRouter } from "./ward-age-wise-first-child-birth-age.procedure";
 
 export const fertilityRouter = createTRPCRouter({
-  immunizationIndicators: immunizationIndicatorsRouter,
   safeMotherhoodIndicators: safeMotherhoodIndicatorsRouter,
   wardWiseDeliveryPlaces: wardWiseDeliveryPlacesRouter,
   wardWiseChildBearers: wardWiseChildBearersRouter,

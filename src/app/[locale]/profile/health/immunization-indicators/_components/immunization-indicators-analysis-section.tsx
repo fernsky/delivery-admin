@@ -158,30 +158,6 @@ export default function ImmunizationIndicatorsAnalysisSection({
             </span>
           </p>
         </div>
-
-        <div className="mt-6 pt-4 border-t">
-          <h4 className="font-medium mb-2">सम्बन्धित तथ्याङ्क र स्रोत</h4>
-          <div className="flex flex-wrap gap-2 mt-3">
-            <Link
-              href="/profile/health/ward-wise-children-nutrition-status"
-              className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-            >
-              बाल पोषण स्थिति
-            </Link>
-            <Link
-              href="/profile/health/ward-wise-time-to-health-organization"
-              className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-            >
-              स्वास्थ्य संस्था पहुँच
-            </Link>
-            <Link
-              href="/profile/health/ward-wise-health-facilities"
-              className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-            >
-              स्वास्थ्य संस्थाहरू
-            </Link>
-          </div>
-        </div>
       </div>
     </>
   );

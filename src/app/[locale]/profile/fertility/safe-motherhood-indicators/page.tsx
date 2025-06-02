@@ -207,7 +207,7 @@ export default async function SafeMotherhoodIndicatorsPage() {
     <DocsLayout toc={<TableOfContents toc={toc} />}>
       {/* Add structured data for SEO */}
       <SafeMotherhoodIndicatorsSEO
-        latestYear={latestYear}
+        latestYear={latestYear as number}
         antenatalData={antenatalData}
         deliveryData={deliveryData}
         postnatalData={postnatalData}
@@ -248,7 +248,7 @@ export default async function SafeMotherhoodIndicatorsPage() {
               प्रदान गरिन्छ।
             </p>
             <p>
-              यस खण्डमा खजुरा गाउँपालिकाको वर्ष {latestYear} को सुरक्षित मातृत्व
+              यस खण्डमा खजुरा गाउँपालिकाको वर्ष {localizeNumber((latestYear || 2080).toString(), "ne")} को सुरक्षित मातृत्व
               सेवाको अवस्था र विश्लेषण प्रस्तुत गरिएको छ। पालिकामा गर्भवती सेवा,
               संस्थागत सुत्केरी दर, सुत्केरी स्याहार र नवजात शिशु स्वास्थ्य
               सम्बन्धी सूचकहरूको विश्लेषण गरिएको छ।
@@ -261,13 +261,13 @@ export default async function SafeMotherhoodIndicatorsPage() {
               प्रमुख सुरक्षित मातृत्व सूचकहरू
             </h2>
             <p>
-              खजुरा गाउँपालिकामा वर्ष {latestYear} मा सुरक्षित मातृत्व सम्बन्धी
+              खजुरा गाउँपालिकामा वर्ष {localizeNumber((latestYear || 2080)?.toString(), "ne")} मा सुरक्षित मातृत्व सम्बन्धी
               महत्वपूर्ण सूचकहरूको अवस्था निम्नानुसार रहेको छ:
             </p>
           </div>
 
           <SafeMotherhoodIndicatorsCharts
-            latestYear={latestYear}
+            latestYear={latestYear as number}
             antenatalData={antenatalData}
             deliveryData={deliveryData}
             postnatalData={postnatalData}
@@ -299,7 +299,7 @@ export default async function SafeMotherhoodIndicatorsPage() {
             </p>
 
             <SafeMotherhoodIndicatorsAnalysisSection
-              latestYear={latestYear}
+              latestYear={latestYear as number}
               antenatalData={antenatalData}
               deliveryData={deliveryData}
               postnatalData={postnatalData}
