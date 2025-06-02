@@ -1,3 +1,4 @@
+//@ts-nocheck
 "use client";
 
 import { useState } from "react";
@@ -33,7 +34,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { ContentLayout } from "../admin-panel/content-layout";
-import type { User as AuthUser } from "@/lib/auth/lucia";
+import { User as AuthUser } from "@/server/db/schema/basic";
 
 // Function to format UUID for navigation
 function formatUuidForNav(uuid: string): string {

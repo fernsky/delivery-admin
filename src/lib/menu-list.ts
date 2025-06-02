@@ -71,7 +71,7 @@ const menuConfig: Menu[] = [
   {
     href: "/dashboard/individuals",
     label: "व्यक्तिहरू",
-    icon: PersonIcon,
+    icon: BarChart3,
     roles: ["admin", "superadmin", "enumerator"],
   },
   // Demographics submenu with children
