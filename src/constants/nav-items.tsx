@@ -245,19 +245,32 @@ export const navItems: NavItem[] = [
       },
     ],
   },
-  // {
-  //   title: "भौतिक पूर्वाधार",
-  //   href: "/profile/infrastructure",
-  //   icon: <Building className="w-4 h-4" />,
-  //   items: [
-  //     {
-  //       title: "सडक नेटवर्क",
-  //       href: "/profile/infrastructure/road-network",
-  //     },
-  //     {
-  //       title: "खानेपानी आपूर्ति",
-  //       href: "/profile/infrastructure/water-supply",
-  //     },
-  //   ],
-  // },
+  {
+    title: "भौतिक पूर्वाधार",
+    href: "/profile/physical",
+    icon: <Building className="w-4 h-4" />,
+    items: [
+      {
+        title: "सार्वजनिक यातायातसम्मको पहुँचको अवस्था",
+        href: "/profile/physical/ward-wise-time-to-public-transport",
+      },
+      {
+        title:
+          "आफु बसोबास गरेको स्थानबाट नजिकका बजार केन्द्रसम्म लाग्ने अनुमानित समय",
+        href: "/profile/physical/ward-wise-time-to-market-center",
+      },
+      {
+        title: "खाना पकाउने मुख्य इन्धनको आधारमा घरधुरी",
+        href: "/profile/physical/ward-wise-cooking-fuel",
+      },
+      {
+        title: "बत्ती बाल्ने इन्धनको प्रयोगको आधारमा",
+        href: "/profile/physical/ward-wise-electricity-source",
+      },
+      {
+        title: "आधुनिक सुविधामा पहुँच सम्बन्धी विवरण",
+        href: "/profile/physical/ward-wise-facilities",
+      },
+    ],
+  },
 ];
