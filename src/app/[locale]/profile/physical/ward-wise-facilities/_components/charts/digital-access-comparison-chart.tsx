@@ -75,7 +75,7 @@ export default function DigitalAccessComparisonChart({
               ></div>
               <span>इन्टरनेट पहुँच: </span>
               <span className="font-medium">
-                {localizeNumber(payload[0].value.toFixed(2), "ne")}%
+                {payload[0] && localizeNumber(payload[0].value?.toFixed(2) || "0", "ne")}%
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export default function DigitalAccessComparisonChart({
               ></div>
               <span>कम्प्युटर पहुँच: </span>
               <span className="font-medium">
-                {localizeNumber(payload[1].value.toFixed(2), "ne")}%
+                {payload[1] && localizeNumber(payload[1].value?.toFixed(2) || "0", "ne")}%
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -95,7 +95,7 @@ export default function DigitalAccessComparisonChart({
               ></div>
               <span>मोबाइल पहुँच: </span>
               <span className="font-medium">
-                {localizeNumber(payload[2].value.toFixed(2), "ne")}%
+                {payload[2] && localizeNumber(payload[2].value?.toFixed(2) || "0", "ne")}%
               </span>
             </div>
             <div className="flex items-center gap-2 pt-2 mt-1 border-t">
@@ -105,7 +105,7 @@ export default function DigitalAccessComparisonChart({
               ></div>
               <span>डिजिटल स्कोर: </span>
               <span className="font-medium">
-                {localizeNumber(payload[3].value.toFixed(2), "ne")}
+                {payload[3] && localizeNumber(payload[3].value?.toFixed(2) || "0", "ne")}
               </span>
             </div>
           </div>

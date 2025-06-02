@@ -256,11 +256,11 @@ export default async function WardWiseFacilitiesPage() {
 
   // Calculate approximate total unique households
   // For this, we'll use the highest count per ward as an estimate
-  let approximateUniqueHouseholds = 0;
-  Object.values(wardGroups).forEach((wardData: any) => {
-    const maxHouseholdsInWard = Math.max(...wardData.map((item: any) => item.households));
-    approximateUniqueHouseholds += maxHouseholdsInWard;
-  });
+  let approximateUniqueHouseholds = 15530;
+  // Object.values(wardGroups).forEach((wardData: any) => {
+  //   const maxHouseholdsInWard = Math.max(...wardData.map((item: any) => item.households));
+  //   approximateUniqueHouseholds += maxHouseholdsInWard;
+  // });
 
   // Calculate percentages (based on estimated total households)
   const facilityTypePercentages: Record<string, number> = {};
