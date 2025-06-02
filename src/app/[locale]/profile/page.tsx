@@ -17,6 +17,7 @@ import {
   Building,
   PieChart,
   MapPin,
+  Baby,
   Droplet,
 } from "lucide-react";
 import Image from "next/image";
@@ -73,34 +74,41 @@ const categories = [
     color: "bg-cyan-100 dark:bg-cyan-900",
     textColor: "text-cyan-700 dark:text-cyan-300",
   },
-  // {
-  //   title: "शिक्षा",
-  //   description:
-  //     "साक्षरता दर, विद्यालयहरू, शैक्षिक स्थिति र अन्य शिक्षा सम्बन्धी तथ्याङ्क।",
-  //   href: "/profile/education",
-  //   icon: <GraduationCap className="h-6 w-6" />,
-  //   color: "bg-green-100 dark:bg-green-900",
-  //   textColor: "text-green-700 dark:text-green-300",
-  // },
+  {
+    title: "शैक्षिक स्थिति",
+    description:
+      "साक्षरता दर, विद्यालयहरू, शैक्षिक स्थिति र अन्य शिक्षा सम्बन्धी तथ्याङ्क।",
+    href: "/profile/education",
+    icon: <GraduationCap className="h-6 w-6" />,
+    color: "bg-green-100 dark:bg-green-900",
+    textColor: "text-green-700 dark:text-green-300",
+  },
 
-  // {
-  //   title: "स्वास्थ्य",
-  //   description:
-  //     "स्वास्थ्य सुविधाहरू, स्वास्थ्य सूचकांकहरू र सेवा पहुँच सम्बन्धी तथ्याङ्क।",
-  //   href: "/profile/health",
-  //   icon: <Activity className="h-6 w-6" />,
-  //   color: "bg-red-100 dark:bg-red-900",
-  //   textColor: "text-red-700 dark:text-red-300",
-  // },
-  // {
-  //   title: "भौतिक पूर्वाधार",
-  //   description: "सडक, बिजुली, खानेपानी र अन्य पूर्वाधार सम्बन्धी जानकारी।",
-  //   href: "/profile/infrastructure",
-  //   icon: <Building className="h-6 w-6" />,
-  //   color: "bg-yellow-100 dark:bg-yellow-900",
-  //   textColor: "text-yellow-700 dark:text-yellow-300",
-  // },
-
+  {
+    title: "स्वास्थ्य अवस्था",
+    description:
+      "स्वास्थ्य सुविधाहरू, स्वास्थ्य सूचकांकहरू र सेवा पहुँच सम्बन्धी तथ्याङ्क।",
+    href: "/profile/health",
+    icon: <Activity className="h-6 w-6" />,
+    color: "bg-red-100 dark:bg-red-900",
+    textColor: "text-red-700 dark:text-red-300",
+  },
+  {
+    title: "भौतिक पूर्वाधार",
+    description: "सडक, बिजुली, खानेपानी र अन्य पूर्वाधार सम्बन्धी जानकारी।",
+    href: "/profile/physical",
+    icon: <Building className="h-6 w-6" />,
+    color: "bg-yellow-100 dark:bg-yellow-900",
+    textColor: "text-yellow-700 dark:text-yellow-300",
+  },
+  {
+    title: "प्रजनन् स्वास्थ्य",
+    description: "मातृशिशु स्वास्थ्य, परिवार नियोजन, गर्भावस्था सेवा र प्रजनन् स्वास्थ्य सम्बन्धी जानकारी।",
+    href: "/profile/fertility",
+    icon: <Baby className="h-6 w-6" />,
+    color: "bg-yellow-100 dark:bg-yellow-900",
+    textColor: "text-yellow-700 dark:text-yellow-300",
+  },
   // {
   //   title: "सामाजिक",
   //   description: "भौगोलिक नक्सा, स्थानीय सीमाना र अन्य स्थानिक जानकारी।",
