@@ -81,6 +81,7 @@ export const enumeratorPhotoProcedures = {
     .input(z.string())
     .query(async ({ ctx, input }) => {
       try {
+        //@ts-ignore
         const user = await ctx.db.query.users.findFirst({
           columns: { avatar: true },
           where: eq(users.id, input),
