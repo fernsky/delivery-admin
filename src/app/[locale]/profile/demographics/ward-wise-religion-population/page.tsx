@@ -30,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
       (sum, item) => sum + (item.population || 0),
       0,
     );
-    
+
     // Group by religion type and calculate totals
     const religionCounts: Record<string, number> = {};
     religionData.forEach((item) => {
@@ -79,7 +79,9 @@ export async function generateMetadata(): Promise<Metadata> {
       "खजुरा गाउँपालिका धार्मिक जनसंख्या",
       "खजुरा धार्मिक विविधता",
       `खजुरा ${RELIGION_NAMES_NP[topReligions[0] as ReligionType]} जनसंख्या`,
-      ...topReligions.map((r) => `${RELIGION_NAMES_NP[r as ReligionType]} धर्मावलम्बी खजुरा`),
+      ...topReligions.map(
+        (r) => `${RELIGION_NAMES_NP[r as ReligionType]} धर्मावलम्बी खजुरा`,
+      ),
       "वडा अनुसार धार्मिक जनसंख्या",
       "धार्मिक विविधता तथ्याङ्क",
       "धार्मिक जनगणना खजुरा",
@@ -164,7 +166,7 @@ const RELIGION_NAMES: Record<string, string> = {
 export default async function WardWiseReligionPopulationPage() {
   // Fetch all religion population data using our API service (not tRPC)
   const religionData = await wardWiseReligionPopulationService.getAll();
-  
+
   // Try to fetch summary data
   let summaryData = null;
   try {
@@ -290,8 +292,9 @@ export default async function WardWiseReligionPopulationPage() {
             <p>
               यस खण्डमा खजुरा गाउँपालिकाको विभिन्न वडाहरूमा अवलम्बन गरिने
               धर्महरू र धर्मावलम्बीहरूको जनसंख्या सम्बन्धी विस्तृत तथ्याङ्क
-              प्रस्तुत गरिएको छ। यो तथ्याङ्कले खजुरा गाउँपालिकाको धार्मिक विविधता, सांस्कृतिक
-              पहिचान र स्थानीय समुदायको धार्मिक स्वरूपलाई प्रतिबिम्बित गर्दछ।
+              प्रस्तुत गरिएको छ। यो तथ्याङ्कले खजुरा गाउँपालिकाको धार्मिक
+              विविधता, सांस्कृतिक पहिचान र स्थानीय समुदायको धार्मिक स्वरूपलाई
+              प्रतिबिम्बित गर्दछ।
             </p>
             <p>
               खजुरा गाउँपालिका विभिन्न धर्मावलम्बी समुदायहरूको सद्भाव र
@@ -304,10 +307,10 @@ export default async function WardWiseReligionPopulationPage() {
                   ((overallSummary[0]?.population || 0) / totalPopulation) *
                   100
                 ).toFixed(1),
-                "ne"
+                "ne",
               )}
-              % रहेका छन्। यस तथ्याङ्कले खजुरा गाउँपालिकाको धार्मिक नीति, सांस्कृतिक संरक्षण र
-              सामाजिक समानतामा सहयोग पुर्‍याउँछ।
+              % रहेका छन्। यस तथ्याङ्कले खजुरा गाउँपालिकाको धार्मिक नीति,
+              सांस्कृतिक संरक्षण र सामाजिक समानतामा सहयोग पुर्‍याउँछ।
             </p>
 
             <h2
@@ -342,10 +345,13 @@ export default async function WardWiseReligionPopulationPage() {
               धर्महरूमध्ये{" "}
               {RELIGION_NAMES[overallSummary[0]?.religion] || "हिन्दू"}
               सबैभन्दा धेरै व्यक्तिहरूले मान्ने धर्म हो, जसलाई कुल जनसंख्याको{" "}
-              {localizeNumber((
-                ((overallSummary[0]?.population || 0) / totalPopulation) *
-                100
-              ).toFixed(2), "ne")}
+              {localizeNumber(
+                (
+                  ((overallSummary[0]?.population || 0) / totalPopulation) *
+                  100
+                ).toFixed(2),
+                "ne",
+              )}
               % ले अवलम्बन गर्दछन्।
             </p>
 

@@ -23,17 +23,17 @@ export default function PostnatalCareChart({
 }: PostnatalCareChartProps) {
   // Prepare data for chart
   const chartData = postnatalData
-    .filter(item => item.value !== null && item.value !== undefined)
-    .map(item => {
+    .filter((item) => item.value !== null && item.value !== undefined)
+    .map((item) => {
       // Extract shorter label for better display
       const shortLabel = item.indicator
-        .replace('POSTPARTUM_', '')
-        .replace('WOMEN_', '')
-        .replace(/_/g, ' ')
-        .split(' ')
+        .replace("POSTPARTUM_", "")
+        .replace("WOMEN_", "")
+        .replace(/_/g, " ")
+        .split(" ")
         .slice(0, 3)
-        .join(' ');
-        
+        .join(" ");
+
       return {
         name: shortLabel,
         fullName: indicatorLabels[item.indicator] || item.indicator,
@@ -54,7 +54,7 @@ export default function PostnatalCareChart({
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
-      
+
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
           <p className="text-sm font-medium mb-1">{data.indicator}</p>
@@ -68,7 +68,7 @@ export default function PostnatalCareChart({
         </div>
       );
     }
-    
+
     return null;
   };
 
@@ -79,20 +79,39 @@ export default function PostnatalCareChart({
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis 
-          dataKey="name" 
-          tick={{ fontSize: 12, angle: -45, textAnchor: 'end' }} 
+        <XAxis
+          dataKey="name"
+          tick={(props) => {
+            const { x, y, payload } = props;
+            return (
+              <g transform={`translate(${x},${y})`}>
+                <text
+                  x={0}
+                  y={0}
+                  dy={16}
+                  textAnchor="end"
+                  fill="#666"
+                  fontSize={12}
+                  transform="rotate(-45)"
+                >
+                  {payload.value}
+                </text>
+              </g>
+            );
+          }}
           height={80}
         />
         <YAxis
-          tickFormatter={(value) => `${localizeNumber(value.toString(), "ne")}%`}
+          tickFormatter={(value) =>
+            `${localizeNumber(value.toString(), "ne")}%`
+          }
           domain={[0, 100]}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Bar 
-          dataKey="value" 
+        <Bar
+          dataKey="value"
           name="सुत्केरी स्वास्थ्य सेवा"
-          isAnimationActive={true} 
+          isAnimationActive={true}
           animationDuration={800}
           maxBarSize={60}
         >
