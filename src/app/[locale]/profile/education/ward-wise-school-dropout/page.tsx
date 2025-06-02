@@ -337,7 +337,7 @@ export default async function WardWiseSchoolDropoutPage() {
             </p>
           </div>
 
-          {/* Client component for charts */}
+        
           <WardWiseSchoolDropoutCharts
             pieChartData={pieChartData}
             wardWiseData={wardWiseData}

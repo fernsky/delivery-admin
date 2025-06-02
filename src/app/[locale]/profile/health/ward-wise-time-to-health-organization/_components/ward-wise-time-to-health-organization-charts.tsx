@@ -1,11 +1,11 @@
 
 import { localizeNumber } from "@/lib/utils/localize-number";
-import SchoolDropoutPieChart from "./charts/school-dropout-pie-chart";
-import SchoolDropoutBarChart from "./charts/school-dropout-bar-chart";
-import SchoolDropoutComparisonChart from "./charts/school-dropout-comparison-chart";
-import WardSchoolDropoutPieCharts from "./charts/ward-school-dropout-pie-charts";
+import TimeToHealthOrganizationPieChart from "./charts/time-to-health-organization-pie-chart";
+import TimeToHealthOrganizationBarChart from "./charts/time-to-health-organization-bar-chart";
+import TimeToHealthOrganizationComparisonChart from "./charts/time-to-health-organization-comparison-chart";
+import WardTimeToHealthOrganizationPieCharts from "./charts/ward-time-to-health-organization-pie-charts";
 
-interface WardWiseSchoolDropoutChartsProps {
+interface WardWiseTimeToHealthOrganizationChartsProps {
   pieChartData: Array<{
     name: string;
     nameEn: string;
@@ -14,47 +14,46 @@ interface WardWiseSchoolDropoutChartsProps {
     color: string;
   }>;
   wardWiseData: Array<any>;
-  totalDropouts: number;
-  dropoutCauseTotals: Record<string, number>;
-  causeMap: Record<string, string>;
-  dropoutGroupTotals: Record<string, number>;
-  dropoutGroupPercentages: Record<string, number>;
-  wardWiseEmploymentDropout: Array<{
+  totalHouseholds: number;
+  timeCategoryTotals: Record<string, number>;
+  timeMap: Record<string, string>;
+  timeCategoryPercentages: Record<string, number>;
+  wardWiseQuickAccess: Array<{
     wardNumber: number;
     percentage: number;
   }>;
-  highestEmploymentDropoutWard: {
+  bestAccessWard: {
     wardNumber: number;
     percentage: number;
   };
-  lowestEmploymentDropoutWard: {
+  worstAccessWard: {
     wardNumber: number;
     percentage: number;
   };
-  DROPOUT_CAUSE_GROUPS: Record<string, {
+  TIME_CATEGORIES: Record<string, {
     name: string;
     nameEn: string;
     color: string;
-    causes: string[];
   }>;
+  accessibilityIndex: number;
 }
 
-export default function WardWiseSchoolDropoutCharts({
+export default function WardWiseTimeToHealthOrganizationCharts({
   pieChartData,
   wardWiseData,
-  totalDropouts,
-  dropoutCauseTotals,
-  causeMap,
-  dropoutGroupTotals,
-  dropoutGroupPercentages,
-  wardWiseEmploymentDropout,
-  highestEmploymentDropoutWard,
-  lowestEmploymentDropoutWard,
-  DROPOUT_CAUSE_GROUPS,
-}: WardWiseSchoolDropoutChartsProps) {
+  totalHouseholds,
+  timeCategoryTotals,
+  timeMap,
+  timeCategoryPercentages,
+  wardWiseQuickAccess,
+  bestAccessWard,
+  worstAccessWard,
+  TIME_CATEGORIES,
+  accessibilityIndex,
+}: WardWiseTimeToHealthOrganizationChartsProps) {
   return (
     <>
-      {/* Overall school dropout cause distribution */}
+      {/* Overall time to health organization distribution */}
       <div 
         className="mb-12 border rounded-lg shadow-sm overflow-hidden bg-card"
         itemScope
@@ -62,19 +61,19 @@ export default function WardWiseSchoolDropoutCharts({
       >
         <meta
           itemProp="name"
-          content="School Dropout Causes Distribution in Khajura Rural Municipality"
+          content="Time to Health Organization Distribution in Khajura Rural Municipality"
         />
         <meta
           itemProp="description"
-          content={`Distribution of school dropout causes with a total of ${totalDropouts} dropouts`}
+          content={`Distribution of time taken to reach health organizations with a total of ${totalHouseholds} households`}
         />
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            विद्यालय छाड्ने कारण अनुसार वितरण
+            स्वास्थ्य संस्था पुग्न लाग्ने समय अनुसार वितरण
           </h3>
           <p className="text-sm text-muted-foreground">
-            कुल विद्यालय छाड्नेहरू: {localizeNumber(totalDropouts.toLocaleString(), "ne")}
+            कुल घरधुरी: {localizeNumber(totalHouseholds.toLocaleString(), "ne")}
           </p>
         </div>
 
@@ -83,9 +82,9 @@ export default function WardWiseSchoolDropoutCharts({
           <div className="lg:col-span-1">
             <h4 className="text-lg font-medium mb-4 text-center">पाई चार्ट</h4>
             <div className="h-[420px]">
-              <SchoolDropoutPieChart
+              <TimeToHealthOrganizationPieChart
                 pieChartData={pieChartData}
-                DROPOUT_CAUSE_GROUPS={DROPOUT_CAUSE_GROUPS}
+                TIME_CATEGORIES={TIME_CATEGORIES}
               />
             </div>
           </div>
@@ -98,8 +97,8 @@ export default function WardWiseSchoolDropoutCharts({
                 <thead>
                   <tr className="bg-muted sticky top-0">
                     <th className="border p-2 text-left">क्र.सं.</th>
-                    <th className="border p-2 text-left">विद्यालय छाड्ने कारण</th>
-                    <th className="border p-2 text-right">जनसंख्या</th>
+                    <th className="border p-2 text-left">स्वास्थ्य संस्था पुग्न लाग्ने समय</th>
+                    <th className="border p-2 text-right">घरधुरी</th>
                     <th className="border p-2 text-right">प्रतिशत</th>
                   </tr>
                 </thead>
@@ -123,7 +122,7 @@ export default function WardWiseSchoolDropoutCharts({
                       जम्मा
                     </td>
                     <td className="border p-2 text-right">
-                      {localizeNumber(totalDropouts.toLocaleString(), "ne")}
+                      {localizeNumber(totalHouseholds.toLocaleString(), "ne")}
                     </td>
                     <td className="border p-2 text-right">
                       {localizeNumber("100.00", "ne")}%
@@ -137,7 +136,7 @@ export default function WardWiseSchoolDropoutCharts({
 
         <div className="lg:col-span-1 p-4 border-t">
           <h4 className="text-sm font-medium text-muted-foreground mb-4">
-            विद्यालय छाड्ने कारण विवरण
+            स्वास्थ्य संस्था पहुँच विवरण
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {pieChartData.map((item, index) => (
@@ -172,33 +171,33 @@ export default function WardWiseSchoolDropoutCharts({
       {/* Ward-wise distribution */}
       <div 
         className="mt-12 border rounded-lg shadow-sm overflow-hidden bg-card"
-        id="ward-wise-school-dropout-causes"
+        id="ward-wise-health-organization-access"
         itemScope
         itemType="https://schema.org/Dataset"
       >
         <meta
           itemProp="name"
-          content="Ward-wise School Dropout Causes in Khajura Rural Municipality"
+          content="Ward-wise Time to Health Organization in Khajura Rural Municipality"
         />
         <meta
           itemProp="description"
-          content="Distribution of school dropout causes across wards in Khajura"
+          content="Distribution of time to health organization across wards in Khajura"
         />
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            वडा अनुसार विद्यालय छाड्ने कारणहरू
+            वडा अनुसार स्वास्थ्य संस्था पुग्ने समय
           </h3>
           <p className="text-sm text-muted-foreground">
-            वडा अनुसार विभिन्न कारणले विद्यालय छाड्नेहरूको वितरण
+            वडा अनुसार स्वास्थ्य संस्थासम्म पुग्न लाग्ने समयको वितरण
           </p>
         </div>
 
         <div className="p-6">
           <div className="h-[500px]">
-            <SchoolDropoutBarChart
+            <TimeToHealthOrganizationBarChart
               wardWiseData={wardWiseData}
-              DROPOUT_CAUSE_GROUPS={DROPOUT_CAUSE_GROUPS}
+              TIME_CATEGORIES={TIME_CATEGORIES}
             />
           </div>
         </div>
@@ -212,29 +211,29 @@ export default function WardWiseSchoolDropoutCharts({
       >
         <meta
           itemProp="name"
-          content="Employment-Related Dropout Comparison Across Wards in Khajura Rural Municipality"
+          content="Quick Access to Health Facilities Comparison Across Wards in Khajura Rural Municipality"
         />
         <meta
           itemProp="description"
-          content="Comparison of employment-related dropout rates across wards in Khajura"
+          content="Comparison of quick access to health facilities across wards in Khajura"
         />
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            वडागत रोजगारीका लागि विद्यालय छाड्ने दर
+            वडागत स्वास्थ्य संस्था छिटो पहुँच
           </h3>
           <p className="text-sm text-muted-foreground">
-            विभिन्न वडाहरूमा रोजगारीका कारण विद्यालय छाड्नेहरूको तुलना
+            विभिन्न वडाहरूमा ३० मिनेटभित्र स्वास्थ्य संस्था पुग्न सक्ने घरधुरीहरूको तुलना
           </p>
         </div>
 
         <div className="p-6">
           <div className="h-[400px]">
-            <SchoolDropoutComparisonChart
-              wardWiseEmploymentDropout={wardWiseEmploymentDropout}
-              highestEmploymentDropoutWard={highestEmploymentDropoutWard}
-              lowestEmploymentDropoutWard={lowestEmploymentDropoutWard}
-              DROPOUT_CAUSE_GROUPS={DROPOUT_CAUSE_GROUPS}
+            <TimeToHealthOrganizationComparisonChart
+              wardWiseQuickAccess={wardWiseQuickAccess}
+              bestAccessWard={bestAccessWard}
+              worstAccessWard={worstAccessWard}
+              TIME_CATEGORIES={TIME_CATEGORIES}
             />
           </div>
         </div>
@@ -248,19 +247,19 @@ export default function WardWiseSchoolDropoutCharts({
       >
         <meta
           itemProp="name"
-          content="Ward-wise School Dropout Analysis in Khajura Rural Municipality"
+          content="Ward-wise Health Organization Access Analysis in Khajura Rural Municipality"
         />
         <meta
           itemProp="description"
-          content="Detailed analysis of school dropout causes by ward in Khajura"
+          content="Detailed analysis of time to health organization by ward in Khajura"
         />
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            वडागत विद्यालय छाड्ने कारणहरूको विश्लेषण
+            वडागत स्वास्थ्य संस्था पहुँचको विश्लेषण
           </h3>
           <p className="text-sm text-muted-foreground">
-            वडा अनुसार विद्यालय छाड्ने कारणहरूको विस्तृत विश्लेषण
+            वडा अनुसार स्वास्थ्य संस्था पुग्न लाग्ने समयको विस्तृत विश्लेषण
           </p>
         </div>
 
@@ -270,10 +269,10 @@ export default function WardWiseSchoolDropoutCharts({
               <thead className="sticky top-0 z-10">
                 <tr className="bg-muted">
                   <th className="border p-2">वडा नं.</th>
-                  <th className="border p-2 text-right">जम्मा विद्यालय छाड्नेहरू</th>
-                  {Object.keys(DROPOUT_CAUSE_GROUPS).map(key => (
+                  <th className="border p-2 text-right">जम्मा घरधुरी</th>
+                  {Object.keys(TIME_CATEGORIES).map(key => (
                     <th key={key} className="border p-2 text-right">
-                      {DROPOUT_CAUSE_GROUPS[key as keyof typeof DROPOUT_CAUSE_GROUPS].name}
+                      {TIME_CATEGORIES[key as keyof typeof TIME_CATEGORIES].name}
                     </th>
                   ))}
                 </tr>
@@ -287,9 +286,9 @@ export default function WardWiseSchoolDropoutCharts({
                       <td className="border p-2 text-right">
                         {localizeNumber(total.toLocaleString(), "ne")}
                       </td>
-                      {Object.keys(DROPOUT_CAUSE_GROUPS).map(key => {
-                        const groupName = DROPOUT_CAUSE_GROUPS[key as keyof typeof DROPOUT_CAUSE_GROUPS].name;
-                        const value = item[groupName] || 0;
+                      {Object.keys(TIME_CATEGORIES).map(key => {
+                        const timeName = TIME_CATEGORIES[key as keyof typeof TIME_CATEGORIES].name;
+                        const value = item[timeName] || 0;
                         const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : "0.00";
                         return (
                           <td key={key} className="border p-2 text-right">
@@ -308,11 +307,11 @@ export default function WardWiseSchoolDropoutCharts({
                 <tr className="font-semibold bg-muted/70">
                   <td className="border p-2">पालिका जम्मा</td>
                   <td className="border p-2 text-right">
-                    {localizeNumber(totalDropouts.toLocaleString(), "ne")}
+                    {localizeNumber(totalHouseholds.toLocaleString(), "ne")}
                   </td>
-                  {Object.keys(DROPOUT_CAUSE_GROUPS).map(key => {
-                    const value = dropoutGroupTotals[key];
-                    const percentage = dropoutGroupPercentages[key].toFixed(2);
+                  {Object.keys(TIME_CATEGORIES).map(key => {
+                    const value = timeCategoryTotals[key];
+                    const percentage = timeCategoryPercentages[key].toFixed(2);
                     return (
                       <td key={key} className="border p-2 text-right">
                         {localizeNumber(value.toLocaleString(), "ne")}
@@ -328,10 +327,10 @@ export default function WardWiseSchoolDropoutCharts({
           </div>
 
           {/* Ward pie charts (client component) */}
-          <h4 className="text-lg font-medium mt-8 mb-4">वडागत विद्यालय छाड्ने कारणहरूको वितरण</h4>
-          <WardSchoolDropoutPieCharts
+          <h4 className="text-lg font-medium mt-8 mb-4">वडागत स्वास्थ्य संस्था पहुँचको वितरण</h4>
+          <WardTimeToHealthOrganizationPieCharts
             wardWiseData={wardWiseData}
-            DROPOUT_CAUSE_GROUPS={DROPOUT_CAUSE_GROUPS}
+            TIME_CATEGORIES={TIME_CATEGORIES}
           />
         </div>
       </div>

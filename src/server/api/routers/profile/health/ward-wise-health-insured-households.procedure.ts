@@ -56,6 +56,7 @@ export const getAllWardWiseHealthInsuredHouseholds = publicProcedure
             id,
             ward_number,
             insured_households,
+            non_insured_households,
             updated_at,
             created_at
           FROM 
@@ -71,6 +72,7 @@ export const getAllWardWiseHealthInsuredHouseholds = publicProcedure
             id: row.id,
             wardNumber: parseInt(String(row.ward_number)),
             insuredHouseholds: parseInt(String(row.insured_households || "0")),
+            nonInsuredHouseholds: parseInt(String(row.non_insured_households || "0")),
             updatedAt: row.updated_at,
             createdAt: row.created_at,
           }));
@@ -140,6 +142,7 @@ export const createWardWiseHealthInsuredHouseholds = protectedProcedure
       id: input.id || uuidv4(),
       wardNumber: input.wardNumber,
       insuredHouseholds: input.insuredHouseholds,
+      nonInsuredHouseholds: input.nonInsuredHouseholds,
     });
 
     return { success: true };
@@ -185,6 +188,7 @@ export const updateWardWiseHealthInsuredHouseholds = protectedProcedure
       .set({
         wardNumber: input.wardNumber,
         insuredHouseholds: input.insuredHouseholds,
+        nonInsuredHouseholds: input.nonInsuredHouseholds,
       })
       .where(eq(wardWiseHealthInsuredHouseholds.id, input.id));
 
@@ -219,7 +223,9 @@ export const getWardWiseHealthInsuredHouseholdsSummary = publicProcedure.query(
       // Get total insured households across all wards
       const summarySql = sql`
         SELECT 
-          SUM(insured_households) as total_insured_households
+          SUM(insured_households) as total_insured_households,
+          SUM(non_insured_households) as total_non_insured_households,
+          SUM(insured_households) + SUM(non_insured_households) as total_households
         FROM 
           ward_wise_health_insured_households
       `;

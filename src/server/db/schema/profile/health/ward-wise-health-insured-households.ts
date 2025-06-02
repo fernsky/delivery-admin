@@ -11,6 +11,9 @@ export const wardWiseHealthInsuredHouseholds = pgTable(
 
     // Number of households with health insurance
     insuredHouseholds: integer("insured_households").notNull(),
+    
+    // Number of households without health insurance
+    nonInsuredHouseholds: integer("non_insured_households").notNull().default(0),
 
     // Metadata
     updatedAt: timestamp("updated_at")

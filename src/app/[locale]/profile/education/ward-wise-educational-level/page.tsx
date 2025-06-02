@@ -367,7 +367,7 @@ export default async function WardWiseEducationalLevelPage() {
             </p>
           </div>
 
-          {/* Client component for charts */}
+         
           <WardWiseEducationalLevelCharts
             pieChartData={pieChartData}
             wardWiseData={wardWiseData}
