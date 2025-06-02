@@ -56,7 +56,7 @@ export default function DeliveryPlaceComparisonChart({
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="font-medium">{label}</p>
+          <p className="font-medium">{localizeNumber(label, "ne")}</p>
           <div className="space-y-1 mt-2">
             {payload.map((entry: any, index: number) => {
               let displayName = entry.name;
@@ -93,7 +93,11 @@ export default function DeliveryPlaceComparisonChart({
         barCategoryGap="15%"
       >
         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 12 }}
+          tickFormatter={(value) => `${localizeNumber(value, "ne")}`}
+        />
         <YAxis
           tickFormatter={(value) => `${localizeNumber(value, "ne")}%`}
           domain={[0, Math.max(Math.ceil(bestWard?.percentage || 30), 30)]}
@@ -105,7 +109,7 @@ export default function DeliveryPlaceComparisonChart({
           }}
         />
         <Tooltip content={CustomTooltip} />
-        <Legend 
+        <Legend
           formatter={(value) => {
             if (value === "InstitutionalDelivery") {
               return "संस्थागत प्रसूती दर";
@@ -120,12 +124,18 @@ export default function DeliveryPlaceComparisonChart({
         />
         <ReferenceLine
           y={avgInstitutionalRate}
-          stroke={DELIVERY_PLACE_CATEGORIES.GOVERNMENTAL_HEALTH_INSTITUTION.color}
+          stroke={
+            DELIVERY_PLACE_CATEGORIES.GOVERNMENTAL_HEALTH_INSTITUTION.color
+          }
           strokeDasharray="3 3"
           label={{
             value: `औसत: ${localizeNumber(avgInstitutionalRate.toFixed(2), "ne")}%`,
             position: "insideBottomRight",
-            style: { fill: DELIVERY_PLACE_CATEGORIES.GOVERNMENTAL_HEALTH_INSTITUTION.color, fontSize: 12 },
+            style: {
+              fill: DELIVERY_PLACE_CATEGORIES.GOVERNMENTAL_HEALTH_INSTITUTION
+                .color,
+              fontSize: 12,
+            },
           }}
         />
       </BarChart>
