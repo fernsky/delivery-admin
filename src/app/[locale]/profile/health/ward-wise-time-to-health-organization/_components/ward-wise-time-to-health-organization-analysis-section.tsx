@@ -307,30 +307,6 @@ export default function WardWiseTimeToHealthOrganizationAnalysisSection({
                 </div>
               </div>
             </div>
-
-            <div className="mt-4 pt-3 border-t">
-              <h5 className="font-medium mb-2">सम्बन्धित डेटा</h5>
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href="/profile/health/ward-wise-health-insurance-status"
-                  className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-                >
-                  स्वास्थ्य बीमा स्थिति
-                </Link>
-                <Link
-                  href="/profile/health/ward-wise-health-facilities"
-                  className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-                >
-                  स्वास्थ्य संस्थाहरू
-                </Link>
-                <Link
-                  href="/profile/health/ward-wise-common-illnesses"
-                  className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-                >
-                  सामान्य रोगहरू
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
       </div>
