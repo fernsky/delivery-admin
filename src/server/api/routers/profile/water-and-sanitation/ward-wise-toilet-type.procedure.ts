@@ -3,7 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { wardWiseToiletType } from "@/server/db/schema/profile/social/ward-wise-toilet-type";
+import { wardWiseToiletType } from "@/server/db/schema/profile/water-and-sanitation/ward-wise-toilet-type";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
   wardWiseToiletTypeSchema,

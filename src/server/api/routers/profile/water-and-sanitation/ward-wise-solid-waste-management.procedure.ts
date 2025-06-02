@@ -3,21 +3,21 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { wardWiseWaterPurification } from "@/server/db/schema/profile/social/ward-wise-water-purification";
+import { wardWiseSolidWasteManagement } from "@/server/db/schema/profile/water-and-sanitation/ward-wise-solid-waste-management";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
-  wardWiseWaterPurificationSchema,
-  wardWiseWaterPurificationFilterSchema,
-  updateWardWiseWaterPurificationSchema,
-  WaterPurificationTypeEnum,
-} from "./ward-wise-water-purification.schema";
+  wardWiseSolidWasteManagementSchema,
+  wardWiseSolidWasteManagementFilterSchema,
+  updateWardWiseSolidWasteManagementSchema,
+  SolidWasteManagementTypeEnum,
+} from "./ward-wise-solid-waste-management.schema";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 
-// Get all ward-wise water purification data with optional filtering
-export const getAllWardWiseWaterPurification = publicProcedure
-  .input(wardWiseWaterPurificationFilterSchema.optional())
+// Get all ward-wise solid waste management data with optional filtering
+export const getAllWardWiseSolidWasteManagement = publicProcedure
+  .input(wardWiseSolidWasteManagementFilterSchema.optional())
   .query(async ({ ctx, input }) => {
     try {
       // Set UTF-8 encoding explicitly before running query
@@ -27,21 +27,21 @@ export const getAllWardWiseWaterPurification = publicProcedure
       let data: any[];
       try {
         // Build query with conditions
-        const baseQuery = ctx.db.select().from(wardWiseWaterPurification);
+        const baseQuery = ctx.db.select().from(wardWiseSolidWasteManagement);
 
         let conditions = [];
 
         if (input?.wardNumber) {
           conditions.push(
-            eq(wardWiseWaterPurification.wardNumber, input.wardNumber),
+            eq(wardWiseSolidWasteManagement.wardNumber, input.wardNumber),
           );
         }
 
-        if (input?.waterPurification) {
+        if (input?.solidWasteManagement) {
           conditions.push(
             eq(
-              wardWiseWaterPurification.waterPurification,
-              input.waterPurification,
+              wardWiseSolidWasteManagement.solidWasteManagement,
+              input.solidWasteManagement,
             ),
           );
         }
@@ -50,10 +50,10 @@ export const getAllWardWiseWaterPurification = publicProcedure
           ? baseQuery.where(and(...conditions))
           : baseQuery;
 
-        // Sort by ward number and water purification type
+        // Sort by ward number and waste management type
         data = await queryWithFilters.orderBy(
-          wardWiseWaterPurification.wardNumber,
-          wardWiseWaterPurification.waterPurification,
+          wardWiseSolidWasteManagement.wardNumber,
+          wardWiseSolidWasteManagement.solidWasteManagement,
         );
       } catch (err) {
         console.log("Failed to query main schema, trying ACME table:", err);
@@ -66,14 +66,14 @@ export const getAllWardWiseWaterPurification = publicProcedure
           SELECT 
             id,
             ward_number,
-            water_purification,
+            solid_waste_management,
             households,
             updated_at,
             created_at
           FROM 
-            acme_ward_wise_water_purification
+            acme_ward_wise_solid_waste_management
           ORDER BY 
-            ward_number, water_purification
+            ward_number, solid_waste_management
         `;
         const acmeResult = await ctx.db.execute(acmeSql);
 
@@ -82,7 +82,7 @@ export const getAllWardWiseWaterPurification = publicProcedure
           data = acmeResult.map((row) => ({
             id: row.id,
             wardNumber: parseInt(String(row.ward_number)),
-            waterPurification: row.water_purification,
+            solidWasteManagement: row.solid_waste_management,
             households: parseInt(String(row.households || "0")),
             updatedAt: row.updated_at,
             createdAt: row.created_at,
@@ -93,9 +93,10 @@ export const getAllWardWiseWaterPurification = publicProcedure
             data = data.filter((item) => item.wardNumber === input.wardNumber);
           }
 
-          if (input?.waterPurification) {
+          if (input?.solidWasteManagement) {
             data = data.filter(
-              (item) => item.waterPurification === input.waterPurification,
+              (item) =>
+                item.solidWasteManagement === input.solidWasteManagement,
             );
           }
         }
@@ -103,7 +104,10 @@ export const getAllWardWiseWaterPurification = publicProcedure
 
       return data;
     } catch (error) {
-      console.error("Error fetching ward-wise water purification data:", error);
+      console.error(
+        "Error fetching ward-wise solid waste management data:",
+        error,
+      );
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to retrieve data",
@@ -112,41 +116,41 @@ export const getAllWardWiseWaterPurification = publicProcedure
   });
 
 // Get data for a specific ward
-export const getWardWiseWaterPurificationByWard = publicProcedure
+export const getWardWiseSolidWasteManagementByWard = publicProcedure
   .input(z.object({ wardNumber: z.number() }))
   .query(async ({ ctx, input }) => {
     const data = await ctx.db
       .select()
-      .from(wardWiseWaterPurification)
-      .where(eq(wardWiseWaterPurification.wardNumber, input.wardNumber))
-      .orderBy(wardWiseWaterPurification.waterPurification);
+      .from(wardWiseSolidWasteManagement)
+      .where(eq(wardWiseSolidWasteManagement.wardNumber, input.wardNumber))
+      .orderBy(wardWiseSolidWasteManagement.solidWasteManagement);
 
     return data;
   });
 
-// Create a new ward-wise water purification entry
-export const createWardWiseWaterPurification = protectedProcedure
-  .input(wardWiseWaterPurificationSchema)
+// Create a new ward-wise solid waste management entry
+export const createWardWiseSolidWasteManagement = protectedProcedure
+  .input(wardWiseSolidWasteManagementSchema)
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message:
-          "Only administrators can create ward-wise water purification data",
+          "Only administrators can create ward-wise solid waste management data",
       });
     }
 
-    // Check if entry already exists for this ward and water purification method
+    // Check if entry already exists for this ward and waste management method
     const existing = await ctx.db
-      .select({ id: wardWiseWaterPurification.id })
-      .from(wardWiseWaterPurification)
+      .select({ id: wardWiseSolidWasteManagement.id })
+      .from(wardWiseSolidWasteManagement)
       .where(
         and(
-          eq(wardWiseWaterPurification.wardNumber, input.wardNumber),
+          eq(wardWiseSolidWasteManagement.wardNumber, input.wardNumber),
           eq(
-            wardWiseWaterPurification.waterPurification,
-            input.waterPurification,
+            wardWiseSolidWasteManagement.solidWasteManagement,
+            input.solidWasteManagement,
           ),
         ),
       )
@@ -155,31 +159,31 @@ export const createWardWiseWaterPurification = protectedProcedure
     if (existing.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
-        message: `Data for Ward Number ${input.wardNumber} and water purification method ${input.waterPurification} already exists`,
+        message: `Data for Ward Number ${input.wardNumber} and waste management method ${input.solidWasteManagement} already exists`,
       });
     }
 
     // Create new record
-    await ctx.db.insert(wardWiseWaterPurification).values({
+    await ctx.db.insert(wardWiseSolidWasteManagement).values({
       id: input.id || uuidv4(),
       wardNumber: input.wardNumber,
-      waterPurification: input.waterPurification,
+      solidWasteManagement: input.solidWasteManagement,
       households: input.households,
     });
 
     return { success: true };
   });
 
-// Update an existing ward-wise water purification entry
-export const updateWardWiseWaterPurification = protectedProcedure
-  .input(updateWardWiseWaterPurificationSchema)
+// Update an existing ward-wise solid waste management entry
+export const updateWardWiseSolidWasteManagement = protectedProcedure
+  .input(updateWardWiseSolidWasteManagementSchema)
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
     if (ctx.user.role !== "superadmin") {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message:
-          "Only administrators can update ward-wise water purification data",
+          "Only administrators can update ward-wise solid waste management data",
       });
     }
 
@@ -192,9 +196,9 @@ export const updateWardWiseWaterPurification = protectedProcedure
 
     // Check if the record exists
     const existing = await ctx.db
-      .select({ id: wardWiseWaterPurification.id })
-      .from(wardWiseWaterPurification)
-      .where(eq(wardWiseWaterPurification.id, input.id))
+      .select({ id: wardWiseSolidWasteManagement.id })
+      .from(wardWiseSolidWasteManagement)
+      .where(eq(wardWiseSolidWasteManagement.id, input.id))
       .limit(1);
 
     if (existing.length === 0) {
@@ -206,19 +210,19 @@ export const updateWardWiseWaterPurification = protectedProcedure
 
     // Update the record
     await ctx.db
-      .update(wardWiseWaterPurification)
+      .update(wardWiseSolidWasteManagement)
       .set({
         wardNumber: input.wardNumber,
-        waterPurification: input.waterPurification,
+        solidWasteManagement: input.solidWasteManagement,
         households: input.households,
       })
-      .where(eq(wardWiseWaterPurification.id, input.id));
+      .where(eq(wardWiseSolidWasteManagement.id, input.id));
 
     return { success: true };
   });
 
-// Delete a ward-wise water purification entry
-export const deleteWardWiseWaterPurification = protectedProcedure
+// Delete a ward-wise solid waste management entry
+export const deleteWardWiseSolidWasteManagement = protectedProcedure
   .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
     // Check if user has appropriate permissions
@@ -226,54 +230,54 @@ export const deleteWardWiseWaterPurification = protectedProcedure
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message:
-          "Only administrators can delete ward-wise water purification data",
+          "Only administrators can delete ward-wise solid waste management data",
       });
     }
 
     // Delete the record
     await ctx.db
-      .delete(wardWiseWaterPurification)
-      .where(eq(wardWiseWaterPurification.id, input.id));
+      .delete(wardWiseSolidWasteManagement)
+      .where(eq(wardWiseSolidWasteManagement.id, input.id));
 
     return { success: true };
   });
 
 // Get summary statistics
-export const getWardWiseWaterPurificationSummary = publicProcedure.query(
+export const getWardWiseSolidWasteManagementSummary = publicProcedure.query(
   async ({ ctx }) => {
     try {
-      // Get total counts by water purification method across all wards
+      // Get total counts by waste management method across all wards
       const summarySql = sql`
         SELECT 
-          water_purification, 
+          solid_waste_management, 
           SUM(households) as total_households
         FROM 
-          ward_wise_water_purification
+          ward_wise_solid_waste_management
         GROUP BY 
-          water_purification
+          solid_waste_management
         ORDER BY 
-          water_purification
+          solid_waste_management
       `;
 
       const summaryData = await ctx.db.execute(summarySql);
 
       return summaryData;
     } catch (error) {
-      console.error("Error in getWardWiseWaterPurificationSummary:", error);
+      console.error("Error in getWardWiseSolidWasteManagementSummary:", error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to retrieve ward-wise water purification summary",
+        message: "Failed to retrieve ward-wise solid waste management summary",
       });
     }
   },
 );
 
 // Export the router with all procedures
-export const wardWiseWaterPurificationRouter = createTRPCRouter({
-  getAll: getAllWardWiseWaterPurification,
-  getByWard: getWardWiseWaterPurificationByWard,
-  create: createWardWiseWaterPurification,
-  update: updateWardWiseWaterPurification,
-  delete: deleteWardWiseWaterPurification,
-  summary: getWardWiseWaterPurificationSummary,
+export const wardWiseSolidWasteManagementRouter = createTRPCRouter({
+  getAll: getAllWardWiseSolidWasteManagement,
+  getByWard: getWardWiseSolidWasteManagementByWard,
+  create: createWardWiseSolidWasteManagement,
+  update: updateWardWiseSolidWasteManagement,
+  delete: deleteWardWiseSolidWasteManagement,
+  summary: getWardWiseSolidWasteManagementSummary,
 });
