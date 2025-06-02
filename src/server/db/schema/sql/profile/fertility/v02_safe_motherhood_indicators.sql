@@ -24,84 +24,57 @@ BEGIN
             id, indicator, year, value
         )
         VALUES
-        -- 2022 Newborn Care Data
-        (gen_random_uuid(), 'KMC_HYPOTHERMIA', 2022, 42.5),
-        (gen_random_uuid(), 'KMC_PRETERM', 2022, 61.8),
-        (gen_random_uuid(), 'LOW_BIRTH_WEIGHT', 2022, 12.4),
-        (gen_random_uuid(), 'TOTAL_SICK_ADMITTED', 2022, 2145),
-        (gen_random_uuid(), 'ASPHYXIA', 2022, 8.7),
-        (gen_random_uuid(), 'HYPOTHERMIA', 2022, 15.2),
-        (gen_random_uuid(), 'SEPSIS', 2022, 7.9),
-        
-        -- 2022 Nutrition Data
-        (gen_random_uuid(), 'NUTRITION_NEW_UNDER_6_MONTHS', 2022, 318),
-        (gen_random_uuid(), 'NUTRITION_NEW_6_23_MONTHS', 2022, 642),
-        (gen_random_uuid(), 'NUTRITION_NEW_24_59_MONTHS', 2022, 487),
-        (gen_random_uuid(), 'NUTRITION_ADMIT_WEIGHT_3SD', 2022, 9.2),
-        (gen_random_uuid(), 'NUTRITION_DISCHARGED_UNDER_6_MONTHS', 2022, 301),
-        
-        -- 2022 CBIMCI Data
-        (gen_random_uuid(), 'CBIMCI_UNDER_2M_TOTAL', 2022, 3245),
-        (gen_random_uuid(), 'CBIMCI_UNDER_2M_PSBI', 2022, 5.8),
-        (gen_random_uuid(), 'CBIMCI_2_59M_PNEUMONIA', 2022, 14.2),
-        (gen_random_uuid(), 'CBIMCI_2_59M_TOTAL_SICK', 2022, 8764),
-        (gen_random_uuid(), 'CBIMCI_2_59M_ORS_ZINC', 2022, 87.3),
-        
-        -- 2023 Newborn Care Data
-        (gen_random_uuid(), 'KMC_HYPOTHERMIA', 2023, 45.1),
-        (gen_random_uuid(), 'KMC_PRETERM', 2023, 64.2),
-        (gen_random_uuid(), 'LOW_BIRTH_WEIGHT', 2023, 11.8),
-        (gen_random_uuid(), 'TOTAL_SICK_ADMITTED', 2023, 2289),
-        (gen_random_uuid(), 'ASPHYXIA', 2023, 8.2),
-        (gen_random_uuid(), 'HYPOTHERMIA', 2023, 14.7),
-        (gen_random_uuid(), 'SEPSIS', 2023, 7.5),
-        
-        -- 2023 Nutrition Data
-        (gen_random_uuid(), 'NUTRITION_NEW_UNDER_6_MONTHS', 2023, 345),
-        (gen_random_uuid(), 'NUTRITION_NEW_6_23_MONTHS', 2023, 678),
-        (gen_random_uuid(), 'NUTRITION_NEW_24_59_MONTHS', 2023, 512),
-        (gen_random_uuid(), 'NUTRITION_ADMIT_WEIGHT_3SD', 2023, 8.7),
-        (gen_random_uuid(), 'NUTRITION_DISCHARGED_UNDER_6_MONTHS', 2023, 327),
-        
-        -- 2023 CBIMCI Data
-        (gen_random_uuid(), 'CBIMCI_UNDER_2M_TOTAL', 2023, 3412),
-        (gen_random_uuid(), 'CBIMCI_UNDER_2M_PSBI', 2023, 5.5),
-        (gen_random_uuid(), 'CBIMCI_2_59M_PNEUMONIA', 2023, 13.8),
-        (gen_random_uuid(), 'CBIMCI_2_59M_TOTAL_SICK', 2023, 9128),
-        (gen_random_uuid(), 'CBIMCI_2_59M_ORS_ZINC', 2023, 88.9),
-        
-        -- 2023 IYCF Data
-        (gen_random_uuid(), 'IYCF_EXCLUSIVE_BREASTFEEDING', 2023, 71.3),
-        (gen_random_uuid(), 'IYCF_COMPLEMENTARY_FEEDING', 2023, 66.8),
-        
-        -- 2024 Newborn Care Data
-        (gen_random_uuid(), 'KMC_HYPOTHERMIA', 2024, 47.3),
-        (gen_random_uuid(), 'KMC_PRETERM', 2024, 66.7),
-        (gen_random_uuid(), 'LOW_BIRTH_WEIGHT', 2024, 11.2),
-        (gen_random_uuid(), 'TOTAL_SICK_ADMITTED', 2024, 2356),
-        (gen_random_uuid(), 'ASPHYXIA', 2024, 7.9),
-        (gen_random_uuid(), 'HYPOTHERMIA', 2024, 14.1),
-        (gen_random_uuid(), 'SEPSIS', 2024, 7.2),
-        
-        -- 2024 Nutrition Data
-        (gen_random_uuid(), 'NUTRITION_NEW_UNDER_6_MONTHS', 2024, 362),
-        (gen_random_uuid(), 'NUTRITION_NEW_6_23_MONTHS', 2024, 705),
-        (gen_random_uuid(), 'NUTRITION_NEW_24_59_MONTHS', 2024, 534),
-        (gen_random_uuid(), 'NUTRITION_ADMIT_WEIGHT_3SD', 2024, 8.3),
-        (gen_random_uuid(), 'NUTRITION_DISCHARGED_UNDER_6_MONTHS', 2024, 345),
-        
-        -- 2024 CBIMCI Data
-        (gen_random_uuid(), 'CBIMCI_UNDER_2M_TOTAL', 2024, 3560),
-        (gen_random_uuid(), 'CBIMCI_UNDER_2M_PSBI', 2024, 5.2),
-        (gen_random_uuid(), 'CBIMCI_2_59M_PNEUMONIA', 2024, 13.3),
-        (gen_random_uuid(), 'CBIMCI_2_59M_TOTAL_SICK', 2024, 9463),
-        (gen_random_uuid(), 'CBIMCI_2_59M_ORS_ZINC', 2024, 90.2),
-        
-        -- 2024 IYCF Data
-        (gen_random_uuid(), 'IYCF_EXCLUSIVE_BREASTFEEDING', 2024, 72.8),
-        (gen_random_uuid(), 'IYCF_COMPLEMENTARY_FEEDING', 2024, 68.5),
-        (gen_random_uuid(), 'IYCF_FORTIFIED_FLOUR_CHILDREN', 2024, 54.2),
-        (gen_random_uuid(), 'IYCF_FORTIFIED_FLOUR_PREGNANT', 2024, 62.3);
+        -- 2080 Safe Motherhood Data (Shrawan 2079 to Asar 2080)
+        (gen_random_uuid(), 'POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS', 2080, 142.3),
+        (gen_random_uuid(), 'PREGNANT_WOMEN_AT_LEAST_ONE_ANC_CHECKUP', 2080, 136.8),
+        (gen_random_uuid(), 'PREGNANT_WOMEN_RECEIVED_ANTHELMINTHICS', 2080, 117.5),
+        (gen_random_uuid(), 'POSTPARTUM_WOMEN_REFERRED_OBSTETRIC_COMPLICATIONS', 2080, 114.6),
+        (gen_random_uuid(), 'NORMAL_VAGINAL_DELIVERIES', 2080, 100.0),
+        (gen_random_uuid(), 'NEWBORNS_CHX_APPLIED_AFTER_BIRTH', 2080, 99.9),
+        (gen_random_uuid(), 'POSTPARTUM_MOTHERS_45DAYS_IRON_FOLIC_ACID', 2080, 96.7),
+        (gen_random_uuid(), 'POSTPARTUM_MOTHERS_VITAMIN_A', 2080, 96.7),
+        (gen_random_uuid(), 'WOMEN_CONTRACEPTIVES_AFTER_ABORTION', 2080, 94.2),
+        (gen_random_uuid(), 'WOMEN_180DAYS_IRON_FOLIC_ACID_PREGNANCY', 2080, 92.1),
+        (gen_random_uuid(), 'PREGNANT_WOMEN_FOUR_ANC_CHECKUPS_PROTOCOL', 2080, 81.4),
+        (gen_random_uuid(), 'WOMEN_FIRST_ANC_CHECKUP_PROTOCOL', 2080, 78.7),
+        (gen_random_uuid(), 'WOMEN_180_CALCIUM_TABLETS_PREGNANCY', 2080, 68.3),
+        (gen_random_uuid(), 'INSTITUTIONAL_DELIVERIES', 2080, 61.6),
+        (gen_random_uuid(), 'BIRTHS_ATTENDED_SBA_TRAINED_ANMS', 2080, 61.4),
+        (gen_random_uuid(), 'WOMEN_PNC_WITHIN_24HRS_DELIVERY', 2080, 59.5),
+        (gen_random_uuid(), 'NEWBORNS_CHECKUP_24HRS_BIRTH', 2080, 58.9),
+        (gen_random_uuid(), 'WOMEN_FOUR_POSTNATAL_CHECKUPS_PROTOCOL', 2080, 57.6),
+        (gen_random_uuid(), 'NEONATES_FOUR_CHECKUPS_PNC_PROTOCOL', 2080, 57.5),
+        (gen_random_uuid(), 'PREGNANT_WOMEN_EIGHT_ANC_VISITS_PROTOCOL', 2080, 25.6),
+        (gen_random_uuid(), 'PREGNANCIES_TERMINATED_INDUCED_PROCEDURE', 2080, 12.7),
+        (gen_random_uuid(), 'NEWBORNS_LOW_BIRTH_WEIGHT', 2080, 7.95),
+        (gen_random_uuid(), 'DELIVERIES_BELOW_20_YEARS_INSTITUTIONAL', 2080, 7.7),
+        (gen_random_uuid(), 'NEONATES_BIRTH_ASPHYXIA', 2080, 2.7),
+        (gen_random_uuid(), 'PRETERM_BIRTH', 2080, 2.6),
+        (gen_random_uuid(), 'STILL_BIRTHS', 2080, 0.68),
+        (gen_random_uuid(), 'BIRTHS_ATTENDED_NON_SBA_SHP', 2080, 0.17),
+        (gen_random_uuid(), 'NEONATES_CONGENITAL_ANOMALIES', 2080, 0.14),
+        (gen_random_uuid(), 'NEONATAL_MORTALITY_HEALTH_FACILITY', 2080, 0.09),
+        (gen_random_uuid(), 'ASSISTED_VACUUM_FORCEPS_DELIVERIES', 2080, 0),
+        (gen_random_uuid(), 'DELIVERIES_CAESAREAN_SECTION_REPORTED', 2080, 0),
+        (gen_random_uuid(), 'DELIVERY_BY_CAESAREAN_SECTION', 2080, 0),
+        (gen_random_uuid(), 'PREGNANT_WOMEN_HOME_BIRTH_MISOPROSTAL', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_HAEMORRHAGE', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_ANTEPARTUM_HAEMORRHAGE', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_POSTPARTUM_HAEMORRHAGE', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_ECTOPIC_PREGNANCY', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_RUPTURED_UTERUS', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_PREECLAMPSIA', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_ECLAMPSIA', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_RETAINED_PLACENTA', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_PUERPERAL_SEPSIS', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_TREATED_ABORTION_COMPLICATIONS', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_OBSTETRIC_COMPLICATIONS_BLOOD_TRANSFUSION', 2080, 0),
+        (gen_random_uuid(), 'REPORTED_MATERNAL_DEATHS_HEALTH_FACILITY', 2080, 0),
+        (gen_random_uuid(), 'WOMEN_COMPLICATIONS_INDUCED_ABORTION', 2080, 0),
+        (gen_random_uuid(), 'BIRTHS_ATTENDED_SKILLED_HEALTH_PERSONNEL', 2080, 0),
+        (gen_random_uuid(), 'PREGNANT_WOMEN_FIRST_ANC_CHECKUP_PROTOCOL', 2080, 0),
+        (gen_random_uuid(), 'MET_NEED_EMERGENCY_OBSTETRIC_CARE', 2080, -5.7),
+        (gen_random_uuid(), 'WOMEN_TREATED_PROLONGED_OBSTRUCTED_LABOR', 2080, -6);
     END IF;
 END
 $$;
