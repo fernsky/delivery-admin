@@ -5,6 +5,7 @@ export const wardWiseHealthInsuredHouseholdsSchema = z.object({
   id: z.string().optional(),
   wardNumber: z.number().int().positive(),
   insuredHouseholds: z.number().int().nonnegative(),
+  nonInsuredHouseholds: z.number().int().nonnegative(),
 });
 
 // Schema for filtering ward-wise health insured households data

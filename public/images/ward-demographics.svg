@@ -2,235 +2,53 @@
 <svg width="1200" height="400" viewBox="0 0 1200 400"
     xmlns="http://www.w3.org/2000/svg">
     <defs>
-        <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#1e3a8a" />
-            <stop offset="100%" stop-color="#3b82f6" />
+        <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f8fafc" />
+            <stop offset="100%" stop-color="#e2e8f0" />
         </linearGradient>
-
-        <!-- Ward bubble path definition -->
-        <path id="ward-bubble" d="M0,0 Q5,-15 20,-15 L80,-15 Q95,-15 100,0 L100,40 Q100,55 85,55 L60,55 L45,70 L30,55 L15,55 Q0,55 0,40 Z" />
-
-        <!-- Text path for curve -->
-        <path id="curved-text-path" d="M150,350 Q600,200 1050,350" fill="none" />
-
-        <!-- House icon -->
-        <path id="house-icon" d="M0,50 L50,0 L100,50 L85,50 L85,100 L15,100 L15,50 Z" />
-
-        <!-- Population icon -->
-        <path id="population-icon" d="M20,0 C31,0 40,9 40,20 C40,31 31,40 20,40 C9,40 0,31 0,20 C0,9 9,0 20,0 Z M10,45 L30,45 L30,100 L10,100 Z" />
     </defs>
 
     <!-- Background -->
     <rect width="1200" height="400" fill="url(#bg-gradient)" />
-
-    <!-- Decorative elements -->
-    <g opacity="0.1">
-        <circle cx="200" cy="80" r="50" fill="white" />
-        <circle cx="1000" cy="100" r="70" fill="white" />
-        <circle cx="600" cy="50" r="30" fill="white" />
-        <circle cx="120" cy="300" r="40" fill="white" />
-        <circle cx="900" cy="320" r="60" fill="white" />
-    </g>
-
-    <!-- Municipality map sketch in background -->
-    <g opacity="0.2">
-        <path d="M300,100 L400,80 L500,120 L600,90 L700,150 L800,100 L900,130 L900,250 L800,280 L700,250 L600,300 L500,280 L400,250 L300,220 Z" stroke="white" stroke-width="2" fill="white" fill-opacity="0.1" />
-
-        <!-- Ward boundaries -->
-        <path d="M300,100 L500,120 L500,280 L400,250 L300,220 Z" stroke="white" stroke-width="1" fill="none" stroke-dasharray="5,5" />
-        <path d="M500,120 L600,90 L600,300 L500,280 Z" stroke="white" stroke-width="1" fill="none" stroke-dasharray="5,5" />
-        <path d="M600,90 L700,150 L700,250 L600,300 Z" stroke="white" stroke-width="1" fill="none" stroke-dasharray="5,5" />
-        <path d="M700,150 L800,100 L800,280 L700,250 Z" stroke="white" stroke-width="1" fill="none" stroke-dasharray="5,5" />
-        <path d="M800,100 L900,130 L900,250 L800,280 Z" stroke="white" stroke-width="1" fill="none" stroke-dasharray="5,5" />
-
-        <!-- Ward numbers -->
-        <text x="400" y="180" font-family="Arial" font-size="16" fill="white" text-anchor="middle">१</text>
-        <text x="550" y="200" font-family="Arial" font-size="16" fill="white" text-anchor="middle">२</text>
-        <text x="650" y="220" font-family="Arial" font-size="16" fill="white" text-anchor="middle">३</text>
-        <text x="750" y="190" font-family="Arial" font-size="16" fill="white" text-anchor="middle">४</text>
-        <text x="850" y="200" font-family="Arial" font-size="16" fill="white" text-anchor="middle">५</text>
-    </g>
-
-    <!-- Ward Bubbles Group -->
-    <g>
-        <!-- Ward 1 -->
-        <g transform="translate(150, 100) scale(1.1)">
-            <use href="#ward-bubble" fill="#3b82f6" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा १</text>
+    
+    <!-- People silhouettes on the left -->
+    <g transform="translate(300, 200)">
+        <!-- Person 1 (large) -->
+        <circle cx="0" cy="-30" r="30" fill="#3b82f6" opacity="0.7" />
+        <rect x="-20" y="0" width="40" height="60" rx="5" fill="#3b82f6" opacity="0.7" />
+        
+        <!-- Person 2 (medium) -->
+        <g transform="translate(60, 10)">
+            <circle cx="0" cy="-25" r="25" fill="#60a5fa" opacity="0.7" />
+            <rect x="-15" y="0" width="30" height="50" rx="5" fill="#60a5fa" opacity="0.7" />
         </g>
-
-        <!-- Ward 2 -->
-        <g transform="translate(280, 70) scale(1.1)">
-            <use href="#ward-bubble" fill="#60a5fa" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा २</text>
-        </g>
-
-        <!-- Ward 3 -->
-        <g transform="translate(410, 120) scale(1.1)">
-            <use href="#ward-bubble" fill="#2563eb" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा ३</text>
-        </g>
-
-        <!-- Ward 4 -->
-        <g transform="translate(540, 80) scale(1.1)">
-            <use href="#ward-bubble" fill="#1d4ed8" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा ४</text>
-        </g>
-
-        <!-- Ward 5 -->
-        <g transform="translate(670, 110) scale(1.1)">
-            <use href="#ward-bubble" fill="#1e40af" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा ५</text>
-        </g>
-
-        <!-- Ward 6 -->
-        <g transform="translate(800, 90) scale(1.1)">
-            <use href="#ward-bubble" fill="#3b82f6" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा ६</text>
-        </g>
-
-        <!-- Ward 7 -->
-        <g transform="translate(930, 120) scale(1.1)">
-            <use href="#ward-bubble" fill="#60a5fa" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा ७</text>
-        </g>
-
-        <!-- Ward 8 -->
-        <g transform="translate(200, 200) scale(1.1)">
-            <use href="#ward-bubble" fill="#2563eb" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा ८</text>
-        </g>
-
-        <!-- Ward 9 -->
-        <g transform="translate(340, 180) scale(1.1)">
-            <use href="#ward-bubble" fill="#1d4ed8" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा ९</text>
-        </g>
-
-        <!-- Ward 10 -->
-        <g transform="translate(480, 210) scale(1.1)">
-            <use href="#ward-bubble" fill="#1e40af" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा १०</text>
-        </g>
-
-        <!-- Ward 11 -->
-        <g transform="translate(620, 190) scale(1.1)">
-            <use href="#ward-bubble" fill="#3b82f6" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा ११</text>
-        </g>
-
-        <!-- Ward 12 -->
-        <g transform="translate(760, 220) scale(1.1)">
-            <use href="#ward-bubble" fill="#60a5fa" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा १२</text>
-        </g>
-
-        <!-- Ward 13 -->
-        <g transform="translate(900, 200) scale(1.1)">
-            <use href="#ward-bubble" fill="#2563eb" />
-            <text x="50" y="25" font-family="Arial" font-size="16" fill="white" text-anchor="middle">वडा १३</text>
+        
+        <!-- Person 3 (small) -->
+        <g transform="translate(110, 20)">
+            <circle cx="0" cy="-20" r="20" fill="#93c5fd" opacity="0.7" />
+            <rect x="-12" y="0" width="24" height="40" rx="5" fill="#93c5fd" opacity="0.7" />
         </g>
     </g>
-
-    <!-- Data visualization elements -->
-    <g transform="translate(100, 150)">
-        <!-- Horizontal bar chart -->
-        <rect x="0" y="0" width="150" height="15" fill="#60a5fa" opacity="0.8" />
-        <rect x="0" y="20" width="120" height="15" fill="#60a5fa" opacity="0.8" />
-        <rect x="0" y="40" width="180" height="15" fill="#60a5fa" opacity="0.8" />
-        <rect x="0" y="60" width="100" height="15" fill="#60a5fa" opacity="0.8" />
+    
+    <!-- Government building at center with straighter features -->
+    <g transform="translate(600, 200)">
+        <!-- Building base - square, not rounded -->
+        <rect x="-80" y="-30" width="160" height="100" fill="#1e40af" opacity="0.6" />
+        
+        <!-- Rounded roof instead of triangular -->
+        <path d="M-80,-30 Q0,-100 80,-30" fill="#1e40af" opacity="0.6" />
+        
+        <!-- Straight pillars without rounded corners -->
+        <rect x="-60" y="-30" width="15" height="100" fill="#f8fafc" opacity="0.7" />
+        <rect x="-20" y="-30" width="15" height="100" fill="#f8fafc" opacity="0.7" />
+        <rect x="20" y="-30" width="15" height="100" fill="#f8fafc" opacity="0.7" />
+        <rect x="60" y="-30" width="15" height="100" fill="#f8fafc" opacity="0.7" />
+        
+        <!-- Steps -->
+        <rect x="-50" y="70" width="100" height="10" fill="#f8fafc" opacity="0.5" />
     </g>
-
-    <g transform="translate(950, 150)">
-        <!-- Simple pie chart -->
-        <circle cx="50" cy="50" r="50" fill="none" stroke="white" stroke-width="2" opacity="0.5" />
-        <path d="M50,50 L50,0 A50,50 0 0,1 100,50 Z" fill="#60a5fa" opacity="0.8" />
-        <path d="M50,50 L100,50 A50,50 0 0,1 50,100 Z" fill="#3b82f6" opacity="0.8" />
-        <path d="M50,50 L50,100 A50,50 0 0,1 0,50 Z" fill="#2563eb" opacity="0.8" />
-        <path d="M50,50 L0,50 A50,50 0 0,1 50,0 Z" fill="#1e40af" opacity="0.8" />
-    </g>
-
-    <!-- Title text at bottom -->
-    <text font-family="Arial" font-size="20" fill="white" text-anchor="middle">
-        <textPath href="#curved-text-path" startOffset="50%">वडागत जनसांख्यिकी विवरण</textPath>
-    </text>
-
-    <!-- Icons representing demographics at bottom -->
-    <g transform="translate(100, 300)">
-        <g transform="scale(0.3)">
-            <use href="#house-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-        <text x="40" y="315" font-family="Arial" font-size="12" fill="white">घरधुरी</text>
-    </g>
-
-    <g transform="translate(200, 300)">
-        <g transform="scale(0.3)">
-            <use href="#population-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-        <text x="40" y="315" font-family="Arial" font-size="12" fill="white">जनसंख्या</text>
-    </g>
-
-    <g transform="translate(300, 300)">
-        <path d="M0,0 L10,15 L20,0" stroke="#60a5fa" stroke-width="2" fill="none" transform="translate(10, 300)" />
-        <text x="40" y="315" font-family="Arial" font-size="12" fill="white">लिङ्ग अनुपात</text>
-    </g>
-
-    <g transform="translate(450, 300)">
-        <rect x="0" y="300" width="20" height="20" fill="#60a5fa" opacity="0.8" />
-        <text x="30" y="315" font-family="Arial" font-size="12" fill="white">क्षेत्रफल</text>
-    </g>
-
-    <g transform="translate(600, 300)">
-        <circle cx="10" cy="310" r="10" fill="#60a5fa" opacity="0.8" />
-        <text x="30" y="315" font-family="Arial" font-size="12" fill="white">जनघनत्व</text>
-    </g>
-
-    <!-- Small houses representing settlements on the right -->
-    <g transform="translate(750, 300)">
-        <g transform="scale(0.2)">
-            <use href="#house-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-    </g>
-
-    <g transform="translate(790, 300)">
-        <g transform="scale(0.25)">
-            <use href="#house-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-    </g>
-
-    <g transform="translate(840, 300)">
-        <g transform="scale(0.18)">
-            <use href="#house-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-    </g>
-
-    <g transform="translate(880, 300)">
-        <g transform="scale(0.22)">
-            <use href="#house-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-    </g>
-
-    <g transform="translate(930, 300)">
-        <g transform="scale(0.2)">
-            <use href="#house-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-    </g>
-
-    <g transform="translate(970, 300)">
-        <g transform="scale(0.23)">
-            <use href="#house-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-    </g>
-
-    <g transform="translate(1020, 300)">
-        <g transform="scale(0.21)">
-            <use href="#house-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-    </g>
-
-    <g transform="translate(1070, 300)">
-        <g transform="scale(0.19)">
-            <use href="#house-icon" fill="#60a5fa" opacity="0.8" />
-        </g>
-    </g>
+    
+    <!-- Subtle decorative elements -->
+    <circle cx="200" cy="100" r="80" fill="#3b82f6" opacity="0.05" />
+    <circle cx="1000" cy="300" r="120" fill="#60a5fa" opacity="0.05" />
 </svg>

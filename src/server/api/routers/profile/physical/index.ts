@@ -10,7 +10,7 @@ import { wardWiseHouseholdRoofRouter } from "./ward-wise-household-roof.procedur
 import { wardWiseRoadStatusRouter } from "./ward-wise-road-status.procedure";
 import { wardWiseTimeToActiveRoadRouter } from "./ward-wise-time-to-active-road.procedure";
 import { wardWiseTimeToFinancialOrganizationRouter } from "./ward-wise-time-to-financial-organization.procedure";
-import { wardWiseTimeToHealthOrganizationRouter } from "./ward-wise-time-to-health-organization.procedure";
+import { wardWiseTimeToHealthOrganizationRouter } from "../health/ward-wise-time-to-health-organization.procedure";
 
 export const physicalRouter = createTRPCRouter({
   wardWiseTimeToPublicTransport: wardWiseTimeToPublicTransportRouter,

@@ -3,7 +3,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { wardWiseTimeToHealthOrganization } from "@/server/db/schema/profile/physical/ward-wise-time-to-health-organization";
+import { wardWiseTimeToHealthOrganization } from "@/server/db/schema/profile/health/ward-wise-time-to-health-organization";
 import { eq, and, desc, sql } from "drizzle-orm";
 import {
   wardWiseTimeToHealthOrganizationSchema,

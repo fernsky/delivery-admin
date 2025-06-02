@@ -17,7 +17,7 @@ export function OperatorSection({ business }: { business: BusinessSchema }) {
       <DetailRow
         icon={GraduationCap}
         label="Education"
-        value={business?.operatorEducation}
+        value={business?.operatorEducationalLevel}
       />
     </Card>
   );

@@ -36,7 +36,7 @@ export function ListBusinesses({ user }: { user: User }) {
   const isDesktop = useMediaQuery({ minWidth: 1024 });
 
   const [sorting, setSorting] = useState({
-    sortBy: "ward_id" as const,
+    sortBy: "ward_no" as const,
     sortOrder: "desc" as "asc" | "desc",
   });
 
@@ -52,7 +52,6 @@ export function ListBusinesses({ user }: { user: User }) {
     sortOrder: sorting.sortOrder,
   });
 
-  const { data: stats, error: statsError } = api.business.getStats.useQuery();
 
   const totalPages = Math.ceil((data?.pagination.total || 0) / 10);
   const currentDisplayCount = Math.min(
@@ -76,12 +75,11 @@ export function ListBusinesses({ user }: { user: User }) {
     }));
   };
 
-  if (businessesError || statsError) {
+  if (businessesError ) {
     return (
       <Alert variant="destructive" className="m-4">
         <AlertDescription>
           {businessesError?.message ||
-            statsError?.message ||
             "An error occurred"}
         </AlertDescription>
       </Alert>
@@ -109,14 +107,7 @@ export function ListBusinesses({ user }: { user: User }) {
           </CardHeader>
 
           <CardContent className="p-6">
-            {/* Stats Section */}
-            {stats && (
-              <BusinessesStats
-                totalBusinesses={stats.totalBusinesses}
-                totalEmployees={stats.totalEmployees}
-                avgInvestmentAmount={stats.avgInvestmentAmount}
-              />
-            )}
+           
 
             {/* Filters Section */}
             <Card className="mt-6">

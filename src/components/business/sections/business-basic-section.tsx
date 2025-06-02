@@ -1,12 +1,12 @@
 import { Store } from "lucide-react";
 import { Card } from "../../building/card";
 import { DetailRow } from "../../shared/detail-row";
-import { BusinessSchema } from "@/server/db/schema";
+import { Business } from "@/server/db/schema";
 
 export function BusinessBasicSection({
   business,
 }: {
-  business: BusinessSchema;
+  business: Business;
 }) {
   return (
     <Card title="Business Information" icon={Store}>
