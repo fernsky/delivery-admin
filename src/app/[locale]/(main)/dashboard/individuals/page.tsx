@@ -6,5 +6,6 @@ import { redirect } from "next/navigation";
 export default async function IndividualsPage() {
   const { user } = await validateRequest();
   if (!user) return redirect(Paths.Login);
+  //@ts-ignore
   return <ListIndividuals user={user} />;
 }

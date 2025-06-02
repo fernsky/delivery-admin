@@ -143,10 +143,10 @@ export default function BusinessesPage() {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">व्यवसाय सूची</h1>
-        <Button onClick={() => router.push("/dashboard/businesses/create")}>
+        {/* <Button onClick={() => router.push("/dashboard/businesses/create")}>
           <Plus className="mr-2 h-4 w-4" />
           नयाँ व्यवसाय थप्नुहोस्
-        </Button>
+        </Button> */}
       </div>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center mb-6">
