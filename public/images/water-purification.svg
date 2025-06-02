@@ -14,19 +14,7 @@
   <!-- Background -->
   <rect width="1200" height="400" fill="url(#bg-gradient)" />
   
-  <!-- Water Boiling Method -->
-  <g transform="translate(400, 200)">
-    <!-- Pot -->
-    <path d="M-30,0 C-35,-20 -35,-30 -30,-40 L30,-40 C35,-30 35,-20 30,0 Z" fill="#E74C3C" opacity="0.7" />
-    <!-- Handles -->
-    <path d="M-30,-20 L-40,-20 L-40,-15 L-30,-15" fill="none" stroke="#E74C3C" stroke-width="3" opacity="0.7" />
-    <path d="M30,-20 L40,-20 L40,-15 L30,-15" fill="none" stroke="#E74C3C" stroke-width="3" opacity="0.7" />
-    <!-- Steam -->
-    <path d="M-15,-40 C-15,-50 -5,-50 -5,-60" fill="none" stroke="white" stroke-width="2" opacity="0.4" />
-    <path d="M5,-40 C5,-55 15,-55 15,-70" fill="none" stroke="white" stroke-width="2" opacity="0.4" />
-  </g>
-  
-  <!-- Water Filtering Method -->
+  <!-- Water Filtering Method (Centered) -->
   <g transform="translate(600, 200)">
     <!-- Filter container -->
     <path d="M-40,0 L40,0 L30,60 L-30,60 Z" fill="#3498DB" opacity="0.3" />
@@ -35,19 +23,6 @@
     <line x1="-25" y1="15" x2="25" y2="15" stroke="#3498DB" stroke-width="3" stroke-dasharray="3 2" opacity="0.7" />
     <!-- Water drop -->
     <path d="M0,60 C0,80 15,80 15,70 C15,60 0,60 0,70 Z" fill="url(#water-gradient)" opacity="0.8" />
-  </g>
-  
-  <!-- Chemical Treatment (Piyush) Method -->
-  <g transform="translate(800, 200)">
-    <!-- Bottle -->
-    <path d="M-15,-40 L15,-40 L15,20 C25,20 25,40 15,40 L-15,40 C-25,40 -25,20 -15,20 Z" fill="#9B59B6" opacity="0.7" />
-    <!-- Droplet -->
-    <path d="M0,40 C0,60 10,60 10,50 C10,40 0,40 0,50 Z" fill="url(#water-gradient)" opacity="0.8" />
-    
-    <!-- Water glass -->
-    <path d="M40,-10 L60,-10 L65,40 L35,40 Z" fill="#3498DB" opacity="0.3" />
-    <!-- Chemical action indicator (plus symbol) -->
-    <line x1="15" y1="0" x2="40" y2="0" stroke="#9B59B6" stroke-width="2" stroke-dasharray="2 1" opacity="0.7" />
   </g>
   
   <!-- Subtle decorative elements -->
