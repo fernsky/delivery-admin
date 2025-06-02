@@ -168,21 +168,25 @@ export const navItems: NavItem[] = [
       },
     ],
   },
-  // {
-  //   title: "शिक्षा",
-  //   href: "/profile/education",
-  //   icon: <BookOpen className="w-4 h-4" />,
-  //   items: [
-  //     {
-  //       title: "शैक्षिक स्थिति",
-  //       href: "/profile/education/summary",
-  //     },
-  //     {
-  //       title: "विद्यालय तथा शिक्षकहरू",
-  //       href: "/profile/education/schools",
-  //     },
-  //   ],
-  // },
+  {
+    title: "शिक्षा",
+    href: "/profile/education",
+    icon: <BookOpen className="w-4 h-4" />,
+    items: [
+      {
+        title: "वडागत साक्षरताको विवरण",
+        href: "/profile/education/ward-wise-literacy-status",
+      },
+      {
+        title: "उत्तीर्ण गरेको तह",
+        href: "/profile/education/ward-wise-educational-level",
+      },
+      {
+        title: "विद्यालय तथा कलेज नजानुको कारण",
+        href: "/profile/education/ward-wise-school-dropout",
+      },
+    ],
+  },
   // {
   //   title: "स्वास्थ्य",
   //   href: "/profile/health",
