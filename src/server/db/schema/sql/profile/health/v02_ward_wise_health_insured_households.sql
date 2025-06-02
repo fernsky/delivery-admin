@@ -26,19 +26,19 @@ END
 $$;
 
 -- Insert seed data if table is empty
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM acme_ward_wise_health_insured_households) THEN
-        INSERT INTO acme_ward_wise_health_insured_households (
-            id, ward_number, insured_households, non_insured_households
-        )
-        VALUES
-        -- Ward 1 to 5 data
-        (gen_random_uuid(), 1, 275, 125),
-        (gen_random_uuid(), 2, 312, 188),
-        (gen_random_uuid(), 3, 245, 155),
-        (gen_random_uuid(), 4, 298, 202),
-        (gen_random_uuid(), 5, 267, 133);
-    END IF;
-END
-$$;
+-- DO $$
+-- BEGIN
+--     IF NOT EXISTS (SELECT 1 FROM acme_ward_wise_health_insured_households) THEN
+--         INSERT INTO acme_ward_wise_health_insured_households (
+--             id, ward_number, insured_households, non_insured_households
+--         )
+--         VALUES
+--         -- Ward 1 to 5 data
+--         (gen_random_uuid(), 1, 275, 125),
+--         (gen_random_uuid(), 2, 312, 188),
+--         (gen_random_uuid(), 3, 245, 155),
+--         (gen_random_uuid(), 4, 298, 202),
+--         (gen_random_uuid(), 5, 267, 133);
+--     END IF;
+-- END
+-- $$;
