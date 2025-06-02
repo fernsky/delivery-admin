@@ -158,3 +158,9 @@
   border-radius: 4px;
   padding: 6px 10px 6px 6px;
 }
+
+/* English font class for medical and technical terms */
+.english-font {
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-weight: 500;
+}

@@ -7,6 +7,9 @@ import { localizeNumber } from "@/lib/utils/localize-number";
 import ImmunizationIndicatorsCharts from "./_components/immunization-indicators-charts";
 import ImmunizationIndicatorsAnalysisSection from "./_components/immunization-indicators-analysis-section";
 import ImmunizationIndicatorsSEO from "./_components/immunization-indicators-seo";
+import BCGVaccineInfo from "./_components/vaccine-information/bcg-vaccine-info";
+import DPTHepBHibVaccineInfo from "./_components/vaccine-information/dpt-hepb-hib-vaccine-info";
+import OPVVaccineInfo from "./_components/vaccine-information/opv-vaccine-info";
 import { 
   ImmunizationFiscalYear, 
   immunizationFiscalYearOptions,
@@ -342,10 +345,10 @@ export default async function ImmunizationIndicatorsPage() {
             </h2>
             <p>
               खोप कार्यक्रम स्वास्थ्य क्षेत्रको एक अत्यन्त महत्वपूर्ण र लागत-प्रभावी हस्तक्षेप हो जसले विभिन्न संक्रामक रोगहरूबाट बच्चाहरूलाई सुरक्षित राख्न, रोगजन्य जटिलताहरू कम गर्न र मृत्युदरलाई घटाउन महत्वपूर्ण भूमिका निर्वाह गर्दछ।
-              नेपाल सरकारको राष्ट्रिय खोप कार्यक्रम अन्तर्गत १२ प्रकारका खोपहरू दिइने गरिएको छ, जसमा बि.सि.जी., डि.पि.टी.-हेप बी-हिब, ओ.पि.भी., पि.सी.भी., रोटा, एम.आर., जे.ई., टि.सी.भी. र टी.डी. समावेश छन्।
+              नेपाल सरकारको राष्ट्रिय खोप कार्यक्रम अन्तर्गत १२ प्रकारका खोपहरू दिइने गरिएको छ, जसमा <span className="english-font">BCG</span>, <span className="english-font">DPT-HepB-Hib</span>, <span className="english-font">OPV</span>, <span className="english-font">PCV</span>, रोटा, <span className="english-font">MR</span>, <span className="english-font">JE</span>, <span className="english-font">TCV</span> र <span className="english-font">TD</span> समावेश छन्।
             </p>
             <p>
-              यस खण्डमा खजुरा गाउँपालिकाको आर्थिक वर्ष {fiscalYearLabels[latestFiscalYear]} को खोप सेवाको अवस्था र विश्लेषण प्रस्तुत गरिएको छ।
+              यस खण्डमा खजुरा गाउँपालिकाको आर्थिक वर्ष {localizeNumber(fiscalYearLabels[latestFiscalYear], "ne")} को खोप सेवाको अवस्था र विश्लेषण प्रस्तुत गरिएको छ।
               पालिकामा खोप कभरेज, ड्रपआउट दर, खोप खेर जाने दर, र अन्य महत्वपूर्ण सूचकहरूको अध्ययनबाट समग्र खोप सेवाको गुणस्तर र पहुँचको अवस्था मूल्याङ्कन गरिएको छ।
             </p>
 
@@ -356,7 +359,7 @@ export default async function ImmunizationIndicatorsPage() {
               प्रमुख खोप कभरेज सूचकहरू
             </h2>
             <p>
-              खजुरा गाउँपालिकामा आर्थिक वर्ष {fiscalYearLabels[latestFiscalYear]} मा महत्वपूर्ण खोप सूचकहरूको अवस्था निम्नानुसार रहेको छ:
+              खजुरा गाउँपालिकामा आर्थिक वर्ष {localizeNumber(fiscalYearLabels[latestFiscalYear], "ne")} मा महत्वपूर्ण खोप सूचकहरूको अवस्था निम्नानुसार रहेको छ:
             </p>
           </div>
 
@@ -406,6 +409,18 @@ export default async function ImmunizationIndicatorsPage() {
               यसरी खजुरा गाउँपालिकाको खोप सेवाको अवस्थामा सुधार ल्याउन स्पष्ट लक्ष्य, वैज्ञानिक दृष्टिकोण र सामुदायिक सहभागिता आवश्यक छ।
               सबै बालबालिकाहरूले गुणस्तरीय खोप सेवा पाउन सक्ने वातावरण सुनिश्चित गर्न पालिकाले आफ्नो स्रोत-साधन र जनशक्तिको समुचित परिचालन गर्नुपर्ने देखिन्छ।
             </p>
+
+            {/* Detailed Vaccine Information Sections */}
+            <h2 className="scroll-m-20 border-b pb-2 mt-16 mb-8">
+              खोपहरूको विस्तृत जानकारी
+            </h2>
+            <p className="mb-6">
+              यहाँ मुख्य खोपहरूको बारेमा विस्तृत जानकारी प्रस्तुत गरिएको छ जसले अभिभावकहरूलाई खोपको महत्व, प्रभावकारिता र आवश्यकता बुझ्न मद्दत गर्नेछ।
+            </p>
+
+            <BCGVaccineInfo />
+            <DPTHepBHibVaccineInfo />
+            <OPVVaccineInfo />
           </div>
         </section>
       </div>

@@ -168,7 +168,7 @@ export const navItems: NavItem[] = [
     ],
   },
   {
-    title: "शिक्षा",
+    title: "शैक्षिक स्थिति",
     href: "/profile/education",
     icon: <BookOpen className="w-4 h-4" />,
     items: [
@@ -186,21 +186,25 @@ export const navItems: NavItem[] = [
       },
     ],
   },
-  // {
-  //   title: "स्वास्थ्य",
-  //   href: "/profile/health",
-  //   icon: <Activity className="w-4 h-4" />,
-  //   items: [
-  //     {
-  //       title: "स्वास्थ्य सुविधाहरू",
-  //       href: "/profile/health/facilities",
-  //     },
-  //     {
-  //       title: "स्वास्थ्य सूचकांक",
-  //       href: "/profile/health/indicators",
-  //     },
-  //   ],
-  // },
+  {
+    title: "स्वास्थ्य अवस्था",
+    href: "/profile/health",
+    icon: <Activity className="w-4 h-4" />,
+    items: [
+      {
+        title: "खोप सम्बन्धी विवरण",
+        href: "/profile/health/immunization-indicators",
+      },
+      {
+        title: "स्वास्थ्य बीमा गर्ने घरपरिवारको विवरण",
+        href: "/profile/health/ward-wise-health-insured-households",
+      },
+      {
+        title: "नजिकको स्वास्थ्य संस्थासम्म पुग्न लाग्ने समय",
+        href: "/profile/health/ward-wise-time-to-health-organization",
+      },
+    ],
+  },
   // {
   //   title: "भौतिक पूर्वाधार",
   //   href: "/profile/infrastructure",

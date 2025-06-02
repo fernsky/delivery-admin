@@ -227,7 +227,7 @@ export const getWardWiseHealthInsuredHouseholdsSummary = publicProcedure.query(
           SUM(non_insured_households) as total_non_insured_households,
           SUM(insured_households) + SUM(non_insured_households) as total_households
         FROM 
-          ward_wise_health_insured_households
+          acme_ward_wise_health_insured_households
       `;
 
       const summaryData = await ctx.db.execute(summarySql);

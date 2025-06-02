@@ -65,7 +65,7 @@ export default function WardHealthInsuredHouseholdsPieCharts({
         return (
           <div key={wardData.wardNumber} className="h-auto border rounded-md p-4">
             <h3 className="text-lg font-medium mb-2 text-center">
-              {wardData.ward}
+              {localizeNumber(wardData.ward, "ne")}
             </h3>
             <p className="text-xs text-center text-muted-foreground mb-2">
               कुल घरधुरी: {localizeNumber(total.toLocaleString(), "ne")}

@@ -35,7 +35,7 @@ export default function HealthInsuredHouseholdsComparisonChart({
 }: HealthInsuredHouseholdsComparisonChartProps) {
   // Format data for the chart - compare insurance rates
   const chartData = wardInsuredPercentages.map((ward) => ({
-    name: `वडा ${ward.wardNumber}`,
+    name: `वडा ${localizeNumber(ward.wardNumber, "ne")}`,
     "InsuranceRate": ward.percentage,
   })).sort((a, b) => 
     b["InsuranceRate"] - a["InsuranceRate"]

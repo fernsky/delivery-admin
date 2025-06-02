@@ -255,7 +255,7 @@ export const getWardWiseTimeToHealthOrganizationSummary = publicProcedure.query(
           time_to_health_organization, 
           SUM(households) as total_households
         FROM 
-          ward_wise_time_to_health_organization
+          acme_ward_wise_time_to_health_organization
         GROUP BY 
           time_to_health_organization
         ORDER BY 

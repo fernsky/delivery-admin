@@ -93,7 +93,9 @@ export default function ImmunizationIndicatorsCharts({
         </div>
 
         <div className="border rounded-lg p-4 shadow-sm bg-card">
-          <h3 className="text-sm font-medium text-muted-foreground">DPT-HepB-Hib3 कभरेज</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">
+            <span className="english-font">DPT-HepB-Hib3</span> कभरेज
+          </h3>
           <div className="mt-2">
             <p className="text-3xl font-bold">
               {localizeNumber(dpt3Value.toFixed(1), "ne")}%
@@ -107,14 +109,16 @@ export default function ImmunizationIndicatorsCharts({
         </div>
 
         <div className="border rounded-lg p-4 shadow-sm bg-card">
-          <h3 className="text-sm font-medium text-muted-foreground">DPT ड्रपआउट दर</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">
+            <span className="english-font">DPT</span> ड्रपआउट दर
+          </h3>
           <div className="mt-2">
             <p className="text-3xl font-bold">
               {localizeNumber(dptDropoutRate.toFixed(1), "ne")}%
             </p>
             <div className="mt-1 text-xs text-muted-foreground">
               <span>
-                DPT-HepB-Hib1 देखि DPT-HepB-Hib3 सम्म
+                <span className="english-font">DPT-HepB-Hib1</span> देखि <span className="english-font">DPT-HepB-Hib3</span> सम्म
               </span>
             </div>
           </div>
@@ -170,22 +174,26 @@ export default function ImmunizationIndicatorsCharts({
 
         <div className="p-6 border-t">
           <div className="overflow-auto">
-            <table className="w-full border-collapse min-w-[800px]">
+            <table className="w-full border-collapse min-w-[600px]">
               <thead className="sticky top-0 z-10">
                 <tr className="bg-muted">
-                  <th className="border p-2 text-left">खोप सूचक</th>
-                  <th className="border p-2 text-right">कभरेज (%)</th>
-                  <th className="border p-2 text-left">विवरण</th>
+                  <th className="border p-3 text-left">खोप विवरण</th>
+                  <th className="border p-3 text-center w-32">कभरेज (%)</th>
                 </tr>
               </thead>
               <tbody>
                 {coverageData.map((item, i) => (
                   <tr key={i} className={i % 2 === 0 ? "bg-muted/50" : ""}>
-                    <td className="border p-2">
-                      {item.indicator}
+                    <td className="border p-3">
+                      <div className="flex flex-col">
+                       
+                        <span className="text-sm">
+                          {indicatorLabels[item.indicator] || ""}
+                        </span>
+                      </div>
                     </td>
-                    <td className="border p-2 text-right">
-                      <span className={`font-medium ${
+                    <td className="border p-3 text-center">
+                      <span className={`font-bold text-lg ${
                         item.value >= 90 ? "text-green-600" :
                         item.value >= 80 ? "text-blue-600" :
                         item.value >= 70 ? "text-amber-600" : 
@@ -193,9 +201,6 @@ export default function ImmunizationIndicatorsCharts({
                       }`}>
                         {localizeNumber(item.value?.toFixed(1) || "0", "ne")}%
                       </span>
-                    </td>
-                    <td className="border p-2 text-sm">
-                      {indicatorLabels[item.indicator] || ""}
                     </td>
                   </tr>
                 ))}

@@ -1,4 +1,3 @@
--- Check if acme_municipality_wide_irrigation_source table exists, if not create it
 DO $$
 BEGIN
     IF NOT EXISTS (
@@ -26,45 +25,43 @@ $$;
 DO $$
 BEGIN
     -- Lake or Reservoir
-    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares, percentage)
+    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares)
     VALUES
-        (gen_random_uuid(), 'LAKE_OR_RESERVOIR', 577.49, 80.76);
+        (gen_random_uuid(), 'LAKE_OR_RESERVOIR', 577.49);
 
     -- Irrigation Canal
-    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares, percentage)
+    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares)
     VALUES
-        (gen_random_uuid(), 'IRRIGATION_CANAL', 46.65, 6.52);
+        (gen_random_uuid(), 'IRRIGATION_CANAL', 46.65);
 
     -- Rainwater Collection
-    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares, percentage)
+    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares)
     VALUES
-        (gen_random_uuid(), 'RAINWATER_COLLECTION', 7.97, 1.11);
+        (gen_random_uuid(), 'RAINWATER_COLLECTION', 7.97);
 
     -- Electric Lift Irrigation
-    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares, percentage)
+    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares)
     VALUES
-        (gen_random_uuid(), 'ELECTRIC_LIFT_IRRIGATION', 7.97, 1.11);
+        (gen_random_uuid(), 'ELECTRIC_LIFT_IRRIGATION', 7.97);
 
     -- Canal
-    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares, percentage)
+    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares)
     VALUES
-        (gen_random_uuid(), 'CANAL', 2.51, 0.35);
+        (gen_random_uuid(), 'CANAL', 2.51);
 
     -- Pumping Set
-    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares, percentage)
+    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares)
     VALUES
-        (gen_random_uuid(), 'PUMPING_SET', 5.79, 0.81);
+        (gen_random_uuid(), 'PUMPING_SET', 5.79);
 
     -- Underground Irrigation
-    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares, percentage)
+    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares)
     VALUES
-        (gen_random_uuid(), 'UNDERGROUND_IRRIGATION', 0.68, 0.10);
+        (gen_random_uuid(), 'UNDERGROUND_IRRIGATION', 0.68);
 
     -- Other
-    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares, percentage)
+    INSERT INTO acme_municipality_wide_irrigation_source (id, irrigation_source, coverage_in_hectares)
     VALUES
-        (gen_random_uuid(), 'OTHER', 65.99, 9.23);
-
-    
+        (gen_random_uuid(), 'OTHER', 65.99);
 END
 $$;

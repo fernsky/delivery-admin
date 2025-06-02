@@ -41,7 +41,7 @@ export default function TimeToHealthOrganizationComparisonChart({
 }: TimeToHealthOrganizationComparisonChartProps) {
   // Format data for the chart - compare quick access (under 30 min) rates
   const chartData = wardWiseQuickAccess.map((ward) => ({
-    name: `वडा ${ward.wardNumber}`,
+    name: `वडा ${localizeNumber(ward.wardNumber, "ne")}`,
     "QuickAccess": ward.percentage,
   })).sort((a, b) => 
     b["QuickAccess"] - a["QuickAccess"]
@@ -56,7 +56,7 @@ export default function TimeToHealthOrganizationComparisonChart({
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="font-medium">{label}</p>
+          <p className="font-medium">{localizeNumber(label, "ne")}</p>
           <div className="space-y-1 mt-2">
             {payload.map((entry: any, index: number) => {
               let displayName = entry.name;
