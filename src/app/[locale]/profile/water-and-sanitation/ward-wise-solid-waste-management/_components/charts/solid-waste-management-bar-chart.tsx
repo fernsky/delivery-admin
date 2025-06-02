@@ -14,17 +14,14 @@ import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface SolidWasteManagementBarChartProps {
   wardWiseData: Array<Record<string, any>>;
-  WASTE_MANAGEMENT_GROUPS: Record<string, {
-    name: string;
-    nameEn: string;
-    color: string;
-    sources: string[];
-  }>;
+  WASTE_MANAGEMENT_COLORS: Record<string, string>;
+  sourceMap: Record<string, string>;
 }
 
 export default function SolidWasteManagementBarChart({
   wardWiseData,
-  WASTE_MANAGEMENT_GROUPS,
+  WASTE_MANAGEMENT_COLORS,
+  sourceMap,
 }: SolidWasteManagementBarChartProps) {
   // Custom tooltip component for better presentation with Nepali numbers
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -64,12 +61,20 @@ export default function SolidWasteManagementBarChart({
     return null;
   };
 
+  // Get list of waste management methods that have data
+  const managementMethods = Object.entries(sourceMap)
+    .map(([key, name]) => ({ key, name }))
+    .filter(({ key }) => 
+      wardWiseData.some(ward => ward[sourceMap[key]])
+    );
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
         data={wardWiseData}
         margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
         barSize={40}
+        barGap={2}
       >
         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
         <XAxis
@@ -87,14 +92,14 @@ export default function SolidWasteManagementBarChart({
           verticalAlign="bottom"
           align="center"
         />
-        {Object.values(WASTE_MANAGEMENT_GROUPS).map((group, index, arr) => (
+        {managementMethods.map((method, index) => (
           <Bar
-            key={group.name}
-            dataKey={group.name}
-            name={group.name}
+            key={method.key}
+            dataKey={method.name}
+            name={method.name}
             stackId="a"
-            fill={group.color}
-            radius={index === arr.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
+            fill={WASTE_MANAGEMENT_COLORS[method.key] || "#6B7280"}
+            radius={index === managementMethods.length - 1 ? [4, 4, 0, 0] : [0, 0, 0, 0]}
           />
         ))}
       </BarChart>

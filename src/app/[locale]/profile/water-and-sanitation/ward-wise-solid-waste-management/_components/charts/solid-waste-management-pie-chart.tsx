@@ -18,17 +18,12 @@ interface SolidWasteManagementPieChartProps {
     percentage: string;
     color: string;
   }>;
-  WASTE_MANAGEMENT_GROUPS: Record<string, {
-    name: string;
-    nameEn: string;
-    color: string;
-    sources: string[];
-  }>;
+  WASTE_MANAGEMENT_COLORS: Record<string, string>;
 }
 
 export default function SolidWasteManagementPieChart({
   pieChartData,
-  WASTE_MANAGEMENT_GROUPS,
+  WASTE_MANAGEMENT_COLORS,
 }: SolidWasteManagementPieChartProps) {
   // Custom tooltip component with Nepali numbers
   const CustomTooltip = ({ active, payload }: any) => {

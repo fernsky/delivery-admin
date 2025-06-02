@@ -5,17 +5,14 @@ import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface WardSolidWasteManagementPieChartsProps {
   wardWiseData: Array<Record<string, any>>;
-  WASTE_MANAGEMENT_GROUPS: Record<string, {
-    name: string;
-    nameEn: string;
-    color: string;
-    sources: string[];
-  }>;
+  WASTE_MANAGEMENT_COLORS: Record<string, string>;
+  sourceMap: Record<string, string>;
 }
 
 export default function WardSolidWasteManagementPieCharts({
   wardWiseData,
-  WASTE_MANAGEMENT_GROUPS,
+  WASTE_MANAGEMENT_COLORS,
+  sourceMap,
 }: WardSolidWasteManagementPieChartsProps) {
   // Custom tooltip component with Nepali numbers
   const CustomTooltip = ({ active, payload, totalHouseholds }: any) => {
@@ -42,13 +39,16 @@ export default function WardSolidWasteManagementPieCharts({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {wardWiseData.map((wardData) => {
         const total = wardData.total || 0;
-        const wasteManagementGroups = Object.values(WASTE_MANAGEMENT_GROUPS)
-          .map(group => ({
-            name: group.name,
-            value: wardData[group.name] || 0,
-            color: group.color
-          }))
-          .filter(item => item.value > 0);
+        
+        // Create pie chart data from waste management methods
+        const wasteManagementMethods = Object.entries(sourceMap).map(([key, name]) => {
+          return {
+            name: name,
+            method: key,
+            value: wardData[name] || 0,
+            color: WASTE_MANAGEMENT_COLORS[key] || "#6B7280"
+          };
+        }).filter(item => item.value > 0);
 
         return (
           <div key={wardData.wardNumber} className="h-auto border rounded-md p-4">
@@ -62,7 +62,7 @@ export default function WardSolidWasteManagementPieCharts({
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={wasteManagementGroups}
+                    data={wasteManagementMethods}
                     cx="50%"
                     cy="50%"
                     innerRadius={30}
@@ -70,7 +70,7 @@ export default function WardSolidWasteManagementPieCharts({
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {wasteManagementGroups.map((entry, index) => (
+                    {wasteManagementMethods.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={entry.color}
@@ -85,7 +85,7 @@ export default function WardSolidWasteManagementPieCharts({
             {/* Legend section with percentage bars */}
             <div className="mt-3">
               <div className="grid grid-cols-1 gap-2">
-                {wasteManagementGroups.map((item, i) => {
+                {wasteManagementMethods.map((item, i) => {
                   if (item.value === 0) return null;
                   const percentage = total > 0 ? (item.value / total) * 100 : 0;
 

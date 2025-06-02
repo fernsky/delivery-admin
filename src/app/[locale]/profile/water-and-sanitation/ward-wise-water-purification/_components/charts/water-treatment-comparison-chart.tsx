@@ -62,7 +62,7 @@ export default function WaterTreatmentComparisonChart({
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="font-medium">{label}</p>
+          <p className="font-medium">{localizeNumber(label, "ne")}</p>
           <div className="space-y-1 mt-2">
             <div className="flex items-center gap-2">
               <div

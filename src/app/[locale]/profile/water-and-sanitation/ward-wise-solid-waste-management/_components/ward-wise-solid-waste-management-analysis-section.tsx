@@ -3,48 +3,64 @@ import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface WardWiseSolidWasteManagementAnalysisSectionProps {
   totalHouseholds: number;
-  wasteManagementGroupTotals: Record<string, number>;
-  wasteManagementGroupPercentages: Record<string, number>;
   wasteManagementTotals: Record<string, number>;
+  wasteManagementPercentages: Record<string, number>;
   sourceMap: Record<string, string>;
-  wardWiseFormalCollectionPercentage: Array<{
+  wardWiseHomeCollectionPercentage: Array<{
     wardNumber: number;
     percentage: number;
   }>;
-  highestFormalCollectionWard: {
+  highestHomeCollectionWard: {
     wardNumber: number;
     percentage: number;
   };
-  lowestFormalCollectionWard: {
+  lowestHomeCollectionWard: {
     wardNumber: number;
     percentage: number;
   };
-  WASTE_MANAGEMENT_GROUPS: Record<string, {
-    name: string;
-    nameEn: string;
-    color: string;
-    sources: string[];
-  }>;
+  WASTE_MANAGEMENT_COLORS: Record<string, string>;
 }
 
 export default function WardWiseSolidWasteManagementAnalysisSection({
   totalHouseholds,
-  wasteManagementGroupTotals,
-  wasteManagementGroupPercentages,
   wasteManagementTotals,
+  wasteManagementPercentages,
   sourceMap,
-  wardWiseFormalCollectionPercentage,
-  highestFormalCollectionWard,
-  lowestFormalCollectionWard,
-  WASTE_MANAGEMENT_GROUPS,
+  wardWiseHomeCollectionPercentage,
+  highestHomeCollectionWard,
+  lowestHomeCollectionWard,
+  WASTE_MANAGEMENT_COLORS,
 }: WardWiseSolidWasteManagementAnalysisSectionProps) {
+  // Group waste management methods into categories for environmental impact calculation
+  const environmentallyFriendlyMethods = ["HOME_COLLECTION", "WASTE_COLLECTING_PLACE", "COMPOST_MANURE"];
+  const moderateImpactMethods = ["DIGGING"];
+  const highImpactMethods = ["BURNING", "RIVER", "ROAD_OR_PUBLIC_PLACE"];
+  
   // Calculate environmental impact score based on waste management types
   // Different waste management methods have different weights for environmental impact calculation
-  const environmentalImpactScore = 
-    (wasteManagementGroupPercentages.FORMAL_COLLECTION * 1.0) + 
-    (wasteManagementGroupPercentages.SELF_MANAGED * 0.7) + 
-    (wasteManagementGroupPercentages.IMPROPER_DISPOSAL * 0.1) + 
-    (wasteManagementGroupPercentages.OTHER_METHODS * 0.5);
+  let environmentalImpactScore = 0;
+  let totalWeightedScore = 0;
+  
+  // Calculate weighted environmental score
+  Object.entries(wasteManagementTotals).forEach(([method, count]) => {
+    const percentage = wasteManagementPercentages[method] || 0;
+    
+    if (environmentallyFriendlyMethods.includes(method)) {
+      environmentalImpactScore += percentage * 1.0;
+    } else if (moderateImpactMethods.includes(method)) {
+      environmentalImpactScore += percentage * 0.7;
+    } else if (highImpactMethods.includes(method)) {
+      environmentalImpactScore += percentage * 0.1;
+    } else {
+      environmentalImpactScore += percentage * 0.5; // OTHER methods
+    }
+    
+    totalWeightedScore += percentage;
+  });
+  
+  // Normalize to 0-100 scale
+  environmentalImpactScore = totalWeightedScore > 0 ? 
+    (environmentalImpactScore / totalWeightedScore) * 100 : 0;
   
   // Determine environmental impact level based on score
   const environmentalImpactLevel = 
@@ -68,9 +84,9 @@ export default function WardWiseSolidWasteManagementAnalysisSection({
   const seoAttributes = {
     "data-municipality": "Khajura Rural Municipality / खजुरा गाउँपालिका",
     "data-total-households": totalHouseholds.toString(),
-    "data-formal-collection-rate": wasteManagementGroupPercentages.FORMAL_COLLECTION.toFixed(2),
-    "data-highest-formal-collection-ward": highestFormalCollectionWard?.wardNumber.toString() || "",
-    "data-lowest-formal-collection-ward": lowestFormalCollectionWard?.wardNumber.toString() || "",
+    "data-home-collection-rate": (wasteManagementPercentages["HOME_COLLECTION"] || 0).toFixed(2),
+    "data-highest-home-collection-ward": highestHomeCollectionWard?.wardNumber.toString() || "",
+    "data-lowest-home-collection-ward": lowestHomeCollectionWard?.wardNumber.toString() || "",
     "data-environmental-impact-score": environmentalImpactScore.toFixed(2),
   };
 
@@ -80,44 +96,47 @@ export default function WardWiseSolidWasteManagementAnalysisSection({
         className="mt-6 flex flex-wrap gap-4 justify-center"
         {...seoAttributes}
       >
-        {Object.keys(WASTE_MANAGEMENT_GROUPS).map((groupKey) => {
-          const group = WASTE_MANAGEMENT_GROUPS[groupKey as keyof typeof WASTE_MANAGEMENT_GROUPS];
-          const percentage = wasteManagementGroupPercentages[groupKey];
-          const total = wasteManagementGroupTotals[groupKey];
-          
-          return (
-            <div 
-              key={groupKey}
-              className="bg-muted/50 rounded-lg p-4 text-center min-w-[180px] relative overflow-hidden"
-            >
-              <div
-                className="absolute bottom-0 left-0 right-0"
-                style={{
-                  height: `${percentage}%`,
-                  backgroundColor: group.color,
-                  opacity: 0.2,
-                  zIndex: 0,
-                }}
-              ></div>
-              <div className="relative z-10">
-                <h3 className="text-lg font-medium mb-2">
-                  {group.name}
-                  <span className="sr-only">
-                    {group.nameEn}
-                  </span>
-                </h3>
-                <p className="text-2xl font-bold">
-                  {localizeNumber(percentage.toFixed(2), "ne")}%
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {localizeNumber(total.toLocaleString(), "ne")} घरधुरी
-                  <span className="sr-only">
-                    ({total.toLocaleString()} households)
-                  </span>
-                </p>
+        {Object.entries(wasteManagementTotals)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 4) // Show top 4 methods
+          .map(([method, total]) => {
+            const percentage = wasteManagementPercentages[method] || 0;
+            const name = sourceMap[method] || method;
+            const color = WASTE_MANAGEMENT_COLORS[method] || "#6B7280";
+            
+            return (
+              <div 
+                key={method}
+                className="bg-muted/50 rounded-lg p-4 text-center min-w-[180px] relative overflow-hidden"
+              >
+                <div
+                  className="absolute bottom-0 left-0 right-0"
+                  style={{
+                    height: `${percentage}%`,
+                    backgroundColor: color,
+                    opacity: 0.2,
+                    zIndex: 0,
+                  }}
+                ></div>
+                <div className="relative z-10">
+                  <h3 className="text-lg font-medium mb-2">
+                    {name}
+                    <span className="sr-only">
+                      {method}
+                    </span>
+                  </h3>
+                  <p className="text-2xl font-bold">
+                    {localizeNumber(percentage.toFixed(2), "ne")}%
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {localizeNumber(total.toLocaleString(), "ne")} घरधुरी
+                    <span className="sr-only">
+                      ({total.toLocaleString()} households)
+                    </span>
+                  </p>
+                </div>
               </div>
-            </div>
-          );
+            );
         })}
       </div>
 
@@ -132,32 +151,32 @@ export default function WardWiseSolidWasteManagementAnalysisSection({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div
             className="bg-card p-4 rounded border"
-            data-analysis-type="highest-formal-collection"
-            data-ward-number={highestFormalCollectionWard?.wardNumber}
-            data-percentage={highestFormalCollectionWard?.percentage.toFixed(2)}
+            data-analysis-type="highest-home-collection"
+            data-ward-number={highestHomeCollectionWard?.wardNumber}
+            data-percentage={highestHomeCollectionWard?.percentage.toFixed(2)}
           >
             <h4 className="font-medium mb-2">
-              औपचारिक फोहोर संकलन बढी भएको वडा
+              घरमै फोहोर संकलन बढी भएको वडा
               <span className="sr-only">
-                Ward with Highest Formal Waste Collection in Khajura Rural Municipality
+                Ward with Highest Home Waste Collection in Khajura Rural Municipality
               </span>
             </h4>
-            {highestFormalCollectionWard && (
+            {highestHomeCollectionWard && (
               <div className="flex items-center gap-3">
                 <div
                   className="w-4 h-16 rounded"
                   style={{
-                    backgroundColor: WASTE_MANAGEMENT_GROUPS.FORMAL_COLLECTION.color,
+                    backgroundColor: WASTE_MANAGEMENT_COLORS["HOME_COLLECTION"],
                   }}
                 ></div>
                 <div>
                   <p className="text-2xl font-bold">
-                    वडा {localizeNumber(highestFormalCollectionWard.wardNumber.toString(), "ne")}
+                    वडा {localizeNumber(highestHomeCollectionWard.wardNumber.toString(), "ne")}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    औपचारिक संकलन दर: {localizeNumber(highestFormalCollectionWard.percentage.toFixed(2), "ne")}%
+                    घरमै संकलन दर: {localizeNumber(highestHomeCollectionWard.percentage.toFixed(2), "ne")}%
                     <span className="sr-only">
-                      {highestFormalCollectionWard.percentage.toFixed(2)}% formal collection rate
+                      {highestHomeCollectionWard.percentage.toFixed(2)}% home collection rate
                     </span>
                   </p>
                 </div>
@@ -168,7 +187,7 @@ export default function WardWiseSolidWasteManagementAnalysisSection({
               <h5 className="text-sm font-medium">विशेषताहरू</h5>
               <div className="mt-2 space-y-2">
                 <p className="text-sm">
-                  यस वडामा औपचारिक फोहोर संकलन प्रणालीको पहुँच सबैभन्दा बढी रहेको छ, जुन पालिकाको औसतभन्दा {localizeNumber((highestFormalCollectionWard.percentage - wasteManagementGroupPercentages.FORMAL_COLLECTION).toFixed(2), "ne")}% ले उच्च छ।
+                  यस वडामा घरमै फोहोर संकलन प्रणालीको पहुँच सबैभन्दा बढी रहेको छ, जुन पालिकाको औसतभन्दा {localizeNumber((highestHomeCollectionWard.percentage - (wasteManagementPercentages["HOME_COLLECTION"] || 0)).toFixed(2), "ne")}% ले उच्च छ।
                 </p>
                 <p className="text-sm">
                   यसले यस वडामा फोहोरमैला व्यवस्थापनको राम्रो संरचना र प्रभावकारी नीति रहेको संकेत गर्दछ।
@@ -179,30 +198,30 @@ export default function WardWiseSolidWasteManagementAnalysisSection({
 
           <div
             className="bg-card p-4 rounded border"
-            data-analysis-type="lowest-formal-collection"
-            data-ward-number={lowestFormalCollectionWard?.wardNumber}
-            data-percentage={lowestFormalCollectionWard?.percentage.toFixed(2)}
+            data-analysis-type="lowest-home-collection"
+            data-ward-number={lowestHomeCollectionWard?.wardNumber}
+            data-percentage={lowestHomeCollectionWard?.percentage.toFixed(2)}
           >
             <h4 className="font-medium mb-2">
-              औपचारिक फोहोर संकलन कम भएको वडा
-              <span className="sr-only">Ward with Low Formal Waste Collection in Khajura</span>
+              घरमै फोहोर संकलन कम भएको वडा
+              <span className="sr-only">Ward with Low Home Waste Collection in Khajura</span>
             </h4>
-            {lowestFormalCollectionWard && (
+            {lowestHomeCollectionWard && (
               <div className="flex items-center gap-3">
                 <div
                   className="w-4 h-16 rounded"
                   style={{
-                    backgroundColor: WASTE_MANAGEMENT_GROUPS.IMPROPER_DISPOSAL.color,
+                    backgroundColor: WASTE_MANAGEMENT_COLORS["RIVER"],
                   }}
                 ></div>
                 <div>
                   <p className="text-2xl font-bold">
-                    वडा {localizeNumber(lowestFormalCollectionWard.wardNumber.toString(), "ne")}
+                    वडा {localizeNumber(lowestHomeCollectionWard.wardNumber.toString(), "ne")}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    औपचारिक संकलन दर: {localizeNumber(lowestFormalCollectionWard.percentage.toFixed(2), "ne")}%
+                    घरमै संकलन दर: {localizeNumber(lowestHomeCollectionWard.percentage.toFixed(2), "ne")}%
                     <span className="sr-only">
-                      {lowestFormalCollectionWard.percentage.toFixed(2)}% formal collection rate
+                      {lowestHomeCollectionWard.percentage.toFixed(2)}% home collection rate
                     </span>
                   </p>
                 </div>
@@ -213,7 +232,7 @@ export default function WardWiseSolidWasteManagementAnalysisSection({
               <h5 className="text-sm font-medium">सुधार आवश्यक क्षेत्र</h5>
               <div className="mt-2 p-3 bg-amber-50 rounded-lg border border-amber-100">
                 <p className="text-sm">
-                  यस वडामा औपचारिक फोहोर संकलन सेवा अत्यन्त कम रहेकाले फोहोर व्यवस्थापन सेवा विस्तार गर्नुपर्ने आवश्यकता देखिन्छ। यहाँ नदी वा सडकमा फोहोर फाल्ने प्रवृत्ति बढी हुन सक्ने जोखिम रहेको छ।
+                  यस वडामा घरमै फोहोर संकलन सेवा अत्यन्त कम रहेकाले फोहोर व्यवस्थापन सेवा विस्तार गर्नुपर्ने आवश्यकता देखिन्छ। यहाँ नदी वा सडकमा फोहोर फाल्ने प्रवृत्ति बढी हुन सक्ने जोखिम रहेको छ।
                 </p>
               </div>
             </div>
@@ -236,13 +255,13 @@ export default function WardWiseSolidWasteManagementAnalysisSection({
               <p className="flex gap-2">
                 <span className="text-blue-500">•</span>
                 <span>
-                  <strong>सूचकाङ्क विवरण:</strong> वातावरणीय प्रभाव सूचकाङ्क विभिन्न फोहोर व्यवस्थापन विधिहरूको भारित औसतमा आधारित छ, जसमा औपचारिक संकलन र स्व-व्यवस्थापनलाई बढी भार दिइएको छ।
+                  <strong>सूचकाङ्क विवरण:</strong> वातावरणीय प्रभाव सूचकाङ्क विभिन्न फोहोर व्यवस्थापन विधिहरूको भारित औसतमा आधारित छ, जसमा घरमै संकलन र कम्पोस्ट मल विधिलाई बढी भार दिइएको छ।
                 </span>
               </p>
               <p className="flex gap-2">
                 <span className="text-blue-500">•</span>
                 <span>
-                  <strong>व्याख्या:</strong> {localizeNumber((environmentalImpactScore).toFixed(1), "ne")} अंकले {environmentalImpactLevel} वातावरणीय प्रभाव दर्शाउँछ। सुधारका लागि अनुचित निष्कासन विधिहरू न्यूनीकरण गर्दै औपचारिक र वैज्ञानिक फोहोर व्यवस्थापन विधिहरू प्रवर्द्धन गर्नुपर्छ।
+                  <strong>व्याख्या:</strong> {localizeNumber((environmentalImpactScore).toFixed(1), "ne")} अंकले {environmentalImpactLevel} वातावरणीय प्रभाव दर्शाउँछ। सुधारका लागि अनुचित निष्कासन विधिहरू न्यूनीकरण गर्दै घरमै संकलन र वैज्ञानिक फोहोर व्यवस्थापन विधिहरू प्रवर्द्धन गर्नुपर्छ।
                 </span>
               </p>
             </div>
@@ -259,15 +278,7 @@ export default function WardWiseSolidWasteManagementAnalysisSection({
                   .slice(0, 3)
                   .map(([method, count], index) => {
                     const percentage = ((count / totalHouseholds) * 100).toFixed(2);
-                    let color = "#6B7280"; // Default gray
-                    
-                    // Find which group this method belongs to
-                    for (const [key, group] of Object.entries(WASTE_MANAGEMENT_GROUPS)) {
-                      if (group.sources.includes(method)) {
-                        color = group.color;
-                        break;
-                      }
-                    }
+                    const color = WASTE_MANAGEMENT_COLORS[method] || "#6B7280";
                     
                     return (
                       <div key={method}>
@@ -294,25 +305,25 @@ export default function WardWiseSolidWasteManagementAnalysisSection({
               </div>
 
               <div className="mt-4 pt-3 border-t">
-                <h5 className="font-medium mb-2">औपचारिक फोहोर संकलनको अवस्था</h5>
+                <h5 className="font-medium mb-2">घरमै फोहोर संकलनको अवस्था</h5>
                 <div className="flex justify-between text-sm">
                   <span>
                     <span 
                       className="inline-block w-2 h-2 rounded-full mr-2" 
-                      style={{ backgroundColor: WASTE_MANAGEMENT_GROUPS.FORMAL_COLLECTION.color }}
+                      style={{ backgroundColor: WASTE_MANAGEMENT_COLORS["HOME_COLLECTION"] }}
                     ></span>
-                    औपचारिक संकलन
+                    घरमै संकलन
                   </span>
                   <span className="font-medium">
-                    {localizeNumber(wasteManagementGroupPercentages.FORMAL_COLLECTION.toFixed(2), "ne")}%
+                    {localizeNumber((wasteManagementPercentages["HOME_COLLECTION"] || 0).toFixed(2), "ne")}%
                   </span>
                 </div>
                 <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{
-                      width: `${wasteManagementGroupPercentages.FORMAL_COLLECTION}%`,
-                      backgroundColor: WASTE_MANAGEMENT_GROUPS.FORMAL_COLLECTION.color,
+                      width: `${wasteManagementPercentages["HOME_COLLECTION"] || 0}%`,
+                      backgroundColor: WASTE_MANAGEMENT_COLORS["HOME_COLLECTION"],
                     }}
                   ></div>
                 </div>

@@ -34,27 +34,26 @@ export type UpdateWardWiseWaterPurificationData = WardWiseWaterPurificationData;
 export type WardWiseWaterPurificationFilter = z.infer<
   typeof wardWiseWaterPurificationFilterSchema
 >;
-
 // Export the water purification options for use in UI components
 export const waterPurificationOptions = [
   {
     value: "BOILING",
-    label: "Boiling (उमाल्ने)",
+    label: "उमाल्ने",
   },
   {
     value: "FILTERING",
-    label: "Filtering (फिल्टर गर्ने)",
+    label: "फिल्टर गर्ने",
   },
   {
     value: "CHEMICAL_PIYUSH",
-    label: "Chemical treatment (e.g., Piyush) (औषधी (पियुष आदि) राख्ने)",
+    label: "औषधी (पियुष आदि) राख्ने",
   },
   {
     value: "NO_ANY_FILTERING",
-    label: "No treatment/direct consumption (केही नगर्ने/सिधै खाने)",
+    label: "केही नगर्ने/सिधै खाने",
   },
   {
     value: "OTHER",
-    label: "Other methods (e.g., SODIS) (अन्य विधि अपनाउने (जस्तै सोडिस))",
+    label: "अन्य विधि अपनाउने (जस्तै सोडिस)",
   },
 ];

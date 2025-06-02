@@ -9,43 +9,16 @@ import WardWiseSolidWasteManagementAnalysisSection from "./_components/ward-wise
 import WardWiseSolidWasteManagementSEO from "./_components/ward-wise-solid-waste-management-seo";
 import { solidWasteManagementOptions } from "@/server/api/routers/profile/water-and-sanitation/ward-wise-solid-waste-management.schema";
 
-const WASTE_MANAGEMENT_GROUPS = {
-  FORMAL_COLLECTION: {
-    name: "औपचारिक संकलन",
-    nameEn: "Formal Collection",
-    color: "#4285F4", // Blue
-    sources: [
-      "HOME_COLLECTION",
-      "WASTE_COLLECTING_PLACE"
-    ]
-  },
-  SELF_MANAGED: {
-    name: "स्व-व्यवस्थापन",
-    nameEn: "Self-Managed",
-    color: "#34A853", // Green
-    sources: [
-      "BURNING",
-      "DIGGING",
-      "COMPOST_MANURE"
-    ]
-  },
-  IMPROPER_DISPOSAL: {
-    name: "अनुचित निष्कासन",
-    nameEn: "Improper Disposal",
-    color: "#EA4335", // Red
-    sources: [
-      "RIVER",
-      "ROAD_OR_PUBLIC_PLACE"
-    ]
-  },
-  OTHER_METHODS: {
-    name: "अन्य विधिहरू",
-    nameEn: "Other Methods",
-    color: "#FBBC05", // Yellow
-    sources: [
-      "OTHER"
-    ]
-  }
+// Define colors for each waste management method
+const WASTE_MANAGEMENT_COLORS = {
+  "HOME_COLLECTION": "#4285F4", // Blue
+  "WASTE_COLLECTING_PLACE": "#5E97F6", // Light Blue
+  "BURNING": "#34A853", // Green
+  "DIGGING": "#26C281", // Light Green
+  "COMPOST_MANURE": "#16A085", // Teal
+  "RIVER": "#EA4335", // Red
+  "ROAD_OR_PUBLIC_PLACE": "#FF6D01", // Orange
+  "OTHER": "#FBBC05" // Yellow
 };
 
 // Force dynamic rendering since we're using tRPC which relies on headers
@@ -75,41 +48,41 @@ export async function generateMetadata(): Promise<Metadata> {
 
     // Calculate ward totals and grand total
     let totalHouseholds = 0;
-    let formalCollectionHouseholds = 0;
+    let homeCollectionHouseholds = 0;
 
     Object.values(wardGroups).forEach((wardData: any) => {
       wardData.forEach((item: any) => {
         totalHouseholds += item.households;
-        if (WASTE_MANAGEMENT_GROUPS.FORMAL_COLLECTION.sources.includes(item.solidWasteManagement)) {
-          formalCollectionHouseholds += item.households;
+        if (item.solidWasteManagement === "HOME_COLLECTION") {
+          homeCollectionHouseholds += item.households;
         }
       });
     });
 
     // Calculate percentages for SEO description
-    const formalCollectionPercentage = ((formalCollectionHouseholds / totalHouseholds) * 100).toFixed(2);
+    const homeCollectionPercentage = ((homeCollectionHouseholds / totalHouseholds) * 100).toFixed(2);
 
     // Create rich keywords
     const keywordsNP = [
       "खजुरा गाउँपालिका फोहोर व्यवस्थापन",
       "वडागत फोहोरमैला व्यवस्थापन",
-      "औपचारिक फोहोर संकलन",
-      `औपचारिक फोहोर संकलन ${formalCollectionPercentage}%`,
+      "घरमै फोहोर संकलन",
+      `घरमै फोहोर संकलन ${homeCollectionPercentage}%`,
       "फोहोरमैला व्यवस्थापन विश्लेषण",
     ];
 
     const keywordsEN = [
       "Khajura Rural Municipality solid waste management",
       "Ward-wise solid waste management",
-      "Formal waste collection",
-      `Formal waste collection ${formalCollectionPercentage}%`,
+      "Home waste collection",
+      `Home waste collection ${homeCollectionPercentage}%`,
       "Solid waste management analysis",
     ];
 
     // Create description
-    const descriptionNP = `खजुरा गाउँपालिकामा फोहोरमैला व्यवस्थापनको वडागत विश्लेषण। कुल ${localizeNumber(totalHouseholds.toLocaleString(), "ne")} घरधुरी मध्ये ${localizeNumber(formalCollectionPercentage, "ne")}% (${localizeNumber(formalCollectionHouseholds.toLocaleString(), "ne")}) घरधुरीले औपचारिक संकलन विधि प्रयोग गर्दछन्।`;
+    const descriptionNP = `खजुरा गाउँपालिकामा फोहोरमैला व्यवस्थापनको वडागत विश्लेषण। कुल ${localizeNumber(totalHouseholds.toLocaleString(), "ne")} घरधुरी मध्ये ${localizeNumber(homeCollectionPercentage, "ne")}% (${localizeNumber(homeCollectionHouseholds.toLocaleString(), "ne")}) घरधुरीले घरमै फोहोर संकलन विधि प्रयोग गर्दछन्।`;
 
-    const descriptionEN = `Ward-wise analysis of solid waste management in Khajura Rural Municipality. Out of a total of ${totalHouseholds.toLocaleString()} households, ${formalCollectionPercentage}% (${formalCollectionHouseholds.toLocaleString()}) households use formal waste collection methods.`;
+    const descriptionEN = `Ward-wise analysis of solid waste management in Khajura Rural Municipality. Out of a total of ${totalHouseholds.toLocaleString()} households, ${homeCollectionPercentage}% (${homeCollectionHouseholds.toLocaleString()}) households use home waste collection methods.`;
 
     return {
       title: `फोहोरमैला व्यवस्थापन | ${municipalityName} डिजिटल प्रोफाइल`,
@@ -180,16 +153,8 @@ export default async function WardWiseSolidWasteManagementPage() {
     sourceMap[option.value] = option.label.split(" (")[0];
   });
 
-  // Calculate totals by waste management group
+  // Calculate totals for each waste management method
   let totalHouseholds = 0;
-  const wasteManagementGroupTotals: Record<string, number> = {
-    FORMAL_COLLECTION: 0,
-    SELF_MANAGED: 0,
-    IMPROPER_DISPOSAL: 0,
-    OTHER_METHODS: 0
-  };
-
-  // Count by individual waste management method
   const wasteManagementTotals: Record<string, number> = {};
 
   Object.values(wardGroups).forEach((wardData: any) => {
@@ -204,35 +169,26 @@ export default async function WardWiseSolidWasteManagementPage() {
       
       // Add to source totals
       wasteManagementTotals[item.solidWasteManagement] += item.households;
-      
-      // Add to group totals
-      for (const groupKey of Object.keys(WASTE_MANAGEMENT_GROUPS)) {
-        if (WASTE_MANAGEMENT_GROUPS[groupKey as keyof typeof WASTE_MANAGEMENT_GROUPS].sources.includes(item.solidWasteManagement)) {
-          wasteManagementGroupTotals[groupKey] += item.households;
-          break;
-        }
-      }
     });
   });
 
-  // Calculate percentages
-  const wasteManagementGroupPercentages: Record<string, number> = {};
-  Object.keys(wasteManagementGroupTotals).forEach(group => {
-    wasteManagementGroupPercentages[group] = parseFloat(((wasteManagementGroupTotals[group] / totalHouseholds) * 100).toFixed(2));
+  // Calculate percentages for each waste management method
+  const wasteManagementPercentages: Record<string, number> = {};
+  Object.keys(wasteManagementTotals).forEach(method => {
+    wasteManagementPercentages[method] = parseFloat(((wasteManagementTotals[method] / totalHouseholds) * 100).toFixed(2));
   });
 
   // Get unique ward numbers
   const wardNumbers = Object.keys(wardGroups).map(Number).sort((a, b) => a - b);
 
   // Process data for pie chart
-  const pieChartData = Object.keys(WASTE_MANAGEMENT_GROUPS).map(groupKey => {
-    const group = WASTE_MANAGEMENT_GROUPS[groupKey as keyof typeof WASTE_MANAGEMENT_GROUPS];
+  const pieChartData = Object.keys(wasteManagementTotals).map(methodKey => {
     return {
-      name: group.name,
-      nameEn: group.nameEn,
-      value: wasteManagementGroupTotals[groupKey],
-      percentage: wasteManagementGroupPercentages[groupKey].toFixed(2),
-      color: group.color,
+      name: sourceMap[methodKey] || methodKey,
+      nameEn: methodKey,
+      value: wasteManagementTotals[methodKey],
+      percentage: wasteManagementPercentages[methodKey].toFixed(2),
+      color: WASTE_MANAGEMENT_COLORS[methodKey as keyof typeof WASTE_MANAGEMENT_COLORS] || "#6B7280",
     };
   });
 
@@ -244,36 +200,34 @@ export default async function WardWiseSolidWasteManagementPage() {
     
     const totalWardHouseholds = wardData.reduce((sum: number, item: any) => sum + item.households, 0);
     
-    // Calculate ward-level totals for each waste management group
-    const wardWasteManagementGroups: Record<string, number> = {};
-    Object.keys(WASTE_MANAGEMENT_GROUPS).forEach(groupKey => {
-      const group = WASTE_MANAGEMENT_GROUPS[groupKey as keyof typeof WASTE_MANAGEMENT_GROUPS];
-      const groupTotal = wardData
-        .filter((item: any) => group.sources.includes(item.solidWasteManagement))
-        .reduce((sum: number, item: any) => sum + item.households, 0);
-      
-      wardWasteManagementGroups[group.name] = groupTotal;
+    // Calculate ward-level totals for each waste management method
+    const wardWasteManagementTotals: Record<string, number> = {};
+    wardData.forEach((item: any) => {
+      const methodName = sourceMap[item.solidWasteManagement] || item.solidWasteManagement;
+      wardWasteManagementTotals[methodName] = (wardWasteManagementTotals[methodName] || 0) + item.households;
     });
     
     return {
       ward: `वडा ${wardNumber}`,
       wardNumber,
-      ...wardWasteManagementGroups,
+      ...wardWasteManagementTotals,
       total: totalWardHouseholds,
     };
   }).filter(Boolean);
 
-  // Find the ward with highest formal collection percentage
-  const wardFormalCollectionPercentages = wardWiseData.map((ward: any) => {
-    const formalCollectionPercentage = (ward[WASTE_MANAGEMENT_GROUPS.FORMAL_COLLECTION.name] / ward.total) * 100;
+  // Find the ward with highest home collection percentage
+  const wardHomeCollectionPercentages = wardWiseData.map((ward: any) => {
+    const methodName = sourceMap["HOME_COLLECTION"] || "HOME_COLLECTION";
+    const homeCollectionHouseholds = ward[methodName] || 0;
+    const homeCollectionPercentage = (homeCollectionHouseholds / ward.total) * 100;
     return {
       wardNumber: ward.wardNumber,
-      percentage: formalCollectionPercentage
+      percentage: homeCollectionPercentage
     };
   });
   
-  const highestFormalCollectionWard = [...wardFormalCollectionPercentages].sort((a, b) => b.percentage - a.percentage)[0];
-  const lowestFormalCollectionWard = [...wardFormalCollectionPercentages].sort((a, b) => a.percentage - b.percentage)[0];
+  const highestHomeCollectionWard = [...wardHomeCollectionPercentages].sort((a, b) => b.percentage - a.percentage)[0];
+  const lowestHomeCollectionWard = [...wardHomeCollectionPercentages].sort((a, b) => a.percentage - b.percentage)[0];
 
   return (
     <DocsLayout toc={<TableOfContents toc={toc} />}>
@@ -281,12 +235,13 @@ export default async function WardWiseSolidWasteManagementPage() {
       <WardWiseSolidWasteManagementSEO
         wardWiseSolidWasteManagementData={wardWiseSolidWasteManagementData}
         totalHouseholds={totalHouseholds}
-        wasteManagementGroupTotals={wasteManagementGroupTotals}
-        wasteManagementGroupPercentages={wasteManagementGroupPercentages}
-        highestFormalCollectionWard={highestFormalCollectionWard}
-        lowestFormalCollectionWard={lowestFormalCollectionWard}
-        WASTE_MANAGEMENT_GROUPS={WASTE_MANAGEMENT_GROUPS}
+        wasteManagementTotals={wasteManagementTotals}
+        wasteManagementPercentages={wasteManagementPercentages}
+        highestHomeCollectionWard={highestHomeCollectionWard}
+        lowestHomeCollectionWard={lowestHomeCollectionWard}
+        WASTE_MANAGEMENT_COLORS={WASTE_MANAGEMENT_COLORS}
         wardNumbers={wardNumbers}
+        sourceMap={sourceMap}
       />
 
       <div className="flex flex-col gap-8">
@@ -317,9 +272,10 @@ export default async function WardWiseSolidWasteManagementPage() {
             </p>
             <p>
               खजुरा गाउँपालिकामा कुल {localizeNumber(totalHouseholds.toLocaleString(), "ne")} घरधुरीहरू मध्ये 
-              {localizeNumber(wasteManagementGroupPercentages.FORMAL_COLLECTION.toFixed(2), "ne")}% ले औपचारिक संकलन, 
-              {localizeNumber(wasteManagementGroupPercentages.SELF_MANAGED.toFixed(2), "ne")}% ले स्व-व्यवस्थापन, र 
-              {localizeNumber(wasteManagementGroupPercentages.IMPROPER_DISPOSAL.toFixed(2), "ne")}% ले अनुचित निष्कासन विधि अपनाउँछन्।
+              {wasteManagementTotals.HOME_COLLECTION ? ` ${localizeNumber(wasteManagementPercentages.HOME_COLLECTION.toFixed(2), "ne")}% ले घरमै फोहोर संकलन,` : ""}
+              {wasteManagementTotals.BURNING ? ` ${localizeNumber(wasteManagementPercentages.BURNING.toFixed(2), "ne")}% ले जलाउने,` : ""}
+              {wasteManagementTotals.RIVER ? ` ${localizeNumber(wasteManagementPercentages.RIVER.toFixed(2), "ne")}% ले नदीमा बिसर्जन` : ""}
+              जस्ता विधिहरू अपनाउँछन्।
             </p>
 
             <h2
@@ -340,12 +296,11 @@ export default async function WardWiseSolidWasteManagementPage() {
             totalHouseholds={totalHouseholds}
             wasteManagementTotals={wasteManagementTotals}
             sourceMap={sourceMap}
-            wasteManagementGroupTotals={wasteManagementGroupTotals}
-            wasteManagementGroupPercentages={wasteManagementGroupPercentages}
-            wardWiseFormalCollectionPercentage={wardFormalCollectionPercentages}
-            highestFormalCollectionWard={highestFormalCollectionWard}
-            lowestFormalCollectionWard={lowestFormalCollectionWard}
-            WASTE_MANAGEMENT_GROUPS={WASTE_MANAGEMENT_GROUPS}
+            wasteManagementPercentages={wasteManagementPercentages}
+            wardWiseHomeCollectionPercentage={wardHomeCollectionPercentages}
+            highestHomeCollectionWard={highestHomeCollectionWard}
+            lowestHomeCollectionWard={lowestHomeCollectionWard}
+            WASTE_MANAGEMENT_COLORS={WASTE_MANAGEMENT_COLORS}
           />
 
           <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
@@ -354,22 +309,21 @@ export default async function WardWiseSolidWasteManagementPage() {
             </h2>
             <p>
               खजुरा गाउँपालिकामा फोहोरमैला व्यवस्थापनको विश्लेषण गर्दा, समग्रमा 
-              {localizeNumber(wasteManagementGroupPercentages.FORMAL_COLLECTION.toFixed(2), "ne")}% घरधुरीले औपचारिक फोहोर संकलन विधि अपनाउँछन्।
-              वडागत रूपमा हेर्दा वडा नं. {localizeNumber(highestFormalCollectionWard.wardNumber.toString(), "ne")} मा 
-              सबैभन्दा बढी {localizeNumber(highestFormalCollectionWard.percentage.toFixed(2), "ne")}% 
-              घरधुरीले औपचारिक फोहोर संकलन प्रणाली प्रयोग गर्दछन्।
+              {wasteManagementTotals.HOME_COLLECTION ? ` ${localizeNumber(wasteManagementPercentages.HOME_COLLECTION.toFixed(2), "ne")}% घरधुरीले घरमै फोहोर संकलन विधि अपनाउँछन्।` : ""}
+              वडागत रूपमा हेर्दा वडा नं. {localizeNumber(highestHomeCollectionWard?.wardNumber.toString() || "", "ne")} मा 
+              सबैभन्दा बढी {localizeNumber(highestHomeCollectionWard?.percentage.toFixed(2) || "", "ne")}% 
+              घरधुरीले घरमै फोहोर संकलन प्रणाली प्रयोग गर्दछन्।
             </p>
 
             <WardWiseSolidWasteManagementAnalysisSection
               totalHouseholds={totalHouseholds}
-              wasteManagementGroupTotals={wasteManagementGroupTotals}
-              wasteManagementGroupPercentages={wasteManagementGroupPercentages}
               wasteManagementTotals={wasteManagementTotals}
+              wasteManagementPercentages={wasteManagementPercentages}
+              wardWiseHomeCollectionPercentage={wardHomeCollectionPercentages}
+              highestHomeCollectionWard={highestHomeCollectionWard}
+              lowestHomeCollectionWard={lowestHomeCollectionWard}
+              WASTE_MANAGEMENT_COLORS={WASTE_MANAGEMENT_COLORS}
               sourceMap={sourceMap}
-              wardWiseFormalCollectionPercentage={wardFormalCollectionPercentages}
-              highestFormalCollectionWard={highestFormalCollectionWard}
-              lowestFormalCollectionWard={lowestFormalCollectionWard}
-              WASTE_MANAGEMENT_GROUPS={WASTE_MANAGEMENT_GROUPS}
             />
 
             <h2
@@ -388,8 +342,8 @@ export default async function WardWiseSolidWasteManagementPage() {
               <div className="flex">
                 <span className="font-bold mr-2">१.</span>
                 <div>
-                  <strong>औपचारिक फोहोर संकलन विस्तार:</strong> वडा नं. {localizeNumber(lowestFormalCollectionWard.wardNumber.toString(), "ne")} जस्ता 
-                  कम औपचारिक संकलन भएका वडाहरूमा घर-घरमा फोहोर संकलन सेवा विस्तार गर्ने।
+                  <strong>घरमै फोहोर संकलन विस्तार:</strong> वडा नं. {localizeNumber(lowestHomeCollectionWard?.wardNumber.toString() || "", "ne")} जस्ता 
+                  कम घरमै फोहोर संकलन भएका वडाहरूमा घर-घरमा फोहोर संकलन सेवा विस्तार गर्ने।
                 </div>
               </div>
               <div className="flex">

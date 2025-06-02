@@ -14,43 +14,38 @@ import {
 import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface SolidWasteManagementComparisonChartProps {
-  wardWiseFormalCollectionPercentage: Array<{
+  wardWiseHomeCollectionPercentage: Array<{
     wardNumber: number;
     percentage: number;
   }>;
-  highestFormalCollectionWard: {
+  highestHomeCollectionWard: {
     wardNumber: number;
     percentage: number;
   };
-  lowestFormalCollectionWard: {
+  lowestHomeCollectionWard: {
     wardNumber: number;
     percentage: number;
   };
-  WASTE_MANAGEMENT_GROUPS: Record<string, {
-    name: string;
-    nameEn: string;
-    color: string;
-    sources: string[];
-  }>;
+  WASTE_MANAGEMENT_COLORS: Record<string, string>;
 }
 
 export default function SolidWasteManagementComparisonChart({
-  wardWiseFormalCollectionPercentage,
-  highestFormalCollectionWard,
-  lowestFormalCollectionWard,
-  WASTE_MANAGEMENT_GROUPS,
+  wardWiseHomeCollectionPercentage,
+  highestHomeCollectionWard,
+  lowestHomeCollectionWard,
+  WASTE_MANAGEMENT_COLORS,
 }: SolidWasteManagementComparisonChartProps) {
-  // Format data for the chart - compare formal waste collection rates
-  const chartData = wardWiseFormalCollectionPercentage.map((ward) => ({
+  // Format data for the chart - compare home waste collection rates
+  const chartData = wardWiseHomeCollectionPercentage.map((ward) => ({
     name: `वडा ${ward.wardNumber}`,
-    "Formal": ward.percentage,
+    "Home": ward.percentage,
   })).sort((a, b) => 
-    b["Formal"] - a["Formal"]
+    b["Home"] - a["Home"]
   );
 
-  // Calculate average formal collection rate
-  const avgFormalCollectionRate =
-    wardWiseFormalCollectionPercentage.reduce((sum, ward) => sum + ward.percentage, 0) / wardWiseFormalCollectionPercentage.length;
+  // Calculate average home collection rate
+  const avgHomeCollectionRate =
+    wardWiseHomeCollectionPercentage.reduce((sum, ward) => sum + ward.percentage, 0) / wardWiseHomeCollectionPercentage.length;
 
   // Custom tooltip for displaying percentages with Nepali numbers
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -61,8 +56,8 @@ export default function SolidWasteManagementComparisonChart({
           <div className="space-y-1 mt-2">
             {payload.map((entry: any, index: number) => {
               let displayName = entry.name;
-              if (entry.name === "Formal") {
-                displayName = "औपचारिक संकलन";
+              if (entry.name === "Home") {
+                displayName = "घरमै संकलन";
               }
               
               return (
@@ -104,7 +99,7 @@ export default function SolidWasteManagementComparisonChart({
           domain={[
             0,
             Math.max(
-              Math.ceil(highestFormalCollectionWard?.percentage || 30),
+              Math.ceil(highestHomeCollectionWard?.percentage || 30),
               30,
             ),
           ]}
@@ -118,26 +113,26 @@ export default function SolidWasteManagementComparisonChart({
         <Tooltip content={CustomTooltip} />
         <Legend
           formatter={(value) => {
-            if (value === "Formal") {
-              return "औपचारिक फोहोर संकलन दर";
+            if (value === "Home") {
+              return "घरमै फोहोर संकलन दर";
             }
             return value;
           }}
         />
         <Bar
-          dataKey="Formal"
-          fill={WASTE_MANAGEMENT_GROUPS.FORMAL_COLLECTION.color}
+          dataKey="Home"
+          fill={WASTE_MANAGEMENT_COLORS["HOME_COLLECTION"]}
           radius={[4, 4, 0, 0]}
         />
         <ReferenceLine
-          y={avgFormalCollectionRate}
-          stroke={WASTE_MANAGEMENT_GROUPS.FORMAL_COLLECTION.color}
+          y={avgHomeCollectionRate}
+          stroke={WASTE_MANAGEMENT_COLORS["HOME_COLLECTION"]}
           strokeDasharray="3 3"
           label={{
-            value: `औसत: ${localizeNumber(avgFormalCollectionRate.toFixed(2), "ne")}%`,
+            value: `औसत: ${localizeNumber(avgHomeCollectionRate.toFixed(2), "ne")}%`,
             position: "insideBottomRight",
             style: {
-              fill: WASTE_MANAGEMENT_GROUPS.FORMAL_COLLECTION.color,
+              fill: WASTE_MANAGEMENT_COLORS["HOME_COLLECTION"],
               fontSize: 12,
             },
           }}

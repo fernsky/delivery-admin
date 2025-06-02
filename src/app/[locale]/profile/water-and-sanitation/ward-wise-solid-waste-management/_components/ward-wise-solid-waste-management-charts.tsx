@@ -16,26 +16,20 @@ interface WardWiseSolidWasteManagementChartsProps {
   totalHouseholds: number;
   wasteManagementTotals: Record<string, number>;
   sourceMap: Record<string, string>;
-  wasteManagementGroupTotals: Record<string, number>;
-  wasteManagementGroupPercentages: Record<string, number>;
-  wardWiseFormalCollectionPercentage: Array<{
+  wasteManagementPercentages: Record<string, number>;
+  wardWiseHomeCollectionPercentage: Array<{
     wardNumber: number;
     percentage: number;
   }>;
-  highestFormalCollectionWard: {
+  highestHomeCollectionWard: {
     wardNumber: number;
     percentage: number;
   };
-  lowestFormalCollectionWard: {
+  lowestHomeCollectionWard: {
     wardNumber: number;
     percentage: number;
   };
-  WASTE_MANAGEMENT_GROUPS: Record<string, {
-    name: string;
-    nameEn: string;
-    color: string;
-    sources: string[];
-  }>;
+  WASTE_MANAGEMENT_COLORS: Record<string, string>;
 }
 
 export default function WardWiseSolidWasteManagementCharts({
@@ -44,12 +38,11 @@ export default function WardWiseSolidWasteManagementCharts({
   totalHouseholds,
   wasteManagementTotals,
   sourceMap,
-  wasteManagementGroupTotals,
-  wasteManagementGroupPercentages,
-  wardWiseFormalCollectionPercentage,
-  highestFormalCollectionWard,
-  lowestFormalCollectionWard,
-  WASTE_MANAGEMENT_GROUPS,
+  wasteManagementPercentages,
+  wardWiseHomeCollectionPercentage,
+  highestHomeCollectionWard,
+  lowestHomeCollectionWard,
+  WASTE_MANAGEMENT_COLORS,
 }: WardWiseSolidWasteManagementChartsProps) {
   return (
     <>
@@ -84,7 +77,7 @@ export default function WardWiseSolidWasteManagementCharts({
             <div className="h-[420px]">
               <SolidWasteManagementPieChart
                 pieChartData={pieChartData}
-                WASTE_MANAGEMENT_GROUPS={WASTE_MANAGEMENT_GROUPS}
+                WASTE_MANAGEMENT_COLORS={WASTE_MANAGEMENT_COLORS}
               />
             </div>
           </div>
@@ -197,7 +190,8 @@ export default function WardWiseSolidWasteManagementCharts({
           <div className="h-[500px]">
             <SolidWasteManagementBarChart
               wardWiseData={wardWiseData}
-              WASTE_MANAGEMENT_GROUPS={WASTE_MANAGEMENT_GROUPS}
+              WASTE_MANAGEMENT_COLORS={WASTE_MANAGEMENT_COLORS}
+              sourceMap={sourceMap}
             />
           </div>
         </div>
@@ -211,29 +205,29 @@ export default function WardWiseSolidWasteManagementCharts({
       >
         <meta
           itemProp="name"
-          content="Formal Waste Collection Comparison Across Wards in Khajura Rural Municipality"
+          content="Home Waste Collection Comparison Across Wards in Khajura Rural Municipality"
         />
         <meta
           itemProp="description"
-          content="Comparison of formal waste collection rates across wards in Khajura"
+          content="Comparison of home waste collection rates across wards in Khajura"
         />
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            वडागत औपचारिक फोहोर संकलन दर
+            वडागत घरमै फोहोर संकलन दर
           </h3>
           <p className="text-sm text-muted-foreground">
-            विभिन्न वडाहरूमा औपचारिक फोहोर संकलन विधि प्रयोग गर्ने घरधुरीहरूको तुलना
+            विभिन्न वडाहरूमा घरमै फोहोर संकलन विधि प्रयोग गर्ने घरधुरीहरूको तुलना
           </p>
         </div>
 
         <div className="p-6">
           <div className="h-[400px]">
             <SolidWasteManagementComparisonChart
-              wardWiseFormalCollectionPercentage={wardWiseFormalCollectionPercentage}
-              highestFormalCollectionWard={highestFormalCollectionWard}
-              lowestFormalCollectionWard={lowestFormalCollectionWard}
-              WASTE_MANAGEMENT_GROUPS={WASTE_MANAGEMENT_GROUPS}
+              wardWiseHomeCollectionPercentage={wardWiseHomeCollectionPercentage}
+              highestHomeCollectionWard={highestHomeCollectionWard}
+              lowestHomeCollectionWard={lowestHomeCollectionWard}
+              WASTE_MANAGEMENT_COLORS={WASTE_MANAGEMENT_COLORS}
             />
           </div>
         </div>
@@ -270,9 +264,9 @@ export default function WardWiseSolidWasteManagementCharts({
                 <tr className="bg-muted">
                   <th className="border p-2">वडा नं.</th>
                   <th className="border p-2 text-right">जम्मा घरधुरी</th>
-                  {Object.keys(WASTE_MANAGEMENT_GROUPS).map(key => (
+                  {Object.entries(sourceMap).map(([key, name]) => (
                     <th key={key} className="border p-2 text-right">
-                      {WASTE_MANAGEMENT_GROUPS[key as keyof typeof WASTE_MANAGEMENT_GROUPS].name}
+                      {name}
                     </th>
                   ))}
                 </tr>
@@ -286,9 +280,8 @@ export default function WardWiseSolidWasteManagementCharts({
                       <td className="border p-2 text-right">
                         {localizeNumber(total.toLocaleString(), "ne")}
                       </td>
-                      {Object.keys(WASTE_MANAGEMENT_GROUPS).map(key => {
-                        const groupName = WASTE_MANAGEMENT_GROUPS[key as keyof typeof WASTE_MANAGEMENT_GROUPS].name;
-                        const value = item[groupName] || 0;
+                      {Object.entries(sourceMap).map(([key, name]) => {
+                        const value = item[name] || 0;
                         const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : "0.00";
                         return (
                           <td key={key} className="border p-2 text-right">
@@ -309,9 +302,9 @@ export default function WardWiseSolidWasteManagementCharts({
                   <td className="border p-2 text-right">
                     {localizeNumber(totalHouseholds.toLocaleString(), "ne")}
                   </td>
-                  {Object.keys(WASTE_MANAGEMENT_GROUPS).map(key => {
-                    const value = wasteManagementGroupTotals[key];
-                    const percentage = wasteManagementGroupPercentages[key].toFixed(2);
+                  {Object.entries(sourceMap).map(([key, name]) => {
+                    const value = wasteManagementTotals[key] || 0;
+                    const percentage = ((value / totalHouseholds) * 100).toFixed(2);
                     return (
                       <td key={key} className="border p-2 text-right">
                         {localizeNumber(value.toLocaleString(), "ne")}
@@ -330,7 +323,8 @@ export default function WardWiseSolidWasteManagementCharts({
           <h4 className="text-lg font-medium mt-8 mb-4">वडागत फोहोरमैला व्यवस्थापनको वितरण</h4>
           <WardSolidWasteManagementPieCharts
             wardWiseData={wardWiseData}
-            WASTE_MANAGEMENT_GROUPS={WASTE_MANAGEMENT_GROUPS}
+            WASTE_MANAGEMENT_COLORS={WASTE_MANAGEMENT_COLORS}
+            sourceMap={sourceMap}
           />
         </div>
       </div>
