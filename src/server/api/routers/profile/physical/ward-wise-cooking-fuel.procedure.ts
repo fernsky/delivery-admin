@@ -237,7 +237,7 @@ export const getWardWiseCookingFuelSummary = publicProcedure.query(
           cooking_fuel, 
           SUM(households) as total_households
         FROM 
-          ward_wise_cooking_fuel
+          acme_ward_wise_cooking_fuel
         GROUP BY 
           cooking_fuel
         ORDER BY 

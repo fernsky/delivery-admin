@@ -248,7 +248,7 @@ export const getWardWiseElectricitySourceSummary = publicProcedure.query(
           electricity_source, 
           SUM(households) as total_households
         FROM 
-          ward_wise_electricity_source
+          acme_ward_wise_electricity_source
         GROUP BY 
           electricity_source
         ORDER BY 

@@ -252,7 +252,7 @@ export const getWardWiseTimeToPublicTransportSummary = publicProcedure.query(
           time_to_public_transport, 
           SUM(households) as total_households
         FROM 
-          ward_wise_time_to_public_transport
+          acme_ward_wise_time_to_public_transport
         GROUP BY 
           time_to_public_transport
         ORDER BY 

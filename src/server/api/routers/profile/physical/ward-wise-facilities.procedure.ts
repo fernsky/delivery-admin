@@ -233,7 +233,7 @@ export const getWardWiseFacilitiesSummary = publicProcedure.query(
           facility, 
           SUM(households) as total_households
         FROM 
-          ward_wise_facilities
+          acme_ward_wise_facilities
         GROUP BY 
           facility
         ORDER BY 

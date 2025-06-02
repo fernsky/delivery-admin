@@ -251,7 +251,7 @@ export const getWardWiseTimeToMarketCenterSummary = publicProcedure.query(
           time_to_market_center, 
           SUM(households) as total_households
         FROM 
-          ward_wise_time_to_market_center
+          acme_ward_wise_time_to_market_center
         GROUP BY 
           time_to_market_center
         ORDER BY 
