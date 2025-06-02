@@ -254,7 +254,7 @@ export const getWardWiseSolidWasteManagementSummary = publicProcedure.query(
         FROM 
           acme_ward_wise_solid_waste_management
         GROUP BY 
-          solid_waste_management
+          acme_solid_waste_management
         ORDER BY 
           solid_waste_management
       `;

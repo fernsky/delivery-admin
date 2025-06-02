@@ -251,7 +251,7 @@ export const getWardWiseDrinkingWaterSourceSummary = publicProcedure.query(
           drinking_water_source, 
           SUM(households) as total_households
         FROM 
-          ward_wise_drinking_water_source
+          acme_ward_wise_drinking_water_source
         GROUP BY 
           drinking_water_source
         ORDER BY 
