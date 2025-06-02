@@ -16,11 +16,11 @@ INSERT INTO
 VALUES
     (
         'sx9kfrgnnxjabu3wp4mbu',
-        'trilochan',
-        'Trilochan Bhusal',
-        '73ef26545b640bd5aafbddf44f21525c:ff1616f60f8a750d8386cf704a139baa7260925ae84058dfa27c633a5de99e17a520e23da5cadcb04eda81a00cd65a5179e40ba528a5eb22def65b43e1cda254',
-        '9861605307',
-        'trilochanbhusal000@gmail.com',
+        'admin',
+        'Suresh Sahu',
+        'a86b1dbc9dc5187f404c5bc2032346b0:2d2ae70b65913284d72b78572f3049f0e2504d81a9b278855cbdf8f67e23966d3273fdcc9e9f8314b49a01761486638609e24cb0d430cd6c264a626c98464fe3',
+        '9843016335',
+        'ito.khajuramun@gmail.com',
         NULL,
         1,
         'superadmin'::public."roles",

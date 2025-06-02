@@ -22,24 +22,35 @@ export default function NewbornHealthChart({
   indicatorLabels,
 }: NewbornHealthChartProps) {
   // Split data into positive indicators and challenges
-  const positiveIndicators = ["NEWBORNS_CHX_APPLIED_AFTER_BIRTH", "NEWBORNS_CHECKUP_24HRS_BIRTH", "NEONATES_FOUR_CHECKUPS_PNC_PROTOCOL"];
-  const challengeIndicators = ["NEWBORNS_LOW_BIRTH_WEIGHT", "NEONATES_BIRTH_ASPHYXIA", "PRETERM_BIRTH", "STILL_BIRTHS", "NEONATES_CONGENITAL_ANOMALIES", "NEONATAL_MORTALITY_HEALTH_FACILITY"];
+  const positiveIndicators = [
+    "NEWBORNS_CHX_APPLIED_AFTER_BIRTH",
+    "NEWBORNS_CHECKUP_24HRS_BIRTH",
+    "NEONATES_FOUR_CHECKUPS_PNC_PROTOCOL",
+  ];
+  const challengeIndicators = [
+    "NEWBORNS_LOW_BIRTH_WEIGHT",
+    "NEONATES_BIRTH_ASPHYXIA",
+    "PRETERM_BIRTH",
+    "STILL_BIRTHS",
+    "NEONATES_CONGENITAL_ANOMALIES",
+    "NEONATAL_MORTALITY_HEALTH_FACILITY",
+  ];
 
   // Prepare data for chart, distinguishing between positive indicators and challenges
   const chartData = newbornHealthData
-    .filter(item => item.value !== null && item.value !== undefined)
-    .map(item => {
+    .filter((item) => item.value !== null && item.value !== undefined)
+    .map((item) => {
       // Extract shorter label for better display
       const shortLabel = item.indicator
-        .replace('NEWBORNS_', '')
-        .replace('NEONATES_', '')
-        .replace(/_/g, ' ')
-        .split(' ')
+        .replace("NEWBORNS_", "")
+        .replace("NEONATES_", "")
+        .replace(/_/g, " ")
+        .split(" ")
         .slice(0, 3)
-        .join(' ');
-        
+        .join(" ");
+
       const isPositive = positiveIndicators.includes(item.indicator);
-      
+
       return {
         name: shortLabel,
         fullName: indicatorLabels[item.indicator] || item.indicator,
@@ -77,7 +88,7 @@ export default function NewbornHealthChart({
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
-      
+
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
           <p className="text-sm font-medium mb-1">{data.indicator}</p>
@@ -96,7 +107,7 @@ export default function NewbornHealthChart({
         </div>
       );
     }
-    
+
     return null;
   };
 
@@ -107,27 +118,46 @@ export default function NewbornHealthChart({
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis 
-          dataKey="name" 
-          tick={{ fontSize: 12, angle: -45, textAnchor: 'end' }} 
+        <XAxis
+          dataKey="name"
+          tick={(props) => {
+            const { x, y, payload } = props;
+            return (
+              <g transform={`translate(${x},${y})`}>
+                <text
+                  x={0}
+                  y={0}
+                  dy={16}
+                  textAnchor="end"
+                  fill="#666"
+                  fontSize={12}
+                  transform="rotate(-45)"
+                >
+                  {payload.value}
+                </text>
+              </g>
+            );
+          }}
           height={80}
         />
         <YAxis
-          tickFormatter={(value) => `${localizeNumber(value.toString(), "ne")}%`}
+          tickFormatter={(value) =>
+            `${localizeNumber(value.toString(), "ne")}%`
+          }
           domain={[0, 100]}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Bar 
-          dataKey="value" 
-          name="नवजात शिशु स्वास्थ्य" 
-          isAnimationActive={true} 
+        <Bar
+          dataKey="value"
+          name="नवजात शिशु स्वास्थ्य"
+          isAnimationActive={true}
           animationDuration={800}
           maxBarSize={60}
         >
           {sortedChartData.map((entry, index) => (
-            <Cell 
-              key={`cell-${index}`} 
-              fill={getBarColor(entry.value, entry.isPositive)} 
+            <Cell
+              key={`cell-${index}`}
+              fill={getBarColor(entry.value, entry.isPositive)}
             />
           ))}
         </Bar>

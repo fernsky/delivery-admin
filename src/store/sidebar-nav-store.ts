@@ -17,11 +17,11 @@ export interface NavItem {
 interface SidebarNavState {
   // Section states
   openSections: Record<string, boolean>;
-  
+
   // Actions
   toggleSection: (sectionTitle: string) => void;
   setOpenSections: (sections: Record<string, boolean>) => void;
-  
+
   // Utility actions
   autoExpandForPath: (path: string, items: NavItem[]) => void;
   isPathActive: (href: string, currentPath: string) => boolean;
@@ -33,86 +33,91 @@ const initialState = {
 };
 
 export const useSidebarNavStore = create<SidebarNavState>()(
-    devtools(
-        persist(
-            (set, get) => ({
-                ...initialState,
+  devtools(
+    persist(
+      (set, get) => ({
+        ...initialState,
 
-                // Section management
-                toggleSection: (sectionTitle: string) =>
-                    set((state) => ({
-                        openSections: {
-                            ...state.openSections,
-                            [sectionTitle]: !state.openSections[sectionTitle],
-                        },
-                    })),
+        // Section management
+        toggleSection: (sectionTitle: string) =>
+          set((state) => ({
+            openSections: {
+              ...state.openSections,
+              [sectionTitle]: !state.openSections[sectionTitle],
+            },
+          })),
 
-                setOpenSections: (sections: Record<string, boolean>) =>
-                    set({ openSections: sections }),
+        setOpenSections: (sections: Record<string, boolean>) =>
+          set({ openSections: sections }),
 
-                // Auto-expand logic
-                autoExpandForPath: (path: string, items: NavItem[]) => {
-                    const sectionsToOpen: Record<string, boolean> = {};
-                    const normalizedPath = path.replace(/^\/(en|ne)/, '');
-                    
-                    items.forEach((section) => {
-                        const normalizedSectionHref = section.href.replace(/^\/(en|ne)/, '');
-                        const isCurrentSection = normalizedPath === normalizedSectionHref || 
-                                                                        normalizedPath.startsWith(normalizedSectionHref + "/");
-                        const hasActiveChild = section.items.some((item) => {
-                            const normalizedItemHref = item.href.replace(/^\/(en|ne)/, '');
-                            return normalizedPath === normalizedItemHref;
-                        });
-                        
-                        if (isCurrentSection || hasActiveChild) {
-                            sectionsToOpen[section.title] = true;
-                        }
-                    });
+        // Auto-expand logic
+        autoExpandForPath: (path: string, items: NavItem[]) => {
+          // Initialize all sections to be open by default
+          const sectionsToOpen: Record<string, boolean> = {};
+          items.forEach((section) => {
+            sectionsToOpen[section.title] = true;
+          });
 
-                    if (Object.keys(sectionsToOpen).length > 0) {
-                        set((state) => ({
-                            openSections: {
-                                ...state.openSections,
-                                ...sectionsToOpen,
-                            },
-                        }));
-                    }
-                },
+          set((state) => ({
+            openSections: {
+              ...sectionsToOpen,
+              ...state.openSections,
+            },
+          }));
 
-                // Utility functions
-                isPathActive: (href: string, currentPath: string) => {
-                    const normalizedPath = currentPath.replace(/^\/(en|ne)/, '');
-                    const normalizedHref = href.replace(/^\/(en|ne)/, '');
-                    return normalizedPath === normalizedHref;
-                },
+          // Original path-specific logic can remain as a fallback
+          const normalizedPath = path.replace(/^\/(en|ne)/, "");
 
-                isSectionActive: (section: NavItem, currentPath: string) => {
-                    const normalizedPath = currentPath.replace(/^\/(en|ne)/, '');
-                    const normalizedHref = section.href.replace(/^\/(en|ne)/, '');
-                    
-                    const value = (
-                        normalizedPath === normalizedHref ||
-                        normalizedPath.startsWith(normalizedHref + "/") ||
-                        section.items.some((item) => {
-                            const normalizedItemHref = item.href.replace(/^\/(en|ne)/, '');
-                            return normalizedPath === normalizedItemHref;
-                        })
-                    );
-                    
-                    console.log(currentPath, section.href);
-                    
-                    return value;
-                },
-            }),
-            {
-                name: "sidebar-nav-storage",
-                partialize: (state) => ({
-                    openSections: state.openSections,
-                }),
+          items.forEach((section) => {
+            const normalizedSectionHref = section.href.replace(
+              /^\/(en|ne)/,
+              "",
+            );
+            const isCurrentSection =
+              normalizedPath === normalizedSectionHref ||
+              normalizedPath.startsWith(normalizedSectionHref + "/");
+            const hasActiveChild = section.items.some((item) => {
+              const normalizedItemHref = item.href.replace(/^\/(en|ne)/, "");
+              return normalizedPath === normalizedItemHref;
+            });
+
+            if (isCurrentSection || hasActiveChild) {
+              sectionsToOpen[section.title] = true;
             }
-        ),
-        {
-            name: "sidebar-nav-store",
-        }
-    )
+          });
+        },
+
+        // Utility functions
+        isPathActive: (href: string, currentPath: string) => {
+          const normalizedPath = currentPath.replace(/^\/(en|ne)/, "");
+          const normalizedHref = href.replace(/^\/(en|ne)/, "");
+          return normalizedPath === normalizedHref;
+        },
+
+        isSectionActive: (section: NavItem, currentPath: string) => {
+          const normalizedPath = currentPath.replace(/^\/(en|ne)/, "");
+          const normalizedHref = section.href.replace(/^\/(en|ne)/, "");
+
+          const value =
+            normalizedPath === normalizedHref ||
+            normalizedPath.startsWith(normalizedHref + "/") ||
+            section.items.some((item) => {
+              const normalizedItemHref = item.href.replace(/^\/(en|ne)/, "");
+              return normalizedPath === normalizedItemHref;
+            });
+
+          return value;
+        },
+      }),
+      {
+        name: "sidebar-nav-storage",
+        partialize: (state) => ({
+          openSections: state.openSections,
+        }),
+      },
+    ),
+    {
+      name: "sidebar-nav-store",
+    },
+  ),
 );

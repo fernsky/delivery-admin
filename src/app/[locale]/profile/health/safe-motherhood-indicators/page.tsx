@@ -24,22 +24,23 @@ export const revalidate = 86400; // Revalidate once per day
 export async function generateMetadata(): Promise<Metadata> {
   try {
     // Get the latest year data
-    const safeMotherhoodSummary = await api.profile.fertility.safeMotherhoodIndicators.summary.query();
-    
+    const safeMotherhoodSummary =
+      await api.profile.fertility.safeMotherhoodIndicators.summary.query();
+
     const municipalityName = "खजुरा गाउँपालिका"; // Khajura Rural Municipality
     const latestYear = safeMotherhoodSummary.latestYear;
 
     // Find key indicators for description
     const institutionalDeliveriesData = safeMotherhoodSummary.delivery.find(
-      item => item.indicator === "INSTITUTIONAL_DELIVERIES"
+      (item) => item.indicator === "INSTITUTIONAL_DELIVERIES",
     );
     const ancCheckupsData = safeMotherhoodSummary.antenatal.find(
-      item => item.indicator === "PREGNANT_WOMEN_FOUR_ANC_CHECKUPS_PROTOCOL"
+      (item) => item.indicator === "PREGNANT_WOMEN_FOUR_ANC_CHECKUPS_PROTOCOL",
     );
     const pncVisitsData = safeMotherhoodSummary.postnatal.find(
-      item => item.indicator === "POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS"
+      (item) => item.indicator === "POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS",
     );
-    
+
     const institutionalDeliveries = institutionalDeliveriesData?.value || 0;
     const ancCheckups = ancCheckupsData?.value || 0;
     const pncVisits = pncVisitsData?.value || 0;
@@ -60,15 +61,15 @@ export async function generateMetadata(): Promise<Metadata> {
       "Maternal health services",
       "Institutional delivery",
       `Institutional delivery rate ${Number(institutionalDeliveries).toFixed(1)}%`,
-      `ANC coverage ${ancCheckups.toFixed(1)}%`,
+      `ANC coverage ${Number(ancCheckups).toFixed(1)}%`,
       "Safe motherhood in Khajura",
       "Maternal health analysis",
     ];
 
     // Create description
-    const descriptionNP = `खजुरा गाउँपालिकामा सुरक्षित मातृत्व सेवाको विश्लेषण। वर्ष ${latestYear} मा संस्थागत प्रसूति दर ${localizeNumber(institutionalDeliveries.toFixed(1), "ne")}%, नियमित गर्भवती जाँच ${localizeNumber(ancCheckups.toFixed(1), "ne")}%, र सुत्केरी पछिको जाँच ${localizeNumber(pncVisits.toFixed(1), "ne")}% रहेको छ।`;
+    const descriptionNP = `खजुरा गाउँपालिकामा सुरक्षित मातृत्व सेवाको विश्लेषण। वर्ष ${latestYear} मा संस्थागत प्रसूति दर ${localizeNumber(Number(institutionalDeliveries).toFixed(1), "ne")}%, नियमित गर्भवती जाँच ${localizeNumber(Number(ancCheckups).toFixed(1), "ne")}%, र सुत्केरी पछिको जाँच ${localizeNumber(Number(pncVisits).toFixed(1), "ne")}% रहेको छ।`;
 
-    const descriptionEN = `Analysis of safe motherhood services in Khajura Rural Municipality. In year ${latestYear}, institutional delivery rate was ${institutionalDeliveries.toFixed(1)}%, regular ANC checkups was ${ancCheckups.toFixed(1)}%, and postnatal care was ${pncVisits.toFixed(1)}%.`;
+    const descriptionEN = `Analysis of safe motherhood services in Khajura Rural Municipality. In year ${latestYear}, institutional delivery rate was ${Number(institutionalDeliveries).toFixed(1)}%, regular ANC checkups was ${Number(ancCheckups).toFixed(1)}%, and postnatal care was ${Number(pncVisits).toFixed(1)}%.`;
 
     return {
       title: `सुरक्षित मातृत्व सूचकहरू | ${municipalityName} डिजिटल प्रोफाइल`,
@@ -99,14 +100,19 @@ export async function generateMetadata(): Promise<Metadata> {
     // Fallback metadata if data fetching fails
     return {
       title: "सुरक्षित मातृत्व सूचकहरू | खजुरा गाउँपालिका डिजिटल प्रोफाइल",
-      description: "खजुरा गाउँपालिकामा मातृ स्वास्थ्य सेवा र सूचकहरूको अवस्था र विश्लेषण।",
+      description:
+        "खजुरा गाउँपालिकामा मातृ स्वास्थ्य सेवा र सूचकहरूको अवस्था र विश्लेषण।",
     };
   }
 }
 
 const toc = [
   { level: 2, text: "परिचय", slug: "introduction" },
-  { level: 2, text: "प्रमुख सुरक्षित मातृत्व सूचकहरू", slug: "key-safe-motherhood-indicators" },
+  {
+    level: 2,
+    text: "प्रमुख सुरक्षित मातृत्व सूचकहरू",
+    slug: "key-safe-motherhood-indicators",
+  },
   { level: 2, text: "गर्भवती स्वास्थ्य सेवा", slug: "antenatal-care" },
   { level: 2, text: "संस्थागत प्रसूति", slug: "institutional-delivery" },
   { level: 2, text: "सुत्केरी स्वास्थ्य सेवा", slug: "postnatal-care" },
@@ -116,32 +122,41 @@ const toc = [
 
 export default async function SafeMotherhoodIndicatorsPage() {
   // Get safe motherhood indicators summary data
-  const safeMotherhoodSummary = await api.profile.fertility.safeMotherhoodIndicators.summary.query();
+  const safeMotherhoodSummary =
+    await api.profile.fertility.safeMotherhoodIndicators.summary.query();
 
   // Get year data for analysis
   const latestYear = safeMotherhoodSummary.latestYear;
-  
+
   // Get data from summaries
   const antenatalData = safeMotherhoodSummary.antenatal;
   const deliveryData = safeMotherhoodSummary.delivery;
   const postnatalData = safeMotherhoodSummary.postnatal;
   const newbornHealthData = safeMotherhoodSummary.newbornHealth;
   const trendData = safeMotherhoodSummary.trends;
-  
+
   // Create indicator labels mapping
   const indicatorLabels = indicatorOptions.reduce<Record<string, string>>(
     (acc, option) => {
       acc[option.value] = option.label;
       return acc;
     },
-    {}
+    {},
   );
 
   // Extract key indicators
-  const institutionalDeliveriesData = deliveryData.find(item => item.indicator === "INSTITUTIONAL_DELIVERIES");
-  const ancCheckupsData = antenatalData.find(item => item.indicator === "PREGNANT_WOMEN_FOUR_ANC_CHECKUPS_PROTOCOL");
-  const pncVisitsData = postnatalData.find(item => item.indicator === "POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS");
-  const newbornCareData = newbornHealthData.find(item => item.indicator === "NEWBORNS_CHX_APPLIED_AFTER_BIRTH");
+  const institutionalDeliveriesData = deliveryData.find(
+    (item) => item.indicator === "INSTITUTIONAL_DELIVERIES",
+  );
+  const ancCheckupsData = antenatalData.find(
+    (item) => item.indicator === "PREGNANT_WOMEN_FOUR_ANC_CHECKUPS_PROTOCOL",
+  );
+  const pncVisitsData = postnatalData.find(
+    (item) => item.indicator === "POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS",
+  );
+  const newbornCareData = newbornHealthData.find(
+    (item) => item.indicator === "NEWBORNS_CHX_APPLIED_AFTER_BIRTH",
+  );
 
   const institutionalDeliveries = institutionalDeliveriesData?.value || 0;
   const ancCheckups = ancCheckupsData?.value || 0;
@@ -155,32 +170,38 @@ export default async function SafeMotherhoodIndicatorsPage() {
         acc[item.indicator] = {
           indicator: item.indicator,
           indicatorName: indicatorLabels[item.indicator] || item.indicator,
-          values: []
+          values: [],
         };
       }
-      
+
       acc[item.indicator].values.push({
         year: item.year.toString(),
         value: parseFloat(item.value) || 0,
-        yearKey: item.year.toString()
+        yearKey: item.year.toString(),
       });
-      
+
       return acc;
-    }, {})
+    }, {}),
   );
 
   // Calculate maternal health quality index
   const keyIndicators = [
-    "INSTITUTIONAL_DELIVERIES", 
+    "INSTITUTIONAL_DELIVERIES",
     "PREGNANT_WOMEN_FOUR_ANC_CHECKUPS_PROTOCOL",
-    "POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS"
+    "POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS",
   ];
-  
-  const validKeyIndicatorValues = [institutionalDeliveries, ancCheckups, pncVisits].filter(val => val > 0);
-  
-  const maternalHealthIndex = validKeyIndicatorValues.length > 0
-    ? validKeyIndicatorValues.reduce((sum, val) => sum + val, 0) / validKeyIndicatorValues.length
-    : 0;
+
+  const validKeyIndicatorValues = [
+    institutionalDeliveries,
+    ancCheckups,
+    pncVisits,
+  ].filter((val): val is number => typeof val === "number" && val > 0);
+
+  const maternalHealthIndex =
+    validKeyIndicatorValues.length > 0
+      ? validKeyIndicatorValues.reduce((sum, val) => sum + val, 0) /
+        validKeyIndicatorValues.length
+      : 0;
 
   return (
     <DocsLayout toc={<TableOfContents toc={toc} />}>
@@ -200,7 +221,7 @@ export default async function SafeMotherhoodIndicatorsPage() {
         <section>
           <div className="relative rounded-lg overflow-hidden mb-8">
             <Image
-              src="/images/safe-motherhood-services.svg" 
+              src="/images/safe-motherhood-services.svg"
               width={1200}
               height={400}
               alt="सुरक्षित मातृत्व सेवा - खजुरा गाउँपालिका (Safe Motherhood Services - Khajura Rural Municipality)"
@@ -218,13 +239,19 @@ export default async function SafeMotherhoodIndicatorsPage() {
               परिचय
             </h2>
             <p>
-              सुरक्षित मातृत्व कार्यक्रम नेपालको स्वास्थ्य क्षेत्रको महत्वपूर्ण प्राथमिकता हो जसले मातृ तथा नवजात शिशु स्वास्थ्यमा सुधार ल्याउने उद्देश्य राख्दछ।
-              नेपाल सरकारले दिगो विकास लक्ष्य अन्तर्गत सन् २०३० सम्ममा मातृ मृत्युदर प्रति १ लाख जीवित जन्ममा ७० भन्दा कम पुर्‍याउने लक्ष्य लिएको छ।
-              यस कार्यक्रम अन्तर्गत गर्भवती जाँच, संस्थागत प्रसूति, सुत्केरी सेवा, र नवजात शिशु स्वास्थ्य सेवाहरू प्रदान गरिन्छ।
+              सुरक्षित मातृत्व कार्यक्रम नेपालको स्वास्थ्य क्षेत्रको महत्वपूर्ण
+              प्राथमिकता हो जसले मातृ तथा नवजात शिशु स्वास्थ्यमा सुधार ल्याउने
+              उद्देश्य राख्दछ। नेपाल सरकारले दिगो विकास लक्ष्य अन्तर्गत सन् २०३०
+              सम्ममा मातृ मृत्युदर प्रति १ लाख जीवित जन्ममा ७० भन्दा कम
+              पुर्‍याउने लक्ष्य लिएको छ। यस कार्यक्रम अन्तर्गत गर्भवती जाँच,
+              संस्थागत प्रसूति, सुत्केरी सेवा, र नवजात शिशु स्वास्थ्य सेवाहरू
+              प्रदान गरिन्छ।
             </p>
             <p>
-              यस खण्डमा खजुरा गाउँपालिकाको वर्ष {latestYear} को सुरक्षित मातृत्व सेवाको अवस्था र विश्लेषण प्रस्तुत गरिएको छ।
-              पालिकामा गर्भवती सेवा, संस्थागत सुत्केरी दर, सुत्केरी स्याहार र नवजात शिशु स्वास्थ्य सम्बन्धी सूचकहरूको विश्लेषण गरिएको छ।
+              यस खण्डमा खजुरा गाउँपालिकाको वर्ष {latestYear} को सुरक्षित मातृत्व
+              सेवाको अवस्था र विश्लेषण प्रस्तुत गरिएको छ। पालिकामा गर्भवती सेवा,
+              संस्थागत सुत्केरी दर, सुत्केरी स्याहार र नवजात शिशु स्वास्थ्य
+              सम्बन्धी सूचकहरूको विश्लेषण गरिएको छ।
             </p>
 
             <h2
@@ -234,7 +261,8 @@ export default async function SafeMotherhoodIndicatorsPage() {
               प्रमुख सुरक्षित मातृत्व सूचकहरू
             </h2>
             <p>
-              खजुरा गाउँपालिकामा वर्ष {latestYear} मा सुरक्षित मातृत्व सम्बन्धी महत्वपूर्ण सूचकहरूको अवस्था निम्नानुसार रहेको छ:
+              खजुरा गाउँपालिकामा वर्ष {latestYear} मा सुरक्षित मातृत्व सम्बन्धी
+              महत्वपूर्ण सूचकहरूको अवस्था निम्नानुसार रहेको छ:
             </p>
           </div>
 
@@ -246,21 +274,28 @@ export default async function SafeMotherhoodIndicatorsPage() {
             newbornHealthData={newbornHealthData}
             trendData={formattedTrendData}
             indicatorLabels={indicatorLabels}
+            //@ts-ignore
             institutionalDeliveries={institutionalDeliveries}
+            //@ts-ignore
             ancCheckups={ancCheckups}
+            //@ts-ignore
             pncVisits={pncVisits}
+            //@ts-ignore
             newbornCare={newbornCare}
             maternalHealthIndex={maternalHealthIndex}
           />
 
           <div className="prose prose-slate dark:prose-invert max-w-none mt-8">
-            <h2 id="service-improvement-strategy" className="scroll-m-20 border-b pb-2 mt-12">
+            <h2
+              id="service-improvement-strategy"
+              className="scroll-m-20 border-b pb-2 mt-12"
+            >
               सुरक्षित मातृत्व सेवा सुधार रणनीति
             </h2>
 
             <p>
-              खजुरा गाउँपालिकामा सुरक्षित मातृत्व सेवाको अवस्था विश्लेषणबाट निम्न रणनीतिहरू 
-              अवलम्बन गर्न सकिन्छ:
+              खजुरा गाउँपालिकामा सुरक्षित मातृत्व सेवाको अवस्था विश्लेषणबाट
+              निम्न रणनीतिहरू अवलम्बन गर्न सकिन्छ:
             </p>
 
             <SafeMotherhoodIndicatorsAnalysisSection
@@ -270,15 +305,21 @@ export default async function SafeMotherhoodIndicatorsPage() {
               postnatalData={postnatalData}
               newbornHealthData={newbornHealthData}
               indicatorLabels={indicatorLabels}
+              //@ts-ignore
               institutionalDeliveries={institutionalDeliveries}
+              //@ts-ignore
               ancCheckups={ancCheckups}
+              //@ts-ignore
               pncVisits={pncVisits}
               maternalHealthIndex={maternalHealthIndex}
             />
 
             <p className="mt-6">
-              यसरी खजुरा गाउँपालिकाको सुरक्षित मातृत्व सेवाको अवस्थामा सुधार ल्याउन स्पष्ट लक्ष्य, सामुदायिक सहभागिता र समन्वित प्रयास आवश्यक छ।
-              सबै गर्भवती र सुत्केरी महिलाहरूले गुणस्तरीय स्वास्थ्य सेवा पाउन सक्ने वातावरण सुनिश्चित गर्न पालिकाले आफ्नो स्रोत-साधन र जनशक्तिको समुचित परिचालन गर्नुपर्ने देखिन्छ।
+              यसरी खजुरा गाउँपालिकाको सुरक्षित मातृत्व सेवाको अवस्थामा सुधार
+              ल्याउन स्पष्ट लक्ष्य, सामुदायिक सहभागिता र समन्वित प्रयास आवश्यक
+              छ। सबै गर्भवती र सुत्केरी महिलाहरूले गुणस्तरीय स्वास्थ्य सेवा पाउन
+              सक्ने वातावरण सुनिश्चित गर्न पालिकाले आफ्नो स्रोत-साधन र जनशक्तिको
+              समुचित परिचालन गर्नुपर्ने देखिन्छ।
             </p>
           </div>
         </section>

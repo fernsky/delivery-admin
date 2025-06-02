@@ -4,12 +4,17 @@ import { env } from "@/env";
 import * as schema from "./schema";
 
 let connection;
+const dbUrl =
+  process.env.DATABASE_URL ||
+  "postgres://postgres:postgres@postgresdb:5432/product-survey";
 try {
-  connection = postgres(env.DATABASE_URL, {
+  connection = postgres(dbUrl, {
     max_lifetime: 10, // Remove this line if you're deploying to Docker / VPS
     // idle_timeout: 20, // Uncomment this line if you're deploying to Docker / VPS
   });
 } catch (error) {
+  console.error("Database connection error:", error);
+  console.error("Database URL used:", dbUrl);
   throw new Error("Failed to connect to the database");
 }
 
