@@ -189,11 +189,6 @@ export default function IndividualDetailsPage() {
               </Button>
             </Link>
           )}
-          <Link href={`/dashboard/individuals/edit/${rawId}`} passHref>
-            <Button>
-              <Edit className="mr-2 h-4 w-4" /> Edit
-            </Button>
-          </Link>
         </div>
       }
     >

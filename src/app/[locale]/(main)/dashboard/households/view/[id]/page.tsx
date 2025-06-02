@@ -457,7 +457,7 @@ export default function HouseholdView() {
                           const memberIsPresent = member.isPresent ?? "";
                           const memberEducationLevel =
                             member.educationalLevel ?? "N/A";
-
+                          //@ts-ignore
                           return (
                             <TableRow key={member.id}>
                               <TableCell className="font-medium">
@@ -466,6 +466,7 @@ export default function HouseholdView() {
                               <TableCell>{member.age || "N/A"}</TableCell>
                               <TableCell>{member.gender}</TableCell>
                               <TableCell>
+                                //@ts-ignore
                                 {memberFamilyRole.toLowerCase() === "head" ? (
                                   <Badge variant="default">Head</Badge>
                                 ) : (

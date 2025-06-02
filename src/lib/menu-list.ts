@@ -68,6 +68,12 @@ const menuConfig: Menu[] = [
     icon: StoreIcon,
     roles: ["admin", "superadmin", "enumerator"],
   },
+  {
+    href: "/dashboard/individuals",
+    label: "व्यक्तिहरू",
+    icon: PersonIcon,
+    roles: ["admin", "superadmin", "enumerator"],
+  },
   // Demographics submenu with children
   {
     href: "#",

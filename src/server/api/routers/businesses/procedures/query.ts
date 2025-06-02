@@ -184,13 +184,15 @@ export const getById = protectedProcedure
   .input(z.object({ id: z.string() }))
   .query(async ({ ctx, input }) => {
     try {
-      const normalizedId = normalizeUuid(input.id);
-      const formattedId = formatDbUuid(normalizedId);
-      
+
+      const finalId=`uuid:${input.id}`;
+
+      console.log(finalId);
+
       // Try to fetch with the formatted ID
       let query = sql`
         SELECT * FROM acme_khajura_business
-        WHERE id = ${formattedId}
+        WHERE id = ${finalId}
       `;
       
       let result = await ctx.db.execute(query);
@@ -199,7 +201,7 @@ export const getById = protectedProcedure
       if (!result || result.length === 0) {
         query = sql`
           SELECT * FROM acme_khajura_business
-          WHERE id = ${normalizedId}
+          WHERE id = ${finalId}
         `;
         result = await ctx.db.execute(query);
       }

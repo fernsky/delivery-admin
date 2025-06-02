@@ -7,7 +7,6 @@ import {
 
 
 export const businessRouter = createTRPCRouter({
-  // create,
   getAll,
   getById,
 });

@@ -29,7 +29,9 @@ export default function BusinessDetails({
   params: { id: string };
 }) {
   const decodedId = decodeURIComponent(params.id);
-  console.log("Business Details Page Params:", decodedId);
+
+  console.log("Decoded ID:", decodedId);
+
   const {
     data: business,
     isLoading,
@@ -90,8 +92,6 @@ export default function BusinessDetails({
                 }
               />
             </div>
-
-          
           </div>
 
           {/* @ts-ignore */}
