@@ -9,7 +9,6 @@ import { wardWiseHouseholdFloorRouter } from "./ward-wise-household-floor.proced
 import { wardWiseHouseholdRoofRouter } from "./ward-wise-household-roof.procedure";
 import { wardWiseRoadStatusRouter } from "./ward-wise-road-status.procedure";
 import { wardWiseTimeToActiveRoadRouter } from "./ward-wise-time-to-active-road.procedure";
-import { wardWiseTimeToFinancialOrganizationRouter } from "./ward-wise-time-to-financial-organization.procedure";
 import { wardWiseTimeToHealthOrganizationRouter } from "../health/ward-wise-time-to-health-organization.procedure";
 
 export const physicalRouter = createTRPCRouter({
@@ -23,8 +22,6 @@ export const physicalRouter = createTRPCRouter({
   wardWiseHouseholdRoof: wardWiseHouseholdRoofRouter,
   wardWiseRoadStatus: wardWiseRoadStatusRouter,
   wardWiseTimeToActiveRoad: wardWiseTimeToActiveRoadRouter,
-  wardWiseTimeToFinancialOrganization:
-    wardWiseTimeToFinancialOrganizationRouter,
   wardWiseTimeToHealthOrganization: wardWiseTimeToHealthOrganizationRouter,
   // Add other physical profile-related routers here in the future
 });
