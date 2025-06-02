@@ -40,19 +40,21 @@ export default function NewbornHealthChart({
   const chartData = newbornHealthData
     .filter((item) => item.value !== null && item.value !== undefined)
     .map((item) => {
-      // Extract shorter label for better display
-      const shortLabel = item.indicator
-        .replace("NEWBORNS_", "")
-        .replace("NEONATES_", "")
-        .replace(/_/g, " ")
-        .split(" ")
-        .slice(0, 3)
-        .join(" ");
+      // Use proper label from indicatorLabels or create a clean fallback
+      const displayName = indicatorLabels[item.indicator]
+        ? indicatorLabels[item.indicator].split(" ").slice(0, 4).join(" ")
+        : item.indicator
+            .replace("NEWBORNS_", "")
+            .replace("NEONATES_", "")
+            .replace(/_/g, " ")
+            .split(" ")
+            .slice(0, 4)
+            .join(" ");
 
       const isPositive = positiveIndicators.includes(item.indicator);
 
       return {
-        name: shortLabel,
+        name: displayName,
         fullName: indicatorLabels[item.indicator] || item.indicator,
         value: parseFloat(item.value) || 0,
         indicator: item.indicator,
