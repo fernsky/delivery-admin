@@ -6,6 +6,8 @@ import {
   PieChart,
   BookOpen,
   Activity,
+  Baby,
+  Droplet,
   Building,
 } from "lucide-react";
 import { NavItem } from "@/store/sidebar-nav-store";
@@ -208,7 +210,7 @@ export const navItems: NavItem[] = [
   {
     title: "खानेपानी तथा सरसफाइ",
     href: "/profile/water-and-sanitation",
-    icon: <Activity className="w-4 h-4" />,
+    icon: <Droplet className="w-4 h-4" />,
     items: [
       {
         title: "खानेपानीको मुख्य श्रोतको आधारमा घरधुरी",
@@ -231,7 +233,7 @@ export const navItems: NavItem[] = [
   {
     title: "प्रजनन् स्वास्थ्य",
     href: "/profile/fertility",
-    icon: <Activity className="w-4 h-4" />,
+    icon: <Baby className="w-4 h-4" />,
     items: [
       {
         title: "सुरक्षित मातृत्वको अवस्थाको विवरण",
