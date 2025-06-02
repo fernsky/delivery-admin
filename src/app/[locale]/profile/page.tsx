@@ -17,6 +17,7 @@ import {
   Building,
   PieChart,
   MapPin,
+  Droplet,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -62,6 +63,15 @@ const categories = [
     icon: <PieChart className="h-6 w-6" />,
     color: "bg-purple-100 dark:bg-purple-900",
     textColor: "text-purple-700 dark:text-purple-300",
+  },
+  {
+    title: "खानेपानी तथा सरसफाइ",
+    description:
+      "खानेपानीको श्रोत, पानी शुद्धीकरण, शौचालयको प्रकार र फोहोरमैला व्यवस्थापन सम्बन्धी तथ्याङ्क।",
+    href: "/profile/water-and-sanitation",
+    icon: <Droplet className="h-6 w-6" />,
+    color: "bg-cyan-100 dark:bg-cyan-900",
+    textColor: "text-cyan-700 dark:text-cyan-300",
   },
   // {
   //   title: "शिक्षा",

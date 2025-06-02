@@ -36,22 +36,22 @@ export type WardWiseToiletTypeFilter = z.infer<
 export const toiletTypeOptions = [
   {
     value: "FLUSH_WITH_SEPTIC_TANK",
-    label: "Flush toilet with septic tank (फ्लस भएको (सेप्टिक ट्याङ्क))",
+    label: "फ्लस भएको (सेप्टिक ट्याङ्क)",
   },
   {
     value: "NORMAL",
-    label: "Basic toilet (साधारण)",
+    label: "साधारण",
   },
   {
     value: "PUBLIC_EILANI",
-    label: "Public toilet (सार्वजनिक)",
+    label: "सार्वजनिक",
   },
   {
     value: "NO_TOILET",
-    label: "No toilet (चर्पी नभएको)",
+    label: "चर्पी नभएको",
   },
   {
     value: "OTHER",
-    label: "Other types (अन्य)",
+    label: "अन्य",
   },
 ];

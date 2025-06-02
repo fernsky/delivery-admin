@@ -252,7 +252,7 @@ export const getWardWiseSolidWasteManagementSummary = publicProcedure.query(
           solid_waste_management, 
           SUM(households) as total_households
         FROM 
-          ward_wise_solid_waste_management
+          acme_ward_wise_solid_waste_management
         GROUP BY 
           solid_waste_management
         ORDER BY 

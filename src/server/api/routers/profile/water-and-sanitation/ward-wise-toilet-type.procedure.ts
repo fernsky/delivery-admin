@@ -233,7 +233,7 @@ export const getWardWiseToiletTypeSummary = publicProcedure.query(
           toilet_type, 
           SUM(households) as total_households
         FROM 
-          ward_wise_toilet_type
+          acme_ward_wise_toilet_type
         GROUP BY 
           toilet_type
         ORDER BY 
