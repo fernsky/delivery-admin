@@ -2,11 +2,10 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { env } from "@/env";
 import * as schema from "./schema";
+import { getRequiredEnvVar } from "@/lib/utils/getRequiredEnvVar";
 
 let connection;
-const dbUrl =
-  process.env.DATABASE_URL ||
-  "postgres://postgres:postgres@postgresdb:5432/product-survey";
+const dbUrl = getRequiredEnvVar("DATABASE_URL");
 try {
   connection = postgres(dbUrl, {
     max_lifetime: 10, // Remove this line if you're deploying to Docker / VPS
