@@ -205,6 +205,21 @@ export const navItems: NavItem[] = [
       },
     ],
   },
+  {
+    title: "प्रजनन् अवस्था",
+    href: "/profile/fertility",
+    icon: <Activity className="w-4 h-4" />,
+    items: [
+      {
+        title: "सुरक्षित मातृत्वको अवस्थाको विवरण",
+        href: "/profile/health/safe-motherhood-indicators",
+      },
+      {
+        title: "सुत्केरी गराएको स्थान सम्बन्धी विवरण",
+        href: "/profile/health/ward-wise-delivery-place",
+      },
+    ],
+  },
   // {
   //   title: "भौतिक पूर्वाधार",
   //   href: "/profile/infrastructure",
