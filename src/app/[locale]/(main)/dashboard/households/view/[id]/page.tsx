@@ -351,11 +351,11 @@ export default function HouseholdView() {
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to List
           </Button>
-          <Link href={`/dashboard/households/edit/${rawId}`} passHref>
+          {/* <Link href={`/dashboard/households/edit/${rawId}`} passHref>
             <Button>
               <Edit className="mr-2 h-4 w-4" /> Edit Household
             </Button>
-          </Link>
+          </Link> */}
         </div>
       }
     >
@@ -466,7 +466,7 @@ export default function HouseholdView() {
                               <TableCell>{member.age || "N/A"}</TableCell>
                               <TableCell>{member.gender}</TableCell>
                               <TableCell>
-                                //@ts-ignore
+                                {/* //@ts-ignore */}
                                 {memberFamilyRole.toLowerCase() === "head" ? (
                                   <Badge variant="default">Head</Badge>
                                 ) : (

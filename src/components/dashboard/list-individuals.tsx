@@ -35,7 +35,6 @@ import { Badge } from "@/components/ui/badge";
 import { ContentLayout } from "../admin-panel/content-layout";
 import type { User as AuthUser } from "@/lib/auth/lucia";
 
-<<<<<<< HEAD
 // Function to format UUID for navigation
 function formatUuidForNav(uuid: string): string {
   return uuid.replace(/^uuid:/, "");
@@ -486,13 +485,6 @@ export default function ListIndividuals({ user }: { user: AuthUser }) {
           </>
         )}
       </div>
-=======
-export default function ListIndividuals({ user }: { user: User }) {
-  
-  return (
-    <ContentLayout title="Individuals">
-      <></>
->>>>>>> 37a36f4084376d31d7c39786771263e077fbba92
     </ContentLayout>
   );
 }
