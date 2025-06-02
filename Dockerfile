@@ -57,6 +57,7 @@ COPY --from=build --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=build --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=build --chown=nextjs:nodejs /app/yarn.lock ./yarn.lock
 COPY --from=build --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=build --chown=nextjs:nodejs /app/src/env.js ./src/env.js
 
 # Define runtime environment variables
 ENV NODE_ENV production
