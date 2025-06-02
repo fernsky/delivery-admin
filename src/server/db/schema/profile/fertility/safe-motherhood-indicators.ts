@@ -5,206 +5,57 @@ import { integer, timestamp, varchar, pgEnum, real } from "drizzle-orm/pg-core";
 export const safeMotherhoodIndicatorTypeEnum = pgEnum(
   "safe_motherhood_indicator_type",
   [
-    "KMC_HYPOTHERMIA",
-    "KMC_PRETERM",
-    "PACKAGE_ABC",
-    "LAMA_ABSCONDED",
-    "CONGENITAL_ANOMALIES",
-    "ASPHYXIA",
-    "HYPERBILIRUBINEMIA",
-    "HYPOTHERMIA",
-    "LOW_BIRTH_WEIGHT",
-    "OTHER_CONDITIONS",
-    "PRETERM",
-    "SEIZURE",
-    "SEPSIS",
-    "TOTAL_SICK_ADMITTED",
-    "ADMITTED_PLH",
-    "KMC_PLH",
-    "OUTREACH_KMC_LBW",
-    "OUTREACH_PACKAGE_A",
-    "OUTREACH_PACKAGE_AB",
-    "OUTREACH_PACKAGE_B",
-    "OUTREACH_DEATH",
-    "OUTREACH_IMPROVED",
-    "OUTREACH_REFERRED",
-    "OUTREACH_DAYS_STAY",
-    "NUTRITION_OEDEMA_1PLUS",
-    "NUTRITION_OEDEMA_3PLUS",
-    "NUTRITION_NO_OEDEMA",
-    "NUTRITION_WEIGHT_HEIGHT_2SD",
-    "NUTRITION_WEIGHT_HEIGHT_3SD",
-    "NUTRITION_WEIGHT_HEIGHT_4SD",
-    "NUTRITION_NEW_24_59_MONTHS",
-    "NUTRITION_NEW_6_23_MONTHS",
-    "NUTRITION_NEW_UNDER_6_MONTHS",
-    "NUTRITION_NEW_OVER_59_MONTHS",
-    "NUTRITION_ADMIT_OEDEMA_1PLUS",
-    "NUTRITION_ADMIT_OEDEMA_3PLUS",
-    "NUTRITION_ADMIT_NO_OEDEMA",
-    "NUTRITION_REFERRED_24_59_MONTHS",
-    "NUTRITION_REFERRED_6_23_MONTHS",
-    "NUTRITION_REFERRED_UNDER_6_MONTHS",
-    "NUTRITION_REFERRED_OVER_59_MONTHS",
-    "NUTRITION_ADMIT_WEIGHT_2SD",
-    "NUTRITION_ADMIT_WEIGHT_3SD",
-    "NUTRITION_ADMIT_WEIGHT_4SD",
-    "NUTRITION_AVG_IPD_DAYS",
-    "NUTRITION_AVG_TOTAL_ADMISSIONS",
-    "NUTRITION_BED_DAYS_AVAILABLE",
-    "NUTRITION_BED_DAYS_CARE",
-    "NUTRITION_DISCHARGE_NO_OEDEMA",
-    "NUTRITION_DISCHARGE_WEIGHT_2SD",
-    "NUTRITION_DISCHARGE_WEIGHT_3SD",
-    "NUTRITION_DISCHARGE_WEIGHT_4SD",
-    "NUTRITION_DEATH_UNDER_6_MONTHS",
-    "NUTRITION_DISCHARGED_24_59_MONTHS",
-    "NUTRITION_DISCHARGED_6_23_MONTHS",
-    "NUTRITION_DISCHARGED_UNDER_6_MONTHS",
-    "NUTRITION_DISCHARGED_OVER_59_MONTHS",
-    "NUTRITION_LAMA_24_59_MONTHS",
-    "NUTRITION_LAMA_6_23_MONTHS",
-    "NUTRITION_DISCHARGE_OEDEMA",
-    "NUTRITION_DISCHARGE_LAMA_WEIGHT_2SD",
-    "NUTRITION_DISCHARGE_LAMA_WEIGHT_3SD",
-    "NUTRITION_DISCHARGE_OEDEMA_2PLUS",
-    "NUTRITION_DISCHARGE_REFERRAL_24_59",
-    "NUTRITION_DISCHARGE_REFERRAL_6_23",
-    "NUTRITION_DISCHARGE_REFERRAL_UNDER_6",
-    "NUTRITION_DISCHARGE_REFERRAL_OVER_59",
-    "NUTRITION_DISCHARGE_WEIGHT_HEIGHT_2SD",
-    "NUTRITION_DISCHARGE_WEIGHT_HEIGHT_3SD",
-    "NUTRITION_DISCHARGE_WEIGHT_HEIGHT_4SD",
-    "OCMC_VIOLENCE_CHHAUPADI",
-    "OCMC_VIOLENCE_CHILD_LABOR",
-    "OCMC_VIOLENCE_CHILD_MARRIAGE",
-    "OCMC_VIOLENCE_DOWRY",
-    "OCMC_VIOLENCE_TRAFFICKING",
-    "OCMC_VIOLENCE_OTHER",
-    "OCMC_VIOLENCE_POLYGAMY",
-    "OCMC_VIOLENCE_DISCRIMINATION",
-    "OCMC_DISABILITY_AUTISM",
-    "OCMC_DISABILITY_INTELLECTUAL",
-    "OCMC_DISABILITY_MENTAL",
-    "OCMC_DISABILITY_MULTIPLE",
-    "OCMC_DISABILITY_PHYSICAL",
-    "OCMC_DISABILITY_SPEECH",
-    "OCMC_NEW_CASES_ETHNICITY",
-    "OCMC_PERPETRATOR",
-    "OCMC_PERPETRATOR_NON_RELATIVE",
-    "OCMC_PERPETRATOR_RELATIVE",
-    "OCMC_SERVICE_CONTRACEPTIVE",
-    "OCMC_SERVICE_HTC",
-    "OCMC_SERVICE_INJURY",
-    "OCMC_SERVICE_MEDICO_LEGAL",
-    "OCMC_SERVICE_PHYSICAL_EXAM",
-    "OCMC_SERVICE_COUNSELING",
-    "OCMC_SERVICE_ABORTION",
-    "OCMC_VIOLENCE_RESOURCE_DENIAL",
-    "OCMC_VIOLENCE_EMOTIONAL",
-    "OCMC_VIOLENCE_PHYSICAL",
-    "OCMC_VIOLENCE_RAPE",
-    "OCMC_VIOLENCE_SEXUAL_ASSAULT",
-    "OCMC_VISIT_FOLLOWUP",
-    "OCMC_VISIT_NEW",
-    "SSU_AMOUNT_EXEMPTED",
-    "SSU_AMOUNT_EXPENSES",
-    "SSU_VISIT_FOLLOWUP",
-    "SSU_VISIT_NEW",
-    "SSU_VISIT_EMERGENCY",
-    "SSU_VISIT_INDOOR",
-    "SSU_VISIT_OUTDOOR",
-    "SSU_VISIT_ETHNICITY",
-    "SSU_VISIT_HI_ENROLLED",
-    "SSU_VISIT_HI_NOT_ENROLLED",
-    "LOW_WEIGHT_FEEDING_29_59_DAYS",
-    "LOW_WEIGHT_FEEDING_UNDER_28_DAYS",
-    "CBIMCI_GENTAMYCIN_COMPLETE",
-    "CBIMCI_UNDER_2M_JAUNDICE",
-    "CBIMCI_UNDER_2M_LBI",
-    "CBIMCI_UNDER_2M_PSBI",
-    "CBIMCI_UNDER_2M_FOLLOWUP",
-    "CBIMCI_UNDER_2M_REFERRAL",
-    "CBIMCI_UNDER_2M_TOTAL",
-    "CBIMCI_UNDER_2M_AMOXICILLIN",
-    "CBIMCI_UNDER_2M_AMPICILLIN",
-    "CBIMCI_UNDER_2M_GENTAMYCIN_FIRST",
-    "CBIMCI_2_59M_NO_PNEUMONIA",
-    "CBIMCI_2_59M_PNEUMONIA",
-    "CBIMCI_2_59M_SEVERE_PNEUMONIA",
-    "CBIMCI_2_59M_ANEMIA",
-    "CBIMCI_2_59M_DYSENTERY",
-    "CBIMCI_2_59M_DEHYDRATION",
-    "CBIMCI_2_59M_EAR_INFECTION",
-    "CBIMCI_2_59M_MEASLES",
-    "CBIMCI_2_59M_OTHER_FEVER",
-    "CBIMCI_2_59M_SEVERE_MALNUTRITION",
-    "CBIMCI_2_59M_NO_DEHYDRATION",
-    "CBIMCI_2_59M_FOLLOWUP",
-    "CBIMCI_2_59M_OTHER",
-    "CBIMCI_2_59M_REFER_ARI",
-    "CBIMCI_2_59M_REFER_DIARRHEA",
-    "CBIMCI_2_59M_REFER_OTHER",
-    "CBIMCI_2_59M_TOTAL_SICK",
-    "CBIMCI_2_59M_AMOXICILLIN",
-    "CBIMCI_2_59M_ANTHELMINTICS",
-    "CBIMCI_2_59M_IV_FLUIDS",
-    "CBIMCI_2_59M_ORS_ZINC",
-    "CBIMCI_2_59M_VITAMIN_A",
-    "CBIMCI_2_59M_SERIOUS_FEVER",
-    "CBIMCI_2_59M_PROLONGED_DIARRHEA",
-    "CBIMCI_2_59M_OTHER_ANTIBIOTICS",
-    "CBIMCI_UNDER_2M_OTHER_ANTIBIOTICS",
-    "CBIMCI_UNDER_2M_ORC_GENTAMYCIN",
-    "IMCI_TOTAL_FEMALE",
-    "IMCI_TOTAL_MALE",
-    "IMNCI_2_59M_DEATH_12_59",
-    "IMNCI_2_59M_DEATH_2_11",
-    "IMNCI_2_59M_MILD_MALNUTRITION",
-    "IMNCI_UNDER_2M_BF_29_59",
-    "IMNCI_UNDER_2M_BF_28",
-    "IMNCI_UNDER_2M_DEATH_0_7",
-    "IMNCI_UNDER_2M_DEATH_8_28",
-    "IMNCI_UNDER_2M_PNEUMONIA_29_59",
-    "IMNCI_UNDER_2M_PNEUMONIA_8_28",
-    "HEALTH_EDUCATION_SESSIONS",
-    "IMAM_UNDER_6M_END_MONTH",
-    "IYCF_FORTIFIED_FLOUR_PREGNANT",
-    "IYCF_COMPLEMENTARY_FEEDING",
-    "IYCF_EXCLUSIVE_BREASTFEEDING",
-    "IYCF_FORTIFIED_FLOUR_CHILDREN",
-    "NP_UNDER_5_DEWORMING",
-    "NP_UNDER_5_VITA_12_59",
-    "NP_UNDER_5_VITA_6_11",
-    "NP_GM_NEW_0_11M_MODERATE",
-    "NP_GM_NEW_0_11M_NORMAL",
-    "NP_GM_NEW_0_11M_SEVERE",
-    "NP_GM_NEW_12_23M_MODERATE",
-    "NP_GM_NEW_12_23M_NORMAL",
-    "NP_GM_NEW_12_23M_SEVERE",
-    "NP_GM_REVISIT_0_11M_MODERATE",
-    "NP_GM_REVISIT_0_11M_NORMAL",
-    "NP_GM_REVISIT_0_11M_SEVERE",
-    "NP_GM_REVISIT_12_23M_MODERATE",
-    "NP_GM_REVISIT_12_23M_NORMAL",
-    "NP_GM_REVISIT_12_23M_SEVERE",
-    "NP_POSTPARTUM_45_IRON",
-    "NP_POSTPARTUM_VITAMIN_A",
-    "NP_PREGNANT_180_IRON",
-    "NP_PREGNANT_DEWORMING",
-    "NP_PREGNANT_FIRST_IRON",
-    "NP_STUDENTS_DEWORMING_BOYS",
-    "NP_STUDENTS_DEWORMING_GIRLS",
-    "NP_CALCIUM_TABLETS",
-    "NP_GM_23_MONTHS",
-    "NP_GM_WEIGHTED",
-    "OP_MORBIDITY_ANEMIA",
-    "OP_MORBIDITY_VITAMIN_DEFICIENCY",
-    "OP_MORBIDITY_DIABETES",
-    "OP_MORBIDITY_GOITRE",
-    "OP_MORBIDITY_MALNUTRITION",
-    "OP_MORBIDITY_OBESITY",
-    "OP_MORBIDITY_POLYNEURITIS",
+    "POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS",         // 1.18 - % of postpartum mother receiving two PNC home visits
+    "PREGNANT_WOMEN_AT_LEAST_ONE_ANC_CHECKUP",        // 1.1 - % of pregnant women who had at least one ANC checkup
+    "PREGNANT_WOMEN_RECEIVED_ANTHELMINTHICS",         // 1.4 - Percentage of pregnant women who received anthelminthics
+    "POSTPARTUM_WOMEN_REFERRED_OBSTETRIC_COMPLICATIONS", // 1.31 - % of postpartum women referred out due to obstetric complications
+    "NORMAL_VAGINAL_DELIVERIES",                      // 1.11 - % of normal vaginal deliveries among reported deliveries
+    "NEWBORNS_CHX_APPLIED_AFTER_BIRTH",               // 1.39 - % of newborns who had CHX applied immediately after birth
+    "POSTPARTUM_MOTHERS_45DAYS_IRON_FOLIC_ACID",      // 1.19 - % of postpartum mother who received 45 days supply of iron folic acid suppliment
+    "POSTPARTUM_MOTHERS_VITAMIN_A",                   // 1.20 - % of postpartum mother who received vitamin A suppliment
+    "WOMEN_CONTRACEPTIVES_AFTER_ABORTION",            // 1.45 - % of women who received contraceptives after abortion
+    "WOMEN_180DAYS_IRON_FOLIC_ACID_PREGNANCY",        // 1.3 - Percentage of women who received a 180 day supply of Iron Folic Acid during pregnancy
+    "PREGNANT_WOMEN_FOUR_ANC_CHECKUPS_PROTOCOL",      // Percentage of pregnant women who had four ANC checkups as per protocol
+    "WOMEN_FIRST_ANC_CHECKUP_PROTOCOL",               // 1.47 Percentage of women who had first ANC checkup as per protocol
+    "WOMEN_180_CALCIUM_TABLETS_PREGNANCY",            // 1.5 - Percentage of women who received 180 calcium tablets during pregnancy
+    "INSTITUTIONAL_DELIVERIES",                       // 1.6 - % of institutional deliveries
+    "BIRTHS_ATTENDED_SBA_TRAINED_ANMS",               // 1.8 - % of births attended by a skilled birth attendant (SBA trained ANMs)
+    "WOMEN_PNC_WITHIN_24HRS_DELIVERY",                // 1.16 - % of women who received a PNC within 24 hours of delivery
+    "NEWBORNS_CHECKUP_24HRS_BIRTH",                   // 1.40 - % of newborns who received a check-up at 24 hours of birth
+    "WOMEN_FOUR_POSTNATAL_CHECKUPS_PROTOCOL",         // 1.17 - % of women who had four postnatal check-ups as per protocol
+    "NEONATES_FOUR_CHECKUPS_PNC_PROTOCOL",            // 1.41 - % of neonates who received four checkups as per PNC protocol
+    "PREGNANT_WOMEN_EIGHT_ANC_VISITS_PROTOCOL",       // 1.2 - Percentage of pregnant women who had at least eight ANC visits as per protocol
+    "PREGNANCIES_TERMINATED_INDUCED_PROCEDURE",       // 1.44 - % of pregnancies terminated by induced procedure at health facility
+    "NEWBORNS_LOW_BIRTH_WEIGHT",                      // 1.35 - % of newborns with low birth weight (<2.5KG)
+    "DELIVERIES_BELOW_20_YEARS_INSTITUTIONAL",        // 1.7 - % of deliveries below 20 years of age among total institutional deliveries
+    "NEONATES_BIRTH_ASPHYXIA",                        // 1.37 - % of neonates with birth asphyxia
+    "PRETERM_BIRTH",                                  // 1.36 - % of preterm birth
+    "STILL_BIRTHS",                                   // 1.42 - % of still births
+    "BIRTHS_ATTENDED_NON_SBA_SHP",                    // 1.10 - % of births attended by a health worker other than SBA and SHP
+    "NEONATES_CONGENITAL_ANOMALIES",                  // 1.38 - % of neonates with conginital anomalies
+    "NEONATAL_MORTALITY_HEALTH_FACILITY",             // 1.43 - % of neonatal mortality (health facility)
+    "ASSISTED_VACUUM_FORCEPS_DELIVERIES",             // 1.12 - % of assisted (vaccum or forceps) deliveries
+    "DELIVERIES_CAESAREAN_SECTION_REPORTED",          // 1.13 - % of deliveries by caesarean section among reported deliveries
+    "DELIVERY_BY_CAESAREAN_SECTION",                  // 1.14 - % of delivery by caesarean section
+    "PREGNANT_WOMEN_HOME_BIRTH_MISOPROSTAL",          // 1.15 - % of pregnant women who gave birth at home and used misoprostal
+    "WOMEN_TREATED_HAEMORRHAGE",                      // 1.22 - Number of women treated for haemorrhage
+    "WOMEN_TREATED_ANTEPARTUM_HAEMORRHAGE",           // 1.22.1 Number of women treated for Antepartum Haemorrhage (APH)
+    "WOMEN_TREATED_POSTPARTUM_HAEMORRHAGE",           // 1.22.2 Number of women treated for Postpartum Haemorrhage (PPH)
+    "WOMEN_TREATED_ECTOPIC_PREGNANCY",                // 1.23 - Number of women treated for Ectopic pregnancy
+    "WOMEN_TREATED_RUPTURED_UTERUS",                  // 1.25 - Number of women treated for ruptured uterus
+    "WOMEN_TREATED_PREECLAMPSIA",                     // 1.26 - Number of women treated for Pre-eclampsia
+    "WOMEN_TREATED_ECLAMPSIA",                        // 1.27 - Number of women treated for Eclampsia
+    "WOMEN_TREATED_RETAINED_PLACENTA",                // 1.28 - Number of women treated for retained Placenta
+    "WOMEN_TREATED_PUERPERAL_SEPSIS",                 // 1.29 - Number of women treated for Puerperal Sepsis
+    "WOMEN_TREATED_ABORTION_COMPLICATIONS",           // 1.30 - Number of women treated for abortion complications
+    "WOMEN_OBSTETRIC_COMPLICATIONS_BLOOD_TRANSFUSION", // 1.32 - % of women with obstetric complication who received a blood transfusion for haemorrage
+    "REPORTED_MATERNAL_DEATHS_HEALTH_FACILITY",       // 1.34 - Number of reported maternal deaths at health facility
+    "WOMEN_COMPLICATIONS_INDUCED_ABORTION",           // 1.46 - % of women with complications from induced abortion
+    "BIRTHS_ATTENDED_SKILLED_HEALTH_PERSONNEL",       // 1.9 - % of births attended by a skilled health personnel (SHP)
+    "PREGNANT_WOMEN_FIRST_ANC_CHECKUP_PROTOCOL",      // Percentage of pregnant women who had First ANC checkup as protocal
+    "MET_NEED_EMERGENCY_OBSTETRIC_CARE",              // 1.21 - Met need for emergency obstetric care
+    "WOMEN_TREATED_PROLONGED_OBSTRUCTED_LABOR",       // 1.24 - Number of women treated for prolonged/ obstructed labor
+    "POSTPARTUM_MOTHERS_CS_WOUND_INFECTION"           // 1.33 - % of postpartum mothers with C/S wound infection
   ],
 );
 

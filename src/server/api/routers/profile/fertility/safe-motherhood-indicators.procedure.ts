@@ -308,8 +308,15 @@ export const getNewbornHealthSummary = publicProcedure.query(
         SELECT MAX(year) as latest_year
         FROM safe_motherhood_indicators
         WHERE indicator IN (
-          'KMC_HYPOTHERMIA', 'KMC_PRETERM', 'LOW_BIRTH_WEIGHT', 
-          'SEPSIS', 'ASPHYXIA', 'TOTAL_SICK_ADMITTED'
+          'NEWBORNS_CHX_APPLIED_AFTER_BIRTH',
+          'NEWBORNS_CHECKUP_24HRS_BIRTH',
+          'NEONATES_FOUR_CHECKUPS_PNC_PROTOCOL',
+          'NEWBORNS_LOW_BIRTH_WEIGHT', 
+          'NEONATES_BIRTH_ASPHYXIA', 
+          'PRETERM_BIRTH',
+          'NEONATES_CONGENITAL_ANOMALIES',
+          'NEONATAL_MORTALITY_HEALTH_FACILITY',
+          'STILL_BIRTHS'
         )
       `;
 
@@ -334,12 +341,15 @@ export const getNewbornHealthSummary = publicProcedure.query(
         WHERE 
           year = ${latestYear}
           AND indicator IN (
-            'KMC_HYPOTHERMIA',
-            'KMC_PRETERM',
-            'LOW_BIRTH_WEIGHT',
-            'SEPSIS',
-            'ASPHYXIA',
-            'TOTAL_SICK_ADMITTED'
+            'NEWBORNS_CHX_APPLIED_AFTER_BIRTH',
+            'NEWBORNS_CHECKUP_24HRS_BIRTH',
+            'NEONATES_FOUR_CHECKUPS_PNC_PROTOCOL',
+            'NEWBORNS_LOW_BIRTH_WEIGHT', 
+            'NEONATES_BIRTH_ASPHYXIA', 
+            'PRETERM_BIRTH',
+            'NEONATES_CONGENITAL_ANOMALIES',
+            'NEONATAL_MORTALITY_HEALTH_FACILITY',
+            'STILL_BIRTHS'
           )
         ORDER BY 
           indicator
@@ -368,7 +378,13 @@ export const getNutritionSummary = publicProcedure.query(async ({ ctx }) => {
     const latestYearQuery = sql`
         SELECT MAX(year) as latest_year
         FROM safe_motherhood_indicators
-        WHERE indicator LIKE 'NUTRITION_%' OR indicator LIKE 'IYCF_%'
+        WHERE indicator IN (
+          'POSTPARTUM_MOTHERS_45DAYS_IRON_FOLIC_ACID',
+          'POSTPARTUM_MOTHERS_VITAMIN_A',
+          'WOMEN_180DAYS_IRON_FOLIC_ACID_PREGNANCY',
+          'WOMEN_180_CALCIUM_TABLETS_PREGNANCY',
+          'PREGNANT_WOMEN_RECEIVED_ANTHELMINTHICS'
+        )
       `;
 
     const latestYearResult = await ctx.db.execute(latestYearQuery);
@@ -392,11 +408,11 @@ export const getNutritionSummary = publicProcedure.query(async ({ ctx }) => {
         WHERE 
           year = ${latestYear}
           AND indicator IN (
-            'NUTRITION_NEW_UNDER_6_MONTHS',
-            'NUTRITION_NEW_6_23_MONTHS',
-            'NUTRITION_NEW_24_59_MONTHS',
-            'IYCF_EXCLUSIVE_BREASTFEEDING',
-            'IYCF_COMPLEMENTARY_FEEDING'
+            'POSTPARTUM_MOTHERS_45DAYS_IRON_FOLIC_ACID',
+            'POSTPARTUM_MOTHERS_VITAMIN_A',
+            'WOMEN_180DAYS_IRON_FOLIC_ACID_PREGNANCY',
+            'WOMEN_180_CALCIUM_TABLETS_PREGNANCY',
+            'PREGNANT_WOMEN_RECEIVED_ANTHELMINTHICS'
           )
         ORDER BY 
           indicator
@@ -417,15 +433,21 @@ export const getNutritionSummary = publicProcedure.query(async ({ ctx }) => {
   }
 });
 
-// Get CBIMCI indicators summary
-export const getCBIMCISummary = publicProcedure.query(async ({ ctx }) => {
+// Get delivery indicators summary
+export const getDeliverySummary = publicProcedure.query(async ({ ctx }) => {
   try {
     // Get the most recent year for which we have data
     const latestYearQuery = sql`
-        SELECT MAX(year) as latest_year
-        FROM safe_motherhood_indicators
-        WHERE indicator LIKE 'CBIMCI_%'
-      `;
+      SELECT MAX(year) as latest_year
+      FROM safe_motherhood_indicators
+      WHERE indicator IN (
+        'INSTITUTIONAL_DELIVERIES',
+        'NORMAL_VAGINAL_DELIVERIES',
+        'BIRTHS_ATTENDED_SBA_TRAINED_ANMS',
+        'BIRTHS_ATTENDED_SKILLED_HEALTH_PERSONNEL',
+        'DELIVERIES_BELOW_20_YEARS_INSTITUTIONAL'
+      )
+    `;
 
     const latestYearResult = await ctx.db.execute(latestYearQuery);
     let latestYear = new Date().getFullYear(); // Default to current year
@@ -438,25 +460,25 @@ export const getCBIMCISummary = publicProcedure.query(async ({ ctx }) => {
       latestYear = parseInt(String(latestYearResult[0].latest_year));
     }
 
-    // Get key CBIMCI indicators for the latest year
+    // Get key delivery indicators for the latest year
     const keyIndicatorsSql = sql`
-        SELECT 
-          indicator, 
-          value
-        FROM 
-          safe_motherhood_indicators
-        WHERE 
-          year = ${latestYear}
-          AND indicator IN (
-            'CBIMCI_UNDER_2M_TOTAL',
-            'CBIMCI_UNDER_2M_PSBI',
-            'CBIMCI_2_59M_PNEUMONIA',
-            'CBIMCI_2_59M_TOTAL_SICK',
-            'CBIMCI_2_59M_ORS_ZINC'
-          )
-        ORDER BY 
-          indicator
-      `;
+      SELECT 
+        indicator, 
+        value
+      FROM 
+        safe_motherhood_indicators
+      WHERE 
+        year = ${latestYear}
+        AND indicator IN (
+          'INSTITUTIONAL_DELIVERIES',
+          'NORMAL_VAGINAL_DELIVERIES',
+          'BIRTHS_ATTENDED_SBA_TRAINED_ANMS',
+          'BIRTHS_ATTENDED_SKILLED_HEALTH_PERSONNEL',
+          'DELIVERIES_BELOW_20_YEARS_INSTITUTIONAL'
+        )
+      ORDER BY 
+        indicator
+    `;
 
     const keyIndicatorsData = await ctx.db.execute(keyIndicatorsSql);
 
@@ -465,10 +487,10 @@ export const getCBIMCISummary = publicProcedure.query(async ({ ctx }) => {
       keyIndicators: keyIndicatorsData,
     };
   } catch (error) {
-    console.error("Error in getCBIMCISummary:", error);
+    console.error("Error in getDeliverySummary:", error);
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: "Failed to retrieve CBIMCI summary",
+      message: "Failed to retrieve delivery summary",
     });
   }
 });
@@ -504,12 +526,15 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
         WHERE 
           year = ${latestYear}
           AND indicator IN (
-            'KMC_HYPOTHERMIA',
-            'KMC_PRETERM',
-            'LOW_BIRTH_WEIGHT',
-            'SEPSIS',
-            'ASPHYXIA',
-            'TOTAL_SICK_ADMITTED'
+            'NEWBORNS_CHX_APPLIED_AFTER_BIRTH',
+            'NEWBORNS_CHECKUP_24HRS_BIRTH',
+            'NEONATES_FOUR_CHECKUPS_PNC_PROTOCOL',
+            'NEWBORNS_LOW_BIRTH_WEIGHT', 
+            'NEONATES_BIRTH_ASPHYXIA', 
+            'PRETERM_BIRTH',
+            'NEONATES_CONGENITAL_ANOMALIES',
+            'NEONATAL_MORTALITY_HEALTH_FACILITY',
+            'STILL_BIRTHS'
           )
         ORDER BY 
           indicator
@@ -517,8 +542,8 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
 
       const newbornHealthData = await ctx.db.execute(newbornHealthSql);
 
-      // Get nutrition indicators for the latest year
-      const nutritionSql = sql`
+      // Get antenatal care indicators for the latest year
+      const antenatalSql = sql`
         SELECT 
           indicator, 
           value
@@ -527,20 +552,22 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
         WHERE 
           year = ${latestYear}
           AND indicator IN (
-            'NUTRITION_NEW_UNDER_6_MONTHS',
-            'NUTRITION_NEW_6_23_MONTHS',
-            'NUTRITION_NEW_24_59_MONTHS',
-            'IYCF_EXCLUSIVE_BREASTFEEDING',
-            'IYCF_COMPLEMENTARY_FEEDING'
+            'PREGNANT_WOMEN_AT_LEAST_ONE_ANC_CHECKUP',
+            'PREGNANT_WOMEN_EIGHT_ANC_VISITS_PROTOCOL',
+            'PREGNANT_WOMEN_FOUR_ANC_CHECKUPS_PROTOCOL',
+            'WOMEN_FIRST_ANC_CHECKUP_PROTOCOL',
+            'PREGNANT_WOMEN_RECEIVED_ANTHELMINTHICS',
+            'WOMEN_180DAYS_IRON_FOLIC_ACID_PREGNANCY',
+            'WOMEN_180_CALCIUM_TABLETS_PREGNANCY'
           )
         ORDER BY 
           indicator
       `;
 
-      const nutritionData = await ctx.db.execute(nutritionSql);
+      const antenatalData = await ctx.db.execute(antenatalSql);
 
-      // Get CBIMCI indicators for the latest year
-      const cbimciSql = sql`
+      // Get postnatal care indicators for the latest year
+      const postnatalSql = sql`
         SELECT 
           indicator, 
           value
@@ -549,17 +576,41 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
         WHERE 
           year = ${latestYear}
           AND indicator IN (
-            'CBIMCI_UNDER_2M_TOTAL',
-            'CBIMCI_UNDER_2M_PSBI',
-            'CBIMCI_2_59M_PNEUMONIA',
-            'CBIMCI_2_59M_TOTAL_SICK',
-            'CBIMCI_2_59M_ORS_ZINC'
+            'WOMEN_PNC_WITHIN_24HRS_DELIVERY',
+            'WOMEN_FOUR_POSTNATAL_CHECKUPS_PROTOCOL',
+            'POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS',
+            'POSTPARTUM_MOTHERS_45DAYS_IRON_FOLIC_ACID',
+            'POSTPARTUM_MOTHERS_VITAMIN_A'
           )
         ORDER BY 
           indicator
       `;
 
-      const cbimciData = await ctx.db.execute(cbimciSql);
+      const postnatalData = await ctx.db.execute(postnatalSql);
+
+      // Get delivery indicators for the latest year
+      const deliverySql = sql`
+        SELECT 
+          indicator, 
+          value
+        FROM 
+          safe_motherhood_indicators
+        WHERE 
+          year = ${latestYear}
+          AND indicator IN (
+            'INSTITUTIONAL_DELIVERIES',
+            'NORMAL_VAGINAL_DELIVERIES',
+            'BIRTHS_ATTENDED_SBA_TRAINED_ANMS',
+            'BIRTHS_ATTENDED_SKILLED_HEALTH_PERSONNEL',
+            'BIRTHS_ATTENDED_NON_SBA_SHP',
+            'DELIVERIES_BELOW_20_YEARS_INSTITUTIONAL',y,
+            'ASSISTED_VACUUM_FORCEPS_DELIVERIES',
+            'DELIVERIES_CAESAREAN_SECTION_REPORTED'          )
+        ORDER BY 
+          indicator
+      `;
+
+      const deliveryData = await ctx.db.execute(deliverySql);
 
       // Get historical trend data for key indicators over the last 5 years
       const trendSql = sql`
@@ -572,11 +623,11 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
         WHERE 
           year >= ${latestYear - 4}
           AND indicator IN (
-            'KMC_HYPOTHERMIA',
-            'LOW_BIRTH_WEIGHT',
-            'IYCF_EXCLUSIVE_BREASTFEEDING',
-            'CBIMCI_2_59M_PNEUMONIA',
-            'CBIMCI_UNDER_2M_TOTAL'
+            'INSTITUTIONAL_DELIVERIES',
+            'PREGNANT_WOMEN_FOUR_ANC_CHECKUPS_PROTOCOL',
+            'POSTPARTUM_MOTHERS_TWO_PNC_HOME_VISITS',
+            'NEWBORNS_CHX_APPLIED_AFTER_BIRTH',
+            'WOMEN_PNC_WITHIN_24HRS_DELIVERY'
           )
         ORDER BY 
           indicator, year
@@ -587,8 +638,9 @@ export const getSafeMotherhoodSummary = publicProcedure.query(
       return {
         latestYear,
         newbornHealth: newbornHealthData,
-        nutrition: nutritionData,
-        cbimci: cbimciData,
+        antenatal: antenatalData,
+        postnatal: postnatalData,
+        delivery: deliveryData,
         trends: trendData,
       };
     } catch (error) {
@@ -612,6 +664,6 @@ export const safeMotherhoodIndicatorsRouter = createTRPCRouter({
   delete: deleteSafeMotherhoodIndicator,
   newbornSummary: getNewbornHealthSummary,
   nutritionSummary: getNutritionSummary,
-  cbimciSummary: getCBIMCISummary,
+  deliverySummary: getDeliverySummary,
   summary: getSafeMotherhoodSummary,
 });

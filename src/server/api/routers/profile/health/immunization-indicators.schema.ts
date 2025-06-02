@@ -1,0 +1,128 @@
+import { z } from "zod";
+
+// Fiscal year enum and options (from 2079/80 to 2085/86 for example)
+export const ImmunizationFiscalYearEnum = z.enum([
+  "FY_2079_2080",
+  "FY_2080_2081",
+  "FY_2081_2082",
+  "FY_2082_2083",
+  "FY_2083_2084",
+  "FY_2084_2085",
+  "FY_2085_2086",
+]);
+export type ImmunizationFiscalYear = z.infer<typeof ImmunizationFiscalYearEnum>;
+
+export const immunizationFiscalYearOptions = [
+  { value: "FY_2079_2080", label: "2079/80" },
+  { value: "FY_2080_2081", label: "2080/81" },
+  { value: "FY_2081_2082", label: "2081/82" },
+  { value: "FY_2082_2083", label: "2082/83" },
+  { value: "FY_2083_2084", label: "2083/84" },
+  { value: "FY_2084_2085", label: "2084/85" },
+  { value: "FY_2085_2086", label: "2085/86" },
+];
+
+// Indicator enum (excluding the first data/label row)
+export const ImmunizationIndicatorEnum = z.enum([
+  "DPT_HEPB_HIB1_COVERAGE",
+  "OPV1_COVERAGE",
+  "PCV1_COVERAGE",
+  "ROTA1_COVERAGE",
+  "DPT_HEPB_HIB3_COVERAGE",
+  "OPV3_COVERAGE",
+  "ROTA2_COVERAGE",
+  "PLANNED_IMMUNIZATION_SESSIONS_CONDUCTED",
+  "PLANNED_IMMUNIZATION_CLINICS_CONDUCTED",
+  "HYGIENE_PROMOTION_SESSION_AMONG_ROUTINE_IMMUNIZATION",
+  "PCV3_COVERAGE",
+  "MEASLES_RUBELLA1_COVERAGE",
+  "MEASLES_RUBELLA2_COVERAGE",
+  "FULLY_IMMUNIZED_NIP_SCHEDULE",
+  "BCG_COVERAGE",
+  "TCV_COVERAGE",
+  "JE_COVERAGE",
+  "FIPV1_COVERAGE",
+  "TD2_TD2PLUS_COMPLETED_PREGNANT_WOMEN",
+  "VACCINE_WASTAGE_BCG",
+  "TD2PLUS_PREGNANT_WOMEN",
+  "FIPV2_COVERAGE",
+  "TD2_PREGNANT_WOMEN",
+  "VACCINE_WASTAGE_JE",
+  "VACCINE_WASTAGE_MR",
+  "VACCINE_WASTAGE_FIPV",
+  "VACCINE_WASTAGE_TCV",
+  "MEASLES_INCIDENCE_RATE",
+  "VACCINE_WASTAGE_TD",
+  "VACCINE_WASTAGE_OPV",
+  "VACCINE_WASTAGE_DPT_HEPB_HIB",
+  "DPT_HEPB_HIB1_VS_MR2_DROPOUT",
+  "PCV_DROPOUT",
+  "VACCINE_WASTAGE_PCV",
+  "DPT_HEPB_HIB_DROPOUT",
+  "VACCINE_WASTAGE_ROTA",
+  "HPV1_COVERAGE",
+  "HPV2_COVERAGE",
+  "MEASLES_RUBELLA_DROPOUT",
+  "SERIOUS_AEFI_PERCENT",
+  "AES_RATE",
+  "NEONATAL_TETANUS_RATE",
+  "HPV_DROPOUT",
+]);
+export type ImmunizationIndicator = z.infer<typeof ImmunizationIndicatorEnum>;
+
+export const immunizationIndicatorOptions = [
+  { value: "DPT_HEPB_HIB1_COVERAGE", label: "% of children under one year immunized with DPT-HepB-Hib1" },
+  { value: "OPV1_COVERAGE", label: "% of children under one year immunized with OPV 1" },
+  { value: "PCV1_COVERAGE", label: "% of children under one year immunized with PCV 1" },
+  { value: "ROTA1_COVERAGE", label: "% of under 1 year children immunized with Rota vaccine 1" },
+  { value: "DPT_HEPB_HIB3_COVERAGE", label: "% of children under one year immunized with DPT-HepB-Hib3" },
+  { value: "OPV3_COVERAGE", label: "% of children under one year immunized with OPV 3" },
+  { value: "ROTA2_COVERAGE", label: "% of 1 year children immunized with rota 2" },
+  { value: "PLANNED_IMMUNIZATION_SESSIONS_CONDUCTED", label: "% of planned immunization sessions conducted" },
+  { value: "PLANNED_IMMUNIZATION_CLINICS_CONDUCTED", label: "% of planned immunization clinics conducted" },
+  { value: "HYGIENE_PROMOTION_SESSION_AMONG_ROUTINE_IMMUNIZATION", label: "% of hygiene promotion session among conducted routine immunization session" },
+  { value: "PCV3_COVERAGE", label: "% of children under one year immunized with PCV 3" },
+  { value: "MEASLES_RUBELLA1_COVERAGE", label: "% of children months immunized against measles/rubella 1" },
+  { value: "MEASLES_RUBELLA2_COVERAGE", label: "% of children aged 12-23 months immunized with measles/rubella 2" },
+  { value: "FULLY_IMMUNIZED_NIP_SCHEDULE", label: "% of children fully immunized as per NIP schedule" },
+  { value: "BCG_COVERAGE", label: "Percentage of children under one year immunized with BCG" },
+  { value: "TCV_COVERAGE", label: "% of children immunized with TCV" },
+  { value: "JE_COVERAGE", label: "% of children aged 12-23 months immunized with JE" },
+  { value: "FIPV1_COVERAGE", label: "% of children under one year immunized with FIPV 1" },
+  { value: "TD2_TD2PLUS_COMPLETED_PREGNANT_WOMEN", label: "% of pregnant women who received completed dose of TD (TD2 and TD2+)" },
+  { value: "VACCINE_WASTAGE_BCG", label: "Vaccine wastage rate (BCG)" },
+  { value: "TD2PLUS_PREGNANT_WOMEN", label: "% of pregnant women who received TD2+" },
+  { value: "FIPV2_COVERAGE", label: "% of children under one year immunized with FIPV 2" },
+  { value: "TD2_PREGNANT_WOMEN", label: "% of pregnant women who received TD2" },
+  { value: "VACCINE_WASTAGE_JE", label: "Vaccine wastage rate (JE)" },
+  { value: "VACCINE_WASTAGE_MR", label: "Vaccine wastage rate (MR)" },
+  { value: "VACCINE_WASTAGE_FIPV", label: "Vaccine wastage rate (FIPV)" },
+  { value: "VACCINE_WASTAGE_TCV", label: "Vaccine wastage rate (TCV)" },
+  { value: "MEASLES_INCIDENCE_RATE", label: "Measles incidence rate per 100,000 population" },
+  { value: "VACCINE_WASTAGE_TD", label: "Vaccine wastage rate (TD)" },
+  { value: "VACCINE_WASTAGE_OPV", label: "Vaccine wastage rate (OPV)" },
+  { value: "VACCINE_WASTAGE_DPT_HEPB_HIB", label: "Vaccine wastage rate (DPT/HepB/Hib)" },
+  { value: "DPT_HEPB_HIB1_VS_MR2_DROPOUT", label: "DPT-HepB-Hib1 vs MR2 dropout rate" },
+  { value: "PCV_DROPOUT", label: "PCV dropout rate (PCV1 vs PCV3)" },
+  { value: "VACCINE_WASTAGE_PCV", label: "Vaccine wastage rate (PCV)" },
+  { value: "DPT_HEPB_HIB_DROPOUT", label: "DPT-HepB-Hib dropout rate (DPT-HepB-Hib 1 vs 3)" },
+  { value: "VACCINE_WASTAGE_ROTA", label: "Vaccine wastage rate (Rota)" },
+  { value: "HPV1_COVERAGE", label: "% of girls 9-13 years immunized with HPV1" },
+  { value: "HPV2_COVERAGE", label: "% of girls 9-13 years immunized with HPV2" },
+  { value: "MEASLES_RUBELLA_DROPOUT", label: "Measles/Rubella dropout rate" },
+  { value: "SERIOUS_AEFI_PERCENT", label: "% of serious AEFI among reported AEFI cases" },
+  { value: "AES_RATE", label: "Acute encephalitis syndrome (AES) rate per 100,000 population" },
+  { value: "NEONATAL_TETANUS_RATE", label: "Neonatal tetanus rate per 1000 live births" },
+  { value: "HPV_DROPOUT", label: "HPV dropout rate (HPV 1 vs HPV2)" },
+];
+
+// Data schema
+export const immunizationIndicatorDataSchema = z.object({
+  id: z.string().optional(),
+  fiscalYear: ImmunizationFiscalYearEnum,
+  indicator: ImmunizationIndicatorEnum,
+  value: z.number().nullable(),
+  // Optionally add wardNumber or other fields if needed
+});
+
+export type ImmunizationIndicatorData = z.infer<typeof immunizationIndicatorDataSchema>;
