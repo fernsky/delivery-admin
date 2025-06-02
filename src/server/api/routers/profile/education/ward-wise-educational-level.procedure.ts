@@ -249,7 +249,7 @@ export const getWardWiseEducationalLevelSummary = publicProcedure.query(
           educational_level_type, 
           SUM(population) as total_population
         FROM 
-          ward_wise_educational_level
+          acme_ward_wise_educational_level
         GROUP BY 
           educational_level_type
         ORDER BY 

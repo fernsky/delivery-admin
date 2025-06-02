@@ -57,7 +57,7 @@ export default function EducationalLevelComparisonChart({
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="font-medium">{label}</p>
+          <p className="font-medium">{localizeNumber(label, "ne")}</p>
           <div className="space-y-1 mt-2">
             {payload.map((entry: any, index: number) => {
               let displayName = entry.name;
@@ -94,10 +94,17 @@ export default function EducationalLevelComparisonChart({
         barCategoryGap="15%"
       >
         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 12 }}
+          tickFormatter={(value) => `${localizeNumber(value, "ne")}`}
+        />
         <YAxis
           tickFormatter={(value) => `${localizeNumber(value, "ne")}%`}
-          domain={[0, Math.max(Math.ceil(bestEducatedWard?.percentage || 30), 30)]}
+          domain={[
+            0,
+            Math.max(Math.ceil(bestEducatedWard?.percentage || 30), 30),
+          ]}
           label={{
             value: "प्रतिशत",
             angle: -90,
@@ -106,7 +113,7 @@ export default function EducationalLevelComparisonChart({
           }}
         />
         <Tooltip content={CustomTooltip} />
-        <Legend 
+        <Legend
           formatter={(value) => {
             if (value === "Higher Education") {
               return "उच्च शिक्षा दर";
@@ -126,7 +133,10 @@ export default function EducationalLevelComparisonChart({
           label={{
             value: `औसत: ${localizeNumber(avgHigherEducationRate.toFixed(2), "ne")}%`,
             position: "insideBottomRight",
-            style: { fill: EDUCATIONAL_LEVEL_GROUPS.HIGHER_EDUCATION.color, fontSize: 12 },
+            style: {
+              fill: EDUCATIONAL_LEVEL_GROUPS.HIGHER_EDUCATION.color,
+              fontSize: 12,
+            },
           }}
         />
       </BarChart>

@@ -325,29 +325,7 @@ export default function WardWiseEducationalLevelAnalysisSection({
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t">
-              <h5 className="font-medium mb-2">सम्बन्धित डेटा</h5>
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href="/profile/education/ward-wise-literacy-status"
-                  className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-                >
-                  साक्षरताको अवस्था
-                </Link>
-                <Link
-                  href="/profile/education/ward-wise-school-enrollment"
-                  className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-                >
-                  विद्यालय भर्ना
-                </Link>
-                <Link
-                  href="/profile/infrastructure/ward-wise-educational-institutions"
-                  className="text-xs px-2 py-1 bg-muted rounded-full hover:bg-muted/80"
-                >
-                  शैक्षिक संस्थाहरू
-                </Link>
-              </div>
-            </div>
+           
           </div>
         </div>
       </div>

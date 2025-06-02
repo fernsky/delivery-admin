@@ -242,7 +242,7 @@ export const getWardWiseLiteracyStatusSummary = publicProcedure.query(
           literacy_type, 
           SUM(population) as total_population
         FROM 
-          ward_wise_literacy_status
+          acme_ward_wise_literacy_status
         GROUP BY 
           literacy_type
         ORDER BY 

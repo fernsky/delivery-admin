@@ -55,7 +55,7 @@ export default function LiteracyStatusComparisonChart({
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="font-medium">{label}</p>
+          <p className="font-medium">{localizeNumber(label, "ne")}</p>
           <div className="space-y-1 mt-2">
             {payload.map((entry: any, index: number) => {
               let displayName = entry.name;
@@ -96,7 +96,11 @@ export default function LiteracyStatusComparisonChart({
         barCategoryGap="15%"
       >
         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 12 }}
+          tickFormatter={(value) => `${localizeNumber(value, "ne")}`}
+        />
         <YAxis
           tickFormatter={(value) => `${localizeNumber(value, "ne")}%`}
           domain={[0, 100]}
@@ -108,9 +112,11 @@ export default function LiteracyStatusComparisonChart({
           }}
         />
         <Tooltip content={CustomTooltip} />
-        <Legend 
+        <Legend
           formatter={(value) => {
-            if (value === LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.nameEn) {
+            if (
+              value === LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.nameEn
+            ) {
               return LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.name;
             } else if (value === LITERACY_STATUS_TYPES.ILLITERATE.nameEn) {
               return LITERACY_STATUS_TYPES.ILLITERATE.name;
@@ -128,11 +134,7 @@ export default function LiteracyStatusComparisonChart({
           dataKey={LITERACY_STATUS_TYPES.ILLITERATE.nameEn}
           fill={LITERACY_STATUS_TYPES.ILLITERATE.color}
         />
-        <Bar
-          dataKey="Literacy Rate"
-          fill="#3498db"
-          radius={[4, 4, 0, 0]}
-        />
+        <Bar dataKey="Literacy Rate" fill="#3498db" radius={[4, 4, 0, 0]} />
         <ReferenceLine
           y={avgLiteracyRate}
           stroke="#3498db"
