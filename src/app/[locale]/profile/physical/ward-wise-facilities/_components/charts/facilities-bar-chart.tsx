@@ -74,7 +74,12 @@ export default function FacilitiesBarChart({
 
   // For grouped bar chart showing categories per ward, transform data
   const groupedCategoryData = wardWiseData.map(ward => {
-    const baseData = {
+    const baseData: {
+      ward: any;
+      wardNumber: any;
+      total: any;
+      [key: string]: any;  // Allow dynamic string keys
+    } = {
       ward: ward.ward,
       wardNumber: ward.wardNumber,
       total: ward.total,
