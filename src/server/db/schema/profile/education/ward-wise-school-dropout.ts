@@ -3,15 +3,15 @@ import { integer, timestamp, varchar, pgEnum } from "drizzle-orm/pg-core";
 
 // Define school dropout cause type enum
 export const schoolDropoutCauseTypeEnum = pgEnum("school_dropout_cause_type", [
-  "BUSINESS",
-  "PRIVATE_JOB",
-  "GOVERNMENTAL_JOB",
-  "STUDY",
-  "WORK",
-  "DEPENDENT",
-  "CONFLICT",
+  "LIMITED_SPACE",
+  "EXPENSIVE",
+  "FAR",
+  "HOUSE_HELP",
+  "UNWILLING_PARENTS",
+  "WANTED_STUDY_COMPLETED",
+  "MARRIAGE",
+  "EMPLOYMENT",
   "OTHER",
-  "UNKNOWN",
 ]);
 
 export const wardWiseSchoolDropout = pgTable("ward_wise_school_dropout", {

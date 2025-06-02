@@ -10,23 +10,24 @@ import WardWiseSchoolDropoutSEO from "./_components/ward-wise-school-dropout-seo
 import { schoolDropoutCauseOptions } from "@/server/api/routers/profile/education/ward-wise-school-dropout.schema";
 
 const DROPOUT_CAUSE_GROUPS = {
-  EMPLOYMENT: {
-    name: "रोजगारी सम्बन्धी",
-    nameEn: "Employment Related",
+  ECONOMIC: {
+    name: "आर्थिक कारण",
+    nameEn: "Economic Reasons",
     color: "#4285F4", // Blue
     causes: [
-      "BUSINESS",
-      "PRIVATE_JOB",
-      "GOVERNMENTAL_JOB",
-      "WORK"
+      "EXPENSIVE",
+      "HOUSE_HELP",
+      "EMPLOYMENT"
     ]
   },
-  EDUCATION: {
-    name: "शिक्षा सम्बन्धी",
-    nameEn: "Education Related",
+  EDUCATIONAL: {
+    name: "शैक्षिक कारण",
+    nameEn: "Educational Reasons", 
     color: "#FBBC05", // Yellow
     causes: [
-      "STUDY"
+      "LIMITED_SPACE",
+      "FAR",
+      "WANTED_STUDY_COMPLETED"
     ]
   },
   SOCIAL: {
@@ -34,8 +35,8 @@ const DROPOUT_CAUSE_GROUPS = {
     nameEn: "Social Reasons",
     color: "#34A853", // Green
     causes: [
-      "DEPENDENT",
-      "CONFLICT"
+      "MARRIAGE",
+      "UNWILLING_PARENTS"
     ]
   },
   OTHER: {
@@ -43,8 +44,7 @@ const DROPOUT_CAUSE_GROUPS = {
     nameEn: "Other Reasons",
     color: "#EA4335", // Red
     causes: [
-      "OTHER",
-      "UNKNOWN"
+      "OTHER"
     ]
   }
 };
@@ -76,19 +76,19 @@ export async function generateMetadata(): Promise<Metadata> {
 
     // Calculate ward totals and grand total
     let totalDropouts = 0;
-    let employmentDropouts = 0;
+    let economicDropouts = 0;
 
     Object.values(wardGroups).forEach((wardData: any) => {
       wardData.forEach((item: any) => {
         totalDropouts += item.population;
-        if (DROPOUT_CAUSE_GROUPS.EMPLOYMENT.causes.includes(item.cause)) {
-          employmentDropouts += item.population;
+        if (DROPOUT_CAUSE_GROUPS.ECONOMIC.causes.includes(item.cause)) {
+          economicDropouts += item.population;
         }
       });
     });
 
     // Calculate percentages for SEO description
-    const employmentDropoutPercentage = ((employmentDropouts / totalDropouts) * 100).toFixed(2);
+    const economicDropoutPercentage = ((economicDropouts / totalDropouts) * 100).toFixed(2);
 
     // Create rich keywords
     const keywordsNP = [
@@ -96,7 +96,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "स्कूल ड्रपआउट",
       "वडागत शैक्षिक त्याग",
       "रोजगारीका लागि विद्यालय छाड्ने",
-      `रोजगारी कारण छाड्ने ${employmentDropoutPercentage}%`,
+      `रोजगारी कारण छाड्ने ${economicDropoutPercentage}%`,
       "शैक्षिक त्याग विश्लेषण",
     ];
 
@@ -105,14 +105,14 @@ export async function generateMetadata(): Promise<Metadata> {
       "School dropout rate",
       "Ward-wise school dropout",
       "Employment related dropouts",
-      `Employment related dropouts ${employmentDropoutPercentage}%`,
+      `Employment related dropouts ${economicDropoutPercentage}%`,
       "School dropout analysis",
     ];
 
     // Create description
-    const descriptionNP = `खजुरा गाउँपालिकामा विद्यालय छाड्नुका कारणहरूको विश्लेषण। कुल ${localizeNumber(totalDropouts.toLocaleString(), "ne")} जनसंख्या मध्ये ${localizeNumber(employmentDropoutPercentage, "ne")}% (${localizeNumber(employmentDropouts.toLocaleString(), "ne")}) जनाले रोजगारीका लागि विद्यालय छोडेका छन्।`;
+    const descriptionNP = `खजुरा गाउँपालिकामा विद्यालय छाड्नुका कारणहरूको विश्लेषण। कुल ${localizeNumber(totalDropouts.toLocaleString(), "ne")} जनसंख्या मध्ये ${localizeNumber(economicDropoutPercentage, "ne")}% (${localizeNumber(economicDropouts.toLocaleString(), "ne")}) जनाले आर्थिक कारणले विद्यालय छोडेका छन्।`;
 
-    const descriptionEN = `Analysis of school dropout causes in Khajura Rural Municipality. Out of a total of ${totalDropouts.toLocaleString()} dropouts, ${employmentDropoutPercentage}% (${employmentDropouts.toLocaleString()}) have left school for employment reasons.`;
+    const descriptionEN = `Analysis of school dropout causes in Khajura Rural Municipality. Out of a total of ${totalDropouts.toLocaleString()} dropouts, ${economicDropoutPercentage}% (${economicDropouts.toLocaleString()}) have left school for economic reasons.`;
 
     return {
       title: `विद्यालय छाड्ने कारणहरू | ${municipalityName} डिजिटल प्रोफाइल`,
@@ -186,8 +186,8 @@ export default async function WardWiseSchoolDropoutPage() {
   // Calculate totals by dropout group
   let totalDropouts = 0;
   const dropoutGroupTotals: Record<string, number> = {
-    EMPLOYMENT: 0,
-    EDUCATION: 0,
+    ECONOMIC: 0,
+    EDUCATIONAL: 0,
     SOCIAL: 0,
     OTHER: 0
   };
@@ -266,17 +266,17 @@ export default async function WardWiseSchoolDropoutPage() {
     };
   }).filter(Boolean);
 
-  // Find the ward with highest employment-related dropouts percentage
-  const wardEmploymentDropoutPercentages = wardWiseData.map((ward: any) => {
-    const employmentDropoutPercentage = (ward[DROPOUT_CAUSE_GROUPS.EMPLOYMENT.name] / ward.total) * 100;
+  // Find the ward with highest economic-related dropouts percentage
+  const wardEconomicDropoutPercentages = wardWiseData.map((ward: any) => {
+    const economicDropoutPercentage = (ward[DROPOUT_CAUSE_GROUPS.ECONOMIC.name] / ward.total) * 100;
     return {
       wardNumber: ward.wardNumber,
-      percentage: employmentDropoutPercentage
+      percentage: economicDropoutPercentage
     };
   });
   
-  const highestEmploymentDropoutWard = [...wardEmploymentDropoutPercentages].sort((a, b) => b.percentage - a.percentage)[0];
-  const lowestEmploymentDropoutWard = [...wardEmploymentDropoutPercentages].sort((a, b) => a.percentage - b.percentage)[0];
+  const highestEconomicDropoutWard = [...wardEconomicDropoutPercentages].sort((a, b) => b.percentage - a.percentage)[0];
+  const lowestEconomicDropoutWard = [...wardEconomicDropoutPercentages].sort((a, b) => a.percentage - b.percentage)[0];
 
   return (
     <DocsLayout toc={<TableOfContents toc={toc} />}>
@@ -286,8 +286,8 @@ export default async function WardWiseSchoolDropoutPage() {
         totalDropouts={totalDropouts}
         dropoutGroupTotals={dropoutGroupTotals}
         dropoutGroupPercentages={dropoutGroupPercentages}
-        highestEmploymentDropoutWard={highestEmploymentDropoutWard}
-        lowestEmploymentDropoutWard={lowestEmploymentDropoutWard}
+        highestEconomicDropoutWard={highestEconomicDropoutWard}
+        lowestEconomicDropoutWard={lowestEconomicDropoutWard}
         DROPOUT_CAUSE_GROUPS={DROPOUT_CAUSE_GROUPS}
         wardNumbers={wardNumbers}
       />
@@ -321,8 +321,8 @@ export default async function WardWiseSchoolDropoutPage() {
             </p>
             <p>
               खजुरा गाउँपालिकामा कुल {localizeNumber(totalDropouts.toLocaleString(), "ne")} विद्यार्थीहरूले विविध कारणहरूले 
-              विद्यालय छोडेका छन्, जसमध्ये {localizeNumber(dropoutGroupPercentages.EMPLOYMENT.toFixed(2), "ne")}% रोजगारी सम्बन्धी, 
-              {localizeNumber(dropoutGroupPercentages.EDUCATION.toFixed(2), "ne")}% शिक्षा सम्बन्धी, र 
+              विद्यालय छोडेका छन्, जसमध्ये {localizeNumber(dropoutGroupPercentages.ECONOMIC.toFixed(2), "ne")}% आर्थिक सम्बन्धी, 
+              {localizeNumber(dropoutGroupPercentages.EDUCATIONAL.toFixed(2), "ne")}% शिक्षा सम्बन्धी, र 
               {localizeNumber(dropoutGroupPercentages.SOCIAL.toFixed(2), "ne")}% सामाजिक कारणहरूले गर्दा विद्यालय छाडेका छन्।
             </p>
 
@@ -346,9 +346,9 @@ export default async function WardWiseSchoolDropoutPage() {
             causeMap={causeMap}
             dropoutGroupTotals={dropoutGroupTotals}
             dropoutGroupPercentages={dropoutGroupPercentages}
-            wardWiseEmploymentDropout={wardEmploymentDropoutPercentages}
-            highestEmploymentDropoutWard={highestEmploymentDropoutWard}
-            lowestEmploymentDropoutWard={lowestEmploymentDropoutWard}
+            wardWiseEmploymentDropout={wardEconomicDropoutPercentages}
+            highestEmploymentDropoutWard={highestEconomicDropoutWard}
+            lowestEmploymentDropoutWard={lowestEconomicDropoutWard}
             DROPOUT_CAUSE_GROUPS={DROPOUT_CAUSE_GROUPS}
           />
 
@@ -358,10 +358,10 @@ export default async function WardWiseSchoolDropoutPage() {
             </h2>
             <p>
               खजुरा गाउँपालिकामा विद्यालय छाड्ने कारणहरूको विश्लेषण गर्दा, समग्रमा 
-              {localizeNumber(dropoutGroupPercentages.EMPLOYMENT.toFixed(2), "ne")}% जनसंख्याले रोजगारी सम्बन्धी कारणले विद्यालय छोडेका छन्।
-              वडागत रूपमा हेर्दा वडा नं. {localizeNumber(highestEmploymentDropoutWard.wardNumber.toString(), "ne")} मा 
-              सबैभन्दा बढी {localizeNumber(highestEmploymentDropoutWard.percentage.toFixed(2), "ne")}% 
-              जनसंख्याले रोजगारीका लागि विद्यालय छोडेका छन्।
+              {localizeNumber(dropoutGroupPercentages.ECONOMIC.toFixed(2), "ne")}% जनसंख्याले आर्थिक सम्बन्धी कारणले विद्यालय छोडेका छन्।
+              वडागत रूपमा हेर्दा वडा नं. {localizeNumber(highestEconomicDropoutWard.wardNumber.toString(), "ne")} मा 
+              सबैभन्दा बढी {localizeNumber(highestEconomicDropoutWard.percentage.toFixed(2), "ne")}% 
+              जनसंख्याले आर्थिक कारणले विद्यालय छोडेका छन्।
             </p>
 
             <WardWiseSchoolDropoutAnalysisSection
@@ -370,9 +370,9 @@ export default async function WardWiseSchoolDropoutPage() {
               dropoutGroupPercentages={dropoutGroupPercentages}
               dropoutCauseTotals={dropoutCauseTotals}
               causeMap={causeMap}
-              wardWiseEmploymentDropout={wardEmploymentDropoutPercentages}
-              highestEmploymentDropoutWard={highestEmploymentDropoutWard}
-              lowestEmploymentDropoutWard={lowestEmploymentDropoutWard}
+              wardWiseEconomicDropout={wardEconomicDropoutPercentages}
+              highestEconomicDropoutWard={highestEconomicDropoutWard}
+              lowestEconomicDropoutWard={lowestEconomicDropoutWard}
               DROPOUT_CAUSE_GROUPS={DROPOUT_CAUSE_GROUPS}
             />
 
@@ -392,8 +392,8 @@ export default async function WardWiseSchoolDropoutPage() {
               <div className="flex">
                 <span className="font-bold mr-2">१.</span>
                 <div>
-                  <strong>रोजगारीमूलक शिक्षा:</strong> {localizeNumber(dropoutGroupPercentages.EMPLOYMENT.toFixed(2), "ne")}% 
-                  विद्यार्थीहरू रोजगारीका लागि स्कुल छाड्ने गरेकोले उनीहरूलाई व्यावसायिक र प्राविधिक शिक्षामा सहभागी गराउने कार्यक्रमहरू सञ्चालन गर्ने।
+                  <strong>आर्थिक सहायता कार्यक्रम:</strong> {localizeNumber(dropoutGroupPercentages.ECONOMIC.toFixed(2), "ne")}% 
+                  विद्यार्थीहरू आर्थिक कारणले स्कुल छाड्ने गरेकोले उनीहरूलाई छात्रवृत्ति र आर्थिक सहयोग कार्यक्रमहरू सञ्चालन गर्ने।
                 </div>
               </div>
               <div className="flex">
@@ -411,7 +411,7 @@ export default async function WardWiseSchoolDropoutPage() {
               <div className="flex">
                 <span className="font-bold mr-2">४.</span>
                 <div>
-                  <strong>वडागत विशेष कार्यक्रमहरू:</strong> वडा नं. {localizeNumber(highestEmploymentDropoutWard.wardNumber.toString(), "ne")} जस्ता 
+                  <strong>वडागत विशेष कार्यक्रमहरू:</strong> वडा नं. {localizeNumber(highestEconomicDropoutWard.wardNumber.toString(), "ne")} जस्ता 
                   बढी ड्रपआउट दर भएका क्षेत्रहरूमा विशेष शैक्षिक प्रोत्साहन कार्यक्रमहरू सञ्चालन गर्ने।
                 </div>
               </div>

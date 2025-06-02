@@ -14,15 +14,15 @@ import {
 import { localizeNumber } from "@/lib/utils/localize-number";
 
 interface SchoolDropoutComparisonChartProps {
-  wardWiseEmploymentDropout: Array<{
+  wardWiseEconomicDropout: Array<{
     wardNumber: number;
     percentage: number;
   }>;
-  highestEmploymentDropoutWard: {
+  highestEconomicDropoutWard: {
     wardNumber: number;
     percentage: number;
   };
-  lowestEmploymentDropoutWard: {
+  lowestEconomicDropoutWard: {
     wardNumber: number;
     percentage: number;
   };
@@ -35,34 +35,34 @@ interface SchoolDropoutComparisonChartProps {
 }
 
 export default function SchoolDropoutComparisonChart({
-  wardWiseEmploymentDropout,
-  highestEmploymentDropoutWard,
-  lowestEmploymentDropoutWard,
+  wardWiseEconomicDropout,
+  highestEconomicDropoutWard,
+  lowestEconomicDropoutWard,
   DROPOUT_CAUSE_GROUPS,
 }: SchoolDropoutComparisonChartProps) {
-  // Format data for the chart - compare employment-related dropout rates
-  const chartData = wardWiseEmploymentDropout.map((ward) => ({
+  // Format data for the chart - compare economic-related dropout rates
+  const chartData = wardWiseEconomicDropout.map((ward) => ({
     name: `वडा ${ward.wardNumber}`,
-    "Employment": ward.percentage,
+    "Economic": ward.percentage,
   })).sort((a, b) => 
-    b["Employment"] - a["Employment"]
+    b["Economic"] - a["Economic"]
   );
 
-  // Calculate average employment-related dropout rate
-  const avgEmploymentDropoutRate =
-    wardWiseEmploymentDropout.reduce((sum, ward) => sum + ward.percentage, 0) / wardWiseEmploymentDropout.length;
+  // Calculate average economic-related dropout rate
+  const avgEconomicDropoutRate =
+    wardWiseEconomicDropout.reduce((sum, ward) => sum + ward.percentage, 0) / wardWiseEconomicDropout.length;
 
   // Custom tooltip for displaying percentages with Nepali numbers
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border shadow-sm rounded-md">
-          <p className="font-medium">{label}</p>
+          <p className="font-medium">{localizeNumber(label, "ne")}</p>
           <div className="space-y-1 mt-2">
             {payload.map((entry: any, index: number) => {
               let displayName = entry.name;
-              if (entry.name === "Employment") {
-                displayName = "रोजगारी सम्बन्धी";
+              if (entry.name === "Economic") {
+                displayName = "आर्थिक सम्बन्धी";
               }
               
               return (
@@ -94,10 +94,20 @@ export default function SchoolDropoutComparisonChart({
         barCategoryGap="15%"
       >
         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 12 }}
+          tickFormatter={(value) => `${localizeNumber(value, "ne")}`}
+        />
         <YAxis
           tickFormatter={(value) => `${localizeNumber(value, "ne")}%`}
-          domain={[0, Math.max(Math.ceil(highestEmploymentDropoutWard?.percentage || 30), 30)]}
+          domain={[
+            0,
+            Math.max(
+              Math.ceil(highestEconomicDropoutWard?.percentage || 30),
+              30,
+            ),
+          ]}
           label={{
             value: "प्रतिशत",
             angle: -90,
@@ -106,27 +116,30 @@ export default function SchoolDropoutComparisonChart({
           }}
         />
         <Tooltip content={CustomTooltip} />
-        <Legend 
+        <Legend
           formatter={(value) => {
-            if (value === "Employment") {
-              return "रोजगारी सम्बन्धी कारण";
+            if (value === "Economic") {
+              return "आर्थिक सम्बन्धी कारण";
             }
             return value;
           }}
         />
         <Bar
-          dataKey="Employment"
-          fill={DROPOUT_CAUSE_GROUPS.EMPLOYMENT.color}
+          dataKey="Economic"
+          fill={DROPOUT_CAUSE_GROUPS.ECONOMIC.color}
           radius={[4, 4, 0, 0]}
         />
         <ReferenceLine
-          y={avgEmploymentDropoutRate}
-          stroke={DROPOUT_CAUSE_GROUPS.EMPLOYMENT.color}
+          y={avgEconomicDropoutRate}
+          stroke={DROPOUT_CAUSE_GROUPS.ECONOMIC.color}
           strokeDasharray="3 3"
           label={{
-            value: `औसत: ${localizeNumber(avgEmploymentDropoutRate.toFixed(2), "ne")}%`,
+            value: `औसत: ${localizeNumber(avgEconomicDropoutRate.toFixed(2), "ne")}%`,
             position: "insideBottomRight",
-            style: { fill: DROPOUT_CAUSE_GROUPS.EMPLOYMENT.color, fontSize: 12 },
+            style: {
+              fill: DROPOUT_CAUSE_GROUPS.ECONOMIC.color,
+              fontSize: 12,
+            },
           }}
         />
       </BarChart>

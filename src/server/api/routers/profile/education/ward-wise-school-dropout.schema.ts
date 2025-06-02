@@ -2,15 +2,15 @@ import { z } from "zod";
 
 // Define the school dropout cause type enum to match the database enum
 export const SchoolDropoutCauseTypeEnum = z.enum([
-  "BUSINESS",
-  "PRIVATE_JOB",
-  "GOVERNMENTAL_JOB",
-  "STUDY",
-  "WORK",
-  "DEPENDENT",
-  "CONFLICT",
+  "LIMITED_SPACE",
+  "EXPENSIVE",
+  "FAR",
+  "HOUSE_HELP",
+  "UNWILLING_PARENTS",
+  "WANTED_STUDY_COMPLETED",
+  "MARRIAGE",
+  "EMPLOYMENT",
   "OTHER",
-  "UNKNOWN",
 ]);
 export type SchoolDropoutCauseType = z.infer<typeof SchoolDropoutCauseTypeEnum>;
 
@@ -41,15 +41,39 @@ export type WardWiseSchoolDropoutFilter = z.infer<
 // Export the dropout cause options for use in UI components
 export const schoolDropoutCauseOptions = [
   {
-    value: "BUSINESS",
-    label: "Business or entrepreneurship (व्यापार/व्यवसाय)",
+    value: "LIMITED_SPACE",
+    label: "अरु पढ्ने ठाउिँ नभएकोले",
   },
-  { value: "PRIVATE_JOB", label: "Private sector employment (निजी नोकरी)" },
-  { value: "GOVERNMENTAL_JOB", label: "Government employment (सरकारी जागिर)" },
-  { value: "STUDY", label: "Focus on different studies (अध्ययन/तालिम)" },
-  { value: "WORK", label: "Seeking employment (काम/जागिरको खोजी)" },
-  { value: "DEPENDENT", label: "Dependent on others (आश्रित)" },
-  { value: "CONFLICT", label: "Conflict-related reasons (द्वन्द्व)" },
-  { value: "OTHER", label: "Other reasons (अन्य)" },
-  { value: "UNKNOWN", label: "Unknown reason (थाहा छैन)" },
+  {
+    value: "EXPENSIVE",
+    label: "धेरै महँगो भएकोले",
+  },
+  {
+    value: "FAR",
+    label: "धेरै टाढा भएकोले",
+  },
+  {
+    value: "HOUSE_HELP",
+    label: "घरमा काम सघाउनु परेकोले",
+  },
+  {
+    value: "UNWILLING_PARENTS",
+    label: "बाबु/आमाले नचाहेकोले",
+  },
+  {
+    value: "WANTED_STUDY_COMPLETED",
+    label: "चाहेजति पढिसकेकोले",
+  },
+  {
+    value: "MARRIAGE",
+    label: "विवाह भएकोले",
+  },
+  {
+    value: "EMPLOYMENT",
+    label: "काम शुर गरेको/जागिर पाएर",
+  },
+  {
+    value: "OTHER",
+    label: "अन्य",
+  },
 ];

@@ -1,4 +1,3 @@
-
 import { localizeNumber } from "@/lib/utils/localize-number";
 import SchoolDropoutPieChart from "./charts/school-dropout-pie-chart";
 import SchoolDropoutBarChart from "./charts/school-dropout-bar-chart";
@@ -212,28 +211,28 @@ export default function WardWiseSchoolDropoutCharts({
       >
         <meta
           itemProp="name"
-          content="Employment-Related Dropout Comparison Across Wards in Khajura Rural Municipality"
+          content="Economic-Related Dropout Comparison Across Wards in Khajura Rural Municipality"
         />
         <meta
           itemProp="description"
-          content="Comparison of employment-related dropout rates across wards in Khajura"
+          content="Comparison of economic-related dropout rates across wards in Khajura"
         />
 
         <div className="border-b px-4 py-3">
           <h3 className="text-xl font-semibold" itemProp="headline">
-            वडागत रोजगारीका लागि विद्यालय छाड्ने दर
+            वडागत आर्थिक कारणले विद्यालय छाड्ने दर
           </h3>
           <p className="text-sm text-muted-foreground">
-            विभिन्न वडाहरूमा रोजगारीका कारण विद्यालय छाड्नेहरूको तुलना
+            विभिन्न वडाहरूमा आर्थिक कारण विद्यालय छाड्नेहरूको तुलना
           </p>
         </div>
 
         <div className="p-6">
           <div className="h-[400px]">
             <SchoolDropoutComparisonChart
-              wardWiseEmploymentDropout={wardWiseEmploymentDropout}
-              highestEmploymentDropoutWard={highestEmploymentDropoutWard}
-              lowestEmploymentDropoutWard={lowestEmploymentDropoutWard}
+              wardWiseEconomicDropout={wardWiseEmploymentDropout}
+              highestEconomicDropoutWard={highestEmploymentDropoutWard}
+              lowestEconomicDropoutWard={lowestEmploymentDropoutWard}
               DROPOUT_CAUSE_GROUPS={DROPOUT_CAUSE_GROUPS}
             />
           </div>

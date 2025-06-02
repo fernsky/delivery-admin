@@ -235,7 +235,7 @@ export const getWardWiseSchoolDropoutSummary = publicProcedure.query(
           cause, 
           SUM(population) as total_population
         FROM 
-          ward_wise_school_dropout
+          acme_ward_wise_school_dropout
         GROUP BY 
           cause
         ORDER BY 

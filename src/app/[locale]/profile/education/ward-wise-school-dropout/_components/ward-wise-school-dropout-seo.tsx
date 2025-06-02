@@ -6,11 +6,11 @@ interface WardWiseSchoolDropoutSEOProps {
   totalDropouts: number;
   dropoutGroupTotals: Record<string, number>;
   dropoutGroupPercentages: Record<string, number>;
-  highestEmploymentDropoutWard: {
+  highestEconomicDropoutWard: {
     wardNumber: number;
     percentage: number;
   };
-  lowestEmploymentDropoutWard: {
+  lowestEconomicDropoutWard: {
     wardNumber: number;
     percentage: number;
   };
@@ -28,8 +28,8 @@ export default function WardWiseSchoolDropoutSEO({
   totalDropouts,
   dropoutGroupTotals,
   dropoutGroupPercentages,
-  highestEmploymentDropoutWard,
-  lowestEmploymentDropoutWard,
+  highestEconomicDropoutWard,
+  lowestEconomicDropoutWard,
   DROPOUT_CAUSE_GROUPS,
   wardNumbers,
 }: WardWiseSchoolDropoutSEOProps) {
@@ -43,14 +43,14 @@ export default function WardWiseSchoolDropoutSEO({
       
       const totalWardDropouts = wardData.reduce((sum, item) => sum + item.population, 0);
       
-      // Calculate employment-related dropout percentage for this ward
-      const employmentCauses = DROPOUT_CAUSE_GROUPS.EMPLOYMENT.causes;
-      const employmentDropouts = wardData
-        .filter((item) => employmentCauses.includes(item.cause))
+      // Calculate economic-related dropout percentage for this ward
+      const economicCauses = DROPOUT_CAUSE_GROUPS.ECONOMIC.causes;
+      const economicDropouts = wardData
+        .filter((item) => economicCauses.includes(item.cause))
         .reduce((sum, item) => sum + item.population, 0);
       
-      const employmentDropoutPercent = totalWardDropouts > 0 
-        ? ((employmentDropouts / totalWardDropouts) * 100).toFixed(2)
+      const economicDropoutPercent = totalWardDropouts > 0 
+        ? ((economicDropouts / totalWardDropouts) * 100).toFixed(2)
         : "0";
         
       return {
@@ -59,18 +59,18 @@ export default function WardWiseSchoolDropoutSEO({
         observationDate: new Date().toISOString().split("T")[0],
         measuredProperty: {
           "@type": "PropertyValue",
-          name: "Employment-related dropout rate",
+          name: "Economic-related dropout rate",
           unitText: "percentage",
         },
-        measuredValue: parseFloat(employmentDropoutPercent),
-        description: `In Ward ${wardNumber} of Khajura Rural Municipality, ${employmentDropouts.toLocaleString()} students (${employmentDropoutPercent}%) have dropped out of school due to employment-related reasons out of a total of ${totalWardDropouts.toLocaleString()} dropouts.`,
+        measuredValue: parseFloat(economicDropoutPercent),
+        description: `In Ward ${wardNumber} of Khajura Rural Municipality, ${economicDropouts.toLocaleString()} students (${economicDropoutPercent}%) have dropped out of school due to economic-related reasons out of a total of ${totalWardDropouts.toLocaleString()} dropouts.`,
       };
     }).filter(Boolean);
 
     // Calculate school retention index (0-100) - inverse of dropout severity
     const retentionIndex = 100 - (
-      (dropoutGroupPercentages.EMPLOYMENT * 0.6) + 
-      (dropoutGroupPercentages.EDUCATION * 0.2) + 
+      (dropoutGroupPercentages.ECONOMIC * 0.6) + 
+      (dropoutGroupPercentages.EDUCATIONAL * 0.2) + 
       (dropoutGroupPercentages.SOCIAL * 0.4) + 
       (dropoutGroupPercentages.OTHER * 0.2)
     ) / 2;
@@ -79,7 +79,7 @@ export default function WardWiseSchoolDropoutSEO({
       "@context": "https://schema.org",
       "@type": "Dataset",
       name: "School Dropout Causes in Khajura Rural Municipality (खजुरा गाउँपालिका)",
-      description: `Analysis of school dropout causes across ${wardNumbers.length} wards of Khajura Rural Municipality with a total of ${totalDropouts.toLocaleString()} dropouts. ${dropoutGroupTotals.EMPLOYMENT.toLocaleString()} students (${dropoutGroupPercentages.EMPLOYMENT.toFixed(2)}%) have left school due to employment-related reasons. The highest employment-related dropout rate is in Ward ${highestEmploymentDropoutWard?.wardNumber || ""} with ${highestEmploymentDropoutWard?.percentage.toFixed(2) || ""}%.`,
+      description: `Analysis of school dropout causes across ${wardNumbers.length} wards of Khajura Rural Municipality with a total of ${totalDropouts.toLocaleString()} dropouts. ${dropoutGroupTotals.ECONOMIC.toLocaleString()} students (${dropoutGroupPercentages.ECONOMIC.toFixed(2)}%) have left school due to economic-related reasons. The highest economic-related dropout rate is in Ward ${highestEconomicDropoutWard?.wardNumber || ""} with ${highestEconomicDropoutWard?.percentage.toFixed(2) || ""}%.`,
       keywords: [
         "Khajura Rural Municipality",
         "खजुरा गाउँपालिका",
@@ -114,15 +114,15 @@ export default function WardWiseSchoolDropoutSEO({
       variableMeasured: [
         {
           "@type": "PropertyValue",
-          name: "Employment-related dropouts",
+          name: "Economic-related dropouts",
           unitText: "people",
-          value: dropoutGroupTotals.EMPLOYMENT,
+          value: dropoutGroupTotals.ECONOMIC,
         },
         {
           "@type": "PropertyValue",
-          name: "Education-related dropouts",
+          name: "Educational-related dropouts",
           unitText: "people",
-          value: dropoutGroupTotals.EDUCATION,
+          value: dropoutGroupTotals.EDUCATIONAL,
         },
         {
           "@type": "PropertyValue",
@@ -138,9 +138,9 @@ export default function WardWiseSchoolDropoutSEO({
         },
         {
           "@type": "PropertyValue",
-          name: "Employment-Related Dropout Rate",
+          name: "Economic-Related Dropout Rate",
           unitText: "percentage",
-          value: parseFloat(dropoutGroupPercentages.EMPLOYMENT.toFixed(2)),
+          value: parseFloat(dropoutGroupPercentages.ECONOMIC.toFixed(2)),
         },
         {
           "@type": "PropertyValue",

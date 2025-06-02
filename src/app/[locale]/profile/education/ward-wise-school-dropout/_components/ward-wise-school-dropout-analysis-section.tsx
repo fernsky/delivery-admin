@@ -7,15 +7,15 @@ interface WardWiseSchoolDropoutAnalysisSectionProps {
   dropoutGroupPercentages: Record<string, number>;
   dropoutCauseTotals: Record<string, number>;
   causeMap: Record<string, string>;
-  wardWiseEmploymentDropout: Array<{
+  wardWiseEconomicDropout: Array<{
     wardNumber: number;
     percentage: number;
   }>;
-  highestEmploymentDropoutWard: {
+  highestEconomicDropoutWard: {
     wardNumber: number;
     percentage: number;
   };
-  lowestEmploymentDropoutWard: {
+  lowestEconomicDropoutWard: {
     wardNumber: number;
     percentage: number;
   };
@@ -33,16 +33,16 @@ export default function WardWiseSchoolDropoutAnalysisSection({
   dropoutGroupPercentages,
   dropoutCauseTotals,
   causeMap,
-  wardWiseEmploymentDropout,
-  highestEmploymentDropoutWard,
-  lowestEmploymentDropoutWard,
+  wardWiseEconomicDropout,
+  highestEconomicDropoutWard,
+  lowestEconomicDropoutWard,
   DROPOUT_CAUSE_GROUPS,
 }: WardWiseSchoolDropoutAnalysisSectionProps) {
   // Calculate school retention index based on dropout groups
   // Lower is better for dropout causes, so we invert the scale
   const retentionIndex = 100 - (
-    (dropoutGroupPercentages.EMPLOYMENT * 0.6) + 
-    (dropoutGroupPercentages.EDUCATION * 0.2) + 
+    (dropoutGroupPercentages.ECONOMIC * 0.6) + 
+    (dropoutGroupPercentages.EDUCATIONAL * 0.2) + 
     (dropoutGroupPercentages.SOCIAL * 0.4) + 
     (dropoutGroupPercentages.OTHER * 0.2)
   ) / 2;
@@ -69,9 +69,9 @@ export default function WardWiseSchoolDropoutAnalysisSection({
   const seoAttributes = {
     "data-municipality": "Khajura Rural Municipality / खजुरा गाउँपालिका",
     "data-total-dropouts": totalDropouts.toString(),
-    "data-employment-dropout-rate": dropoutGroupPercentages.EMPLOYMENT.toFixed(2),
-    "data-highest-employment-dropout-ward": highestEmploymentDropoutWard?.wardNumber.toString() || "",
-    "data-lowest-employment-dropout-ward": lowestEmploymentDropoutWard?.wardNumber.toString() || "",
+    "data-economic-dropout-rate": dropoutGroupPercentages.ECONOMIC.toFixed(2),
+    "data-highest-economic-dropout-ward": highestEconomicDropoutWard?.wardNumber.toString() || "",
+    "data-lowest-economic-dropout-ward": lowestEconomicDropoutWard?.wardNumber.toString() || "",
     "data-retention-index": retentionIndex.toFixed(2),
   };
 
@@ -133,32 +133,32 @@ export default function WardWiseSchoolDropoutAnalysisSection({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div
             className="bg-card p-4 rounded border"
-            data-analysis-type="highest-employment-dropout"
-            data-ward-number={highestEmploymentDropoutWard?.wardNumber}
-            data-percentage={highestEmploymentDropoutWard?.percentage.toFixed(2)}
+            data-analysis-type="highest-economic-dropout"
+            data-ward-number={highestEconomicDropoutWard?.wardNumber}
+            data-percentage={highestEconomicDropoutWard?.percentage.toFixed(2)}
           >
             <h4 className="font-medium mb-2">
-              रोजगारीका लागि बढी विद्यालय छाड्ने वडा
+              आर्थिक कारणले बढी विद्यालय छाड्ने वडा
               <span className="sr-only">
-                Ward with Highest Employment-related Dropout Rate in Khajura Rural Municipality
+                Ward with Highest Economic-related Dropout Rate in Khajura Rural Municipality
               </span>
             </h4>
-            {highestEmploymentDropoutWard && (
+            {highestEconomicDropoutWard && (
               <div className="flex items-center gap-3">
                 <div
                   className="w-4 h-16 rounded"
                   style={{
-                    backgroundColor: DROPOUT_CAUSE_GROUPS.EMPLOYMENT.color,
+                    backgroundColor: DROPOUT_CAUSE_GROUPS.ECONOMIC.color,
                   }}
                 ></div>
                 <div>
                   <p className="text-2xl font-bold">
-                    वडा {localizeNumber(highestEmploymentDropoutWard.wardNumber.toString(), "ne")}
+                    वडा {localizeNumber(highestEconomicDropoutWard.wardNumber.toString(), "ne")}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    रोजगारीका लागि छाड्ने दर: {localizeNumber(highestEmploymentDropoutWard.percentage.toFixed(2), "ne")}%
+                    आर्थिक कारणले छाड्ने दर: {localizeNumber(highestEconomicDropoutWard.percentage.toFixed(2), "ne")}%
                     <span className="sr-only">
-                      {highestEmploymentDropoutWard.percentage.toFixed(2)}% employment-related dropout rate
+                      {highestEconomicDropoutWard.percentage.toFixed(2)}% economic-related dropout rate
                     </span>
                   </p>
                 </div>
@@ -169,10 +169,10 @@ export default function WardWiseSchoolDropoutAnalysisSection({
               <h5 className="text-sm font-medium">विशेषताहरू</h5>
               <div className="mt-2 space-y-2">
                 <p className="text-sm">
-                  यस वडामा रोजगारीका कारण विद्यालय छाड्नेको प्रतिशत सबैभन्दा बढी रहेको छ, जुन पालिकाको औसतभन्दा {localizeNumber((highestEmploymentDropoutWard.percentage - dropoutGroupPercentages.EMPLOYMENT).toFixed(2), "ne")}% ले उच्च छ।
+                  यस वडामा आर्थिक कारण विद्यालय छाड्नेको प्रतिशत सबैभन्दा बढी रहेको छ, जुन पालिकाको औसतभन्दा {localizeNumber((highestEconomicDropoutWard.percentage - dropoutGroupPercentages.ECONOMIC).toFixed(2), "ne")}% ले उच्च छ।
                 </p>
                 <p className="text-sm">
-                  यसले यस वडामा रोजगारीको अवसर वा आर्थिक बाध्यताका कारण विद्यार्थीहरू विद्यालय छाड्न बाध्य भएको संकेत गर्दछ।
+                  यसले यस वडामा आर्थिक अवसर वा आर्थिक बाध्यताका कारण विद्यार्थीहरू विद्यालय छाड्न बाध्य भएको संकेत गर्दछ।
                 </p>
               </div>
             </div>
@@ -180,30 +180,30 @@ export default function WardWiseSchoolDropoutAnalysisSection({
 
           <div
             className="bg-card p-4 rounded border"
-            data-analysis-type="lowest-employment-dropout"
-            data-ward-number={lowestEmploymentDropoutWard?.wardNumber}
-            data-percentage={lowestEmploymentDropoutWard?.percentage.toFixed(2)}
+            data-analysis-type="lowest-economic-dropout"
+            data-ward-number={lowestEconomicDropoutWard?.wardNumber}
+            data-percentage={lowestEconomicDropoutWard?.percentage.toFixed(2)}
           >
             <h4 className="font-medium mb-2">
-              रोजगारीका लागि कम विद्यालय छाड्ने वडा
-              <span className="sr-only">Ward with Low Employment-related Dropout Rate in Khajura</span>
+              आर्थिक कारणले कम विद्यालय छाड्ने वडा
+              <span className="sr-only">Ward with Low Economic-related Dropout Rate in Khajura</span>
             </h4>
-            {lowestEmploymentDropoutWard && (
+            {lowestEconomicDropoutWard && (
               <div className="flex items-center gap-3">
                 <div
                   className="w-4 h-16 rounded"
                   style={{
-                    backgroundColor: DROPOUT_CAUSE_GROUPS.EDUCATION.color,
+                    backgroundColor: DROPOUT_CAUSE_GROUPS.EDUCATIONAL.color,
                   }}
                 ></div>
                 <div>
                   <p className="text-2xl font-bold">
-                    वडा {localizeNumber(lowestEmploymentDropoutWard.wardNumber.toString(), "ne")}
+                    वडा {localizeNumber(lowestEconomicDropoutWard.wardNumber.toString(), "ne")}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    रोजगारीका लागि छाड्ने दर: {localizeNumber(lowestEmploymentDropoutWard.percentage.toFixed(2), "ne")}%
+                    आर्थिक कारणले छाड्ने दर: {localizeNumber(lowestEconomicDropoutWard.percentage.toFixed(2), "ne")}%
                     <span className="sr-only">
-                      {lowestEmploymentDropoutWard.percentage.toFixed(2)}% employment-related dropout rate
+                      {lowestEconomicDropoutWard.percentage.toFixed(2)}% economic-related dropout rate
                     </span>
                   </p>
                 </div>
@@ -295,25 +295,25 @@ export default function WardWiseSchoolDropoutAnalysisSection({
               </div>
 
               <div className="mt-4 pt-3 border-t">
-                <h5 className="font-medium mb-2">रोजगारी सम्बन्धी छाड्ने अवस्था</h5>
+                <h5 className="font-medium mb-2">आर्थिक सम्बन्धी छाड्ने अवस्था</h5>
                 <div className="flex justify-between text-sm">
                   <span>
                     <span 
                       className="inline-block w-2 h-2 rounded-full mr-2" 
-                      style={{ backgroundColor: DROPOUT_CAUSE_GROUPS.EMPLOYMENT.color }}
+                      style={{ backgroundColor: DROPOUT_CAUSE_GROUPS.ECONOMIC.color }}
                     ></span>
-                    रोजगारी सम्बन्धी कारणहरू
+                    आर्थिक सम्बन्धी कारणहरू
                   </span>
                   <span className="font-medium">
-                    {localizeNumber(dropoutGroupPercentages.EMPLOYMENT.toFixed(2), "ne")}%
+                    {localizeNumber(dropoutGroupPercentages.ECONOMIC.toFixed(2), "ne")}%
                   </span>
                 </div>
                 <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{
-                      width: `${dropoutGroupPercentages.EMPLOYMENT}%`,
-                      backgroundColor: DROPOUT_CAUSE_GROUPS.EMPLOYMENT.color,
+                      width: `${dropoutGroupPercentages.ECONOMIC}%`,
+                      backgroundColor: DROPOUT_CAUSE_GROUPS.ECONOMIC.color,
                     }}
                   ></div>
                 </div>
