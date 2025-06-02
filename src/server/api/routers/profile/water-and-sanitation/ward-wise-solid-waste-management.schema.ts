@@ -40,41 +40,38 @@ export type UpdateWardWiseSolidWasteManagementData =
 export type WardWiseSolidWasteManagementFilter = z.infer<
   typeof wardWiseSolidWasteManagementFilterSchema
 >;
-
 // Export the solid waste management options for use in UI components
 export const solidWasteManagementOptions = [
   {
     value: "HOME_COLLECTION",
-    label: "Home collection service (घरमा नै लिन आउँछ)",
+    label: "घरमा नै लिन आउँछ",
   },
   {
     value: "WASTE_COLLECTING_PLACE",
-    label:
-      "Disposal at waste collection point/bin (फोहर थुपार्ने ठाउँमा/क्यानमा)",
+    label: "फोहर थुपार्ने ठाउँमा/क्यानमा",
   },
   {
     value: "BURNING",
-    label: "Burning within compound (आफ्नै घर कम्पाउण्ड भित्र (बाल्ने))",
+    label: "आफ्नै घर कम्पाउण्ड भित्र (बाल्ने)",
   },
   {
     value: "DIGGING",
-    label:
-      "Burying/stockpiling within compound (आफ्नै घर कम्पाउण्ड भित्र (गाड्ने/थुपार्ने))",
+    label: "आफ्नै घर कम्पाउण्ड भित्र (गाड्ने/थुपार्ने)",
   },
   {
     value: "RIVER",
-    label: "Disposal in river/stream (नदी वा खोल्सामा)",
+    label: "नदी वा खोल्सामा",
   },
   {
     value: "ROAD_OR_PUBLIC_PLACE",
-    label: "Disposal on road/public place (सडक/सार्वजनिक स्थलमा)",
+    label: "सडक/सार्वजनिक स्थलमा",
   },
   {
     value: "COMPOST_MANURE",
-    label: "Composting (कम्पोष्ट मल बनाउने)",
+    label: "कम्पोष्ट मल बनाउने",
   },
   {
     value: "OTHER",
-    label: "Other methods (अन्य)",
+    label: "अन्य",
   },
 ];

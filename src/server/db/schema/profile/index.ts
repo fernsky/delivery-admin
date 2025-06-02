@@ -5,3 +5,4 @@ export * from "./health";
 export * from "./education";
 export * from "./fertility";
 export * from "./water-and-sanitation"
+export * from "./physical";

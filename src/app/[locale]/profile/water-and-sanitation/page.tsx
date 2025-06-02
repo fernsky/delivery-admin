@@ -108,7 +108,7 @@ export default async function WaterAndSanitationPage() {
 
   const flushToiletHouseholds = toiletTypeData
     ? toiletTypeData
-        .filter(item => item.toiletType === "FLUSH_TOILET")
+        .filter((item) => item.toiletType === "FLUSH_WITH_SEPTIC_TANK")
         .reduce((sum, item) => sum + (item.households || 0), 0)
     : null;
 
@@ -120,7 +120,7 @@ export default async function WaterAndSanitationPage() {
 
   const waterPurificationHouseholds = waterPurificationData
     ? waterPurificationData
-        .filter(item => item.waterPurificationMethod !== "NO_TREATMENT")
+        .filter((item) => item.waterPurificationMethod !== "NO_ANY_FILTERING")
         .reduce((sum, item) => sum + (item.households || 0), 0)
     : null;
 
