@@ -206,6 +206,29 @@ export const navItems: NavItem[] = [
     ],
   },
   {
+    title: "खानेपानी तथा सरसफाइ",
+    href: "/profile/water-and-sanitation",
+    icon: <Activity className="w-4 h-4" />,
+    items: [
+      {
+        title: "खानेपानीको मुख्य श्रोतको आधारमा घरधुरी",
+        href: "/profile/water-and-sanitation/ward-wise-drinking-water-source",
+      },
+      {
+        title: "खानेपानी शुद्ध बनाउने तरिकाको आधारमा घरधुरी",
+        href: "/profile/water-and-sanitation/ward-wise-water-purification",
+      },
+      {
+        title: "परिवारले प्रयोग गर्ने चर्पीको प्रकारका आधारमा घरधुरी",
+        href: "/profile/water-and-sanitation/ward-wise-toilet-type",
+      },
+      {
+        title: "फोहोरमैला व्यवस्थापन गर्ने स्थानको आधारमा घरधुरी",
+        href: "/profile/water-and-sanitation/ward-wise-solid-waste-management",
+      },
+    ],
+  },
+  {
     title: "प्रजनन् स्वास्थ्य",
     href: "/profile/fertility",
     icon: <Activity className="w-4 h-4" />,
