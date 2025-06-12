@@ -35,7 +35,6 @@ export const universityTypeEnum = pgEnum("university_type", [
 export const universityCategoryEnum = pgEnum("university_category", [
   "COMPREHENSIVE",
   "SPECIALIZED",
-  "TECHNICAL",
   "RESEARCH",
   "TEACHING",
   "OPEN",
