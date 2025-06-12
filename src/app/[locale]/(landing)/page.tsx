@@ -24,10 +24,10 @@ export async function generateMetadata(): Promise<Metadata> {
     const demographicData = await api.profile.demographics.summary.get.query();
 
     // SEO metadata setup - municipality name and details
-    const municipalityName = "परिवर्तन गाउँपालिका";
+    const municipalityName = "खजुरा गाउँपालिका";
     const municipalityNameEn = "Khajura Rural Municipality";
-    const districtName = "रोल्पा";
-    const districtNameEn = "Rolpa";
+    const districtName = "बाँके";
+    const districtNameEn = "Banke";
     const provinceName = "लुम्बिनी प्रदेश";
     const provinceNameEn = "Lumbini Province";
 
@@ -107,9 +107,9 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     // Fallback metadata if data fetching fails
     return {
-      title: "परिवर्तन गाउँपालिका | आधिकारिक वेबसाइट",
+      title: "खजुरा गाउँपालिका | आधिकारिक वेबसाइट",
       description:
-        "परिवर्तन गाउँपालिका बाँके जिल्लाको एक प्रमुख स्थानीय तह हो। पालिकाको आधिकारिक वेबसाइटमा स्वागत छ।",
+        "खजुरा गाउँपालिका बाँके जिल्लाको एक प्रमुख स्थानीय तह हो। पालिकाको आधिकारिक वेबसाइटमा स्वागत छ।",
     };
   }
 }
@@ -125,7 +125,7 @@ export default async function Page({ params }: LanguageParams) {
     await api.profile.demographics.wardTimeSeries.summary.query();
 
   // SEO metadata setup - municipality name and details
-  const municipalityName = "परिवर्तन गाउँपालिका";
+  const municipalityName = "खजुरा गाउँपालिका";
   const municipalityNameEn = "Khajura Rural Municipality";
   const districtName = "बाँके";
   const provinceNumber = 5;

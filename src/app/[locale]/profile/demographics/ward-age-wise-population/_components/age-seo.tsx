@@ -103,7 +103,7 @@ export default function AgeSEO({
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      name: "Age Demographics of Khajura Rural Municipality (परिवर्तन गाउँपालिका)",
+      name: "Age Demographics of Khajura Rural Municipality (खजुरा गाउँपालिका)",
       description: `Age distribution data across ${wardNumbers.length} wards of Khajura Rural Municipality with a total population of ${totalPopulation.toLocaleString()} people. The median age is approximately ${Math.round(
         demographicIndicators.medianAge,
       )} years with a dependency ratio of ${demographicIndicators.dependencyRatio.toFixed(
@@ -111,7 +111,7 @@ export default function AgeSEO({
       )}.`,
       keywords: [
         "Khajura Rural Municipality",
-        "परिवर्तन गाउँपालिका",
+        "खजुरा गाउँपालिका",
         "Age demographics",
         "Population pyramid",
         "Dependency ratio",

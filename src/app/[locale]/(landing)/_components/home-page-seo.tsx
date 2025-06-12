@@ -53,7 +53,7 @@ export default function HomePageSEO({
     logo: "https://digital.khajuramun.gov.np/images/municipality-logo.png",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "परिवर्तन",
+      addressLocality: "खजुरा",
       addressRegion: provinceName,
       addressCountry: "नेपाल",
     },
@@ -90,9 +90,9 @@ export default function HomePageSEO({
     description: `${municipalityName}को प्रमुख जनसांख्यिकीय तथ्याङ्क, जनगणना अनुसार`,
     url: "https://digital.khajuramun.gov.np/profile/demographics",
     keywords: [
-      "परिवर्तन गाउँपालिका जनसंख्या",
+      "खजुरा गाउँपालिका जनसंख्या",
       "Khajura Rural Municipality demographics",
-      "परिवर्तन जनगणना",
+      "खजुरा जनगणना",
       "बाँके जनसंख्या",
       "नेपालको जनसंख्या",
     ],

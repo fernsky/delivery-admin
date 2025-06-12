@@ -22,14 +22,11 @@ interface WardWiseLiteracyStatusAnalysisSectionProps {
   }>;
   bestLiteracyWard: any;
   worstLiteracyWard: any;
-  LITERACY_STATUS_TYPES: Record<
-    string,
-    {
-      name: string;
-      nameEn: string;
-      color: string;
-    }
-  >;
+  LITERACY_STATUS_TYPES: Record<string, {
+    name: string;
+    nameEn: string;
+    color: string;
+  }>;
 }
 
 export default function WardWiseLiteracyStatusAnalysisSection({
@@ -48,21 +45,23 @@ export default function WardWiseLiteracyStatusAnalysisSection({
   // Calculate literacy rate (people who can read and write + read only)
   const literacyRate = bothReadingWritingPercentage + readingOnlyPercentage;
   const illiteracyRate = illiteratePercentage;
-
+  
   // Calculate literacy index (0-100)
   // Higher weight for both read and write, lower for illiterate
-  const literacyIndex =
-    (bothReadingWritingPercentage * 1.0 +
-      readingOnlyPercentage * 0.5 +
-      illiteratePercentage * 0.0) /
-    100;
-
-  const literacyLevel =
-    literacyIndex >= 0.75 ? "उच्च" : literacyIndex >= 0.5 ? "मध्यम" : "न्यून";
+  const literacyIndex = (
+    (bothReadingWritingPercentage * 1.0) + 
+    (readingOnlyPercentage * 0.5) + 
+    (illiteratePercentage * 0.0)
+  ) / 100;
+  
+  const literacyLevel = 
+    literacyIndex >= 0.75 ? "उच्च" :
+    literacyIndex >= 0.50 ? "मध्यम" :
+    "न्यून";
 
   // SEO attributes to include directly in JSX
   const seoAttributes = {
-    "data-municipality": "Khajura Rural Municipality / परिवर्तन गाउँपालिका",
+    "data-municipality": "Khajura Rural Municipality / खजुरा गाउँपालिका",
     "data-total-population": totalPopulation.toString(),
     "data-literacy-rate": literacyRate.toFixed(2),
     "data-illiteracy-rate": illiteracyRate.toFixed(2),
@@ -73,7 +72,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
 
   return (
     <>
-      <div
+      <div 
         className="mt-6 flex flex-wrap gap-4 justify-center"
         {...seoAttributes}
       >
@@ -82,8 +81,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
             className="absolute bottom-0 left-0 right-0"
             style={{
               height: `${bothReadingWritingPercentage}%`,
-              backgroundColor:
-                LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.color,
+              backgroundColor: LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.color,
               opacity: 0.2,
               zIndex: 0,
             }}
@@ -99,8 +97,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
               {localizeNumber(bothReadingWritingPercentage.toFixed(2), "ne")}%
             </p>
             <p className="text-sm text-muted-foreground">
-              {localizeNumber(bothReadingWritingTotal.toLocaleString(), "ne")}{" "}
-              जना
+              {localizeNumber(bothReadingWritingTotal.toLocaleString(), "ne")} जना
               <span className="sr-only">
                 ({bothReadingWritingTotal.toLocaleString()} people)
               </span>
@@ -170,7 +167,9 @@ export default function WardWiseLiteracyStatusAnalysisSection({
       <div className="bg-muted/50 p-6 rounded-lg mt-8 border">
         <h3 className="text-xl font-medium mb-6">
           साक्षरता विस्तृत विश्लेषण
-          <span className="sr-only">Detailed Literacy Analysis of Khajura</span>
+          <span className="sr-only">
+            Detailed Literacy Analysis of Khajura
+          </span>
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -191,28 +190,17 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                 <div
                   className="w-4 h-16 rounded"
                   style={{
-                    backgroundColor:
-                      LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.color,
+                    backgroundColor: LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.color,
                   }}
                 ></div>
                 <div>
                   <p className="text-2xl font-bold">
-                    वडा{" "}
-                    {localizeNumber(
-                      bestLiteracyWard.wardNumber.toString(),
-                      "ne",
-                    )}
+                    वडा {localizeNumber(bestLiteracyWard.wardNumber.toString(), "ne")}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    साक्षरता दर:{" "}
-                    {localizeNumber(
-                      bestLiteracyWard.literacyPercent.toFixed(2),
-                      "ne",
-                    )}
-                    %
+                    साक्षरता दर: {localizeNumber(bestLiteracyWard.literacyPercent.toFixed(2), "ne")}%
                     <span className="sr-only">
-                      {bestLiteracyWard.literacyPercent.toFixed(2)}% literacy
-                      rate
+                      {bestLiteracyWard.literacyPercent.toFixed(2)}% literacy rate
                     </span>
                   </p>
                 </div>
@@ -226,17 +214,9 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                   <>
                     <div>
                       <div className="flex justify-between text-sm">
-                        <span>
-                          {LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.name}
-                        </span>
+                        <span>{LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.name}</span>
                         <span className="font-medium">
-                          {localizeNumber(
-                            bestLiteracyWard.bothReadingWritingPercent.toFixed(
-                              2,
-                            ),
-                            "ne",
-                          )}
-                          %
+                          {localizeNumber(bestLiteracyWard.bothReadingWritingPercent.toFixed(2), "ne")}%
                         </span>
                       </div>
                       <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -244,9 +224,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                           className="h-full rounded-full"
                           style={{
                             width: `${bestLiteracyWard.bothReadingWritingPercent}%`,
-                            backgroundColor:
-                              LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING
-                                .color,
+                            backgroundColor: LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.color,
                           }}
                         ></div>
                       </div>
@@ -255,11 +233,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                       <div className="flex justify-between text-sm">
                         <span>{LITERACY_STATUS_TYPES.READING_ONLY.name}</span>
                         <span className="font-medium">
-                          {localizeNumber(
-                            bestLiteracyWard.readingOnlyPercent.toFixed(2),
-                            "ne",
-                          )}
-                          %
+                          {localizeNumber(bestLiteracyWard.readingOnlyPercent.toFixed(2), "ne")}%
                         </span>
                       </div>
                       <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -267,8 +241,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                           className="h-full rounded-full"
                           style={{
                             width: `${bestLiteracyWard.readingOnlyPercent}%`,
-                            backgroundColor:
-                              LITERACY_STATUS_TYPES.READING_ONLY.color,
+                            backgroundColor: LITERACY_STATUS_TYPES.READING_ONLY.color,
                           }}
                         ></div>
                       </div>
@@ -277,11 +250,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                       <div className="flex justify-between text-sm">
                         <span>{LITERACY_STATUS_TYPES.ILLITERATE.name}</span>
                         <span className="font-medium">
-                          {localizeNumber(
-                            bestLiteracyWard.illiteratePercent.toFixed(2),
-                            "ne",
-                          )}
-                          %
+                          {localizeNumber(bestLiteracyWard.illiteratePercent.toFixed(2), "ne")}%
                         </span>
                       </div>
                       <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -289,8 +258,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                           className="h-full rounded-full"
                           style={{
                             width: `${bestLiteracyWard.illiteratePercent}%`,
-                            backgroundColor:
-                              LITERACY_STATUS_TYPES.ILLITERATE.color,
+                            backgroundColor: LITERACY_STATUS_TYPES.ILLITERATE.color,
                           }}
                         ></div>
                       </div>
@@ -309,9 +277,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
           >
             <h4 className="font-medium mb-2">
               न्यून साक्षरता दर भएको वडा
-              <span className="sr-only">
-                Ward with Low Literacy Rate in Khajura
-              </span>
+              <span className="sr-only">Ward with Low Literacy Rate in Khajura</span>
             </h4>
             {worstLiteracyWard && (
               <div className="flex items-center gap-3">
@@ -323,22 +289,12 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                 ></div>
                 <div>
                   <p className="text-2xl font-bold">
-                    वडा{" "}
-                    {localizeNumber(
-                      worstLiteracyWard.wardNumber.toString(),
-                      "ne",
-                    )}
+                    वडा {localizeNumber(worstLiteracyWard.wardNumber.toString(), "ne")}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    निरक्षर दर:{" "}
-                    {localizeNumber(
-                      worstLiteracyWard.illiteratePercent.toFixed(2),
-                      "ne",
-                    )}
-                    %
+                    निरक्षर दर: {localizeNumber(worstLiteracyWard.illiteratePercent.toFixed(2), "ne")}%
                     <span className="sr-only">
-                      {worstLiteracyWard.illiteratePercent.toFixed(2)}%
-                      illiteracy rate
+                      {worstLiteracyWard.illiteratePercent.toFixed(2)}% illiteracy rate
                     </span>
                   </p>
                 </div>
@@ -349,19 +305,9 @@ export default function WardWiseLiteracyStatusAnalysisSection({
               <h5 className="text-sm font-medium">विशेष ध्यान दिनुपर्ने</h5>
               <div className="mt-2 p-3 bg-red-50 rounded-lg border border-red-100">
                 <p className="text-sm">
-                  यस वडामा{" "}
-                  {localizeNumber(
-                    worstLiteracyWard?.illiteratePopulation.toLocaleString() ||
-                      "0",
-                    "ne",
-                  )}{" "}
-                  जना (कुल{" "}
-                  {localizeNumber(
-                    worstLiteracyWard?.totalPopulation.toLocaleString() || "0",
-                    "ne",
-                  )}{" "}
-                  मध्ये) निरक्षर छन्। साक्षरता अभियानको लागि यस वडामा विशेष
-                  कार्यक्रम सञ्चालन गर्नुपर्ने देखिन्छ।
+                  यस वडामा {localizeNumber(worstLiteracyWard?.illiteratePopulation.toLocaleString() || "0", "ne")} जना 
+                  (कुल {localizeNumber(worstLiteracyWard?.totalPopulation.toLocaleString() || "0", "ne")} मध्ये) 
+                  निरक्षर छन्। साक्षरता अभियानको लागि यस वडामा विशेष कार्यक्रम सञ्चालन गर्नुपर्ने देखिन्छ।
                 </p>
               </div>
             </div>
@@ -384,19 +330,17 @@ export default function WardWiseLiteracyStatusAnalysisSection({
               <p className="flex gap-2">
                 <span className="text-blue-500">•</span>
                 <span>
-                  <strong>सूचकाङ्क विवरण:</strong> साक्षरताको यो सूचकाङ्क पढ्न
-                  लेख्न जान्ने, पढ्न मात्र जान्ने, र निरक्षर जनसंख्याको भारित
-                  औसतमा आधारित छ।
+                  <strong>सूचकाङ्क विवरण:</strong> साक्षरताको यो सूचकाङ्क 
+                  पढ्न लेख्न जान्ने, पढ्न मात्र जान्ने, र निरक्षर जनसंख्याको 
+                  भारित औसतमा आधारित छ।
                 </span>
               </p>
               <p className="flex gap-2">
                 <span className="text-blue-500">•</span>
                 <span>
-                  <strong>व्याख्या:</strong>{" "}
-                  {localizeNumber((literacyIndex * 100).toFixed(1), "ne")}
-                  अंकले {literacyLevel} स्तरको साक्षरता दर्शाउँछ। यसमा सुधारका
-                  लागि साक्षरता अभियान तथा शिक्षा विस्तारका कार्यक्रमहरू आवश्यक
-                  छन्।
+                  <strong>व्याख्या:</strong> {localizeNumber((literacyIndex * 100).toFixed(1), "ne")} 
+                  अंकले {literacyLevel} स्तरको साक्षरता दर्शाउँछ। यसमा सुधारका लागि साक्षरता अभियान तथा 
+                  शिक्षा विस्तारका कार्यक्रमहरू आवश्यक छन्।
                 </span>
               </p>
             </div>
@@ -406,9 +350,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
             <h4 className="font-medium mb-4">वडागत साक्षरता विश्लेषण</h4>
 
             <div>
-              <h5 className="text-sm font-medium">
-                परिवर्तन गाउँपालिका साक्षरताको स्थिति
-              </h5>
+              <h5 className="text-sm font-medium">खजुरा गाउँपालिका साक्षरताको स्थिति</h5>
               <div className="mt-2 space-y-3">
                 {/* Literacy rate */}
                 <div>
@@ -435,22 +377,14 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                 <div>
                   <div className="flex justify-between text-sm">
                     <span>
-                      <span
-                        className="inline-block w-2 h-2 rounded-full mr-2"
-                        style={{
-                          backgroundColor:
-                            LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING
-                              .color,
-                        }}
+                      <span 
+                        className="inline-block w-2 h-2 rounded-full mr-2" 
+                        style={{ backgroundColor: LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.color }}
                       ></span>
                       पढ्न र लेख्न जान्ने
                     </span>
                     <span className="font-medium">
-                      {localizeNumber(
-                        bothReadingWritingPercentage.toFixed(2),
-                        "ne",
-                      )}
-                      %
+                      {localizeNumber(bothReadingWritingPercentage.toFixed(2), "ne")}%
                     </span>
                   </div>
                   <div className="w-full bg-muted h-2 rounded-full mt-1 overflow-hidden">
@@ -458,8 +392,7 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                       className="h-full rounded-full"
                       style={{
                         width: `${bothReadingWritingPercentage}%`,
-                        backgroundColor:
-                          LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.color,
+                        backgroundColor: LITERACY_STATUS_TYPES.BOTH_READING_AND_WRITING.color,
                       }}
                     ></div>
                   </div>
@@ -469,12 +402,9 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                 <div>
                   <div className="flex justify-between text-sm">
                     <span>
-                      <span
-                        className="inline-block w-2 h-2 rounded-full mr-2"
-                        style={{
-                          backgroundColor:
-                            LITERACY_STATUS_TYPES.ILLITERATE.color,
-                        }}
+                      <span 
+                        className="inline-block w-2 h-2 rounded-full mr-2" 
+                        style={{ backgroundColor: LITERACY_STATUS_TYPES.ILLITERATE.color }}
                       ></span>
                       निरक्षर दर
                     </span>
@@ -487,13 +417,15 @@ export default function WardWiseLiteracyStatusAnalysisSection({
                       className="h-full rounded-full"
                       style={{
                         width: `${illiteratePercentage}%`,
-                        backgroundColor: LITERACY_STATUS_TYPES.ILLITERATE.color,
+                        backgroundColor: LITERACY_STATUS_TYPES.ILLITERATE.color, 
                       }}
                     ></div>
                   </div>
                 </div>
               </div>
             </div>
+
+            
           </div>
         </div>
       </div>

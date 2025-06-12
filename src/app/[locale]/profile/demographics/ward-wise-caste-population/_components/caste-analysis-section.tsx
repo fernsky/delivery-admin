@@ -148,11 +148,11 @@ export default function CasteAnalysisSection({
     if (document && document.body) {
       document.body.setAttribute(
         "data-municipality",
-        "Khajura Rural Municipality / परिवर्तन गाउँपालिका",
+        "Khajura Rural Municipality / खजुरा गाउँपालिका"
       );
       document.body.setAttribute(
         "data-total-population",
-        localizeNumber(totalPopulation.toString(), "ne"),
+        localizeNumber(totalPopulation.toString(), "ne")
       );
 
       // Add main caste data
@@ -161,18 +161,15 @@ export default function CasteAnalysisSection({
           CASTE_NAMES_EN[topCaste.casteType] || topCaste.casteType;
         document.body.setAttribute(
           "data-main-caste",
-          `${casteNameEN} / ${topCaste.casteTypeDisplay}`,
+          `${casteNameEN} / ${topCaste.casteTypeDisplay}`
         );
         document.body.setAttribute(
           "data-main-caste-population",
-          localizeNumber(topCaste.population.toString(), "ne"),
+          localizeNumber(topCaste.population.toString(), "ne")
         );
         document.body.setAttribute(
           "data-main-caste-percentage",
-          localizeNumber(
-            ((topCaste.population / totalPopulation) * 100).toFixed(2),
-            "ne",
-          ),
+          localizeNumber(((topCaste.population / totalPopulation) * 100).toFixed(2), "ne")
         );
       }
 
@@ -182,25 +179,22 @@ export default function CasteAnalysisSection({
           CASTE_NAMES_EN[secondCaste.casteType] || secondCaste.casteType;
         document.body.setAttribute(
           "data-second-caste",
-          `${casteNameEN} / ${secondCaste.casteTypeDisplay}`,
+          `${casteNameEN} / ${secondCaste.casteTypeDisplay}`
         );
         document.body.setAttribute(
           "data-second-caste-population",
-          localizeNumber(secondCaste.population.toString(), "ne"),
+          localizeNumber(secondCaste.population.toString(), "ne")
         );
         document.body.setAttribute(
           "data-second-caste-percentage",
-          localizeNumber(
-            ((secondCaste.population / totalPopulation) * 100).toFixed(2),
-            "ne",
-          ),
+          localizeNumber(((secondCaste.population / totalPopulation) * 100).toFixed(2), "ne")
         );
       }
 
       // Add broader category data
       document.body.setAttribute(
         "data-caste-categories",
-        Object.keys(groupedCategories).join(", "),
+        Object.keys(groupedCategories).join(", ")
       );
     }
   }, [overallSummary, totalPopulation, groupedCategories]);
@@ -260,12 +254,9 @@ export default function CasteAnalysisSection({
                   {/* Hidden span for SEO with English name */}
                   <span className="sr-only">{casteEN}</span>
                 </h3>
-                <p className="text-2xl font-bold">
-                  {localizeNumber(percentage, "ne")}%
-                </p>
+                <p className="text-2xl font-bold">{localizeNumber(percentage, "ne")}%</p>
                 <p className="text-sm text-muted-foreground">
-                  {localizeNumber(item.population.toLocaleString(), "ne")}{" "}
-                  व्यक्ति
+                  {localizeNumber(item.population.toLocaleString(), "ne")} व्यक्ति
                   <span className="sr-only">
                     ({item.population.toLocaleString()} people)
                   </span>
@@ -278,7 +269,7 @@ export default function CasteAnalysisSection({
 
       <div className="bg-muted/50 p-4 rounded-lg mt-8">
         <h3 className="text-xl font-medium mb-4">
-          परिवर्तन गाउँपालिकाको जातिगत विविधता विश्लेषण
+          खजुरा गाउँपालिकाको जातिगत विविधता विश्लेषण
           <span className="sr-only">Caste Diversity Analysis of Khajura</span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -293,7 +284,7 @@ export default function CasteAnalysisSection({
             }
           >
             <h4 className="font-medium mb-2">
-              परिवर्तन गाउँपालिकाको प्रमुख जाति
+              खजुरा गाउँपालिकाको प्रमुख जाति
               <span className="sr-only">
                 Main Caste in Khajura Rural Municipality
               </span>
@@ -326,9 +317,7 @@ export default function CasteAnalysisSection({
                 Primary to Secondary Caste Ratio in Khajura
               </span>
             </h4>
-            <p className="text-3xl font-bold">
-              {localizeNumber(topTwoCasteRatio, "ne")}
-            </p>
+            <p className="text-3xl font-bold">{localizeNumber(topTwoCasteRatio, "ne")}</p>
             <p className="text-sm text-muted-foreground mt-2">
               {topCaste && secondCaste
                 ? `हरेक ${localizeNumber(topTwoCasteRatio, "ne")} ${topCaste.casteTypeDisplay} का लागि १ ${secondCaste.casteTypeDisplay}`
@@ -342,6 +331,8 @@ export default function CasteAnalysisSection({
           </div>
         </div>
       </div>
+
+      
     </>
   );
 }

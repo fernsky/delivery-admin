@@ -153,7 +153,7 @@ export default function AgeAnalysisSection({
     if (document && document.body) {
       document.body.setAttribute(
         "data-municipality",
-        "Khajura Rural Municipality / परिवर्तन गाउँपालिका",
+        "Khajura Rural Municipality / खजुरा गाउँपालिका",
       );
       document.body.setAttribute(
         "data-total-population",
@@ -171,15 +171,15 @@ export default function AgeAnalysisSection({
       );
       document.body.setAttribute(
         "data-children-percentage",
-        demographicIndicators.childrenPercentage.toFixed(1),
+        demographicIndicators.childrenPercentage.toFixed(1)
       );
       document.body.setAttribute(
         "data-youth-percentage",
-        demographicIndicators.youthPercentage.toFixed(1),
+        demographicIndicators.youthPercentage.toFixed(1)
       );
       document.body.setAttribute(
         "data-elderly-percentage",
-        demographicIndicators.elderlyPercentage.toFixed(1),
+        demographicIndicators.elderlyPercentage.toFixed(1)
       );
     }
   }, [demographicIndicators, totalPopulation]);
@@ -194,11 +194,7 @@ export default function AgeAnalysisSection({
               <span className="sr-only">Children population (0-14 years)</span>
             </div>
             <div className="text-2xl font-bold text-indigo-500">
-              {localizeNumber(
-                demographicIndicators.childrenPercentage.toFixed(1),
-                "ne",
-              )}
-              %
+              {localizeNumber(demographicIndicators.childrenPercentage.toFixed(1), "ne")}%
             </div>
             <div className="text-sm text-muted-foreground">कुल जनसंख्याको</div>
             <div className="w-full bg-muted h-2 rounded-full mt-3 overflow-hidden">
@@ -210,11 +206,7 @@ export default function AgeAnalysisSection({
               ></div>
             </div>
             <div className="text-sm mt-2 text-muted-foreground">
-              {localizeNumber(
-                demographicIndicators.childrenPopulation.toLocaleString(),
-                "ne",
-              )}{" "}
-              व्यक्ति
+              {localizeNumber(demographicIndicators.childrenPopulation.toLocaleString(), "ne")} व्यक्ति
             </div>
           </CardContent>
         </Card>
@@ -226,11 +218,7 @@ export default function AgeAnalysisSection({
               <span className="sr-only">Youth population (15-29 years)</span>
             </div>
             <div className="text-2xl font-bold text-emerald-500">
-              {localizeNumber(
-                demographicIndicators.youthPercentage.toFixed(1),
-                "ne",
-              )}
-              %
+              {localizeNumber(demographicIndicators.youthPercentage.toFixed(1), "ne")}%
             </div>
             <div className="text-sm text-muted-foreground">कुल जनसंख्याको</div>
             <div className="w-full bg-muted h-2 rounded-full mt-3 overflow-hidden">
@@ -240,11 +228,7 @@ export default function AgeAnalysisSection({
               ></div>
             </div>
             <div className="text-sm mt-2 text-muted-foreground">
-              {localizeNumber(
-                demographicIndicators.youthPopulation.toLocaleString(),
-                "ne",
-              )}{" "}
-              व्यक्ति
+              {localizeNumber(demographicIndicators.youthPopulation.toLocaleString(), "ne")} व्यक्ति
             </div>
           </CardContent>
         </Card>
@@ -256,11 +240,7 @@ export default function AgeAnalysisSection({
               <span className="sr-only">Adult population (30-59 years)</span>
             </div>
             <div className="text-2xl font-bold text-violet-500">
-              {localizeNumber(
-                demographicIndicators.adultPercentage.toFixed(1),
-                "ne",
-              )}
-              %
+              {localizeNumber(demographicIndicators.adultPercentage.toFixed(1), "ne")}%
             </div>
             <div className="text-sm text-muted-foreground">कुल जनसंख्याको</div>
             <div className="w-full bg-muted h-2 rounded-full mt-3 overflow-hidden">
@@ -270,11 +250,7 @@ export default function AgeAnalysisSection({
               ></div>
             </div>
             <div className="text-sm mt-2 text-muted-foreground">
-              {localizeNumber(
-                demographicIndicators.adultPopulation.toLocaleString(),
-                "ne",
-              )}{" "}
-              व्यक्ति
+              {localizeNumber(demographicIndicators.adultPopulation.toLocaleString(), "ne")} व्यक्ति
             </div>
           </CardContent>
         </Card>
@@ -286,11 +262,7 @@ export default function AgeAnalysisSection({
               <span className="sr-only">Elderly population (60+ years)</span>
             </div>
             <div className="text-2xl font-bold text-amber-500">
-              {localizeNumber(
-                demographicIndicators.elderlyPercentage.toFixed(1),
-                "ne",
-              )}
-              %
+              {localizeNumber(demographicIndicators.elderlyPercentage.toFixed(1), "ne")}%
             </div>
             <div className="text-sm text-muted-foreground">कुल जनसंख्याको</div>
             <div className="w-full bg-muted h-2 rounded-full mt-3 overflow-hidden">
@@ -300,11 +272,7 @@ export default function AgeAnalysisSection({
               ></div>
             </div>
             <div className="text-sm mt-2 text-muted-foreground">
-              {localizeNumber(
-                demographicIndicators.elderlyPopulation.toLocaleString(),
-                "ne",
-              )}{" "}
-              व्यक्ति
+              {localizeNumber(demographicIndicators.elderlyPopulation.toLocaleString(), "ne")} व्यक्ति
             </div>
           </CardContent>
         </Card>
@@ -330,21 +298,14 @@ export default function AgeAnalysisSection({
               <span className="sr-only">Demographic Dependency Ratio</span>
             </h4>
             <p className="text-3xl font-bold">
-              {localizeNumber(
-                demographicIndicators.dependencyRatio.toFixed(1),
-                "ne",
-              )}
+              {localizeNumber(demographicIndicators.dependencyRatio.toFixed(1), "ne")}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               प्रति {localizeNumber("१००", "ne")} कार्यशील उमेरका व्यक्तिमा{" "}
-              {localizeNumber(
-                demographicIndicators.dependencyRatio.toFixed(1),
-                "ne",
-              )}{" "}
-              जना आश्रित व्यक्ति
+              {localizeNumber(demographicIndicators.dependencyRatio.toFixed(1), "ne")} जना आश्रित
+              व्यक्ति
               <span className="sr-only">
-                {demographicIndicators.dependencyRatio.toFixed(1)} dependent
-                persons per 100 working-age persons
+                {demographicIndicators.dependencyRatio.toFixed(1)} dependent persons per 100 working-age persons
               </span>
             </p>
           </div>
@@ -358,21 +319,14 @@ export default function AgeAnalysisSection({
               <span className="sr-only">Child Dependency Ratio</span>
             </h4>
             <p className="text-3xl font-bold">
-              {localizeNumber(
-                demographicIndicators.childDependencyRatio.toFixed(1),
-                "ne",
-              )}
+              {localizeNumber(demographicIndicators.childDependencyRatio.toFixed(1), "ne")}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               प्रति {localizeNumber("१००", "ne")} कार्यशील उमेरका व्यक्तिमा{" "}
-              {localizeNumber(
-                demographicIndicators.childDependencyRatio.toFixed(1),
-                "ne",
-              )}{" "}
-              जना बालबालिका
+              {localizeNumber(demographicIndicators.childDependencyRatio.toFixed(1), "ne")} जना
+              बालबालिका
               <span className="sr-only">
-                {demographicIndicators.childDependencyRatio.toFixed(1)} children
-                per 100 working-age persons
+                {demographicIndicators.childDependencyRatio.toFixed(1)} children per 100 working-age persons
               </span>
             </p>
           </div>
@@ -386,21 +340,13 @@ export default function AgeAnalysisSection({
               <span className="sr-only">Old-Age Dependency Ratio</span>
             </h4>
             <p className="text-3xl font-bold">
-              {localizeNumber(
-                demographicIndicators.oldAgeDependencyRatio.toFixed(1),
-                "ne",
-              )}
+              {localizeNumber(demographicIndicators.oldAgeDependencyRatio.toFixed(1), "ne")}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               प्रति {localizeNumber("१००", "ne")} कार्यशील उमेरका व्यक्तिमा{" "}
-              {localizeNumber(
-                demographicIndicators.oldAgeDependencyRatio.toFixed(1),
-                "ne",
-              )}{" "}
-              जना वृद्ध
+              {localizeNumber(demographicIndicators.oldAgeDependencyRatio.toFixed(1), "ne")} जना वृद्ध
               <span className="sr-only">
-                {demographicIndicators.oldAgeDependencyRatio.toFixed(1)} elderly
-                persons per 100 working-age persons
+                {demographicIndicators.oldAgeDependencyRatio.toFixed(1)} elderly persons per 100 working-age persons
               </span>
             </p>
           </div>
@@ -414,17 +360,12 @@ export default function AgeAnalysisSection({
               <span className="sr-only">Estimated Median Age</span>
             </h4>
             <p className="text-3xl font-bold">
-              {localizeNumber(
-                Math.round(demographicIndicators.medianAge).toString(),
-                "ne",
-              )}{" "}
-              वर्ष
+              {localizeNumber(Math.round(demographicIndicators.medianAge).toString(), "ne")} वर्ष
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               जनसंख्याको मध्यम उमेर
               <span className="sr-only">
-                Median age of the population is{" "}
-                {Math.round(demographicIndicators.medianAge)} years
+                Median age of the population is {Math.round(demographicIndicators.medianAge)} years
               </span>
             </p>
           </div>
@@ -438,18 +379,12 @@ export default function AgeAnalysisSection({
               <span className="sr-only">Youth Population Ratio</span>
             </h4>
             <p className="text-3xl font-bold">
-              {localizeNumber(
-                demographicIndicators.youthPercentage.toFixed(1),
-                "ne",
-              )}
-              %
+              {localizeNumber(demographicIndicators.youthPercentage.toFixed(1), "ne")}%
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               जनसांख्यिकीय लाभांशको संकेत
               <span className="sr-only">
-                Indicator of demographic dividend, youth make up{" "}
-                {demographicIndicators.youthPercentage.toFixed(1)}% of the
-                population
+                Indicator of demographic dividend, youth make up {demographicIndicators.youthPercentage.toFixed(1)}% of the population
               </span>
             </p>
           </div>
@@ -464,13 +399,9 @@ export default function AgeAnalysisSection({
             </h4>
             <p className="text-3xl font-bold">
               {localizeNumber(
-                (
-                  demographicIndicators.youthPercentage +
-                  demographicIndicators.adultPercentage
-                ).toFixed(1),
-                "ne",
-              )}
-              %
+                (demographicIndicators.youthPercentage + demographicIndicators.adultPercentage).toFixed(1),
+                "ne"
+              )}%
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               कुल जनसंख्याको प्रतिशत (१५-५९ वर्ष)
@@ -485,63 +416,43 @@ export default function AgeAnalysisSection({
       <div className="bg-muted/50 p-4 rounded-lg mt-6">
         <h3 className="text-xl font-medium mb-2">
           जनसांख्यिकीय प्रवृत्ति र सुझाव
-          <span className="sr-only">
-            Demographic Trends and Recommendations
-          </span>
+          <span className="sr-only">Demographic Trends and Recommendations</span>
         </h3>
         <div className="prose prose-slate dark:prose-invert max-w-none">
-          <p>
-            परिवर्तन गाउँपालिकाको जनसंख्या संरचनाले निम्न नीतिगत निर्देशन गर्दछ:
-          </p>
+          <p>खजुरा गाउँपालिकाको जनसंख्या संरचनाले निम्न नीतिगत निर्देशन गर्दछ:</p>
 
           <ul>
             <li>
               <strong>
                 बाल जनसंख्या (
-                {localizeNumber(
-                  demographicIndicators.childrenPercentage.toFixed(1),
-                  "ne",
-                )}
-                %):
+                {localizeNumber(demographicIndicators.childrenPercentage.toFixed(1), "ne")}%):
               </strong>{" "}
               शिक्षा, पोषण र बाल स्वास्थ्य सेवामा लगानी बढाउने
               <span className="sr-only">
-                Children population (
-                {demographicIndicators.childrenPercentage.toFixed(1)}%):
-                Increase investment in education, nutrition and child health
-                services
+                Children population ({demographicIndicators.childrenPercentage.toFixed(1)}%): 
+                Increase investment in education, nutrition and child health services
               </span>
             </li>
             <li>
               <strong>
                 युवा जनसंख्या (
-                {localizeNumber(
-                  demographicIndicators.youthPercentage.toFixed(1),
-                  "ne",
-                )}
-                %):
+                {localizeNumber(demographicIndicators.youthPercentage.toFixed(1), "ne")}%):
               </strong>{" "}
               रोजगारी सिर्जना, सीप विकास र उद्यमशीलता प्रवर्द्धन
               <span className="sr-only">
-                Youth population (
-                {demographicIndicators.youthPercentage.toFixed(1)}%): Job
-                creation, skills development and promotion of entrepreneurship
+                Youth population ({demographicIndicators.youthPercentage.toFixed(1)}%): 
+                Job creation, skills development and promotion of entrepreneurship
               </span>
             </li>
             <li>
               <strong>
                 वृद्ध जनसंख्या (
-                {localizeNumber(
-                  demographicIndicators.elderlyPercentage.toFixed(1),
-                  "ne",
-                )}
-                %):
+                {localizeNumber(demographicIndicators.elderlyPercentage.toFixed(1), "ne")}%):
               </strong>{" "}
               सामाजिक सुरक्षा, स्वास्थ्य सेवा र जेष्ठ नागरिक हेरचाह कार्यक्रम
               <span className="sr-only">
-                Elderly population (
-                {demographicIndicators.elderlyPercentage.toFixed(1)}%): Social
-                security, healthcare services and elderly care programs
+                Elderly population ({demographicIndicators.elderlyPercentage.toFixed(1)}%): 
+                Social security, healthcare services and elderly care programs
               </span>
             </li>
           </ul>

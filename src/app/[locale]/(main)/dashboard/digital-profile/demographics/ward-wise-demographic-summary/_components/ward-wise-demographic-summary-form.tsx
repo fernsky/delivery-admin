@@ -204,7 +204,7 @@ export default function WardWiseDemographicSummaryForm({
               <FormItem>
                 <FormLabel>वडाको नाम</FormLabel>
                 <FormControl>
-                  <Input placeholder="परिवर्तन वडा १" {...field} />
+                  <Input placeholder="खजुरा वडा १" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

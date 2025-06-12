@@ -11,6 +11,7 @@ interface MaritalStatusSEOProps {
   MARITAL_STATUS_NAMES: Record<string, string>;
   wardNumbers: number[];
   AGE_GROUP_NAMES: Record<string, string>;
+
 }
 
 export default function MaritalStatusSEO({
@@ -66,11 +67,11 @@ export default function MaritalStatusSEO({
     return {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      name: "Marital Status Demographics of Khajura Rural Municipality (परिवर्तन गाउँपालिका)",
+      name: "Marital Status Demographics of Khajura Rural Municipality (खजुरा गाउँपालिका)",
       description: `Age-wise and ward-wise marital status distribution data across ${wardNumbers.length} wards of Khajura Rural Municipality with a total population of ${localizeNumber(totalPopulation, "ne")} people.`,
       keywords: [
         "Khajura Rural Municipality",
-        "परिवर्तन गाउँपालिका",
+        "खजुरा गाउँपालिका",
         "Marital status demographics",
         "Age-wise marital status",
         "Ward-wise marital status data",
