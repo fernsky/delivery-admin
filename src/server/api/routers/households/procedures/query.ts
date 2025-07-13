@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import { protectedProcedure } from "@/server/api/trpc";
 import { 
   householdQuerySchema,
+  householdDownloadSchema,
   householdStatusSchema, 
   updateHouseholdSchema 
 } from "../households.schema";
@@ -1159,6 +1160,572 @@ export const getHouseholdEditRequestsProcedure = protectedProcedure
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to fetch edit requests",
+      });
+    }
+  });
+
+// Procedure to download filtered households as CSV
+export const downloadHouseholdsProcedure = protectedProcedure
+  .input(householdDownloadSchema)
+  .mutation(async ({ ctx, input }) => {
+    try {
+      const { filters } = input;
+      
+      // Debug: Log the filters received by backend
+      console.log("🔧 Download - Backend received filters:", JSON.stringify(filters, null, 2));
+
+      let query = sql`
+        SELECT 
+          family_head_name,
+          family_head_phone_no,
+          ward_no,
+          total_members,
+          locality,
+          house_symbol_no,
+          date_of_interview,
+          province,
+          district,
+          local_level,
+          development_organization,
+          are_members_elsewhere,
+          total_elsewhere_members,
+          house_ownership,
+          land_ownership,
+          house_base,
+          house_outer_wall,
+          house_roof,
+          house_floor,
+          is_house_passed,
+          is_map_archived,
+          is_safe,
+          water_source,
+          water_purification_methods,
+          toilet_type,
+          solid_waste_management,
+          primary_cooking_fuel,
+          primary_energy_source,
+          road_status,
+          time_to_public_bus,
+          time_to_market,
+          distance_to_active_road,
+          has_properties_elsewhere,
+          has_female_named_properties,
+          time_to_bank,
+          have_remittance,
+          have_health_insurance,
+          consulting_health_organization,
+          time_to_health_organization,
+          have_agricultural_land,
+          are_involved_in_agriculture,
+          are_involved_in_husbandry,
+          have_aquaculture,
+          have_apiary,
+          has_agricultural_insurance,
+          months_involved_in_agriculture,
+          has_business,
+          birth_province,
+          birth_district,
+          birth_country,
+          prior_province,
+          prior_district,
+          prior_country,
+          residence_reason
+        FROM acme_khajura_households
+        WHERE profile_id = 'khajura'
+      `;
+
+      if (input.search) {
+        const searchTerm = `%${input.search}%`;
+        query = sql`
+          ${query} AND (
+            family_head_name ILIKE ${searchTerm} OR
+            family_head_phone_no ILIKE ${searchTerm} OR
+            locality ILIKE ${searchTerm} OR
+            house_symbol_no ILIKE ${searchTerm}
+          )
+        `;
+      }
+
+      if (filters) {
+        // Location filters
+        if (filters.wardNo !== undefined) {
+          query = sql`${query} AND ward_no = ${filters.wardNo}`;
+        }
+        
+        if (filters.province) {
+          query = sql`${query} AND province = ${filters.province}`;
+        }
+        
+        if (filters.district) {
+          query = sql`${query} AND district = ${filters.district}`;
+        }
+
+        if (filters.localLevel) {
+          query = sql`${query} AND local_level = ${filters.localLevel}`;
+        }
+
+        if (filters.locality) {
+          query = sql`${query} AND locality ILIKE ${`%${filters.locality}%`}`;
+        }
+
+        if (filters.developmentOrganization) {
+          query = sql`${query} AND development_organization = ${filters.developmentOrganization}`;
+        }
+
+        // Family filters
+        if (filters.familyHeadName) {
+          query = sql`${query} AND family_head_name ILIKE ${`%${filters.familyHeadName}%`}`;
+        }
+
+        if (filters.familyHeadPhoneNo) {
+          query = sql`${query} AND family_head_phone_no ILIKE ${`%${filters.familyHeadPhoneNo}%`}`;
+        }
+
+        if (filters.totalMembersMin !== undefined) {
+          query = sql`${query} AND total_members >= ${filters.totalMembersMin}`;
+        }
+
+        if (filters.totalMembersMax !== undefined) {
+          query = sql`${query} AND total_members <= ${filters.totalMembersMax}`;
+        }
+
+        if (filters.areMembersElsewhere) {
+          query = sql`${query} AND are_members_elsewhere = ${filters.areMembersElsewhere}`;
+        }
+
+        if (filters.totalElsewhereMembersMin !== undefined) {
+          query = sql`${query} AND total_elsewhere_members >= ${filters.totalElsewhereMembersMin}`;
+        }
+
+        if (filters.totalElsewhereMembersMax !== undefined) {
+          query = sql`${query} AND total_elsewhere_members <= ${filters.totalElsewhereMembersMax}`;
+        }
+
+        // House ownership filters
+        if (filters.houseOwnership) {
+          query = sql`${query} AND house_ownership ILIKE ${`%${filters.houseOwnership}%`}`;
+        }
+
+        if (filters.landOwnership) {
+          query = sql`${query} AND land_ownership ILIKE ${`%${filters.landOwnership}%`}`;
+        }
+
+        if (filters.houseBase) {
+          query = sql`${query} AND house_base ILIKE ${`%${filters.houseBase}%`}`;
+        }
+
+        if (filters.houseOuterWall) {
+          query = sql`${query} AND house_outer_wall ILIKE ${`%${filters.houseOuterWall}%`}`;
+        }
+
+        if (filters.houseRoof) {
+          query = sql`${query} AND house_roof ILIKE ${`%${filters.houseRoof}%`}`;
+        }
+
+        if (filters.houseFloor) {
+          query = sql`${query} AND house_floor ILIKE ${`%${filters.houseFloor}%`}`;
+        }
+
+        // Safety filters
+        if (filters.isHousePassed) {
+          query = sql`${query} AND is_house_passed = ${filters.isHousePassed}`;
+        }
+
+        if (filters.isMapArchived) {
+          query = sql`${query} AND is_map_archived = ${filters.isMapArchived}`;
+        }
+
+        if (filters.isSafe) {
+          query = sql`${query} AND is_safe = ${filters.isSafe}`;
+        }
+
+        // Water and sanitation filters
+        if (filters.waterSource) {
+          query = sql`${query} AND water_source ILIKE ${`%${filters.waterSource}%`}`;
+        }
+
+        if (filters.waterPurificationMethods) {
+          query = sql`${query} AND water_purification_methods ILIKE ${`%${filters.waterPurificationMethods}%`}`;
+        }
+
+        if (filters.toiletType) {
+          query = sql`${query} AND toilet_type ILIKE ${`%${filters.toiletType}%`}`;
+        }
+
+        if (filters.solidWasteManagement) {
+          query = sql`${query} AND solid_waste_management = ${filters.solidWasteManagement}`;
+        }
+
+        if (filters.primaryCookingFuel) {
+          query = sql`${query} AND primary_cooking_fuel ILIKE ${`%${filters.primaryCookingFuel}%`}`;
+        }
+
+        if (filters.primaryEnergySource) {
+          query = sql`${query} AND primary_energy_source ILIKE ${`%${filters.primaryEnergySource}%`}`;
+        }
+
+        // Accessibility filters
+        if (filters.roadStatus) {
+          query = sql`${query} AND road_status = ${filters.roadStatus}`;
+        }
+
+        if (filters.timeToPublicBus) {
+          query = sql`${query} AND time_to_public_bus = ${filters.timeToPublicBus}`;
+        }
+
+        if (filters.timeToMarket) {
+          query = sql`${query} AND time_to_market = ${filters.timeToMarket}`;
+        }
+
+        if (filters.distanceToActiveRoad) {
+          query = sql`${query} AND distance_to_active_road = ${filters.distanceToActiveRoad}`;
+        }
+
+        // Economic filters
+        if (filters.hasPropertiesElsewhere) {
+          query = sql`${query} AND has_properties_elsewhere = ${filters.hasPropertiesElsewhere}`;
+        }
+
+        if (filters.hasFemaleNamedProperties) {
+          query = sql`${query} AND has_female_named_properties = ${filters.hasFemaleNamedProperties}`;
+        }
+
+        if (filters.timeToBank) {
+          query = sql`${query} AND time_to_bank ILIKE ${`%${filters.timeToBank}%`}`;
+        }
+
+        // Health filters
+        if (filters.haveHealthInsurance) {
+          query = sql`${query} AND have_health_insurance = ${filters.haveHealthInsurance}`;
+        }
+
+        if (filters.consultingHealthOrganization) {
+          query = sql`${query} AND consulting_health_organization ILIKE ${`%${filters.consultingHealthOrganization}%`}`;
+        }
+
+        if (filters.timeToHealthOrganization) {
+          query = sql`${query} AND time_to_health_organization ILIKE ${`%${filters.timeToHealthOrganization}%`}`;
+        }
+
+        // Agriculture filters
+        if (filters.haveAgriculturalLand) {
+          query = sql`${query} AND have_agricultural_land = ${filters.haveAgriculturalLand}`;
+        }
+
+        if (filters.areInvolvedInAgriculture) {
+          query = sql`${query} AND are_involved_in_agriculture = ${filters.areInvolvedInAgriculture}`;
+        }
+
+        if (filters.areInvolvedInHusbandry) {
+          query = sql`${query} AND are_involved_in_husbandry = ${filters.areInvolvedInHusbandry}`;
+        }
+
+        if (filters.haveAquaculture) {
+          query = sql`${query} AND have_aquaculture = ${filters.haveAquaculture}`;
+        }
+
+        if (filters.haveApiary) {
+          query = sql`${query} AND have_apiary = ${filters.haveApiary}`;
+        }
+
+        if (filters.hasAgriculturalInsurance) {
+          query = sql`${query} AND has_agricultural_insurance = ${filters.hasAgriculturalInsurance}`;
+        }
+
+        if (filters.monthsInvolvedInAgriculture) {
+          query = sql`${query} AND months_involved_in_agriculture = ${filters.monthsInvolvedInAgriculture}`;
+        }
+
+        // Remittance filters
+        if (filters.haveRemittance) {
+          query = sql`${query} AND have_remittance = ${filters.haveRemittance}`;
+        }
+
+        // Business filters
+        if (filters.hasBusiness) {
+          query = sql`${query} AND has_business = ${filters.hasBusiness}`;
+        }
+
+        // Migration filters
+        if (filters.birthProvince) {
+          query = sql`${query} AND birth_province = ${filters.birthProvince}`;
+        }
+
+        if (filters.birthDistrict) {
+          query = sql`${query} AND birth_district = ${filters.birthDistrict}`;
+        }
+
+        if (filters.birthCountry) {
+          query = sql`${query} AND birth_country = ${filters.birthCountry}`;
+        }
+
+        if (filters.priorProvince) {
+          query = sql`${query} AND prior_province = ${filters.priorProvince}`;
+        }
+
+        if (filters.priorDistrict) {
+          query = sql`${query} AND prior_district = ${filters.priorDistrict}`;
+        }
+
+        if (filters.priorCountry) {
+          query = sql`${query} AND prior_country = ${filters.priorCountry}`;
+        }
+
+        if (filters.residenceReason) {
+          query = sql`${query} AND residence_reason = ${filters.residenceReason}`;
+        }
+
+        // Date range filters
+        if (filters.dateOfInterviewFrom) {
+          query = sql`${query} AND date_of_interview >= ${filters.dateOfInterviewFrom}`;
+        }
+
+        if (filters.dateOfInterviewTo) {
+          query = sql`${query} AND date_of_interview <= ${filters.dateOfInterviewTo}`;
+        }
+
+        // Array field filters
+        if (filters.naturalDisasters && filters.naturalDisasters.length > 0) {
+          const conditions = filters.naturalDisasters.map(disaster => 
+            `natural_disasters LIKE '%${disaster}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.facilities && filters.facilities.length > 0) {
+          const conditions = filters.facilities.map(facility => 
+            `facilities LIKE '%${facility}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.financialAccounts && filters.financialAccounts.length > 0) {
+          const conditions = filters.financialAccounts.map(account => 
+            `financial_accounts LIKE '%${account}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.incomeSources && filters.incomeSources.length > 0) {
+          const conditions = filters.incomeSources.map(source => 
+            `income_sources LIKE '%${source}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.foodCrops && filters.foodCrops.length > 0) {
+          const conditions = filters.foodCrops.map(crop => 
+            `food_crops LIKE '%${crop}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.pulses && filters.pulses.length > 0) {
+          const conditions = filters.pulses.map(pulse => 
+            `pulses LIKE '%${pulse}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.oilSeeds && filters.oilSeeds.length > 0) {
+          const conditions = filters.oilSeeds.map(seed => 
+            `oil_seeds LIKE '%${seed}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.vegetables && filters.vegetables.length > 0) {
+          const conditions = filters.vegetables.map(vegetable => 
+            `vegetables LIKE '%${vegetable}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.fruits && filters.fruits.length > 0) {
+          const conditions = filters.fruits.map(fruit => 
+            `fruits LIKE '%${fruit}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.spices && filters.spices.length > 0) {
+          const conditions = filters.spices.map(spice => 
+            `spices LIKE '%${spice}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.cashCrops && filters.cashCrops.length > 0) {
+          const conditions = filters.cashCrops.map(crop => 
+            `cash_crops LIKE '%${crop}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.animals && filters.animals.length > 0) {
+          const conditions = filters.animals.map(animal => 
+            `animals LIKE '%${animal}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.animalProducts && filters.animalProducts.length > 0) {
+          const conditions = filters.animalProducts.map(product => 
+            `animal_products LIKE '%${product}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.agriculturalMachines && filters.agriculturalMachines.length > 0) {
+          const conditions = filters.agriculturalMachines.map(machine => 
+            `agricultural_machines LIKE '%${machine}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+      }
+
+      // Order by family head name for consistent results
+      query = sql`${query} ORDER BY regexp_replace(family_head_name, '[0-9]', '', 'g') ASC NULLS LAST`;
+
+      // Debug: Log the final query
+      console.log("🔧 Download - Final SQL query:", query);
+      const result = await ctx.db.execute(query);
+      console.log("🔧 Download - Query returned", result.length, "results");
+      
+      // Convert to CSV format
+      const headers = [
+        "परिवार मूलीको नाम",
+        "फोन नम्बर",
+        "वडा नं.",
+        "कुल सदस्य",
+        "स्थानीयता",
+        "घर चिह्न नं.",
+        "अन्तरवार्ता मिति",
+        "प्रान्त",
+        "जिल्ला",
+        "स्थानीय तह",
+        "विकास संगठन",
+        "अन्यत्र सदस्य छन्",
+        "अन्यत्र सदस्य संख्या",
+        "घर स्वामित्व",
+        "जग्गा स्वामित्व",
+        "घरको आधार",
+        "घरको बाहिरी भित्ता",
+        "घरको छाना",
+        "घरको भुइँ",
+        "घर पास भएको",
+        "नक्सा संग्रहित",
+        "सुरक्षित छ",
+        "पानीको स्रोत",
+        "पानी शुद्धिकरण विधि",
+        "शौचालयको प्रकार",
+        "ठोस फोहोर व्यवस्थापन",
+        "मुख्य खाना पकाउने इन्धन",
+        "मुख्य ऊर्जा स्रोत",
+        "सडकको स्थिति",
+        "सार्वजनिक बस समय",
+        "बजार समय",
+        "सक्रिय सडकको दूरी",
+        "अन्यत्र सम्पत्ति छ",
+        "महिला नामक सम्पत्ति छ",
+        "बैंक समय",
+        "रेमिट्यान्स छ",
+        "स्वास्थ्य बीमा छ",
+        "सल्लाहकारी स्वास्थ्य संगठन",
+        "स्वास्थ्य संगठन समय",
+        "कृषि जग्गा छ",
+        "कृषिमा संलग्न छन्",
+        "पशुपालनमा संलग्न छन्",
+        "माछापालन छ",
+        "मौरीपालन छ",
+        "कृषि बीमा छ",
+        "कृषिमा संलग्न महिना",
+        "व्यवसाय छ",
+        "जन्म प्रान्त",
+        "जन्म जिल्ला",
+        "जन्म देश",
+        "पूर्व प्रान्त",
+        "पूर्व जिल्ला",
+        "पूर्व देश",
+        "बसोबासको कारण"
+      ];
+
+      const csvRows = [headers];
+
+      result.forEach((row: any) => {
+        const csvRow = [
+          row.family_head_name || "",
+          row.family_head_phone_no || "",
+          row.ward_no || "",
+          row.total_members || "",
+          row.locality || "",
+          row.house_symbol_no || "",
+          row.date_of_interview ? new Date(row.date_of_interview).toLocaleDateString('ne-NP') : "",
+          row.province || "",
+          row.district || "",
+          row.local_level || "",
+          row.development_organization || "",
+          row.are_members_elsewhere || "",
+          row.total_elsewhere_members || "",
+          row.house_ownership || "",
+          row.land_ownership || "",
+          row.house_base || "",
+          row.house_outer_wall || "",
+          row.house_roof || "",
+          row.house_floor || "",
+          row.is_house_passed || "",
+          row.is_map_archived || "",
+          row.is_safe || "",
+          row.water_source || "",
+          row.water_purification_methods || "",
+          row.toilet_type || "",
+          row.solid_waste_management || "",
+          row.primary_cooking_fuel || "",
+          row.primary_energy_source || "",
+          row.road_status || "",
+          row.time_to_public_bus || "",
+          row.time_to_market || "",
+          row.distance_to_active_road || "",
+          row.has_properties_elsewhere || "",
+          row.has_female_named_properties || "",
+          row.time_to_bank || "",
+          row.have_remittance || "",
+          row.have_health_insurance || "",
+          row.consulting_health_organization || "",
+          row.time_to_health_organization || "",
+          row.have_agricultural_land || "",
+          row.are_involved_in_agriculture || "",
+          row.are_involved_in_husbandry || "",
+          row.have_aquaculture || "",
+          row.have_apiary || "",
+          row.has_agricultural_insurance || "",
+          row.months_involved_in_agriculture || "",
+          row.has_business || "",
+          row.birth_province || "",
+          row.birth_district || "",
+          row.birth_country || "",
+          row.prior_province || "",
+          row.prior_district || "",
+          row.prior_country || "",
+          row.residence_reason || ""
+        ];
+        csvRows.push(csvRow);
+      });
+
+      const csvContent = csvRows.map(row => 
+        row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+      ).join('\n');
+
+      return {
+        csvContent,
+        totalRecords: result.length,
+        filename: `घरधुरी_सूची_${new Date().toISOString().split('T')[0]}.csv`
+      };
+    } catch (error) {
+      console.error("Error downloading households:", error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to download households data",
       });
     }
   });

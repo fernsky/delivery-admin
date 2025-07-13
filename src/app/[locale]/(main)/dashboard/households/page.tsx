@@ -13,9 +13,10 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, ArrowUpDown, Edit } from "lucide-react";
+import { Search, Plus, ArrowUpDown, Edit, Download } from "lucide-react";
 import { api } from "@/trpc/react";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 import {
   Pagination,
   PaginationContent,
@@ -75,6 +76,9 @@ export default function HouseholdsPage() {
   const { data, isLoading, error, refetch } =
     api.households.getHouseholds.useQuery(queryParams);
 
+  // Download mutation
+  const downloadMutation = api.households.downloadHouseholds.useMutation();
+
   // Debug: Log query parameters and results
   console.log("📊 Query params being sent to backend:", queryParams);
   console.log("📊 Query results:", {
@@ -128,14 +132,75 @@ export default function HouseholdsPage() {
     setCurrentPage(1);
   };
 
+  // Handle download CSV
+  const handleDownloadCSV = async () => {
+    try {
+      console.log("📥 Starting download...");
+
+      const downloadParams = {
+        limit: 0, // No limit for download
+        offset: 0,
+        sortBy: sortBy,
+        sortOrder: sortOrder,
+        filters: filters,
+        search: searchQuery.length > 2 ? searchQuery : undefined,
+      };
+
+      console.log("📥 Download params:", downloadParams);
+
+      const result = await downloadMutation.mutateAsync(downloadParams);
+
+      if (result.csvContent) {
+        // Create and download the CSV file
+        const blob = new Blob([result.csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", result.filename);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        console.log(`📥 Downloaded ${result.totalRecords} records as CSV`);
+        toast.success(
+          `${result.totalRecords} घरधुरीहरू सफलतापूर्वक डाउनलोड गरियो`,
+        );
+      }
+    } catch (error) {
+      console.error("Error downloading CSV:", error);
+      toast.error("डाउनलोड गर्न त्रुटि भयो। कृपया पछि फेरि प्रयास गर्नुहोस्।");
+    }
+  };
+
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">घरधुरी सूची</h1>
-        <Button onClick={() => router.push("/dashboard/households/create")}>
-          <Plus className="mr-2 h-4 w-4" />
-          नयाँ घरधुरी थप्नुहोस्
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleDownloadCSV}
+            disabled={downloadMutation.isLoading}
+            className="flex items-center gap-2"
+          >
+            {downloadMutation.isLoading ? (
+              <Spinner className="h-4 w-4" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            {downloadMutation.isLoading
+              ? "डाउनलोड गर्दै..."
+              : `CSV डाउनलोड ${data?.meta?.total ? `(${data.meta.total})` : ""}`}
+          </Button>
+          <Button onClick={() => router.push("/dashboard/households/create")}>
+            <Plus className="mr-2 h-4 w-4" />
+            नयाँ घरधुरी थप्नुहोस्
+          </Button>
+        </div>
       </div>
 
       {/* New: Comprehensive Filter UI */}

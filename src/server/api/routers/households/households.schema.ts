@@ -202,7 +202,6 @@ export const householdQuerySchema = z.object({
       hasPropertiesElsewhere: z.string().optional(),
       hasFemaleNamedProperties: z.string().optional(),
       timeToBank: z.string().optional(),
-      haveRemittance: z.string().optional(),
       
       // Health filters
       haveHealthInsurance: z.string().optional(),
@@ -213,12 +212,16 @@ export const householdQuerySchema = z.object({
       haveAgriculturalLand: z.string().optional(),
       areInvolvedInAgriculture: z.string().optional(),
       areInvolvedInHusbandry: z.string().optional(),
+      haveAquaculture: z.string().optional(),
+      haveApiary: z.string().optional(),
       hasAgriculturalInsurance: z.string().optional(),
       monthsInvolvedInAgriculture: z.string().optional(),
       
-      // Aquaculture filters
-      haveAquaculture: z.string().optional(),
-      haveApiary: z.string().optional(),
+      // Remittance filters
+      haveRemittance: z.string().optional(),
+      
+      // Business filters
+      hasBusiness: z.string().optional(),
       
       // Migration filters
       birthProvince: z.string().optional(),
@@ -229,14 +232,11 @@ export const householdQuerySchema = z.object({
       priorCountry: z.string().optional(),
       residenceReason: z.string().optional(),
       
-      // Business filters
-      hasBusiness: z.string().optional(),
-      
       // Date range filters
       dateOfInterviewFrom: z.date().optional(),
       dateOfInterviewTo: z.date().optional(),
       
-      // Array field filters (for fields that contain arrays)
+      // Array field filters
       naturalDisasters: z.array(z.string()).optional(),
       facilities: z.array(z.string()).optional(),
       financialAccounts: z.array(z.string()).optional(),
@@ -254,6 +254,11 @@ export const householdQuerySchema = z.object({
     })
     .optional(),
   search: z.string().optional(),
+});
+
+// Schema for download operations that allows limit to be 0
+export const householdDownloadSchema = householdQuerySchema.extend({
+  limit: z.number().min(0).max(1000000).default(0), // Allow 0 for unlimited downloads
 });
 
 export const householdStatusSchema = z.object({
