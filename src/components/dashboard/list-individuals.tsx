@@ -115,14 +115,27 @@ export default function ListIndividuals({ user }: { user: AuthUser }) {
     if (!level) return "";
 
     const educationMap: Record<string, string> = {
-      none: "निरक्षर",
-      primary: "प्राथमिक",
-      secondary: "माध्यमिक",
-      higher_secondary: "उच्च माध्यमिक",
-      bachelor: "स्नातक",
-      masters: "स्नातकोत्तर",
-      phd: "विद्यावारिधि",
-      other: "अन्य",
+      "कक्षा ९": "कक्षा ९",
+      "स्नातकोत्तर वा सो सरह": "स्नातकोत्तर वा सो सरह",
+      "कक्षा ४": "कक्षा ४",
+      "कक्षा ८": "कक्षा ८",
+      "कक्षा २": "कक्षा २",
+      "कक्षा १२ वा PCL वा सो सरह": "कक्षा १२ वा PCL वा सो सरह",
+      "कक्षा १०": "कक्षा १०",
+      "एसईई/एसएलसी/सो सरह": "एसईई/एसएलसी/सो सरह",
+      "स्नातक वा सो सरह": "स्नातक वा सो सरह",
+      "कक्षा ६": "कक्षा ६",
+      "नर्सरी/केजी": "नर्सरी/केजी",
+      "थाहा नभएको": "थाहा नभएको",
+      "अनौपचारिक शिक्षा": "अनौपचारिक शिक्षा",
+      "कक्षा ५": "कक्षा ५",
+      "कक्षा १": "कक्षा १",
+      साक्षर: "साक्षर",
+      अन्य: "अन्य",
+      "बालविकास केन्द्र / मंटेस्वोरी": "बालविकास केन्द्र / मंटेस्वोरी",
+      "कक्षा ३": "कक्षा ३",
+      "कक्षा ७": "कक्षा ७",
+      "पीएचडी वा सो सरह": "पीएचडी वा सो सरह",
     };
 
     return educationMap[level.toLowerCase()] || level;
@@ -175,9 +188,9 @@ export default function ListIndividuals({ user }: { user: AuthUser }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">सबै लिङ्ग</SelectItem>
-                <SelectItem value="Male">पुरुष</SelectItem>
-                <SelectItem value="Female">महिला</SelectItem>
-                <SelectItem value="Other">अन्य</SelectItem>
+                <SelectItem value="पुरुष">पुरुष</SelectItem>
+                <SelectItem value="महिला">महिला</SelectItem>
+                <SelectItem value="अन्य">अन्य</SelectItem>
               </SelectContent>
             </Select>
 
@@ -193,15 +206,44 @@ export default function ListIndividuals({ user }: { user: AuthUser }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">सबै शिक्षा</SelectItem>
-                <SelectItem value="none">निरक्षर</SelectItem>
-                <SelectItem value="primary">प्राथमिक</SelectItem>
-                <SelectItem value="secondary">माध्यमिक</SelectItem>
-                <SelectItem value="higher_secondary">उच्च माध्यमिक</SelectItem>
-                <SelectItem value="bachelor">स्नातक</SelectItem>
-                <SelectItem value="masters">स्नातकोत्तर</SelectItem>
+                <SelectItem value="कक्षा ९">कक्षा ९</SelectItem>
+                <SelectItem value="स्नातकोत्तर वा सो सरह">
+                  स्नातकोत्तर वा सो सरह
+                </SelectItem>
+                <SelectItem value="कक्षा ४">कक्षा ४</SelectItem>
+                <SelectItem value="कक्षा ८">कक्षा ८</SelectItem>
+                <SelectItem value="कक्षा २">कक्षा २</SelectItem>
+                <SelectItem value="कक्षा १२ वा PCL वा सो सरह">
+                  कक्षा १२ वा PCL वा सो सरह
+                </SelectItem>
+                <SelectItem value="कक्षा १०">कक्षा १०</SelectItem>
+                <SelectItem value="एसईई/एसएलसी/सो सरह">
+                  एसईई/एसएलसी/सो सरह
+                </SelectItem>
+                <SelectItem value="स्नातक वा सो सरह">
+                  स्नातक वा सो सरह
+                </SelectItem>
+                <SelectItem value="कक्षा ६">कक्षा ६</SelectItem>
+                <SelectItem value="नर्सरी/केजी">नर्सरी/केजी</SelectItem>
+                <SelectItem value="थाहा नभएको">थाहा नभएको</SelectItem>
+                <SelectItem value="अनौपचारिक शिक्षा">
+                  अनौपचारिक शिक्षा
+                </SelectItem>
+                <SelectItem value="कक्षा ५">कक्षा ५</SelectItem>
+                <SelectItem value="कक्षा १">कक्षा १</SelectItem>
+                <SelectItem value="साक्षर">साक्षर</SelectItem>
+                <SelectItem value="अन्य">अन्य</SelectItem>
+                <SelectItem value="बालविकास केन्द्र / मंटेस्वोरी">
+                  बालविकास केन्द्र / मंटेस्वोरी
+                </SelectItem>
+                <SelectItem value="कक्षा ३">कक्षा ३</SelectItem>
+                <SelectItem value="कक्षा ७">कक्षा ७</SelectItem>
+                <SelectItem value="पीएचडी वा सो सरह">
+                  पीएचडी वा सो सरह
+                </SelectItem>
               </SelectContent>
             </Select>
-
+            {/* 
             <Select
               value={presentFilter || ""}
               onValueChange={(value) => {
@@ -217,7 +259,7 @@ export default function ListIndividuals({ user }: { user: AuthUser }) {
                 <SelectItem value="Yes">उपस्थित</SelectItem>
                 <SelectItem value="No">अनुपस्थित</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
             <Select
               value={pageSize.toString()}

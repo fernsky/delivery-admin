@@ -181,7 +181,7 @@ export default function BusinessesPage() {
             </SelectContent>
           </Select>
 
-          <Select
+          {/* <Select
             value={statusFilter || ""}
             onValueChange={(value) => {
               setStatusFilter(value || undefined);
@@ -198,7 +198,7 @@ export default function BusinessesPage() {
               <SelectItem value="rejected">अस्वीकृत</SelectItem>
               <SelectItem value="requested_for_edit">संशोधन आवश्यक</SelectItem>
             </SelectContent>
-          </Select>
+          </Select> */}
 
           <Select
             value={pageSize.toString()}
