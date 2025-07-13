@@ -24,12 +24,26 @@ function normalizeUuid(uuid: string): string {
   return uuid.replace(/^(uuid:)?/, '').trim().toLowerCase();
 }
 
+// Helper function to build array field filter conditions
+function buildArrayFieldFilter(fieldName: string, values: string[]): string {
+  if (!values || values.length === 0) return "";
+  
+  const conditions = values.map(value => 
+    `${fieldName} LIKE '%${value}%'`
+  ).join(' OR ');
+  
+  return `(${conditions})`;
+}
+
 // Procedure to get a paginated list of households with basic info for cards
 export const getHouseholdsProcedure = protectedProcedure
   .input(householdQuerySchema)
   .query(async ({ ctx, input }) => {
     try {
       const { limit, offset, sortBy, sortOrder, filters } = input;
+      
+      // Debug: Log the filters received by backend
+      console.log("🔧 Backend received filters:", JSON.stringify(filters, null, 2));
 
       let query = sql`
         SELECT 
@@ -44,6 +58,8 @@ export const getHouseholdsProcedure = protectedProcedure
         FROM acme_khajura_households
         WHERE profile_id = 'khajura'
       `;
+      
+
 
       if (input.search) {
         const searchTerm = `%${input.search}%`;
@@ -58,6 +74,7 @@ export const getHouseholdsProcedure = protectedProcedure
       }
 
       if (filters) {
+        // Location filters
         if (filters.wardNo !== undefined) {
           query = sql`${query} AND ward_no = ${filters.wardNo}`;
         }
@@ -70,16 +87,327 @@ export const getHouseholdsProcedure = protectedProcedure
           query = sql`${query} AND district = ${filters.district}`;
         }
 
-        if (filters.haveAgriculturalLand) {
-          query = sql`${query} AND have_agricultural_land = ${filters.haveAgriculturalLand}`;
+        if (filters.localLevel) {
+          query = sql`${query} AND local_level = ${filters.localLevel}`;
         }
 
+        if (filters.locality) {
+          query = sql`${query} AND locality ILIKE ${`%${filters.locality}%`}`;
+        }
+
+        if (filters.developmentOrganization) {
+          query = sql`${query} AND development_organization = ${filters.developmentOrganization}`;
+        }
+
+        // Family filters
+        if (filters.familyHeadName) {
+          query = sql`${query} AND family_head_name ILIKE ${`%${filters.familyHeadName}%`}`;
+        }
+
+        if (filters.familyHeadPhoneNo) {
+          query = sql`${query} AND family_head_phone_no ILIKE ${`%${filters.familyHeadPhoneNo}%`}`;
+        }
+
+        if (filters.totalMembersMin !== undefined) {
+          query = sql`${query} AND total_members >= ${filters.totalMembersMin}`;
+        }
+
+        if (filters.totalMembersMax !== undefined) {
+          query = sql`${query} AND total_members <= ${filters.totalMembersMax}`;
+        }
+
+        if (filters.areMembersElsewhere) {
+          query = sql`${query} AND are_members_elsewhere = ${filters.areMembersElsewhere}`;
+        }
+
+        if (filters.totalElsewhereMembersMin !== undefined) {
+          query = sql`${query} AND total_elsewhere_members >= ${filters.totalElsewhereMembersMin}`;
+        }
+
+        if (filters.totalElsewhereMembersMax !== undefined) {
+          query = sql`${query} AND total_elsewhere_members <= ${filters.totalElsewhereMembersMax}`;
+        }
+
+        // House ownership filters
         if (filters.houseOwnership) {
-          query = sql`${query} AND house_ownership = ${filters.houseOwnership}`;
+          query = sql`${query} AND house_ownership  ILIKE ${`%${filters.houseOwnership}%`}`;
+        }
+
+        if (filters.landOwnership) {
+          query = sql`${query} AND land_ownership ILIKE ${`%${filters.landOwnership}%`}`;
+        }
+
+        if (filters.houseBase) {
+          query = sql`${query} AND house_base ILIKE ${`%${filters.houseBase}%`}`;
+        }
+
+        if (filters.houseOuterWall) {
+          query = sql`${query} AND house_outer_wall ILIKE ${`%${filters.houseOuterWall}%`}`;
+        }
+
+        if (filters.houseRoof) {
+          query = sql`${query} AND house_roof ILIKE ${`%${filters.houseRoof}%`}`;
+        }
+
+        if (filters.houseFloor) {
+          query = sql`${query} AND house_floor ILIKE ${`%${filters.houseFloor}%`}`;
+        }
+
+        // Safety filters
+        if (filters.isHousePassed) {
+          query = sql`${query} AND is_house_passed = ${filters.isHousePassed}`;
+        }
+
+        if (filters.isMapArchived) {
+          query = sql`${query} AND is_map_archived = ${filters.isMapArchived}`;
+        }
+
+        if (filters.isSafe) {
+          query = sql`${query} AND is_safe = ${filters.isSafe}`;
+        }
+
+        // Water and sanitation filters
+        if (filters.waterSource) {
+          query = sql`${query} AND water_source ILIKE ${`%${filters.waterSource}%`}`;
+        }
+
+        if (filters.waterPurificationMethods) {
+          query = sql`${query} AND water_purification_methods ILIKE ${`%${filters.waterPurificationMethods}%`}`;
+        }
+
+        if (filters.toiletType) {
+          query = sql`${query} AND toilet_type  ILIKE ${`%${filters.toiletType}%`}`;
+        }
+
+        if (filters.solidWasteManagement) {
+          query = sql`${query} AND solid_waste_management = ${filters.solidWasteManagement}`;
+        }
+
+        if (filters.primaryCookingFuel) {
+          query = sql`${query} AND primary_cooking_fuel ILIKE ${`%${filters.primaryCookingFuel}%`}`;
+        }
+
+        if (filters.primaryEnergySource) {
+          query = sql`${query} AND primary_energy_source ILIKE ${`%${filters.primaryEnergySource}%`}`;
+        }
+
+        // Accessibility filters
+        if (filters.roadStatus) {
+          query = sql`${query} AND road_status = ${filters.roadStatus}`;
         }
 
         if (filters.timeToPublicBus) {
           query = sql`${query} AND time_to_public_bus = ${filters.timeToPublicBus}`;
+        }
+
+        if (filters.timeToMarket) {
+          query = sql`${query} AND time_to_market = ${filters.timeToMarket}`;
+        }
+
+        if (filters.distanceToActiveRoad) {
+          query = sql`${query} AND distance_to_active_road = ${filters.distanceToActiveRoad}`;
+        }
+
+        // Economic filters
+        if (filters.hasPropertiesElsewhere) {
+          query = sql`${query} AND has_properties_elsewhere = ${filters.hasPropertiesElsewhere}`;
+        }
+
+        if (filters.hasFemaleNamedProperties) {
+          query = sql`${query} AND has_female_named_properties = ${filters.hasFemaleNamedProperties}`;
+        }
+
+        if (filters.timeToBank) {
+          query = sql`${query} AND time_to_bank ILIKE ${`%${filters.timeToBank}%`}`;
+        }
+
+        // Health filters
+        if (filters.haveHealthInsurance) {
+          query = sql`${query} AND have_health_insurance = ${filters.haveHealthInsurance}`;
+        }
+
+        if (filters.consultingHealthOrganization) {
+          query = sql`${query} AND consulting_health_organization ILIKE ${`%${filters.consultingHealthOrganization}%`}`;
+        }
+
+        if (filters.timeToHealthOrganization) {
+          query = sql`${query} AND time_to_health_organization ILIKE ${`%${filters.timeToHealthOrganization}%`}`;
+        }
+
+        // Agriculture filters
+        if (filters.haveAgriculturalLand) {
+          query = sql`${query} AND have_agricultural_land = ${filters.haveAgriculturalLand}`;
+        }
+
+        if (filters.areInvolvedInAgriculture) {
+          query = sql`${query} AND are_involved_in_agriculture = ${filters.areInvolvedInAgriculture}`;
+        }
+
+        if (filters.areInvolvedInHusbandry) {
+          query = sql`${query} AND are_involved_in_husbandry = ${filters.areInvolvedInHusbandry}`;
+        }
+
+        if (filters.haveAquaculture) {
+          query = sql`${query} AND have_aquaculture = ${filters.haveAquaculture}`;
+        }
+
+        if (filters.haveApiary) {
+          query = sql`${query} AND have_apiary = ${filters.haveApiary}`;
+        }
+
+        if (filters.hasAgriculturalInsurance) {
+          query = sql`${query} AND has_agricultural_insurance = ${filters.hasAgriculturalInsurance}`;
+        }
+
+        if (filters.monthsInvolvedInAgriculture) {
+          query = sql`${query} AND months_involved_in_agriculture = ${filters.monthsInvolvedInAgriculture}`;
+        }
+
+        // Remittance filters
+        if (filters.haveRemittance) {
+          query = sql`${query} AND have_remittance = ${filters.haveRemittance}`;
+        }
+
+        // Business filters
+        if (filters.hasBusiness) {
+          query = sql`${query} AND has_business = ${filters.hasBusiness}`;
+        }
+
+        // Migration filters
+        if (filters.birthProvince) {
+          query = sql`${query} AND birth_province = ${filters.birthProvince}`;
+        }
+
+        if (filters.birthDistrict) {
+          query = sql`${query} AND birth_district = ${filters.birthDistrict}`;
+        }
+
+        if (filters.birthCountry) {
+          query = sql`${query} AND birth_country = ${filters.birthCountry}`;
+        }
+
+        if (filters.priorProvince) {
+          query = sql`${query} AND prior_province = ${filters.priorProvince}`;
+        }
+
+        if (filters.priorDistrict) {
+          query = sql`${query} AND prior_district = ${filters.priorDistrict}`;
+        }
+
+        if (filters.priorCountry) {
+          query = sql`${query} AND prior_country = ${filters.priorCountry}`;
+        }
+
+        if (filters.residenceReason) {
+          query = sql`${query} AND residence_reason = ${filters.residenceReason}`;
+        }
+
+        // Date range filters
+        if (filters.dateOfInterviewFrom) {
+          query = sql`${query} AND date_of_interview >= ${filters.dateOfInterviewFrom}`;
+        }
+
+        if (filters.dateOfInterviewTo) {
+          query = sql`${query} AND date_of_interview <= ${filters.dateOfInterviewTo}`;
+        }
+
+        // Array field filters
+        if (filters.naturalDisasters && filters.naturalDisasters.length > 0) {
+          const conditions = filters.naturalDisasters.map(disaster => 
+            `natural_disasters LIKE '%${disaster}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.facilities && filters.facilities.length > 0) {
+          const conditions = filters.facilities.map(facility => 
+            `facilities LIKE '%${facility}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.financialAccounts && filters.financialAccounts.length > 0) {
+          const conditions = filters.financialAccounts.map(account => 
+            `financial_accounts LIKE '%${account}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.incomeSources && filters.incomeSources.length > 0) {
+          const conditions = filters.incomeSources.map(source => 
+            `income_sources LIKE '%${source}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.foodCrops && filters.foodCrops.length > 0) {
+          const conditions = filters.foodCrops.map(crop => 
+            `food_crops LIKE '%${crop}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.pulses && filters.pulses.length > 0) {
+          const conditions = filters.pulses.map(pulse => 
+            `pulses LIKE '%${pulse}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.oilSeeds && filters.oilSeeds.length > 0) {
+          const conditions = filters.oilSeeds.map(seed => 
+            `oil_seeds LIKE '%${seed}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.vegetables && filters.vegetables.length > 0) {
+          const conditions = filters.vegetables.map(vegetable => 
+            `vegetables LIKE '%${vegetable}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.fruits && filters.fruits.length > 0) {
+          const conditions = filters.fruits.map(fruit => 
+            `fruits LIKE '%${fruit}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.spices && filters.spices.length > 0) {
+          const conditions = filters.spices.map(spice => 
+            `spices LIKE '%${spice}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.cashCrops && filters.cashCrops.length > 0) {
+          const conditions = filters.cashCrops.map(crop => 
+            `cash_crops LIKE '%${crop}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.animals && filters.animals.length > 0) {
+          const conditions = filters.animals.map(animal => 
+            `animals LIKE '%${animal}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.animalProducts && filters.animalProducts.length > 0) {
+          const conditions = filters.animalProducts.map(product => 
+            `animal_products LIKE '%${product}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
+        }
+
+        if (filters.agriculturalMachines && filters.agriculturalMachines.length > 0) {
+          const conditions = filters.agriculturalMachines.map(machine => 
+            `agricultural_machines LIKE '%${machine}%'`
+          ).join(' OR ');
+          query = sql`${query} AND (${conditions})`;
         }
       }
 
@@ -101,7 +429,10 @@ export const getHouseholdsProcedure = protectedProcedure
 
       query = sql`${query} LIMIT ${limit} OFFSET ${offset}`;
 
+      // Debug: Log the final query and results
+      console.log("🔧 Final SQL query:", query);
       const result = await ctx.db.execute(query);
+      console.log("🔧 Query returned", result.length, "results");
       
       const households = result.map(row => ({
         id: row.id,
@@ -133,6 +464,7 @@ export const getHouseholdsProcedure = protectedProcedure
       }
       
       if (filters) {
+        // Location filters
         if (filters.wardNo !== undefined) {
           countQuery = sql`${countQuery} AND ward_no = ${filters.wardNo}`;
         }
@@ -145,16 +477,327 @@ export const getHouseholdsProcedure = protectedProcedure
           countQuery = sql`${countQuery} AND district = ${filters.district}`;
         }
 
-        if (filters.haveAgriculturalLand) {
-          countQuery = sql`${countQuery} AND have_agricultural_land = ${filters.haveAgriculturalLand}`;
+        if (filters.localLevel) {
+          countQuery = sql`${countQuery} AND local_level = ${filters.localLevel}`;
         }
 
+        if (filters.locality) {
+          countQuery = sql`${countQuery} AND locality ILIKE ${`%${filters.locality}%`}`;
+        }
+
+        if (filters.developmentOrganization) {
+          countQuery = sql`${countQuery} AND development_organization = ${filters.developmentOrganization}`;
+        }
+
+        // Family filters
+        if (filters.familyHeadName) {
+          countQuery = sql`${countQuery} AND family_head_name ILIKE ${`%${filters.familyHeadName}%`}`;
+        }
+
+        if (filters.familyHeadPhoneNo) {
+          countQuery = sql`${countQuery} AND family_head_phone_no ILIKE ${`%${filters.familyHeadPhoneNo}%`}`;
+        }
+
+        if (filters.totalMembersMin !== undefined) {
+          countQuery = sql`${countQuery} AND total_members >= ${filters.totalMembersMin}`;
+        }
+
+        if (filters.totalMembersMax !== undefined) {
+          countQuery = sql`${countQuery} AND total_members <= ${filters.totalMembersMax}`;
+        }
+
+        if (filters.areMembersElsewhere) {
+          countQuery = sql`${countQuery} AND are_members_elsewhere = ${filters.areMembersElsewhere}`;
+        }
+
+        if (filters.totalElsewhereMembersMin !== undefined) {
+          countQuery = sql`${countQuery} AND total_elsewhere_members >= ${filters.totalElsewhereMembersMin}`;
+        }
+
+        if (filters.totalElsewhereMembersMax !== undefined) {
+          countQuery = sql`${countQuery} AND total_elsewhere_members <= ${filters.totalElsewhereMembersMax}`;
+        }
+
+        // House ownership filters
         if (filters.houseOwnership) {
           countQuery = sql`${countQuery} AND house_ownership = ${filters.houseOwnership}`;
         }
 
+        if (filters.landOwnership) {
+          countQuery = sql`${countQuery} AND land_ownership = ${filters.landOwnership}`;
+        }
+
+        if (filters.houseBase) {
+          countQuery = sql`${countQuery} AND house_base = ${filters.houseBase}`;
+        }
+
+        if (filters.houseOuterWall) {
+          countQuery = sql`${countQuery} AND house_outer_wall = ${filters.houseOuterWall}`;
+        }
+
+        if (filters.houseRoof) {
+          countQuery = sql`${countQuery} AND house_roof = ${filters.houseRoof}`;
+        }
+
+        if (filters.houseFloor) {
+          countQuery = sql`${countQuery} AND house_floor = ${filters.houseFloor}`;
+        }
+
+        // Safety filters
+        if (filters.isHousePassed) {
+          countQuery = sql`${countQuery} AND is_house_passed = ${filters.isHousePassed}`;
+        }
+
+        if (filters.isMapArchived) {
+          countQuery = sql`${countQuery} AND is_map_archived = ${filters.isMapArchived}`;
+        }
+
+        if (filters.isSafe) {
+          countQuery = sql`${countQuery} AND is_safe = ${filters.isSafe}`;
+        }
+
+        // Water and sanitation filters
+        if (filters.waterSource) {
+          countQuery = sql`${countQuery} AND water_source = ${filters.waterSource}`;
+        }
+
+        if (filters.waterPurificationMethods) {
+          countQuery = sql`${countQuery} AND water_purification_methods = ${filters.waterPurificationMethods}`;
+        }
+
+        if (filters.toiletType) {
+          countQuery = sql`${countQuery} AND toilet_type = ${filters.toiletType}`;
+        }
+
+        if (filters.solidWasteManagement) {
+          countQuery = sql`${countQuery} AND solid_waste_management = ${filters.solidWasteManagement}`;
+        }
+
+        if (filters.primaryCookingFuel) {
+          countQuery = sql`${countQuery} AND primary_cooking_fuel = ${filters.primaryCookingFuel}`;
+        }
+
+        if (filters.primaryEnergySource) {
+          countQuery = sql`${countQuery} AND primary_energy_source = ${filters.primaryEnergySource}`;
+        }
+
+        // Accessibility filters
+        if (filters.roadStatus) {
+          countQuery = sql`${countQuery} AND road_status = ${filters.roadStatus}`;
+        }
+
         if (filters.timeToPublicBus) {
           countQuery = sql`${countQuery} AND time_to_public_bus = ${filters.timeToPublicBus}`;
+        }
+
+        if (filters.timeToMarket) {
+          countQuery = sql`${countQuery} AND time_to_market = ${filters.timeToMarket}`;
+        }
+
+        if (filters.distanceToActiveRoad) {
+          countQuery = sql`${countQuery} AND distance_to_active_road = ${filters.distanceToActiveRoad}`;
+        }
+
+        // Economic filters
+        if (filters.hasPropertiesElsewhere) {
+          countQuery = sql`${countQuery} AND has_properties_elsewhere = ${filters.hasPropertiesElsewhere}`;
+        }
+
+        if (filters.hasFemaleNamedProperties) {
+          countQuery = sql`${countQuery} AND has_female_named_properties = ${filters.hasFemaleNamedProperties}`;
+        }
+
+        if (filters.timeToBank) {
+          countQuery = sql`${countQuery} AND time_to_bank = ${filters.timeToBank}`;
+        }
+
+        // Health filters
+        if (filters.haveHealthInsurance) {
+          countQuery = sql`${countQuery} AND have_health_insurance = ${filters.haveHealthInsurance}`;
+        }
+
+        if (filters.consultingHealthOrganization) {
+          countQuery = sql`${countQuery} AND consulting_health_organization = ${filters.consultingHealthOrganization}`;
+        }
+
+        if (filters.timeToHealthOrganization) {
+          countQuery = sql`${countQuery} AND time_to_health_organization = ${filters.timeToHealthOrganization}`;
+        }
+
+        // Agriculture filters
+        if (filters.haveAgriculturalLand) {
+          countQuery = sql`${countQuery} AND have_agricultural_land = ${filters.haveAgriculturalLand}`;
+        }
+
+        if (filters.areInvolvedInAgriculture) {
+          countQuery = sql`${countQuery} AND are_involved_in_agriculture = ${filters.areInvolvedInAgriculture}`;
+        }
+
+        if (filters.areInvolvedInHusbandry) {
+          countQuery = sql`${countQuery} AND are_involved_in_husbandry = ${filters.areInvolvedInHusbandry}`;
+        }
+
+        if (filters.haveAquaculture) {
+          countQuery = sql`${countQuery} AND have_aquaculture = ${filters.haveAquaculture}`;
+        }
+
+        if (filters.haveApiary) {
+          countQuery = sql`${countQuery} AND have_apiary = ${filters.haveApiary}`;
+        }
+
+        if (filters.hasAgriculturalInsurance) {
+          countQuery = sql`${countQuery} AND has_agricultural_insurance = ${filters.hasAgriculturalInsurance}`;
+        }
+
+        if (filters.monthsInvolvedInAgriculture) {
+          countQuery = sql`${countQuery} AND months_involved_in_agriculture = ${filters.monthsInvolvedInAgriculture}`;
+        }
+
+        // Remittance filters
+        if (filters.haveRemittance) {
+          countQuery = sql`${countQuery} AND have_remittance = ${filters.haveRemittance}`;
+        }
+
+        // Business filters
+        if (filters.hasBusiness) {
+          countQuery = sql`${countQuery} AND has_business = ${filters.hasBusiness}`;
+        }
+
+        // Migration filters
+        if (filters.birthProvince) {
+          countQuery = sql`${countQuery} AND birth_province = ${filters.birthProvince}`;
+        }
+
+        if (filters.birthDistrict) {
+          countQuery = sql`${countQuery} AND birth_district = ${filters.birthDistrict}`;
+        }
+
+        if (filters.birthCountry) {
+          countQuery = sql`${countQuery} AND birth_country = ${filters.birthCountry}`;
+        }
+
+        if (filters.priorProvince) {
+          countQuery = sql`${countQuery} AND prior_province = ${filters.priorProvince}`;
+        }
+
+        if (filters.priorDistrict) {
+          countQuery = sql`${countQuery} AND prior_district = ${filters.priorDistrict}`;
+        }
+
+        if (filters.priorCountry) {
+          countQuery = sql`${countQuery} AND prior_country = ${filters.priorCountry}`;
+        }
+
+        if (filters.residenceReason) {
+          countQuery = sql`${countQuery} AND residence_reason = ${filters.residenceReason}`;
+        }
+
+        // Date range filters
+        if (filters.dateOfInterviewFrom) {
+          countQuery = sql`${countQuery} AND date_of_interview >= ${filters.dateOfInterviewFrom}`;
+        }
+
+        if (filters.dateOfInterviewTo) {
+          countQuery = sql`${countQuery} AND date_of_interview <= ${filters.dateOfInterviewTo}`;
+        }
+
+        // Array field filters
+        if (filters.naturalDisasters && filters.naturalDisasters.length > 0) {
+          const conditions = filters.naturalDisasters.map(disaster => 
+            `natural_disasters LIKE '%${disaster}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.facilities && filters.facilities.length > 0) {
+          const conditions = filters.facilities.map(facility => 
+            `facilities LIKE '%${facility}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.financialAccounts && filters.financialAccounts.length > 0) {
+          const conditions = filters.financialAccounts.map(account => 
+            `financial_accounts LIKE '%${account}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.incomeSources && filters.incomeSources.length > 0) {
+          const conditions = filters.incomeSources.map(source => 
+            `income_sources LIKE '%${source}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.foodCrops && filters.foodCrops.length > 0) {
+          const conditions = filters.foodCrops.map(crop => 
+            `food_crops LIKE '%${crop}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.pulses && filters.pulses.length > 0) {
+          const conditions = filters.pulses.map(pulse => 
+            `pulses LIKE '%${pulse}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.oilSeeds && filters.oilSeeds.length > 0) {
+          const conditions = filters.oilSeeds.map(seed => 
+            `oil_seeds LIKE '%${seed}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.vegetables && filters.vegetables.length > 0) {
+          const conditions = filters.vegetables.map(vegetable => 
+            `vegetables LIKE '%${vegetable}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.fruits && filters.fruits.length > 0) {
+          const conditions = filters.fruits.map(fruit => 
+            `fruits LIKE '%${fruit}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.spices && filters.spices.length > 0) {
+          const conditions = filters.spices.map(spice => 
+            `spices LIKE '%${spice}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.cashCrops && filters.cashCrops.length > 0) {
+          const conditions = filters.cashCrops.map(crop => 
+            `cash_crops LIKE '%${crop}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.animals && filters.animals.length > 0) {
+          const conditions = filters.animals.map(animal => 
+            `animals LIKE '%${animal}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.animalProducts && filters.animalProducts.length > 0) {
+          const conditions = filters.animalProducts.map(product => 
+            `animal_products LIKE '%${product}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
+        }
+
+        if (filters.agriculturalMachines && filters.agriculturalMachines.length > 0) {
+          const conditions = filters.agriculturalMachines.map(machine => 
+            `agricultural_machines LIKE '%${machine}%'`
+          ).join(' OR ');
+          countQuery = sql`${countQuery} AND (${conditions})`;
         }
       }
       

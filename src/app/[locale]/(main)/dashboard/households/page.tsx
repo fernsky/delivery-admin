@@ -32,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatDate } from "@/lib/utils";
+import { HouseholdFilters } from "@/components/households/household-filters";
 
 // Define types for the household data structure
 type Household = {
@@ -50,7 +51,6 @@ export default function HouseholdsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const [wardFilter, setWardFilter] = useState<number | undefined>(undefined);
   const [sortBy, setSortBy] = useState<
     | "family_head_name"
     | "ward_no"
@@ -59,19 +59,31 @@ export default function HouseholdsPage() {
     | "date_of_interview"
   >("family_head_name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  // Filters state for all possible filters
+  const [filters, setFilters] = useState<any>({});
 
-  // Fetch households data with pagination
+  // Fetch households data with pagination and filters
+  const queryParams = {
+    limit: pageSize,
+    offset: (currentPage - 1) * pageSize,
+    sortBy: sortBy,
+    sortOrder: sortOrder,
+    filters: filters,
+    search: searchQuery.length > 2 ? searchQuery : undefined, // Only search if query has at least 3 characters
+  };
+
   const { data, isLoading, error, refetch } =
-    api.households.getHouseholds.useQuery({
-      limit: pageSize,
-      offset: (currentPage - 1) * pageSize,
-      sortBy: sortBy,
-      sortOrder: sortOrder,
-      filters: {
-        wardNo: wardFilter,
-      },
-      search: searchQuery.length > 2 ? searchQuery : undefined, // Only search if query has at least 3 characters
-    });
+    api.households.getHouseholds.useQuery(queryParams);
+
+  // Debug: Log query parameters and results
+  console.log("📊 Query params being sent to backend:", queryParams);
+  console.log("📊 Query results:", {
+    dataCount: data?.households?.length || 0,
+    total: data?.meta?.total || 0,
+    isLoading,
+    hasError: !!error,
+    error: error?.message,
+  });
 
   const totalPages = data?.meta ? Math.ceil(data.meta.total / pageSize) : 0;
 
@@ -105,6 +117,17 @@ export default function HouseholdsPage() {
     return id.replace(/^uuid:/, "");
   };
 
+  // Handle filter changes
+  const handleFiltersChange = (newFilters: any) => {
+    console.log("🔍 Page received filters:", newFilters);
+    setFilters(newFilters);
+    setCurrentPage(1);
+  };
+  const handleClearFilters = () => {
+    setFilters({});
+    setCurrentPage(1);
+  };
+
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
@@ -113,6 +136,15 @@ export default function HouseholdsPage() {
           <Plus className="mr-2 h-4 w-4" />
           नयाँ घरधुरी थप्नुहोस्
         </Button>
+      </div>
+
+      {/* New: Comprehensive Filter UI */}
+      <div className="mb-6">
+        <HouseholdFilters
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+          onClearFilters={handleClearFilters}
+        />
       </div>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center mb-6">
@@ -127,11 +159,15 @@ export default function HouseholdsPage() {
         </div>
 
         <div className="flex gap-2">
+          {/* Quick ward filter that syncs with the main filters */}
           <Select
-            value={wardFilter?.toString() || ""}
+            value={filters.wardNo?.toString() || ""}
             onValueChange={(value) => {
-              setWardFilter(value ? parseInt(value) : undefined);
               setCurrentPage(1);
+              setFilters((prev: any) => ({
+                ...prev,
+                wardNo: value ? parseInt(value) : undefined,
+              }));
             }}
           >
             <SelectTrigger className="w-28">

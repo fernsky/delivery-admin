@@ -145,18 +145,112 @@ export const householdQuerySchema = z.object({
       "locality", 
       "house_symbol_no",
       "date_of_interview",
+      "total_members",
+      "province",
+      "district",
+      "local_level",
     ])
     .default("family_head_name"),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
   filters: z
     .object({
+      // Location filters
       wardNo: z.number().optional(),
       province: z.string().optional(),
       district: z.string().optional(),
-      haveAgriculturalLand: z.string().optional(),
+      localLevel: z.string().optional(),
+      locality: z.string().optional(),
+      developmentOrganization: z.string().optional(),
+      
+      // Family filters
+      familyHeadName: z.string().optional(),
+      familyHeadPhoneNo: z.string().optional(),
+      totalMembersMin: z.number().optional(),
+      totalMembersMax: z.number().optional(),
+      areMembersElsewhere: z.string().optional(),
+      totalElsewhereMembersMin: z.number().optional(),
+      totalElsewhereMembersMax: z.number().optional(),
+      
+      // House ownership filters
       houseOwnership: z.string().optional(),
-      // Removed isEarthquakeResistant as it's not in the schema
+      landOwnership: z.string().optional(),
+      houseBase: z.string().optional(),
+      houseOuterWall: z.string().optional(),
+      houseRoof: z.string().optional(),
+      houseFloor: z.string().optional(),
+      
+      // Safety filters
+      isHousePassed: z.string().optional(),
+      isMapArchived: z.string().optional(),
+      isSafe: z.string().optional(),
+      
+      // Water and sanitation filters
+      waterSource: z.string().optional(),
+      waterPurificationMethods: z.string().optional(),
+      toiletType: z.string().optional(),
+      solidWasteManagement: z.string().optional(),
+      primaryCookingFuel: z.string().optional(),
+      primaryEnergySource: z.string().optional(),
+      
+      // Accessibility filters
+      roadStatus: z.string().optional(),
       timeToPublicBus: z.string().optional(),
+      timeToMarket: z.string().optional(),
+      distanceToActiveRoad: z.string().optional(),
+      
+      // Economic filters
+      hasPropertiesElsewhere: z.string().optional(),
+      hasFemaleNamedProperties: z.string().optional(),
+      timeToBank: z.string().optional(),
+      haveRemittance: z.string().optional(),
+      
+      // Health filters
+      haveHealthInsurance: z.string().optional(),
+      consultingHealthOrganization: z.string().optional(),
+      timeToHealthOrganization: z.string().optional(),
+      
+      // Agriculture filters
+      haveAgriculturalLand: z.string().optional(),
+      areInvolvedInAgriculture: z.string().optional(),
+      areInvolvedInHusbandry: z.string().optional(),
+      hasAgriculturalInsurance: z.string().optional(),
+      monthsInvolvedInAgriculture: z.string().optional(),
+      
+      // Aquaculture filters
+      haveAquaculture: z.string().optional(),
+      haveApiary: z.string().optional(),
+      
+      // Migration filters
+      birthProvince: z.string().optional(),
+      birthDistrict: z.string().optional(),
+      birthCountry: z.string().optional(),
+      priorProvince: z.string().optional(),
+      priorDistrict: z.string().optional(),
+      priorCountry: z.string().optional(),
+      residenceReason: z.string().optional(),
+      
+      // Business filters
+      hasBusiness: z.string().optional(),
+      
+      // Date range filters
+      dateOfInterviewFrom: z.date().optional(),
+      dateOfInterviewTo: z.date().optional(),
+      
+      // Array field filters (for fields that contain arrays)
+      naturalDisasters: z.array(z.string()).optional(),
+      facilities: z.array(z.string()).optional(),
+      financialAccounts: z.array(z.string()).optional(),
+      incomeSources: z.array(z.string()).optional(),
+      foodCrops: z.array(z.string()).optional(),
+      pulses: z.array(z.string()).optional(),
+      oilSeeds: z.array(z.string()).optional(),
+      vegetables: z.array(z.string()).optional(),
+      fruits: z.array(z.string()).optional(),
+      spices: z.array(z.string()).optional(),
+      cashCrops: z.array(z.string()).optional(),
+      animals: z.array(z.string()).optional(),
+      animalProducts: z.array(z.string()).optional(),
+      agriculturalMachines: z.array(z.string()).optional(),
     })
     .optional(),
   search: z.string().optional(),
