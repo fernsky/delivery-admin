@@ -1729,3 +1729,26 @@ export const downloadHouseholdsProcedure = protectedProcedure
       });
     }
   });
+
+// Procedure to get total count of households
+export const getTotalCountProcedure = protectedProcedure
+  .query(async ({ ctx }) => {
+    try {
+      const query = sql`
+        SELECT COUNT(*) as total 
+        FROM acme_khajura_households
+        WHERE profile_id = 'khajura'
+      `;
+      
+      const result = await ctx.db.execute(query);
+      const total = parseInt(result[0]?.total?.toString() || "0", 10);
+      
+      return { total };
+    } catch (error) {
+      console.error("Error fetching total household count:", error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to fetch total household count",
+      });
+    }
+  });

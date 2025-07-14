@@ -23,22 +23,15 @@ const DashboardPage = async () => {
         {/* Header with logo, title, and coat of arms */}
         <div className="flex flex-col sm:flex-row items-center justify-between py-4 px-2 sm:py-6 sm:px-4 bg-white rounded-lg shadow-sm mb-8 gap-2 sm:gap-0">
           <Image
-            src="/images/pokhara_logo.png"
-            alt="Pokhara Logo"
-            width={80}
-            height={80}
-            className="h-16 w-auto sm:h-20"
-          />
-          <h1 className="text-3xl sm:text-6xl font-bold text-center text-red-600 flex-1">
-            पोखरा महानगरपालिका
-          </h1>
-          <Image
             src="/images/coat_of_arms.png"
             alt="Nepal Coat of Arms"
             width={80}
             height={80}
             className="h-16 w-auto sm:h-20"
           />
+          <h1 className="text-3xl sm:text-6xl font-bold text-center text-red-600 flex-1">
+            खजुरा गाउँपालिका
+          </h1>
         </div>
         <div className="container mx-auto py-6">
           {/* Welcome Section with SVG */}

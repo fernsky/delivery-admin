@@ -3,7 +3,8 @@ import { createHouseholdProcedure } from "./procedures/create";
 import { 
     getHouseholdsProcedure,
     getHouseholdByIdProcedure,
-    downloadHouseholdsProcedure
+    downloadHouseholdsProcedure,
+    getTotalCountProcedure
 } from "./procedures/query";
 import { updateHouseholdProcedure } from "./procedures/update";
 import { 
@@ -20,6 +21,7 @@ export const householdRouter = createTRPCRouter({
     getHouseholds: getHouseholdsProcedure,
     getHouseholdById: getHouseholdByIdProcedure,
     downloadHouseholds: downloadHouseholdsProcedure,
+    getTotalCount: getTotalCountProcedure,
     updateHousehold: updateHouseholdProcedure,
     requestHouseholdEdit: requestHouseholdEditProcedure,
     getHouseholdEditRequests: getHouseholdEditRequestsProcedure,

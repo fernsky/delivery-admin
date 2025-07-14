@@ -3,10 +3,12 @@ import { createTRPCRouter } from "@/server/api/trpc";
 import { 
   getAll, 
   getById, 
+  getTotalCountProcedure
 } from "./procedures/query";
 
 
 export const businessRouter = createTRPCRouter({
   getAll,
   getById,
+  getTotalCount: getTotalCountProcedure,
 });
